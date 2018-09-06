@@ -1,0 +1,123 @@
+﻿/* DEFAULTS
+----------------------------------------------------------*/
+body {
+    background: #FFFFFF;
+    font-family: Verdana;
+}
+
+a:link, a:visited {
+    color: blue;
+}
+
+a:hover {
+    color: #1d60ff;
+    text-decoration: none;
+}
+
+a:active {
+    color: #034af3;
+}
+
+p, td {
+    font-size: 0.95em;
+    line-height: 1.3em;
+    padding-bottom: 0;
+}
+
+/* HEADINGS   
+----------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6, div {
+    color: dimgrey;
+    text-transform: none;
+    font-weight: normal;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: bold;
+    background-color: cornflowerblue;
+    color: white;
+    margin: 0px;
+    padding: 10px;
+}
+
+h2 {
+    font-size: 16px;
+}
+
+h3, .dropDown, .list {
+    font-size: 14px;
+}
+
+.dropDown {
+    font-weight: bold;
+}
+
+.list {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+h4, div {
+        font-size: 12px;
+    }
+
+h5 {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+h6 {
+    font-size: 10px;
+}
+
+.dateLabel {
+    font-size: 12px;
+    font-weight: bold;
+    vertical-align: middle;
+    text-align: justify;
+    padding: 2px;
+    margin: 0px;
+}
+
+.extraLabel {
+    font-size: 10px;
+    font-weight: bold;
+    vertical-align: middle;
+    text-align: justify;
+    padding: 0px;
+    margin: 0px;
+}
+
+.actualTempLabel {
+    font-size: 12px;
+    font-weight: bold;
+    vertical-align: middle;
+    text-align: justify;
+    padding: 0px;
+    margin: 0px;
+}
+
+.refTempLabel {
+    font-size: 10px;
+    font-weight: normal;
+    vertical-align: middle;
+    text-align: justify;
+    padding: 0px;
+    margin: 0px 0px 0px 0px;
+    margin-bottom: 2px;
+}
+
+img {
+    vertical-align: middle;
+    text-align: justify;
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+}
+
+td {
+    text-align: justify;
+    vertical-align: top;
+}
+
