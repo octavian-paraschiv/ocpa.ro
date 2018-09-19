@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using ThorusCommon.IO;
 
 namespace Meteo
 {
@@ -29,6 +30,7 @@ namespace Meteo
             public float Warmer { get { return ReadIniValue("Temperature", "Warmer", 10f); } }
             public float Hot { get { return ReadIniValue("Temperature", "Hot", 35f); } }
             public float Frost { get { return ReadIniValue("Temperature", "Frost", -10f); } }
+            public float Delay { get { return ReadIniValue("Temperature", "Delay", 30f); } }
         }
 
         public class _Precip
@@ -55,7 +57,7 @@ namespace Meteo
             public float Extreme { get { return ReadIniValue("Fog", "Extreme", 10f); } }
         }
 
-        public class _Boundaries
+        public class _Boundaries : IPrecipTypeBoundaries
         {
             public float MaxTeForSolidPrecip { get { return ReadIniValue("Boundaries", "MaxTeForSolidPrecip", 5f); } }
             public float MinTeForLiquidPrecip { get { return ReadIniValue("Boundaries", "MinTeForLiquidPrecip", 5f); } }

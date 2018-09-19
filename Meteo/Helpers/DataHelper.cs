@@ -1,10 +1,11 @@
-﻿using Meteo.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+using ThorusCommon.IO;
 
 namespace Meteo.Helpers
 {
@@ -29,19 +30,12 @@ namespace Meteo.Helpers
 
         public static float GetDataPoint(string dataType, DateTime dt, int r, int c)
         {
-            try
-            {
-                string dtStr = dt.ToString("yyyy-MM-dd");
-                string fileName = $"{dataType}_MAP_{dtStr}_00.thd";
-                string filePath = Path.Combine(AppFolders.DataFolder, fileName);
+            string dtStr = dt.ToString("yyyy-MM-dd");
+            string fileName = $"{dataType}_MAP_{dtStr}_00.thd";
+            string filePath = Path.Combine(AppFolders.DataFolder, fileName);
 
-                InputFile f = new InputFile(filePath);
-                return f.Matrix[r, c];
-            }
-            catch (Exception ex)
-            {
-                return 0f;
-            }
+            //return new MatrixFile(filePath, true).Matrix[r, c];
+            return DataReader.ReadFromFile(filePath, r, c);
         }
 
         public static string[] GetDataFiles(string mask, int count)

@@ -260,7 +260,7 @@ namespace Meteo.Helpers
                     }
                     else
                     {
-                        DateTime vdt = dt.AddDays(d - 6);
+                        DateTime vdt = dt.AddDays(d - (int)dt.DayOfWeek);
 
                         string dtStr = vdt.ToString("ddd, dd-MMM-yyyy");
 

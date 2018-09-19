@@ -33,12 +33,14 @@ h1, h2, h3, h4, h5, h6, div {
 }
 
 h1 {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
-    background-color: cornflowerblue;
+    background-color: slategray;
     color: white;
     margin: 0px;
-    padding: 10px;
+    padding: 15px 0px 10px 10px;
+    vertical-align: middle;
+    text-align: justify;
 }
 
 h2 {
@@ -121,3 +123,39 @@ td {
     vertical-align: top;
 }
 
+.homeImage {
+    background-color: slategray;
+    vertical-align: middle;
+    text-align: justify;
+    opacity: 1;
+    width: 40px;
+    height: 40px;
+}
+
+/* Container holding the image and the text */
+.container {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+/* Bottom centered text */
+.bottom-centered {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: bold;
+    color: White;
+    text-wrap: none;
+    
+}
+
+/* Centered text */
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

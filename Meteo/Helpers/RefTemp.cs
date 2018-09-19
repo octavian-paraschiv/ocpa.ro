@@ -87,6 +87,8 @@ namespace Meteo.Helpers
 
         public static float GetSunLatitude_Radians(int dayOfYear)
         {
+            dayOfYear = (dayOfYear + (int)ScaleSettings.Temperature.Delay);
+
             float p = (float)Math.Asin(0.39795f * (float)Math.Cos(0.2163108f + 2 * (float)Math.Atan(0.9671396f * (float)Math.Tan(0.00860f * (dayOfYear - 182.625f)))));
             return p;
         }

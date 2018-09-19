@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using ThorusCommon.IO;
 
 namespace Meteo.Helpers
 {
@@ -96,49 +97,29 @@ namespace Meteo.Helpers
 
         public static string GetPrecipType(DateTime dt, int r, int c)
         {
-            int tMin = (int)DataHelper.GetDataPoint("T_SL", dt, r, c);
-            int tMax = (int)DataHelper.GetDataPoint("T_SH", dt, r, c);
             int te = (int)DataHelper.GetDataPoint("T_TE", dt, r, c);
             int ts = (int)DataHelper.GetDataPoint("T_TS", dt, r, c);
             int t01 = (int)DataHelper.GetDataPoint("T_01", dt, r, c);
 
-            var MaxFreezingRainDelta = ScaleSettings.Boundaries.MaxFreezingRainDelta;
-            var MaxTeForSolidPrecip = ScaleSettings.Boundaries.MaxTeForSolidPrecip;
-            var MaxTsForFreezing = ScaleSettings.Boundaries.MaxTsForFreezing;
-            var MinTeForLiquidPrecip = ScaleSettings.Boundaries.MinTeForLiquidPrecip;
-            var MinTsForMelting = ScaleSettings.Boundaries.MinTsForMelting;
+            return PrecipTypeComputer<string>.Compute(
+                // Actual temperatures
+                te, ts, t01,
+                
+                // Boundary temperatures as read from config file
+                ScaleSettings.Boundaries,
+                
+                // Computed precip type: snow
+                () => "snow",
 
-            if (te < MaxTeForSolidPrecip)
-                // Snow (for sure)
-                return "snow";
+                // Computed precip type: rain
+                () => "rain",
 
-            if (te > MinTeForLiquidPrecip)
-            {
-                if (ts > MinTsForMelting)
-                    // Rain (for sure)
-                    return "rain";
-                else
-                {
-                    // Freezing rain conditions as the surface is below 0.
-                    if (ts <= MaxTsForFreezing && (te - t01) < MaxFreezingRainDelta)
-                        return "ice";
-                }
-            }
-            else
-            {
-                if (ts > MinTsForMelting)
-                    // Sleet (for sure).
-                    return "mix";
+                // Computed precip type: freezing rain
+                () => "ice",
 
-                // But: If the surface is below 0 then we again have freezing rain.
-                else if ((te - t01) < MaxFreezingRainDelta)
-                    return "ice";
-
-                // Otherwise sleet.
-                return "mix";
-            }
-
-            return "rain";
+                // Computed precip type: sleet
+                () => "mix"
+            );
         }
     }
 }

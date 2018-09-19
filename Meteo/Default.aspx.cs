@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Web.UI;
 using System.IO;
-using Meteo.IO;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
@@ -10,6 +9,7 @@ using System.Globalization;
 using System.Text;
 using System.Web.UI.HtmlControls;
 using Meteo.Helpers;
+using System.Diagnostics;
 
 namespace Meteo
 {
@@ -23,12 +23,11 @@ namespace Meteo
         {
             try
             {
-                if (!IsPostBack)
-                    SetViewport();
+                SetViewport();
             }
-            catch (Exception ex)
+            catch
             {
-                base.Response.Redirect("~/Default.aspx");
+                Response.Redirect("~/Default.aspx");
             }
         }
 
@@ -44,9 +43,9 @@ namespace Meteo
                 DrawRegionGrid(r, c);
                 DisplayData(r, c);
             }
-            catch (Exception ex)
+            catch
             {
-                base.Response.Redirect("~/Default.aspx");
+                Response.Redirect("~/Default.aspx");
             }
         }
 
