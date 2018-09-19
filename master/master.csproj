@@ -78,6 +78,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="images\clouds.jpg" />
+    <Content Include="images\electronics.jpg" />
+    <Content Include="images\Photography.jpg" />
+    <Content Include="images\programming.jpg" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -106,7 +110,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52654</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/Meteo</IISUrl>
+          <IISUrl>http://localhost</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

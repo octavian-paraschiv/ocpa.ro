@@ -11,5 +11,23 @@ namespace ProTONE {
     
     
     public partial class Default {
+        
+        /// <summary>
+        /// hint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl hint;
+        
+        /// <summary>
+        /// tblProtoneVersions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable tblProtoneVersions;
     }
 }
