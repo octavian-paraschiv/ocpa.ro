@@ -42,7 +42,7 @@ namespace Meteo.Helpers
                     weatherType = "Snow";
                     break;
                 case "02_mix":
-                    weatherType = "Wintry mix";
+                    weatherType = "Sleet";
                     break;
                 case "02_ice":
                     weatherType = "Freezing rain";
