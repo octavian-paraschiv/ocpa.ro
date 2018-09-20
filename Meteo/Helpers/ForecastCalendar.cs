@@ -44,27 +44,33 @@ namespace Meteo.Helpers
             for (int w = 0; w <= weeks; w++)
             {
                 var tr = new HtmlTableRow();
+                tr.Attributes.Add("style", "padding-bottom: 10px;");
 
-                for (int d = 0; d < 7; d++)
+                for (int d = 1; d <= 7; d++)
                 {
                     var td = new HtmlTableCell();
 
-                    td.Attributes.Add("style", "vertical-align: top; text-align: justify;");
+                    td.Attributes.Add("style", "vertical-align: top; text-align: justify; ");
 
                     StringBuilder sb = new StringBuilder();
 
                     if (!startDayFound)
                     {
-                        if ((int)dt.DayOfWeek == d)
+                        if ((int)dt.DayOfWeek == (d))
                         {
                             startDayFound = true;
                         }
                     }
 
+                    string dayBackColor = "darkgray";
+                    string dayTextColor = "black";
+
                     if (startDayFound && dt <= dtEnd)
                     {
                         int tMin = (int)Math.Round(DataHelper.GetDataPoint("T_SL", dt, r, c));
                         int tMax = (int)Math.Round(DataHelper.GetDataPoint("T_SH", dt, r, c));
+                        int tRefMin = (int)Math.Round(DataHelper.GetDataPoint("T_NL", dt, r, c));
+                        int tRefMax = (int)Math.Round(DataHelper.GetDataPoint("T_NH", dt, r, c));
 
                         string cellColor = "#EFEFEF";
 
@@ -85,13 +91,6 @@ namespace Meteo.Helpers
                         List<string> risks = new List<string>();
 
                         float snow = PrecipHelper.GetSnowThickness(dt, r, c);
-
-                        float refMin = 0, refMax = 0;
-
-                        RefTemp.GetRefTemps_ByLatitude(dt.DayOfYear, lat, ref refMin, ref refMax);
-
-                        int tRefMin = (int)Math.Round(refMin);
-                        int tRefMax = (int)Math.Round(refMax);
 
                         bool bgSet = false;
 
@@ -170,8 +169,24 @@ namespace Meteo.Helpers
 
                         // Date label
                         sb.AppendLine("<tr>");
-                        sb.AppendLine($"<td colspan='2' style='background-color: darkgray;'>");
-                        sb.AppendLine($"<div class='dateLabel' style='color: black;'>{dtStr}</div");
+
+                        switch (dt.DayOfWeek)
+                        {
+                            case DayOfWeek.Saturday:
+                                dayBackColor = "maroon";
+                                dayTextColor = "white";
+                                break;
+                            case DayOfWeek.Sunday:
+                                dayBackColor = "maroon";
+                                dayTextColor = "white";
+                                break;
+                            default:
+                                break;
+                        }
+
+                        sb.AppendLine($"<td colspan='2' style='background-color: {dayBackColor};'>");
+
+                        sb.AppendLine($"<div class='dateLabel' style='color: {dayTextColor};'>{dtStr}</div");
                         sb.AppendLine("</td>");
                         sb.AppendLine("</tr>"); // Date label
 
@@ -268,8 +283,8 @@ namespace Meteo.Helpers
 
                         // Date label
                         sb.AppendLine("<tr>");
-                        sb.AppendLine($"<td colspan='2' style='background-color: darkgray; color: lightgray;'>");
-                        sb.AppendLine($"<div class='dateLabel' style='color: black;'>{dtStr}</div");
+                        sb.AppendLine($"<td colspan='2' style='background-color: {dayBackColor}; color: lightgray;'>");
+                        sb.AppendLine($"<div class='dateLabel' style='color: {dayTextColor};'>{dtStr}</div");
                         sb.AppendLine("</td>");
                         sb.AppendLine("</tr>"); // Date label
 
@@ -291,6 +306,10 @@ namespace Meteo.Helpers
                 }
 
                 _tblCalendar.Rows.Add(tr);
+
+                HtmlTableRow sep = new HtmlTableRow();
+                sep.Attributes.Add("style", "height: 3px;");
+                _tblCalendar.Rows.Add(sep);
             }
         }
 

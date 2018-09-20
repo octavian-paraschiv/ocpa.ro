@@ -50,7 +50,7 @@
             <div runat="server" id="hint">
                 <h3>&nbsp;Please click on the map to select a region for your forecast ...</h3>
             </div>
-            <table runat="server" id="tblCalendar" cellpadding="0" cellspacing="5">
+            <table runat="server" id="tblCalendar" cellpadding="0" cellspacing="3">
                 <!-- DON'T ADD ANY ELEMENT HERE -->
             </table>
         </td>

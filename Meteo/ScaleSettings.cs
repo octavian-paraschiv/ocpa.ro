@@ -30,7 +30,6 @@ namespace Meteo
             public float Warmer { get { return ReadIniValue("Temperature", "Warmer", 10f); } }
             public float Hot { get { return ReadIniValue("Temperature", "Hot", 35f); } }
             public float Frost { get { return ReadIniValue("Temperature", "Frost", -10f); } }
-            public float Delay { get { return ReadIniValue("Temperature", "Delay", 30f); } }
         }
 
         public class _Precip
