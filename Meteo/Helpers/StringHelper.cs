@@ -102,5 +102,15 @@ namespace Meteo.Helpers
 
             return $"{dtStr}\r\n{weatherType}\r\n{tempType}";
         }
+
+        public static string Scale(int temp)
+        {
+            bool useC = true;
+
+            if (useC)
+                return $"{temp}&#x2103;";
+
+            return $"{(int)Math.Round(9 * (temp + 32f) / 5)}&#x2109;";
+        }
     }
 }
