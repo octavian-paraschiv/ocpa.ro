@@ -1,5 +1,4 @@
-﻿using ProTONE.Helpers;
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Web.UI;
@@ -16,16 +15,20 @@ namespace ProTONE
         {
             if (!IsPostBack)
             {
-                AppFolders.Rebuild(Request);
-                ListProtoneVersions();
+                ListProtoneVersions(tblProtoneCurrent, "release");
+                ListProtoneVersions(tblProtoneVersions, "legacy");
+                ListProtoneVersions(tblExperimental, "current");
             }
         }
 
-        private void ListProtoneVersions()
+        private void ListProtoneVersions(HtmlTable table, string folder)
         {
-            tblProtoneVersions.Rows.Clear();
+            table.Rows.Clear();
 
-            var files = Directory.GetFiles(AppFolders.LegacyFolder, "*.exe");
+            var path = Path.Combine(Request.PhysicalApplicationPath, folder);
+            var highlightLatest = (folder == "release");
+
+            var files = Directory.GetFiles(path, "*.exe");
             if (files != null)
             {
                 var list = files.ToList();
@@ -49,23 +52,23 @@ namespace ProTONE
                     HtmlTableCell nameCell = new HtmlTableCell();
                     HtmlTableCell descCell = new HtmlTableCell();
 
-                    if (isLatestSet)
+                    if (isLatestSet || highlightLatest == false)
                     {
-                        nameCell.InnerHtml = $"<{hdr} style='{style}'><a href='legacy/{fileName}'>{fileTitle}</a></{hdr}>";
+                        nameCell.InnerHtml = $"<{hdr} style='{style}'><a href='{folder}/{fileName}'>{fileTitle}</a></{hdr}>";
                         descCell.InnerHtml = $"<{hdr} style='{style}'>[Built on: {dtStr}]</{hdr}>";
                     }
                     else
                     {
                         isLatestSet = true;
                         string latestStyle = "margin: 0px; padding-bottom: 10px; font-weight: bold;";
-                        nameCell.InnerHtml = $"<{hdr} style='{latestStyle}'><a href='legacy/{fileName}'>{fileTitle}</a></{hdr}>";
+                        nameCell.InnerHtml = $"<{hdr} style='{latestStyle}'><a href='{folder}/{fileName}'>{fileTitle}</a></{hdr}>";
                         descCell.InnerHtml = $"<{hdr} style='{latestStyle}'>[Latest - Built on: {dtStr}]</{hdr}>";
                     }
 
 
                     row.Cells.Add(nameCell);
                     row.Cells.Add(descCell);
-                    tblProtoneVersions.Rows.Add(row);
+                    table.Rows.Add(row);
                 }
             }
         }
