@@ -1,5 +1,6 @@
 ﻿using IniParser;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -120,20 +121,21 @@ namespace Meteo
                                 else if (typeof(T) == typeof(TimeSpan))
                                 {
                                     TimeSpan ts = TimeSpan.Parse(valueData);
-                                    retVal = (T)Convert.ChangeType(ts, typeof(T));
+                                    retVal = (T)Convert.ChangeType(ts, typeof(T), CultureInfo.InvariantCulture);
                                 }
 
                                 else if (typeof(T) == typeof(DateTime))
                                 {
                                     DateTime dt = DateTime.Parse(valueData);
-                                    retVal = (T)Convert.ChangeType(dt, typeof(T));
+                                    retVal = (T)Convert.ChangeType(dt, typeof(T), CultureInfo.InvariantCulture);
                                 }
 
                                 else
                                 {
                                     try
                                     {
-                                        retVal = (T)Convert.ChangeType(valueData, typeof(T));
+                                        var t = typeof(T);
+                                        retVal = (T)Convert.ChangeType(valueData, t, CultureInfo.InvariantCulture);
                                     }
                                     catch (InvalidCastException)
                                     {
