@@ -2,7 +2,7 @@
 ----------------------------------------------------------*/
 body {
     background: #FFFFFF;
-    font-family: Verdana;
+    font-family: Tahoma;
 }
 
 a:link, a:visited {
@@ -33,7 +33,7 @@ h1, h2, h3, h4, h5, h6, div {
 }
 
 h1 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     background-color: slategray;
     color: white;
@@ -44,11 +44,11 @@ h1 {
 }
 
 h2 {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 h3, .dropDown, .list {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .dropDown {
@@ -61,7 +61,7 @@ h3, .dropDown, .list {
 }
 
 h4, div {
-        font-size: 12px;
+        font-size: 10px;
     }
 
 h5 {
@@ -78,7 +78,7 @@ h6 {
     font-weight: bold;
     vertical-align: middle;
     text-align: justify;
-    padding: 0px;
+    padding: 0px 2px 0px 0px;
     margin: 0px;
 }
 
@@ -125,7 +125,7 @@ h6 {
     font-weight: bold;
     vertical-align: middle;
     text-align: justify;
-    padding: 0px;
+    padding: 0px 2px 0px 2px;
     margin: 0px;
 }
 

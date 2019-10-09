@@ -28,12 +28,8 @@ namespace Meteo.Helpers
             int days = 0;
 
             int totalDays = DataHelper.GetCalendarRange(ref dtStart, ref dtEnd, days);
-            int weeks = (int)Math.Floor(totalDays / 7f);
 
             _tblCalendar.Rows.Clear();
-
-            DateTime dt = dtStart;
-            var startDayFound = false;
 
             var colder = ScaleSettings.Temperature.Colder;
             var cold = ScaleSettings.Temperature.Cold;
@@ -97,9 +93,27 @@ namespace Meteo.Helpers
             _tblCalendar.Rows.Add(sep);
             //--------
 
+            // Find the dates of virtual start and end
+            DateTime vdtStart = dtStart;
+            while (vdtStart.DayOfWeek != DayOfWeek.Monday)
+                vdtStart = vdtStart.AddDays(-1);
+            
+            DateTime vdtEnd = dtEnd;
+            while (vdtEnd.DayOfWeek != DayOfWeek.Sunday)
+                vdtEnd = vdtEnd.AddDays(1);
+
+            DateTime dt = vdtStart;
+
+            int weeks = (int)Math.Floor(((vdtEnd - vdtStart).TotalDays  + 1) / 7f);
+
             //--------
-            for (int w = 0; w <= weeks; w++)
+            for (int w = 0; w < weeks; w++)
             {
+                List<string> weekRisks = new List<string>();
+
+                DateTime weekStart = vdtStart.AddDays(w * 7);
+                DateTime weekEnd = weekStart.AddDays(6);
+
                 var tr = new HtmlTableRow();
 
                 WeekStats stats_tMin = new WeekStats();
@@ -113,14 +127,11 @@ namespace Meteo.Helpers
                 string dayBackColor = "darkgray";
                 string dayTextColor = "black";
 
-                DateTime? weekStart = null;
-                DateTime? weekEnd = null;
-
                 HtmlTableCell weekSummaryCell = new HtmlTableCell();
 
-                for (int d = 0; d <= 7; d++)
+                for (int dd = 0; dd <= 7; dd++)
                 {
-                    if (d == 0)
+                    if (dd == 0)
                     {
                         #region Week summary cell + separator
                         tr.Cells.Add(weekSummaryCell);
@@ -138,21 +149,14 @@ namespace Meteo.Helpers
 
                         StringBuilder sb = new StringBuilder();
 
-                        if (!startDayFound)
-                        {
-                            if ((int)dt.DayOfWeek == (d))
-                            {
-                                startDayFound = true;
-                            }
-                        }
-
-                        if (startDayFound && dt <= dtEnd)
+                        if (dtStart <= dt && dt <= dtEnd)
                         {
                             int tMin = (int)Math.Round(DataHelper.GetDataPoint("T_SL", dt, r, c));
                             int tMax = (int)Math.Round(DataHelper.GetDataPoint("T_SH", dt, r, c));
                             int tRefMin = (int)Math.Round(DataHelper.GetDataPoint("T_NL", dt, r, c));
                             int tRefMax = (int)Math.Round(DataHelper.GetDataPoint("T_NH", dt, r, c));
                             int snow = PrecipHelper.GetSnowThickness(dt, r, c);
+                            int wind = (int)Math.Round(PrecipHelper.GetWind(dt, r, c));
 
                             stats_tMin.Add(tMin);
                             stats_tMax.Add(tMax);
@@ -181,8 +185,8 @@ namespace Meteo.Helpers
                             {
                                 // Frosty
                                 cellColor = "lightblue";
-                                risks.Add("Frosty");
-                                tempType = "Frosty";
+                                risks.Add("Frost");
+                                tempType = "Bitterly cold";
                                 bgSet = true;
                             }
 
@@ -225,7 +229,7 @@ namespace Meteo.Helpers
 
                             string dtStr = dt.ToString("dd-MMMM-yyyy");
 
-                            string toolTip = StringHelper.GetToolTip(dtStr, precip, tempType);
+                            string toolTip = StringHelper.GetToolTip(dtStr, precip, tempType, (wind >= ScaleSettings.Wind.Weak));
 
                             if (precip.Length >= 4)
                                 phenomena.AddPhenomenon(precip.Substring(3), int.Parse(precip.Substring(0, 2)));
@@ -237,11 +241,6 @@ namespace Meteo.Helpers
                                 borderColor = "teal";
                                 borderSize = 5;
                             }
-                            //else if (risks.Count > 0)
-                            //{
-                            //    borderColor = "red";
-                            //    borderSize = 2;
-                            //}
 
                             // Cell table
                             sb.AppendLine($"<div style='vertical-align: middle;'>");
@@ -329,15 +328,24 @@ namespace Meteo.Helpers
                             sb.AppendLine("<td>");
 
                             if (snow >= 300)
-                                sb.AppendLine($"<div class='extraLabel' style='color: teal;'>Total snow cover: >300 cm</div>");
+                                sb.AppendLine($"<div class='extraLabel' style='color: teal;'>Snow cover: >300 cm</div>");
                             else if (snow > 0)
-                                sb.AppendLine($"<div class='extraLabel' style='color: teal;'>Total snow cover: {snow} cm</div>");
+                                sb.AppendLine($"<div class='extraLabel' style='color: teal;'>Snow cover: {snow} cm</div>");
+
+                            if (wind > 0)
+                                sb.AppendLine($"<div class='extraLabel' style='color: teal;'>Wind: {wind} km/h");
 
                             // Risks if any ...
                             if (risks.Count > 0)
                             {
-                                //sb.AppendLine($"<div class='extraLabel' style='color: red;'>{EnumRisks(risks)}</div>");
-                                //phenomena.AddPhenomena(risks);
+                                risks.ForEach((rsk) =>
+                                {
+                                    if (weekRisks.Contains(rsk) == false)
+                                        weekRisks.Add(rsk);
+                                });
+
+                                sb.AppendLine($"<div class='extraLabel' style='color: red;'>{EnumRisks(risks)}</div>");
+                                phenomena.AddPhenomena(risks);
                             }
 
                             sb.AppendLine("</td>");
@@ -354,13 +362,6 @@ namespace Meteo.Helpers
                             td.BgColor = cellColor;
                             td.InnerHtml = sb.ToString();
 
-                            if (weekStart == null)
-                                weekStart = dt;
-                            else
-                                weekEnd = dt;
-
-                            dt = dt.AddDays(1);
-
                             //td.Attributes.Add("style", "vertical-align: top; text-align: justify; ");
                             td.Attributes.Add("style", $"border: {borderSize}px solid {borderColor};");
                             td.Attributes.Add("title", toolTip);
@@ -370,9 +371,7 @@ namespace Meteo.Helpers
                         }
                         else
                         {
-                            DateTime vdt = dt.AddDays(d - (int)dt.DayOfWeek);
-
-                            string dtStr = vdt.ToString("ddd, dd-MMM-yyyy");
+                            string dtStr = dt.ToString("dd-MMM-yyyy");
 
                             sb.AppendLine($"<table cellpadding=0 cellspacing=1 width='100%' height='100%'>");
 
@@ -398,18 +397,19 @@ namespace Meteo.Helpers
                             td.Attributes.Add("class", "collapsible");
                             tr.Cells.Add(td);
                         }
-
                         #endregion
+
+                        dt = dt.AddDays(1);
                     }
                 }
 
                 #region Set content for the week summary cell
                 {
-                    string weekStartStr = weekStart.GetValueOrDefault().ToString("dd-MM-yyyy");
-                    string weekEndStr = weekEnd.GetValueOrDefault().ToString("dd-MM-yyyy");
+                    string weekStartStr = weekStart.ToString("dd-MM-yyyy");
+                    string weekEndStr = weekEnd.ToString("dd-MM-yyyy");
                     string summaryHeader = $"{weekStartStr}..{weekEndStr}";
                     string cellColor = "#EFEFEF";
-                    int intervalLength = (int)((weekEnd - weekStart).Value.TotalDays);
+                    int intervalLength = (int)((weekEnd - weekStart).TotalDays);
 
                     string borderColor = "black";
                     int borderSize = 1;
@@ -469,7 +469,7 @@ namespace Meteo.Helpers
 
                     sb.AppendLine("<tr>");
                     sb.AppendLine("<td>");
-                    sb.AppendLine($"<div  class='actualTempLabelSummary'>{phenomena.BuildPhenomenaReport(intervalLength)}</div>");
+                    sb.AppendLine($"<div  class='actualTempLabelSummary'>Summary: {phenomena.BuildPhenomenaReport(intervalLength)}</div>");
                     sb.AppendLine("</td>");
                     sb.AppendLine("</tr>");
 
@@ -482,14 +482,14 @@ namespace Meteo.Helpers
                         sb.AppendLine("</tr>");
                     }
 
-                    string tempProfile = "Seasonable temperatures";
+                    string tempProfile = "Normal";
 
                     bool bgSet = false;
                     if (!bgSet && stats_tMax.Max >= hot)
                     {
                         // heat wave
                         bgSet = true;
-                        tempProfile = "Heat wave";
+                        tempProfile = "Hot";
                         cellColor = "lightpink";
                     }
 
@@ -497,7 +497,7 @@ namespace Meteo.Helpers
                     {
                         // Frosty
                         bgSet = true;
-                        tempProfile = "Frosty";
+                        tempProfile = "Bitterly cold";
                         cellColor = "lightblue";
                     }
 
@@ -505,7 +505,7 @@ namespace Meteo.Helpers
                     {
                         // Much warmer than normal
                         bgSet = true;
-                        tempProfile = "Much warmer than normal";
+                        tempProfile = "Wery warm";
                         cellColor = "#FFCCAA";
                     }
 
@@ -513,7 +513,7 @@ namespace Meteo.Helpers
                     {
                         // A little warmer than normal
                         bgSet = true;
-                        tempProfile = "A little warmer than normal";
+                        tempProfile = "A little warmer";
                         cellColor = "#FFFF99";
                     }
 
@@ -521,7 +521,7 @@ namespace Meteo.Helpers
                     {
                         // Way colder than normal
                         bgSet = true;
-                        tempProfile = "Much colder than normal";
+                        tempProfile = "Very cold";
                         cellColor = "powderblue";
                     }
 
@@ -529,15 +529,24 @@ namespace Meteo.Helpers
                     {
                         // Colder than normal
                         bgSet = true;
-                        tempProfile = "A little colder than normal";
+                        tempProfile = "A little colder";
                         cellColor = "lightcyan";
                     }
 
                     sb.AppendLine("<tr>");
                     sb.AppendLine($"<td>");
-                    sb.AppendLine($"<div class='actualTempLabelSummary'>{tempProfile}</div>");
+                    sb.AppendLine($"<div class='actualTempLabelSummary'>Temperature: {tempProfile}</div>");
                     sb.AppendLine($"</td>");
                     sb.AppendLine("</tr>");
+
+                    if (weekRisks.Count > 0)
+                    {
+                        sb.AppendLine("<tr>");
+                        sb.AppendLine($"<td>");
+                        sb.AppendLine($"<div class='actualTempLabelSummary'>Hazards: {BuildRisksReport(weekRisks)}</div>");
+                        sb.AppendLine($"</td>");
+                        sb.AppendLine("</tr>");
+                    }
 
                     sb.AppendLine("</table>");
 
@@ -561,10 +570,42 @@ namespace Meteo.Helpers
             if (risks != null)
             {
                 for (int i = 0; i < risks.Count; i++)
-                    sb.AppendLine($"<div class='extraLabel' style='color: red;'><img src='Images/warning.png'>{risks[i]}</div>");
+                {
+                    string s = risks[i];
+                    sb.AppendLine($"<div class='extraLabel' style='color: red;'><img src='Images/warning.png'>{s}</div>");
+                }
             }
 
             return sb.ToString();
+        }
+
+        private string BuildRisksReport(List<string> risks)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (risks != null)
+            {
+                for (int i = 0; i < risks.Count; i++)
+                {
+                    string s = risks[i];
+                    sb.Append($"{s.ToLowerInvariant()}, ");
+                }
+            }
+
+            string retVal = sb.ToString().Trim();
+
+            try
+            {
+                char[] chars = sb.ToString().Trim(";, ".ToCharArray()).ToCharArray();
+                chars[0] = char.ToUpperInvariant(chars[0]);
+                retVal = new string(chars);
+                return retVal.Replace(";", ",");
+            }
+            catch
+            {
+            }
+
+            return retVal;
         }
     }
 
@@ -623,9 +664,9 @@ namespace Meteo.Helpers
                         nextElem = list.ElementAt(i + 1);
 
                     if (nextElem == null && thisElem.Key == "sun" && thisElem.Value >= 6)
-                        sb.Append("strong sun; ");
-                    else if (thisElem.Value < intervalLength - 4)
-                        sb.Append($"some {thisElem.Key}; ");
+                        sb.Append("Sunny; ");
+                    //else if (thisElem.Value < intervalLength - 4)
+                      //  sb.Append($"some {thisElem.Key}; ");
                     else
                         sb.Append($"{thisElem.Key}; ");
                 }

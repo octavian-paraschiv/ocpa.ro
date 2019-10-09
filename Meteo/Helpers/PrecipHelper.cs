@@ -15,6 +15,8 @@ namespace Meteo.Helpers
 
             float fog = DataHelper.GetDataPoint("F_SI", dt, r, c);
 
+            float wind = GetWind(dt, r, c);
+
             var inst_threshold = ScaleSettings.Instability.Weak;
             var inst_heavy = ScaleSettings.Instability.Heavy;
 
@@ -27,6 +29,11 @@ namespace Meteo.Helpers
             var fog_moderate = ScaleSettings.Fog.Moderate;
             var fog_heavy = ScaleSettings.Fog.Heavy;
             var fog_extreme = ScaleSettings.Fog.Extreme;
+
+            var wind_weak = ScaleSettings.Wind.Weak;
+            var wind_moderate = ScaleSettings.Wind.Moderate;
+            var wind_heavy = ScaleSettings.Wind.Heavy;
+            var wind_extreme = ScaleSettings.Wind.Extreme;
 
             string intensity = "00";
             string type = GetPrecipType(dt, r, c);
@@ -56,6 +63,16 @@ namespace Meteo.Helpers
             else if (precip >= precip_weak)
                 intensity = "01";
 
+            if (fog <= fog_extreme)
+                risks.Add("Very dense fog");
+            else if (fog <= fog_heavy)
+                risks.Add("Persistent fog");
+
+            if (wind >= wind_extreme)
+                risks.Add("Heavy wind");
+            else if (wind >= wind_heavy)
+                risks.Add("Strong wind");
+
             if (intensity != "00")
             {
                 if (inst >= inst_heavy)
@@ -68,25 +85,36 @@ namespace Meteo.Helpers
             }
 
             if (fog <= fog_extreme)
-            {
-                risks.Add("Very dense fog");
                 return "04_fog";
-            }
             else if (fog <= fog_heavy)
-            {
-                risks.Add("Persistent fog");
                 return "03_fog";
-            }
             else if (fog <= fog_moderate)
-            {
                 return "02_fog";
-            }
             else if (fog <= fog_weak)
-            {
                 return "01_fog";
-            }
+
+            if (wind >= wind_extreme)
+                return "04_wind";
+            else if (wind >= wind_heavy)
+                return "03_wind";
+            else if (wind >= wind_moderate)
+                return "02_wind";
+            else if (wind >= wind_weak)
+                return "01_wind";
 
             return "00";
+        }
+
+        public static float GetWind(DateTime dt, int r, int c)
+        {
+            var w00 = DataHelper.GetDataPoint("W_00", dt, r, c);
+            var w01 = DataHelper.GetDataPoint("W_01", dt, r, c);
+            var w = 0.5f * (w00 + w01);
+
+            if (w <= 2)
+               return 0;
+
+            return 6f * w;
         }
 
         public static int GetSnowThickness(DateTime dt, int r, int c)

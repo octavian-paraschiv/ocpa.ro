@@ -73,50 +73,61 @@ namespace ProTONE
                     return;
                 }
 
-                ListProtoneVersions(tblProtoneCurrent, BuildType.Release);
-                ListProtoneVersions(tblProtoneVersions, BuildType.Legacy);
-                ListProtoneVersions(tblExperimental, BuildType.Experimental);
+                ListProtoneVersions(tblProtoneCurrent, BuildType.Release, "<b>[ No planned ProTONE releases! Choose a Legacy version from the list below. ]</b>");
+                ListProtoneVersions(tblProtoneVersions, BuildType.Legacy, "<b>[ Something weird happened. There really should have been Legacy versions here. ]</b>");
+                ListProtoneVersions(tblExperimental, BuildType.Experimental, "<b>[ No experimental ProTONE versions! Choose a Legacy version from the list above. ]</b>");
             }
         }
 
-        private void ListProtoneVersions(HtmlTable table, BuildType buildType)
+        private void ListProtoneVersions(HtmlTable table, BuildType buildType, string emptyContentHtml)
         {
             table.Rows.Clear();
 
             var builds = GetProtoneBuilds(buildType);
 
-            var highlightLatest = (buildType == BuildType.Release);
-            bool isLatestSet = false;
-
-            foreach (var build in builds)
+            if (builds == null || builds.Count < 1)
             {
                 HtmlTableRow row = new HtmlTableRow();
-
-                string hdr = "h4";
-                string style = "margin: 0px; padding-bottom: 5px;";
-
                 HtmlTableCell nameCell = new HtmlTableCell();
-                HtmlTableCell descCell = new HtmlTableCell();
-
-                var dtStr = build.BuildDate.ToString("ddd, dd-MMM-yyyy");
-
-                if (isLatestSet || highlightLatest == false)
-                {
-                    nameCell.InnerHtml = $"<{hdr} style='{style}'><a href='{build.URL}'>{build.Title}</a></{hdr}>";
-                    descCell.InnerHtml = $"<{hdr} style='{style}'>[Built on: {dtStr}]</{hdr}>";
-                }
-                else
-                {
-                    isLatestSet = true;
-                    string latestStyle = "margin: 0px; padding-bottom: 10px; font-weight: bold;";
-                    nameCell.InnerHtml = $"<{hdr} style='{latestStyle}'><a href='{build.URL}'>{build.Title}</a></{hdr}>";
-                    descCell.InnerHtml = $"<{hdr} style='{latestStyle}'>[Latest - Built on: {dtStr}]</{hdr}>";
-                }
-
-
+                nameCell.InnerHtml = emptyContentHtml;
                 row.Cells.Add(nameCell);
-                row.Cells.Add(descCell);
                 table.Rows.Add(row);
+            }
+            else
+            {
+                var highlightLatest = (buildType == BuildType.Release);
+                bool isLatestSet = false;
+
+                foreach (var build in builds)
+                {
+                    HtmlTableRow row = new HtmlTableRow();
+
+                    string hdr = "h4";
+                    string style = "margin: 0px; padding-bottom: 5px;";
+
+                    HtmlTableCell nameCell = new HtmlTableCell();
+                    HtmlTableCell descCell = new HtmlTableCell();
+
+                    var dtStr = build.BuildDate.ToString("ddd, dd-MMM-yyyy");
+
+                    if (isLatestSet || highlightLatest == false)
+                    {
+                        nameCell.InnerHtml = $"<{hdr} style='{style}'><a href='{build.URL}'>{build.Title}</a></{hdr}>";
+                        descCell.InnerHtml = $"<{hdr} style='{style}'>[Built on: {dtStr}]</{hdr}>";
+                    }
+                    else
+                    {
+                        isLatestSet = true;
+                        string latestStyle = "margin: 0px; padding-bottom: 10px; font-weight: bold;";
+                        nameCell.InnerHtml = $"<{hdr} style='{latestStyle}'><a href='{build.URL}'>{build.Title}</a></{hdr}>";
+                        descCell.InnerHtml = $"<{hdr} style='{latestStyle}'>[Latest - Built on: {dtStr}]</{hdr}>";
+                    }
+
+
+                    row.Cells.Add(nameCell);
+                    row.Cells.Add(descCell);
+                    table.Rows.Add(row);
+                }
             }
         }
 

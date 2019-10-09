@@ -58,6 +58,10 @@
     <Reference Include="MathNet.Numerics">
       <HintPath>References\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -142,6 +146,7 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="genImages\" />
+    <Folder Include="Translations\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />

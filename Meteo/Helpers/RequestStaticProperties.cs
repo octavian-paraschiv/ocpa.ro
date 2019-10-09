@@ -13,12 +13,15 @@ namespace Meteo.Helpers
 
         public static string DataFolder { get; private set; }
 
+        public static string TranslationsFolder { get; private set; }
+
         public static void Rebuild(HttpRequest request, string viewport)
         {
             ScaleSettings.AppRootPath = request.PhysicalApplicationPath;
             StaticImagesFolder = Path.Combine(request.PhysicalApplicationPath, "Images");
             DynamicImagesFolder = Path.Combine(request.PhysicalApplicationPath, "genImages");
             DataFolder = Path.Combine(request.PhysicalApplicationPath, $"Data\\submatrix_{viewport}");
+            TranslationsFolder = Path.Combine(request.PhysicalApplicationPath, $"Translations");
         }
     }
 }

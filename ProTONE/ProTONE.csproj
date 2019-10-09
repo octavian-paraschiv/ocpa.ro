@@ -54,7 +54,10 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
@@ -71,6 +74,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="oauth.aspx.cs">
+      <DependentUpon>oauth.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="oauth.aspx.designer.cs">
+      <DependentUpon>oauth.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
@@ -81,6 +91,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="oauth.aspx" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>

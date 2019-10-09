@@ -9,7 +9,7 @@
     </div>
     <br />
     <div runat="server" id="Div1">
-        <h3 style='margin: 0px; padding: 10px 0px 10px 0px;'>&nbsp;Choose the latest ProTONE release::</h3>
+        <h3 style='margin: 0px; padding: 10px 0px 10px 0px;'>&nbsp;Choose the latest ProTONE release:</h3>
     </div>
     <table runat="server" id="tblProtoneCurrent" cellpadding="0" cellspacing="5">
             <!-- DON'T ADD ANY ELEMENT HERE -->

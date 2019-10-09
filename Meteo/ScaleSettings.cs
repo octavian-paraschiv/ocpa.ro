@@ -21,6 +21,8 @@ namespace Meteo
 
         public static readonly _Fog Fog = new _Fog();
 
+        public static readonly _Wind Wind = new _Wind();
+
         public static string AppRootPath { get; set; }
 
         public class _Temperature
@@ -55,6 +57,14 @@ namespace Meteo
             public float Moderate { get { return ReadIniValue("Fog", "Moderate", 30f); } }
             public float Heavy { get { return ReadIniValue("Fog", "Heavy", 20f); } }
             public float Extreme { get { return ReadIniValue("Fog", "Extreme", 10f); } }
+        }
+
+        public class _Wind
+        {
+            public float Weak { get { return ReadIniValue("Wind", "Weak", 10f); } }
+            public float Moderate { get { return ReadIniValue("Wind", "Moderate", 30f); } }
+            public float Heavy { get { return ReadIniValue("Wind", "Heavy", 50f); } }
+            public float Extreme { get { return ReadIniValue("Wind", "Extreme", 70f); } }
         }
 
         public class _Boundaries : IPrecipTypeBoundaries
