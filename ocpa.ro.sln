@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "common", "common\common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OPMedia.Backend", "backend\OPMedia.Backend.csproj", "{A0316184-F236-4F3C-8087-D761EF9DB85D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OPMedia.API", "api\OPMedia.API.csproj", "{4DD1B5A9-9323-4EF1-875C-7F4A2D2477DE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{A0316184-F236-4F3C-8087-D761EF9DB85D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0316184-F236-4F3C-8087-D761EF9DB85D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0316184-F236-4F3C-8087-D761EF9DB85D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4DD1B5A9-9323-4EF1-875C-7F4A2D2477DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4DD1B5A9-9323-4EF1-875C-7F4A2D2477DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4DD1B5A9-9323-4EF1-875C-7F4A2D2477DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4DD1B5A9-9323-4EF1-875C-7F4A2D2477DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
