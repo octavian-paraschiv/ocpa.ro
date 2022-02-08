@@ -47,9 +47,9 @@
         <tr>
             <td colspan="2">
                 <div class="container">
-                    <a href="/programming">
+                    <a href="/ang-ocpa-ro">
                         <img src="images/programming.jpg" style="height: 200px; width: 805px"/>
-                        <div class="bottom-centered">Other programming stuff</div>
+                        <div class="bottom-centered">New web site</div>
                     </a>
                 </div>
             </td>

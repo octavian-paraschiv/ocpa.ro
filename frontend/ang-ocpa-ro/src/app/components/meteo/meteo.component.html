@@ -1,0 +1,31 @@
+<mat-form-field appearance="fill">
+  <mat-label>Region:</mat-label>
+  <mat-select [(value)]="region">
+    <mat-option *ngFor="let r of regions" [value]="r" (onSelectionChange)='onRegionSelected($event)' >
+      {{r}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+&nbsp;
+<mat-form-field appearance="fill">
+  <mat-label>{{ region === 'Europe' ? 'Country': 'County' }}:</mat-label>
+  <mat-select [(value)]="subregion">
+    <mat-option *ngFor="let s of subregions" [value]="s" (onSelectionChange)='onSubregionSelected($event)'>
+      {{s}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+&nbsp;
+<mat-form-field appearance="fill">
+  <mat-label>City:</mat-label>
+  <mat-select [(value)]="city">
+    <mat-option *ngFor="let c of cities" [value]="c"  (onSelectionChange)='onCitySelected($event)'>
+      {{c}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<div class='other'>
+  <label class="label-region">{{region}} > {{subregion}} > {{city}}</label>
+  <app-calendar class="app-calendar" [data]="meteoData"></app-calendar>
+</div>

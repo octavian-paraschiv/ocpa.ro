@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
@@ -41,36 +42,45 @@ namespace Meteo.Helpers
 
         public string DrawHighlightedArea(int r, int c)
         {
-            Bitmap bmp = Bitmap.FromFile(Path.Combine(AppFolders.StaticImagesFolder, $"{_viewport}.PNG")) as Bitmap;
-
-            string bmpFile = string.Format("{2}_grid_{0}_{1}.png", r, c, _viewport);
-            string bmpFilePath = string.Format("{0}\\{1}", AppFolders.DynamicImagesFolder, bmpFile);
-
-            int dx = bmp.Width / Cols;
-            int dy = bmp.Height / Rows;
-
-            using (Graphics g = Graphics.FromImage(bmp))
-            using (Pen pGrid = new Pen(Color.LightGray, 1))
-            using (Pen pHilight = new Pen(Color.Red, 3))
+            try
             {
-                g.CompositingQuality = CompositingQuality.HighQuality;
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-                g.CompositingMode = CompositingMode.SourceCopy;
+                Bitmap bmp = Bitmap.FromFile(Path.Combine(AppFolders.StaticImagesFolder, $"{_viewport}.PNG")) as Bitmap;
 
-                for (int x = 0; x <= Cols; x++)
-                    g.DrawLine(pGrid, x * dx, 0, x * dx, Rows * dy);
+                string bmpFile = string.Format("{2}_grid_{0}_{1}.png", r, c, _viewport);
+                string bmpFilePath = string.Format("{0}\\{1}", AppFolders.DynamicImagesFolder, bmpFile);
 
-                for (int y = 0; y <= Rows; y++)
-                    g.DrawLine(pGrid, 0, y * dy, Cols * dx, y * dy);
+                int dx = bmp.Width / Cols;
+                int dy = bmp.Height / Rows;
 
-                if (r >= 0 && c >= 0)
-                    g.DrawRectangle(pHilight, c * dx, r * dy, dx, dy);
+                using (Graphics g = Graphics.FromImage(bmp))
+                using (Pen pGrid = new Pen(Color.LightGray, 1))
+                using (Pen pHilight = new Pen(Color.Red, 3))
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    g.CompositingQuality = CompositingQuality.HighQuality;
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.SmoothingMode = SmoothingMode.AntiAlias;
+                    g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                    g.CompositingMode = CompositingMode.SourceCopy;
 
-                bmp.Save(bmpFilePath);
-                return bmpFile;
+                    for (int x = 0; x <= Cols; x++)
+                        g.DrawLine(pGrid, x * dx, 0, x * dx, Rows * dy);
+
+                    for (int y = 0; y <= Rows; y++)
+                        g.DrawLine(pGrid, 0, y * dy, Cols * dx, y * dy);
+
+                    if (r >= 0 && c >= 0)
+                        g.DrawRectangle(pHilight, c * dx, r * dy, dx, dy);
+
+                    bmp.Save(ms, ImageFormat.Png);
+
+                    var base64 = Convert.ToBase64String(ms.GetBuffer());
+                    return $"data:image/png;base64,{base64}";
+                }
             }
+            catch { }
+
+            return null;
         }
     }
 }

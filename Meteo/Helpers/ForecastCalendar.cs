@@ -155,6 +155,7 @@ namespace Meteo.Helpers
                             int tMax = (int)Math.Round(DataHelper.GetDataPoint("T_SH", dt, r, c));
                             int tRefMin = (int)Math.Round(DataHelper.GetDataPoint("T_NL", dt, r, c));
                             int tRefMax = (int)Math.Round(DataHelper.GetDataPoint("T_NH", dt, r, c));
+
                             int snow = PrecipHelper.GetSnowThickness(dt, r, c);
                             int wind = (int)Math.Round(PrecipHelper.GetWind(dt, r, c));
 

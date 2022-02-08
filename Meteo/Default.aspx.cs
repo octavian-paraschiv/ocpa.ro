@@ -25,9 +25,10 @@ namespace Meteo
             {
                 SetViewport();
             }
-            catch
+            catch(Exception ex)
             {
-                Response.Redirect("~/Default.aspx");
+                //Response.Redirect("~/Default.aspx");
+                Response.Write(ex.ToString());
             }
         }
 
@@ -43,9 +44,10 @@ namespace Meteo
                 DrawRegionGrid(r, c);
                 DisplayData(r, c);
             }
-            catch
+            catch (Exception ex)
             {
                 Response.Redirect("~/Default.aspx");
+                Response.Write(ex.Message);
             }
         }
 
@@ -89,11 +91,11 @@ namespace Meteo
 
         private void DrawRegionGrid(int r, int c)
         {
-            string tempFile = _grid.DrawHighlightedArea(r, c);
-            if (string.IsNullOrEmpty(tempFile))
+            string base64 = _grid.DrawHighlightedArea(r, c);
+            if (string.IsNullOrEmpty(base64))
                 ImgButton.Src = $"~/Images/{_viewport}_grid.png";
             else
-                ImgButton.Src = string.Format("~/genImages/{0}", tempFile);
+                ImgButton.Src = base64;
         }
     }
 }

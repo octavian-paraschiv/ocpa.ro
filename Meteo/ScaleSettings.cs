@@ -94,8 +94,14 @@ namespace Meteo
         }
     }
 
-    public static class IniFile
+    public class IniFile
     {
+        string _content = "";
+
+        public IniFile()
+        {
+        }
+
         public static T Read<T>(string section, string key, string fileName, T defValue = default(T))
         {
             T retVal = defValue;
