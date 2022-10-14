@@ -1,0 +1,84 @@
+<h5 style="text-align: justify;">Please select the desired city for the forecast.&nbsp;You may need to select the Region and Country/District first.</h5>
+<br>
+<table style="text-align: justify; vertical-align: middle;">
+    <tr>
+        <td><h5 style="width: 3rem;">Region:</h5></td>
+        <td>
+            <select name="ddlRegions" id="ddlRegions" (change)="onRegionChanged($event.target.value)" style="width: 10rem;">
+                <option *ngFor="let region of regions" value="{{region}}">{{region}}</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td><h5>{{ (selRegion === 'Europe' ? 'Country' : 'District' ) }}:</h5></td>
+        <td>
+            <select name="ddlSubregions" id="ddlSubregions" (change)="onSubregionChanged($event.target.value)" style="width: 10rem;">
+                <option *ngFor="let subregion of subregions" value="{{subregion}}">{{subregion}}</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td><h5>City:</h5></td>
+        <td>
+            <select name="ddlCities" id="ddlCities" (change)="onCityChanged($event.target.value)" style="width: 10rem;">
+                <option *ngFor="let city of cities" value="{{city}}">{{city}}</option>
+            </select>
+        </td>
+    </tr>
+</table>
+<br>
+<ng-container *ngIf="meteoData && meteoData.length > 0">
+<table>
+    <tr *ngFor="let mw of meteoData">
+        <td *ngFor="let md of mw" style="border: 1px solid lightgray; ">
+            <table width="100%" [ngStyle]="getOuterCellStyle(md)" title="{{getTooltip(md)}}">
+                <tr [ngStyle]="getLabelStyle(md)">
+                    <td colspan="3">{{md.date | date: 'EEE, yyyy-MM-dd'}}</td>
+                </tr>
+                <tr [ngStyle]="getInnerCellStyle(md)">
+                    <table *ngIf="md.forecast" style="height: 100%; width: 100%; vertical-align: middle;" title="{{getTooltip(md)}}" >
+                        <tr>
+                            <td>
+                                <img src="assets/icons/meteo/precip_{{md.forecast}}.png" width="45rem" height="45rem" />
+                            </td>
+                            <td>
+                                <table  cellpadding="0" colspacing="0">
+                                    <tr>
+                                        <td>
+                                            <div style="display: inline-block; white-space: nowrap; color: red;">
+                                                <img  class="temp_row" src="assets/icons/meteo/day.png" width="20vw" height="20vh" />
+                                                <label class="temp_actual">{{md.tMaxActual}}ºC&nbsp;</label>
+                                                <label class="temp_normal">[{{md.tMaxNormal}}ºC]</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="display: inline-block; white-space: nowrap; color:blue;">
+                                                <img  class="temp_row" src="assets/icons/meteo/night.png" width="20vw" height="20vh" />
+                                                <label class="temp_actual">{{md.tMinActual}}ºC&nbsp;</label>
+                                                <label class="temp_normal">[{{md.tMinNormal}}ºC]</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <table *ngIf="!md.forecast">
+                        <tr>
+                            <td *ngIf="!md.forecast" style="vertical-align: middle; align-content: center;">
+                                <h6 class="temp_normal">[no data]</h6>
+                            </td>
+                        </tr>
+                    </table>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</ng-container>
+<ng-container *ngIf="!meteoData || meteoData.length < 1">
+    <h6 style="text-align: justify; vertical-align: middle;">Please wait ...</h6>
+    <img src="assets/images/spinner.gif" style="height: 10rem;" />
+</ng-container>
