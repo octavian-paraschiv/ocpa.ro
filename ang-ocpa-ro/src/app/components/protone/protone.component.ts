@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { take } from 'rxjs/operators';
 import { BuildInfo } from 'src/app/models/protone';
 import { ProtoneApiService } from 'src/app/services/api-services';
 
+@UntilDestroy()
 @Component({
     selector: 'app-protone',
     templateUrl: './protone.component.html',
@@ -19,13 +21,13 @@ export class ProTONEComponent implements OnInit {
 
     ngOnInit(): void {
         this.api.getProtoneBuilds('legacy')
-            .pipe(take(1))
+            .pipe(take(1), untilDestroyed(this))
             .subscribe(builds => {
                 this.legacyBuilds = this.orderByVersion(builds);
             });
 
         this.api.getProtoneBuilds('true')
-            .pipe(take(1))
+            .pipe(take(1), untilDestroyed(this))
             .subscribe(builds => {
                 if (builds && builds.length > 0) {
                     this.latestBuild = this.orderByVersion(builds)[0];
@@ -33,7 +35,7 @@ export class ProTONEComponent implements OnInit {
             });
 
         this.api.getProtoneBuilds('false')
-            .pipe(take(1))
+            .pipe(take(1), untilDestroyed(this))
             .subscribe(builds => {
                 this.developmentBuilds = builds;
             });

@@ -1,36 +1,82 @@
 ﻿using api.Controllers.Models;
+using api.Helpers;
+using ocpa.ro.api.Helpers.Meteo.Helpers;
 using ocpa.ro.api.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using ThorusCommon.IO;
+using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Helpers
 {
 	public class MeteoDataHelper
 	{
 		private string _dataFolder = ".";
+		private WeatherTypeHelper _precipHelper;
+		private MeteoScaleSettings _scale;
 
-		public MeteoDataHelper(string dataFolder)
+		static MeteoDB _db = null;
+
+		public MeteoScaleSettings Scale => _scale;
+
+		public MeteoDataHelper(string dataFolder, MeteoScaleSettings scale)
 		{
 			_dataFolder = dataFolder;
+
+			if (_db == null)
+				_db = MeteoDB.OpenOrCreate(Path.Combine(dataFolder, "Snapshot.db3"), false);
+
+			_precipHelper = new WeatherTypeHelper(this);
+			_scale = scale;
 		}
 
-		public List<string> GetDataTypes(DateTime dt)
+		public void HandleDatabasePart(UploadDataPart part)
 		{
-			List<string> result = new List<string>();
-			try
+			List<string> partFiles = new List<string>();
+			if (part.PartIndex == 0)
 			{
-				string lookupMask = $"_MAP_{dt:yyyy-MM-dd}_00.thd";
-				string[] dataFiles = GetDataFiles("*" + lookupMask, 0);
-				result = dataFiles.Select((string f) => Path.GetFileName(f).Replace(lookupMask, "")).ToList();
-			}
-			catch
+				partFiles = Directory.GetFiles(_dataFolder, "db_*.part").ToList();
+				if (partFiles?.Count > 0)
+					partFiles.ForEach(pf => File.Delete(pf));
+			}				
+
+			File.WriteAllText(Path.Combine(_dataFolder, $"db_{part.PartIndex:d3}.part"), part.PartBase64);
+
+			partFiles = Directory.GetFiles(_dataFolder, "db_*.part").OrderBy(pf => pf).ToList();
+			if (partFiles?.Count == part.TotalParts)
 			{
+				StringBuilder sb = new StringBuilder();
+				foreach (string pf in partFiles)
+				{
+					sb.Append(File.ReadAllText(pf));
+					File.Delete(pf);
+				}
+
+				ReplaceDatabase(sb.ToString());
 			}
-			return result;
+		}
+
+		public void ReplaceDatabase(string base64)
+		{
+			byte[] data = Convert.FromBase64String(base64);
+
+			using (MemoryStream input = new MemoryStream(data))
+			using (GZipStream zipped = new GZipStream(input, CompressionMode.Decompress))
+			using (MemoryStream unzipped = new MemoryStream())
+			{
+				zipped.CopyTo(unzipped);
+				File.WriteAllBytes(Path.Combine(_dataFolder, "Snapshot.db3"), unzipped.ToArray());
+			}
+
+			if (_db != null)
+				_db.Close();
+
+			_db = MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
 		}
 
 		public CalendarRange GetCalendarRange(int days)
@@ -38,18 +84,24 @@ namespace ocpa.ro.api.Helpers
 			CalendarRange result = new CalendarRange();
 			try
 			{
-				string[] dataFiles = GetDataFiles("L_00_MAP*.thd", days);
-				string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(dataFiles[0]);
-				string s = fileNameWithoutExtension.Substring(9, 10);
-				DateTime start = DateTime.ParseExact(s, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-				fileNameWithoutExtension = Path.GetFileNameWithoutExtension(dataFiles[dataFiles.Length - 1]);
-				s = fileNameWithoutExtension.Substring(9, 10);
-				DateTime end = DateTime.ParseExact(s, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+				var x = _db.Data
+					.Where(d => d.RegionId == 1 && d.R == 0 && d.C == 0)
+					.OrderBy(d => d.Timestamp)
+					.Distinct();
+
+				var xx = x.Select(d => d.Timestamp).ToList();
+
+				if (days == 0)
+					days = xx.Count;
+
+				var start = xx[0];
+				var end = xx[days - 1];
+
 				result = new CalendarRange
 				{
-					Start = start,
-					End = end,
-					Length = dataFiles.Length
+					Start = DateTime.ParseExact(start, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+					End = DateTime.ParseExact(end, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+					Length = days
 				};
 			}
 			catch
@@ -58,25 +110,54 @@ namespace ocpa.ro.api.Helpers
 			return result;
 		}
 
-		public float GetDataPoint(string dataType, DateTime dt, GridCoordinates gc)
+		public List<Data> GetData(string region, GridCoordinates gc, int skip, int take)
 		{
-			string text = dt.ToString("yyyy-MM-dd");
-			string path = dataType + "_MAP_" + text + "_00.thd";
-			string filePath = Path.Combine(_dataFolder, path);
-			return DataReader.ReadFromFile(filePath, gc.R, gc.C);
+			var regionId = (from r in _db.Regions
+							where r.Name == region
+							select r.Id).FirstOrDefault();
+
+			var x = _db.Data
+				.Where(d => d.RegionId == regionId && d.R == gc.R && d.C == gc.C)
+				.OrderBy(d => d.Timestamp)
+				.Skip(skip)
+				.Take(take);
+
+			return x.ToList();
+		}
+	}
+
+	public static class ExtensionMethods
+	{
+		public static int Round(this float input)
+		{
+			return (int)Math.Round(input);
 		}
 
-		public string[] GetDataFiles(string mask, int count)
+		public static T GetValue<T>(this Dictionary<string, float> data, string key, T defaultValue = default)
+			where T: IComparable, IConvertible, IFormattable
 		{
-			string[] files = Directory.GetFiles(_dataFolder, mask);
-			if (count < 1)
+			T val = defaultValue;
+			Type type = typeof(T);
+
+			try
 			{
-				return files;
+				double raw = data[key];
+
+				if (type != typeof(float) &&
+					type != typeof(double) &&
+					type != typeof(decimal))
+				{
+					raw = Math.Round(raw, 0);
+				}
+
+				val = (T)Convert.ChangeType(raw, type);
 			}
-			count = Math.Min(files.Length, count);
-			string[] array = new string[count];
-			Array.Copy(files, array, count);
-			return array;
+			catch
+			{
+				val = defaultValue;
+			}
+
+			return val;
 		}
 	}
 }

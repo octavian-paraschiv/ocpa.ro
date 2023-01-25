@@ -7,11 +7,16 @@ import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProTONEComponent } from './components/protone/protone.component';
-import { MeteoComponent } from './components/meteo/meteo.component';
 import { PhotographyComponent } from './components/photography/photography.component';
 import { ElectronicsComponent } from './components/electronics/electronics.component';
 import { GeographyApiService, MeteoApiService, ProtoneApiService } from './services/api-services';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { DaySummaryComponent } from './components/meteo/day-summary/day-summary.component';
+import { MeteoComponent } from './components/meteo/meteo.component';
+import { DayDetailsComponent } from './components/meteo/day-details/day-details.component';
+import { DayRisksComponent } from './components/meteo/day-risks/day-risks.component';
+import { Helper } from './services/helper';
+import { DistancePipe, PressurePipe, SpeedPipe, TempPipe, VolumePipe } from './services/unit-transform-pipe';
 
 @NgModule({
     declarations: [
@@ -21,7 +26,17 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
         ProTONEComponent,
         MeteoComponent,
         ElectronicsComponent,
-        PhotographyComponent
+        PhotographyComponent,
+
+        DaySummaryComponent,
+        DayDetailsComponent,
+        DayRisksComponent,
+
+        TempPipe,
+        SpeedPipe,
+        DistancePipe,
+        VolumePipe,
+        PressurePipe
     ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -39,7 +54,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
   providers: [
     ProtoneApiService,
     GeographyApiService,
-    MeteoApiService
+    MeteoApiService,
+
+    Helper
   ],
   bootstrap: [AppComponent]
 })

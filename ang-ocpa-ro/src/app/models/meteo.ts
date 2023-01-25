@@ -7,12 +7,30 @@ export interface CalendarRange {
 }
 
 export interface MeteoDailyData {
-    tMinActual: number,
-    tMaxActual: number,
-    tMinNormal: number,
-    tMaxNormal: number,
-    forecast: string,
-    tempFeel: string
+    date: string
+
+    tMinActual?: number,
+    tMaxActual?: number,
+    tMinNormal?: number,
+    tMaxNormal?: number,
+    forecast?: string,
+    tempFeel?: string,
+
+    hazards?: string[],
+    wind?: number,
+    precip?: number,
+    snowCover?: number,
+    instability?: number,
+    fog?: number,
+
+    soilRain?: number,
+    rain?: number,
+    snow?: number,
+
+    windDirection?: string
+
+    p00?: number,
+    p01?: number,
 }
 
 export interface MeteoData {
@@ -21,6 +39,8 @@ export interface MeteoData {
     data: { [id: string]: MeteoDailyData };
 }
 
-export interface MeteoDailyDataEx extends MeteoDailyData {
-    date: string
+export enum Unit 
+{ 
+    Metric,
+    Imperial 
 }

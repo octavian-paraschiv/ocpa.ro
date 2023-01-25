@@ -25,7 +25,7 @@
 	    <HintPath>References\Newtonsoft.Json.dll</HintPath>
 	  </Reference>
 	  <Reference Include="ThorusCommon.IO">
-	    <HintPath>References\ThorusCommon.IO.dll</HintPath>
+	    <HintPath>..\..\Thorus\bin\ThorusCommon.IO.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 
@@ -33,6 +33,19 @@
 	  <Resource Include="web.config">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="sqlite3.x64.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="sqlite3.x86.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="FileUpload\" />
 	</ItemGroup>
 
 </Project>

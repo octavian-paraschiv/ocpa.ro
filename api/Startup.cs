@@ -5,15 +5,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ocpa.ro.api.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ThorusCommon.IO;
 
 namespace ocpa.ro.api
 {
     public class Startup
     {
+        static Startup()
+        {
+            DllUtility.SelectProperDllVersion("sqlite3");
+        }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,6 +31,9 @@ namespace ocpa.ro.api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IAuthHelper, AuthHelper>();
+            services.AddSingleton<ITokenUtility, TokenUtility>();
+
             services.AddCors(options =>
             {
                 options.AddPolicy("default", policy =>
@@ -36,6 +46,7 @@ namespace ocpa.ro.api
             });
 
             services.AddControllers();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

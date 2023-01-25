@@ -1,52 +1,29 @@
-﻿/* DEFAULTS
+﻿:root {
+    font-size: 1.2vw;
+}
+
+/* DEFAULTS
 ----------------------------------------------------------*/
 .container {
     margin: 0;
 }
 
 .main {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-/*
-a:link, a:visited {
-    color: blue;
-}
-
-a:hover {
-    color: #1d60ff;
-    text-decoration: none;
-}
-
-a:active {
-    color: #034af3;
-}
-*/
 p, td {
-    font-size: 0.95em;
+    font-size: 0.95rem;
     line-height: 1.3em;
     padding-bottom: 0;
 }
-/*
-a.navbar-brand {
-    white-space: normal;
-    text-align: center;
-    word-break: break-all;
-}
 
-html {
-    font-size: 14px;
+td {
+    text-align: justify;
+    vertical-align: middle;
+    margin-bottom: 0;
+    margin-top: 0;
 }
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-.box-shadow {
-    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}*/
 
 /* HEADINGS   
 ----------------------------------------------------------*/
@@ -77,140 +54,8 @@ h5, div {
     font-size: 0.9rem;
 }
 
-
-
-.temp_row {
-    vertical-align: middle;
-    margin-top: 3px;
-    margin-bottom: 3;
-}
-
-.temp_actual {
-    font-size: 1rem;
-    vertical-align: middle;
-    margin-bottom: 0;
-}
-
-.temp_normal {
-    font-size: 0.8rem;
-    vertical-align: middle;
-    margin-bottom: 0;
-}
-
-/*
-.dropDown {
-    font-weight: bold;
-}
-
-.list {
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-}
-
-h4, div {
-        font-size: 10px;
-    }
-
-h5 {
-    font-size: 10px;
-    font-weight: bold;
-}
-
-h6 {
-    font-size: 10px;
-}
-
-.extraLabel {
-    font-size: 9px;
-    font-weight: bold;
-    vertical-align: middle;
-    text-align: justify;
-    padding: 0px 2px 0px 0px;
-    margin: 0px;
-}
-
-.dateLabel {
-    font-size: 10px;
-    font-weight: bold;
-    vertical-align: middle;
-    text-align: justify;
-    padding: 2px;
-    margin: 0px;
-}
-
-.actualTempLabel {
-    font-size: 10px;
-    font-weight: bold;
-    vertical-align: middle;
-    text-align: justify;
-    padding: 0px;
-    margin: 0px;
-}
-
-.refTempLabel {
-    font-size: 8px;
-    font-weight: normal;
-    vertical-align: middle;
-    text-align: justify;
-    padding: 0px;
-    margin: 0px 0px 0px 0px;
-    margin-bottom: 2px;
-}
-
-
-.dateLabelSummary {
-    font-size: 12px;
-    font-weight: bold;
-    vertical-align: middle;
-    text-align: justify;
-    padding: 2px;
-    margin: 0px;
-}
-
-.actualTempLabelSummary {
-    font-size: 12px;
-    font-weight: bold;
-    vertical-align: middle;
-    text-align: justify;
-    padding: 0px 2px 0px 2px;
-    margin: 0px;
-}
-
-.refTempLabelSummary {
-    font-size: 10px;
-    font-weight: normal;
-    vertical-align: middle;
-    text-align: justify;
-    padding: 0px;
-    margin: 0px 0px 0px 0px;
-    margin-bottom: 2px;
-}
-
-
-img {
-    vertical-align: middle;
-    text-align: justify;
-    opacity: 1;
-    width: 16px;
-    height: 16px;
-}
-*/
-td {
-    text-align: justify;
-    vertical-align: middle;
-    margin-bottom: 0;
-    margin-top: 0;
-}
-/*
-.homeImage {
-    background-color: slategray;
-    vertical-align: middle;
-    text-align: justify;
-    opacity: 1;
-    width: 40px;
-    height: 40px;
-}*/
-
+/* custom classes   
+----------------------------------------------------------*/
 /* Container holding the image and the text */
 .container {
     position: relative;
@@ -228,13 +73,312 @@ td {
     font-weight: bold;
     color: White;
     text-wrap: none;
-    
 }
 
-/* Centered text */
-/*.centered {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}*/
+.home-image {
+    width: 25vw;
+    height: 25vh;
+    min-width: 200px;
+    min-height: 100px;
+    max-width: 600px;
+    max-height: 300px;
+}
+
+/*-----*/
+.normal { background-color: white }
+.warmer { background-color: #ffffcc }
+.much_warmer { background-color: #ffff66 }
+.hot { background-color: #ffcc99 }
+.colder { background-color: #e6f7ff }
+.much_colder { background-color: #e6efff }
+.frost { background-color: #ccdfff }
+
+.meteo-td, .meteo-td-no-data {
+    text-align: left;
+    vertical-align: top;
+    border: 1px solid lightgray;
+    width: 10vw;
+}
+
+.meteo-td-today {
+    text-align: left;
+    vertical-align: top;
+    border: 5px solid teal;
+    width: 10vw;
+}
+
+.week-data {
+    display: flex;
+    flex-direction: row;
+}
+
+@media only screen and (max-width: 1080px) {
+    .meteo-td-no-data {
+        visibility: hidden;
+        height: 0;
+    }
+}
+
+@media only screen and (max-width: 1080px) {
+    .meteo-td {
+        text-align: left;
+        vertical-align: top;
+        border: 1px solid lightgray;
+        width: 30vw;
+    }
+}
+    
+@media only screen and (max-width: 1080px) {
+    .meteo-td-today {
+        text-align: left;
+        vertical-align: top;
+        border: 5px solid teal;
+        width: 30vw;
+    }
+}
+    
+@media only screen and (max-width: 1080px) {
+    .week-data {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+
+app-day-summary {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-areas: 
+    "h h h h h h h"
+    "e e e e e e e"
+    "s s d d d d d"
+    "hs ha hn ls la ln ."
+    "i i i i i i i"
+    ;
+    grid-template-rows: auto auto auto auto auto auto;
+    background-color: white;
+    width: 15vw;
+}   
+
+.day-summary-header-normal {
+    grid-area: h;
+    background-color: black;
+    text-transform: uppercase;
+    color: white;
+    font-weight: normal;
+    font-size: 1rem;
+    align-self: center;
+    margin-bottom: 2px;
+    padding: 2px;
+}
+
+.day-summary-header-weekend {
+    grid-area: h;
+    background-color: maroon;
+    text-transform: uppercase;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    align-self: center;
+    margin-bottom: 2px;
+    padding: 2px;
+}
+
+.day-summary-no-data {
+    grid-area: e;
+    color: gray;
+    align-self: center;
+}
+
+.day-summary-forecast-img {
+    grid-area: s;
+    margin: 0;
+    padding: 0;
+    align-self: center;
+    width: 45px;
+    height: auto;
+}
+
+.day-summary-temp-max-symbol {
+    grid-area: hs;
+    margin-left: 2px;
+    margin-top: 2px;
+    padding: 0;
+    align-self: center;
+    height: 2vh;
+}
+
+.day-summary-temp-min-symbol {  
+    grid-area: ls;
+    margin-left: 5px;
+    margin-top: 2px;
+    padding: 0;
+    align-self: center;
+    height: 2vh;
+}
+
+.day-summary-temp-max-actual {
+    grid-area: ha;
+    padding: 0;
+    color: red;
+    font-size: 1rem;
+    align-self: center;
+    margin-top: 2px;
+}
+
+.day-summary-temp-max-normal {
+    grid-area: hn;
+    margin-top: 2px;
+    padding: 0;
+    color: red;
+    font-size: 0.8rem;
+    align-self: center;
+    text-align: start;
+}
+
+.day-summary-temp-min-actual {
+    grid-area: la;
+    margin: 0;
+    padding: 0;
+    color: blue;
+    font-size: 1rem;
+    align-self: center;
+    text-align: end;
+}
+
+.day-summary-temp-min-normal {
+    grid-area: ln;
+    margin: 0;
+    padding: 0;
+    color: blue;
+    font-size: 0.8rem;
+    align-self: center;
+    text-align: start;
+}
+
+app-day-details {
+    grid-area: i;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-areas: 
+    "risk"
+    "pres"
+    "wind"
+    "rain"
+    "snow"
+    "snowc";
+    grid-template-rows: auto auto auto auto auto auto;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+app-day-risks {
+    grid-area: risk;
+    display: block;
+    text-align: justify;
+    margin-bottom: 0;
+}
+
+.detail {
+    text-align: justify;
+    font-size: 0.72rem;
+    vertical-align: middle;
+    margin: 0;
+    color: black;
+}
+
+.hazard {
+    text-align: justify;
+    font-size: 0.72rem;
+    vertical-align: middle;
+    font-weight: bolder;
+    color: red;
+}
+
+.detail-wind {
+    grid-area: wind;
+    text-align: justify;
+}
+
+.detail-snow-cover {
+    grid-area: snowc;
+    text-align: justify;
+}
+
+.detail-snow {
+    grid-area: snow;
+    text-align: justify;
+}
+
+.detail-rain {
+    grid-area: rain;
+    text-align: justify;
+}
+
+.detail-pres {
+    grid-area: pres;
+    text-align: justify;
+}
+
+
+.detail-desc-label {
+    grid-area: d;
+    text-align: justify;
+    align-self: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-left: 3px;
+    vertical-align: middle;
+    color: black;
+}
+
+.meteo-day {
+    width: 8vw;
+}
+
+.meteo-week {
+    display: flex;
+    flex-direction: row;
+}
+
+.meteo-controls {
+    display: grid;
+    grid-template-columns: min-content min-content;
+    grid-template-areas: 
+    "lr sr"
+    "ls ss"
+    "lc sc";
+    grid-template-rows: auto auto auto;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.label-region {
+    grid-area: lr;
+    text-align: right;
+    margin: 5px;
+}
+.label-subregion {
+    grid-area: ls;
+    text-align: right;
+    margin: 5px;
+}
+.label-city {
+    grid-area: lc;
+    text-align: right;
+    margin: 5px;
+}
+.select-region {
+    grid-area: sr;
+    margin: 5px;
+}
+.select-subregion {
+    grid-area: ss;
+    margin: 5px;
+}
+.select-city {
+    grid-area: sc;
+    margin: 5px;
+}
+
+

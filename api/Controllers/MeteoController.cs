@@ -2,11 +2,14 @@
 using api.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using ocpa.ro.api.Helpers;
+using ocpa.ro.api.Helpers.Meteo.Helpers;
 using ocpa.ro.api.Models;
 using System;
 using System.Collections.Generic;
 using ThorusCommon.IO;
+using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -17,7 +20,15 @@ namespace ocpa.ro.api.Controllers
 		static MeteoScaleSettings _scale;
 		static IniFile _iniFile;
 
-		public MeteoController(IWebHostEnvironment hostingEnvironment) : base(hostingEnvironment)
+		private MeteoDataHelper GetDataHelper()
+		{
+			string dataFolder = System.IO.Path.Combine(ContentPath, $"meteo");
+			return new MeteoDataHelper(dataFolder, _scale);
+		}
+
+
+		public MeteoController(IWebHostEnvironment hostingEnvironment, IAuthHelper authHelper) 
+			: base(hostingEnvironment, authHelper)
 		{
 			Init();
 		}
@@ -32,13 +43,41 @@ namespace ocpa.ro.api.Controllers
 			_scale = new MeteoScaleSettings(_iniFile);
 		}
 
-        [HttpGet("range")]
-		public IActionResult GetRange([FromQuery] string region)
+		const long MaxFileSize = 16 * 1024L * 1024L;
+
+		[HttpPost("uploadPart")]
+		[RequestSizeLimit(MaxFileSize)]
+		public IActionResult UploadPart([FromBody] UploadDataPart part)
 		{
 			try
 			{
-				_ = new GeographyController(_hostingEnvironment).GetRegion(region);
-				var range = _GetRange(region);
+				var body = JsonConvert.SerializeObject(part);
+				_authHelper.Authorize(Request, body);
+				GetDataHelper().HandleDatabasePart(part);
+				return Ok();
+			}
+			catch (UnauthorizedAccessException uae)
+			{
+				return Unauthorized(uae.Message);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+
+        [HttpGet("dataFolder")]
+		public IActionResult GetContentPath()
+		{
+			return Ok(ContentPath);
+		}
+
+		[HttpGet("range")]
+		public IActionResult GetRange()
+		{
+			try
+			{
+				var range = _GetRange();
 				return Ok(range);
 			}
 			catch (Exception ex)
@@ -62,10 +101,9 @@ namespace ocpa.ro.api.Controllers
 			}
 		}
 
-		private CalendarRange _GetRange(string region)
+		private CalendarRange _GetRange()
 		{
-			string dataFolder = System.IO.Path.Combine(ContentPath, $"meteo/submatrix_{region}");
-			return new MeteoDataHelper(dataFolder).GetCalendarRange(0);
+			return GetDataHelper().GetCalendarRange(0);
 		}
 
 		private MeteoData GetMeteoData(GridCoordinates gc, string region, int skip, int take)
@@ -74,186 +112,70 @@ namespace ocpa.ro.api.Controllers
 			{
 				GridCoordinates = gc
 			};
+
 			try
 			{
-				CalendarRange range = _GetRange(region);
+				CalendarRange range = _GetRange();
+				var dataHelper = GetDataHelper();
+
 				meteoData.CalendarRange = new CalendarRange
 				{
 					Start = range.Start.AddDays(skip)
 				};
 
-				if (take <= 0)
-				{
-					take = range.Length;
-				}
+				skip = Math.Min(range.Length - 1, Math.Max(0, skip));
 
-				if (range.Length > skip)
+				int remaining = range.Length - skip;
+
+				take = Math.Min(range.Length - skip, Math.Max(0, range.Length));
+
+				var allData = dataHelper.GetData(region, gc, skip, take);
+				if (allData?.Count > 0)
 				{
-					int num = Math.Min(take, range.Length - skip);
+					var weatherHelper = new WeatherTypeHelper(dataHelper);
+
 					meteoData.Data = new Dictionary<string, MeteoDailyData>();
-					meteoData.CalendarRange.End = range.Start.AddDays(skip + num - 1);
-					for (int i = skip; i < skip + num; i++)
+					meteoData.CalendarRange.End = range.Start.AddDays(allData.Count - 1);
+					meteoData.CalendarRange.Length = allData.Count;
+
+					allData.ForEach(d =>
 					{
-						DateTime dt = range.Start.AddDays(i);
-						Dictionary<string, float> meteoData2 = GetMeteoData(dt, gc, region);
+						List<string> risks = new List<string>();
+						var forecast = weatherHelper.GetWeatherType(d, risks);
+						var wind = weatherHelper.GetWind(d, out string direction);
+
 						MeteoDailyData value = new MeteoDailyData
 						{
-							TMaxActual = (int)Math.Round(meteoData2["T_SH"], 0),
-							TMinActual = (int)Math.Round(meteoData2["T_SL"], 0),
-							TMaxNormal = (int)Math.Round(meteoData2["T_NH"], 0),
-							TMinNormal = (int)Math.Round(meteoData2["T_NL"], 0),
-							Forecast = GetForecast(meteoData2),
-							TempFeel = GetTempFeel(meteoData2)
+							TMaxActual = d.T_SH.Round(),
+							TMinActual = d.T_SL.Round(),
+							TMaxNormal = d.T_NH.Round(),
+							TMinNormal = d.T_NL.Round(),
+							SnowCover = d.N_00.Round(),
+							Precip = d.C_00.Round(),
+							Instability = d.L_00.Round(),
+							Fog = -d.F_SI.Round() + 100,
+							SoilRain = d.R_00.Round(),
+							Rain = d.R_DD.Round(),
+							Snow = d.N_DD.Round(),
+							P00 = d.P_00.Round(),
+							P01 = d.P_01.Round(),
+
+							TempFeel = weatherHelper.GetTempFeel(d),
+							Wind = wind,
+							WindDirection = direction,
+
+							Hazards = risks,
+							Forecast = forecast,
 						};
-						meteoData.Data.Add(dt.ToString("yyyy-MM-dd"), value);
-					}
-					meteoData.CalendarRange.Length = num;
+
+						meteoData.Data.Add(d.Timestamp, value);
+					});
 				}
 			}
 			catch
 			{
 			}
 			return meteoData;
-		}
-
-		private Dictionary<string, float> GetMeteoData(DateTime dt, GridCoordinates gc, string region)
-		{
-			Dictionary<string, float> dictionary = new Dictionary<string, float>();
-			try
-			{
-				string dataFolder = System.IO.Path.Combine(ContentPath, $"meteo/submatrix_{region}");
-				MeteoDataHelper meteoDataHelper = new MeteoDataHelper(dataFolder);
-				List<string> dataTypes = meteoDataHelper.GetDataTypes(dt);
-				foreach (string item in dataTypes)
-				{
-					float dataPoint = meteoDataHelper.GetDataPoint(item, dt, gc);
-					dictionary.Add(item, dataPoint);
-				}
-			}
-			catch
-			{
-			}
-			return dictionary;
-		}
-
-		private static string GetForecast(Dictionary<string, float> data)
-		{
-			float num = data["C_00"];
-			float te = data["T_TE"];
-			float ts = data["T_TS"];
-			float t = data["T_01"];
-			float inst = -1f * data["L_00"];
-			float num2 = data["F_SI"];
-			float wind = GetWind(data);
-
-			string text = PrecipTypeComputer<string>.Compute(te, ts, t,
-				_scale.Boundaries, 
-				() => "snow", 
-				() => (inst >= _scale.Instability.Weak) ? "inst" : "rain", 
-				() => "ice", 
-				() => "mix"
-			);
-
-			string result = "00";
-			if (num >= _scale.Precip.Extreme)
-			{
-				result = "04_" + text;
-			}
-			else if (num >= _scale.Precip.Heavy)
-			{
-				result = "03_" + text;
-			}
-			else if (num >= _scale.Precip.Moderate)
-			{
-				result = "02_" + text;
-			}
-			else if (num >= _scale.Precip.Weak)
-			{
-				result = "01_" + text;
-			}
-			else
-			{
-				if (num2 <= _scale.Fog.Extreme)
-				{
-					return "04_fog";
-				}
-				if (num2 <= _scale.Fog.Heavy)
-				{
-					return "03_fog";
-				}
-				if (num2 <= _scale.Fog.Moderate)
-				{
-					return "02_fog";
-				}
-				if (num2 <= _scale.Fog.Weak)
-				{
-					return "01_fog";
-				}
-				if (wind >= _scale.Wind.Extreme)
-				{
-					return "04_wind";
-				}
-				if (wind >= _scale.Wind.Heavy)
-				{
-					return "03_wind";
-				}
-				if (wind >= _scale.Wind.Moderate)
-				{
-					return "02_wind";
-				}
-				if (wind >= _scale.Wind.Weak)
-				{
-					return "01_wind";
-				}
-			}
-			return result;
-		}
-
-		private string GetTempFeel(Dictionary<string, float> map)
-		{
-			float num = map["T_SH"];
-			float num2 = map["T_SL"];
-			float num3 = map["T_NH"];
-			float num4 = map["T_NL"];
-
-			float colder = _scale.Temperature.Colder;
-			float cold = _scale.Temperature.Cold;
-			float warm = _scale.Temperature.Warm;
-			float warmer = _scale.Temperature.Warmer;
-			float hot = _scale.Temperature.Hot;
-			float frost = _scale.Temperature.Frost;
-
-			if (num >= hot)
-				return "hot";
-
-			if (num2 <= frost || num <= frost)
-				return "frost";
-
-			if (num > num3 + warmer)
-				return "much_warmer";
-
-			if (num > num3 + warm)
-				return "warmer";
-
-			if (num < num3 + colder)
-				return "much_colder";
-
-			if (num < num3 + cold)
-				return "colder";
-
-			return "normal";
-		}
-
-		private static float GetWind(Dictionary<string, float> data)
-		{
-			float num = data["W_00"];
-			float num2 = data["W_01"];
-			float num3 = 0.5f * (num + num2);
-			if (num3 <= 2f)
-			{
-				return 0f;
-			}
-			return 6f * num3;
 		}
 	}
 }
