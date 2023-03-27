@@ -39,8 +39,6 @@ export class MeteoComponent  implements OnInit {
   today: string;
   todayData: MeteoDailyData;
 
-  feelsLikeMap: { [id: string]: { color: string, tip: string}  } = {};
-
   queryRegion: string = undefined;
   querySubregion: string = undefined;
   queryCity: string = undefined;
@@ -49,14 +47,6 @@ export class MeteoComponent  implements OnInit {
   constructor(private readonly geoApi: GeographyApiService,
     private readonly meteoApi: MeteoApiService,
     private readonly route: ActivatedRoute) {
-    
-      this.feelsLikeMap['normal'] =       { color:'white',      tip: 'Normal temperature' };
-      this.feelsLikeMap['warmer'] =       { color:'#ffffcc',    tip: 'Warmer than normal' };
-      this.feelsLikeMap['much_warmer'] =  { color:'#ffff66',    tip: 'Much warmer than normal' };
-      this.feelsLikeMap['hot'] =          { color:'#ffcc99',    tip: 'Scorching hot' };      
-      this.feelsLikeMap['colder'] =       { color:'#e6f7ff',    tip: 'Colder than normal' };
-      this.feelsLikeMap['much_colder'] =  { color:'#e6efff',    tip: 'Much colder than normal' };
-      this.feelsLikeMap['frost'] =        { color:'#ccdfff',    tip: 'Bitterly cold' };
   }
 
   ngOnInit(): void {
@@ -207,87 +197,5 @@ export class MeteoComponent  implements OnInit {
         this.todayData = mdEx[i];
       }
     }
-  }
-
-  public getInnerCellStyle(md: MeteoDailyData) {
-    let tempFeel = (md.tempFeel && md.tempFeel.length > 0) ? md.tempFeel : 'normal';
-    return {
-      'background': `${this.feelsLikeMap[tempFeel].color}`,
-      'border': '2px solid #EEEEEE',
-      'vertical-align': 'top'
-    }
-  }
-
-  public getOuterCellStyle(md: MeteoDailyData) {
-    const today = md.date === this.today;
-    let tempFeel = (md.tempFeel && md.tempFeel.length > 0) ? md.tempFeel : 'normal';
-    return {
-      'border': `${today ? 5 : 4}px solid ${today ? 'teal' : 'transparent'}`,
-    }
-  }
-
-  public getLabelStyle(md: MeteoDailyData) {
-    const day = new Date(md.date).getDay();
-    const weekend = (day % 6 === 0);
-    return {
-      'background': `${weekend ? 'maroon' : 'black'}`,
-      'color': 'white',
-      'font-size': '0.9rem',
-      'font-weight': `${weekend ? 'bold' : '' }`,
-      'text-transform': 'uppercase',
-      'vertical-align': 'middle',
-      'height': '2vh'
-    }
-  }
-
-  public getTooltip(md: MeteoDailyData) {
-    let tempFeel = (md.tempFeel && md.tempFeel.length > 0) ? md.tempFeel : 'normal';
-    let tip = '';
-    
-    tip += `${this.feelsLikeMap[tempFeel].tip}`;
-    
-    if (md.wind > 0) {
-      tip += `\nWind: ${md.wind} kmh from ${md.windDirection}`;
-    }
-
-    if (md.snowCover > 300) {
-      tip += `\nSnow cover: >300 cm`;
-    } else if (md.snowCover > 0) {
-      tip += `\nSnow cover: ${md.snowCover} cm`;
-    }
-
-    if (md.hazards) {
-      md.hazards.forEach(h => {
-        tip += `\n${h}`
-      })
-    }
-
-    return tip;
-  }
-
-  public extraDetails(md: MeteoDailyData): string {
-    let tip = '';
-    
-    if (md.wind > 0) {
-      tip += `<label class='detail'>&#129050;&nbsp;Wind: ${md.wind} kmh from ${md.windDirection}</label><br>`;
-    }
-
-    if (md.snowCover > 300) {
-      tip += `<label class='detail'>&#10033;&nbsp;Snow cover: >300 cm<br>`;
-    } else if (md.snowCover > 0) {
-      tip += `<label class='detail'>&#10033;&nbsp;Snow cover: ${md.snowCover} cm</label><br>`;
-    }
-
-    if (md.hazards) {
-      md.hazards.forEach(h => {
-        tip += `<img src='assets/icons/meteo/warning.png' width="12vw" height="12vh"><label class='hazard'>\n${h}</label><br>`
-      })
-    }
-
-    return (tip.length > 0) ? tip : undefined;
-  }
-
-  public isToday(md: MeteoDailyData): boolean {
-    return md?.date === this.today;
   }
 }

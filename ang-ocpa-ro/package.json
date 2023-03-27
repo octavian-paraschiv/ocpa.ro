@@ -19,6 +19,7 @@
     "@angular/platform-server": "10.2.5",
     "@angular/router": "10.2.5",
     "@ngneat/until-destroy": "^8.1.4",
+    "@ngx-translate/core": "^14.0.0",
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.2",
     "popper.js": "^1.16.0",

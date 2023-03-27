@@ -1,5 +1,5 @@
 ﻿:root {
-    font-size: 1.2vw;
+    font-size: 1vw;
 }
 
 /* DEFAULTS
@@ -97,57 +97,26 @@ h5, div {
     text-align: left;
     vertical-align: top;
     border: 1px solid lightgray;
-    width: 10vw;
+    width: 12vw;
 }
 
 .meteo-td-today {
     text-align: left;
     vertical-align: top;
     border: 5px solid teal;
-    width: 10vw;
+    width: 12vw;
 }
 
 .week-data {
     display: flex;
     flex-direction: row;
+    width: 91vw;
 }
-
-@media only screen and (max-width: 1080px) {
-    .meteo-td-no-data {
-        visibility: hidden;
-        height: 0;
-    }
-}
-
-@media only screen and (max-width: 1080px) {
-    .meteo-td {
-        text-align: left;
-        vertical-align: top;
-        border: 1px solid lightgray;
-        width: 30vw;
-    }
-}
-    
-@media only screen and (max-width: 1080px) {
-    .meteo-td-today {
-        text-align: left;
-        vertical-align: top;
-        border: 5px solid teal;
-        width: 30vw;
-    }
-}
-    
-@media only screen and (max-width: 1080px) {
-    .week-data {
-        display: flex;
-        flex-direction: column;
-    }
-}
-
 
 app-day-summary {
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto 1fr;
+    grid-template-rows: auto auto auto auto auto;
     grid-template-areas: 
     "h h h h h h h"
     "e e e e e e e"
@@ -155,9 +124,7 @@ app-day-summary {
     "hs ha hn ls la ln ."
     "i i i i i i i"
     ;
-    grid-template-rows: auto auto auto auto auto auto;
     background-color: white;
-    width: 15vw;
 }   
 
 .day-summary-header-normal {
@@ -190,16 +157,17 @@ app-day-summary {
     align-self: center;
 }
 
-.day-summary-forecast-img {
+.img-day-summary-forecast {
     grid-area: s;
     margin: 0;
     padding: 0;
     align-self: center;
-    width: 45px;
+    width: 3vw;
     height: auto;
 }
 
-.day-summary-temp-max-symbol {
+
+.img-day-summary-temp-max {
     grid-area: hs;
     margin-left: 2px;
     margin-top: 2px;
@@ -208,7 +176,7 @@ app-day-summary {
     height: 2vh;
 }
 
-.day-summary-temp-min-symbol {  
+.img-day-summary-temp-min {  
     grid-area: ls;
     margin-left: 5px;
     margin-top: 2px;
@@ -221,7 +189,7 @@ app-day-summary {
     grid-area: ha;
     padding: 0;
     color: red;
-    font-size: 1rem;
+    font-size: 0.9rem;
     align-self: center;
     margin-top: 2px;
 }
@@ -241,7 +209,7 @@ app-day-summary {
     margin: 0;
     padding: 0;
     color: blue;
-    font-size: 1rem;
+    font-size: 0.9rem;
     align-self: center;
     text-align: end;
 }
@@ -294,6 +262,9 @@ app-day-risks {
     font-weight: bolder;
     color: red;
 }
+.img-hazard {
+    width: 1vw;
+}
 
 .detail-wind {
     grid-area: wind;
@@ -330,6 +301,7 @@ app-day-risks {
     margin-left: 3px;
     vertical-align: middle;
     color: black;
+    white-space: nowrap;
 }
 
 .meteo-day {
@@ -381,4 +353,44 @@ app-day-risks {
     margin: 5px;
 }
 
+/* MOBILE
+----------------------------------------------------------*/
+@media only screen and (max-width: 1080px) {
+    :root {
+        font-size: 2vw;
+    }
 
+    .meteo-td-no-data {
+        visibility: hidden;
+        height: 0;
+    }
+
+    .meteo-td {
+        width: 30vw;
+    }
+
+    .meteo-td-today {
+        width: 30vw;
+    }
+
+    .week-data {
+        flex-direction: column;
+        width: 32vw;
+    }
+
+    .img-day-summary-forecast {
+        width: 5vw;
+    }
+
+    .img-day-summary-temp-max {
+        height: 3vh;
+    }
+
+    .img-day-summary-temp-min {
+        height: 3vh;
+    }
+
+    .img-hazard {
+        width: 2vw;
+    }
+}

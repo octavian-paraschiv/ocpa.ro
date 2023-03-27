@@ -32,15 +32,21 @@ export class DaySummaryComponent implements OnChanges {
       this.weatherType = this.helper.weatherType(this?.data?.forecast);
       
       this.desc = '';
-      if (this.feelsLike?.length > 0) {
-        this.desc += this.feelsLike;
-      }
+
       if (this.weatherType?.length > 0) {
         if (this.desc.length > 0) {
           this.desc += '<br>';
         }
         this.desc += this.weatherType;
       }
+
+      if (this.feelsLike?.length > 0) {
+        if (this.desc.length > 0) {
+          this.desc += '<br>';
+        }
+        this.desc += this.feelsLike;
+      }
+      
     }
   }
 }

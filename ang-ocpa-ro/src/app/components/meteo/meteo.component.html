@@ -17,15 +17,6 @@
 </div>
 <ng-container *ngIf="meteoData && meteoData.length > 0">
     <h5 style="text-align: justify;">Forecast for: {{selRegion}} / {{selSubregion}} / {{selCity}}</h5>
-    <!--
-    <table cellpadding="3" cellspacing="3">
-        <tr *ngFor="let mw of meteoData">
-            <td *ngFor="let md of mw" class="{{md.date === today ? 'meteo-td-today' : 'meteo-td'}} {{md.tempFeel}}">
-                <app-day-summary *ngIf="md" [data]="md" class="{{md.tempFeel}}"></app-day-summary>
-            </td>
-        </tr>
-    </table>
-    -->
     <div *ngFor="let mw of meteoData" class="week-data">
         <div *ngFor="let md of mw" class="{{ md.forecast ? (md.date === today ? 'meteo-td-today' : 'meteo-td') : 'meteo-td-no-data' }} {{md.tempFeel}}">
             <app-day-summary *ngIf="md" [data]="md" class="{{md.tempFeel}}"></app-day-summary>
