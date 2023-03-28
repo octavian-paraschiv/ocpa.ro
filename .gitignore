@@ -1,2 +1,5 @@
 packages
 .vs
+/ang-ocpa-ro/node_modules
+/api/bin
+/api/obj

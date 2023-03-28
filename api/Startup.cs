@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -5,10 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using ocpa.ro.api.Helpers;
+using ocpa.ro.api.Policies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ThorusCommon.IO;
 
@@ -31,19 +36,34 @@ namespace ocpa.ro.api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IAuthHelper, AuthHelper>();
-            services.AddSingleton<ITokenUtility, TokenUtility>();
-
-            services.AddCors(options =>
+            services.AddAuthentication(options =>
             {
-                options.AddPolicy("default", policy =>
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(o =>
+            {
+                o.RequireHttpsMetadata = false;
+                o.SaveToken = true;
+
+                o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    policy
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
-                });
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                };
             });
+
+            services.AddAuthorization(options => options.AddPolicy("AdminPolicy", policy => policy.Requirements.Add(new AdminRequirement())));
+
+            services.AddSingleton<IAuthHelper, AuthHelper>();
+            services.AddSingleton<IAuthorizationHandler, AdminHandler>();
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
             services.AddControllers();
 
@@ -59,8 +79,17 @@ namespace ocpa.ro.api
 
             app.UseRouting();
 
-            app.UseCors("default");
+#if DEBUG
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(url => true)
+                .AllowCredentials());
+#else
+            app.UseCors();
+#endif
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

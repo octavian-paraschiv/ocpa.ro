@@ -62,5 +62,4 @@ export class MeteoApiService {
         const uri = `${environment.apiUrl}/meteo/data?region=${region}&subregion=${subregion}&city=${city}&skip=${skip}&take=${take}`;
         return this.httpClient.get<MeteoData>(uri);
     }
-
 }

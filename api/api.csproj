@@ -11,19 +11,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="FileUpload\**" />
+	  <Content Remove="FileUpload\**" />
+	  <EmbeddedResource Remove="FileUpload\**" />
+	  <None Remove="FileUpload\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Content Remove="web.config" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="INIFileParser">
-	    <HintPath>References\INIFileParser.dll</HintPath>
-	  </Reference>
-	  <Reference Include="MathNet.Numerics">
-	    <HintPath>References\MathNet.Numerics.dll</HintPath>
-	  </Reference>
-	  <Reference Include="Newtonsoft.Json">
-	    <HintPath>References\Newtonsoft.Json.dll</HintPath>
-	  </Reference>
 	  <Reference Include="ThorusCommon.IO">
 	    <HintPath>..\..\Thorus\bin\ThorusCommon.IO.dll</HintPath>
 	  </Reference>
@@ -45,7 +43,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="FileUpload\" />
+	  <PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.32" />
 	</ItemGroup>
 
 </Project>

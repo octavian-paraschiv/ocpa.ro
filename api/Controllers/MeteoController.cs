@@ -1,5 +1,6 @@
 ﻿using api.Controllers.Models;
 using api.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -45,6 +46,7 @@ namespace ocpa.ro.api.Controllers
 
 		const long MaxFileSize = 16 * 1024L * 1024L;
 
+		[Authorize]
 		[HttpPost("uploadPart")]
 		[RequestSizeLimit(MaxFileSize)]
 		public IActionResult UploadPart([FromBody] UploadDataPart part)
@@ -52,7 +54,6 @@ namespace ocpa.ro.api.Controllers
 			try
 			{
 				var body = JsonConvert.SerializeObject(part);
-				_authHelper.Authorize(Request, body);
 				GetDataHelper().HandleDatabasePart(part);
 				return Ok();
 			}
