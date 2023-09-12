@@ -6,8 +6,7 @@ import { Helper } from 'src/app/services/helper';
 @UntilDestroy()
 @Component({
   selector: 'app-day-summary',
-  templateUrl: './day-summary.component.html',
-  styleUrls: ['../../../../assets/styles/site.css']
+  templateUrl: './day-summary.component.html'
 })
 export class DaySummaryComponent implements OnChanges {
   @Input() data: MeteoDailyData = undefined; 

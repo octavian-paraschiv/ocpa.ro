@@ -6,8 +6,7 @@ import { Helper } from 'src/app/services/helper';
 @UntilDestroy()
 @Component({
   selector: 'app-day-details',
-  templateUrl: './day-details.component.html',
-  styleUrls: ['../../../../assets/styles/site.css']
+  templateUrl: './day-details.component.html'
 })
 export class DayDetailsComponent {
   @Input() data: MeteoDailyData = undefined; 

@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-photography',
-    templateUrl: './photography.component.html',
-    styleUrls: ['../../../assets/styles/site.css']
+    templateUrl: './photography.component.html'
 })
 export class PhotographyComponent {
 }

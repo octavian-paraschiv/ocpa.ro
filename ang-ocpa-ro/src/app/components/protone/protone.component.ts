@@ -7,8 +7,7 @@ import { ProtoneApiService } from 'src/app/services/api-services';
 @UntilDestroy()
 @Component({
     selector: 'app-protone',
-    templateUrl: './protone.component.html',
-    styleUrls: ['../../../assets/styles/site.css']
+    templateUrl: './protone.component.html'
 })
 export class ProTONEComponent implements OnInit {
 

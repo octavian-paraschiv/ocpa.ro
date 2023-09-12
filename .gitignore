@@ -3,3 +3,5 @@ packages
 /ang-ocpa-ro/node_modules
 /api/bin
 /api/obj
+.angular
+PublishProfiles

@@ -7,8 +7,7 @@ import { AuthenticationService } from 'src/app/services/authentication.services'
 @UntilDestroy()
 @Component({
     selector: 'app-admin',
-    templateUrl: './admin.component.html',
-    styleUrls: ['../../../assets/styles/site.css']
+    templateUrl: './admin.component.html'
 })
 export class AdminComponent implements OnInit, OnDestroy {
 

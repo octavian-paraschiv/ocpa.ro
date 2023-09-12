@@ -4,8 +4,7 @@ import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav-menu',
-  templateUrl: './nav-menu.component.html',
-  styleUrls: ['../../../assets/styles/site.css']
+  templateUrl: './nav-menu.component.html'
 })
 export class NavMenuComponent {
     isExpanded = false;

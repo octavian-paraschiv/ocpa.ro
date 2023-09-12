@@ -5,34 +5,35 @@
     "ng": "ng",
     "start": "ng serve --port 8888",
     "build": "ng build",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "build:prod": "ng build --base-href / --configuration production"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "10.2.5",
-    "@angular/common": "10.2.5",
-    "@angular/compiler": "10.2.5",
-    "@angular/core": "10.2.5",
-    "@angular/forms": "10.2.5",
-    "@angular/platform-browser": "10.2.5",
-    "@angular/platform-browser-dynamic": "10.2.5",
-    "@angular/platform-server": "10.2.5",
-    "@angular/router": "10.2.5",
+    "@angular/animations": "16.2.4",
+    "@angular/common": "16.2.4",
+    "@angular/compiler": "16.2.4",
+    "@angular/core": "16.2.4",
+    "@angular/forms": "16.2.4",
+    "@angular/platform-browser": "16.2.4",
+    "@angular/platform-browser-dynamic": "16.2.4",
+    "@angular/platform-server": "16.2.4",
+    "@angular/router": "16.2.4",
     "@ngneat/until-destroy": "^8.1.4",
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.2",
     "popper.js": "^1.16.0",
     "rxjs": "^6.6.7",
     "tslib": "^2.0.0",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.13.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1002.4",
-    "@angular/cli": "^10.2.4",
-    "@angular/compiler-cli": "^10.2.5",
-    "@angular/language-service": "^10.2.5",
+    "@angular-devkit/build-angular": "^16.2.1",
+    "@angular/cli": "^16.2.1",
+    "@angular/compiler-cli": "^16.2.4",
+    "@angular/language-service": "^16.2.4",
     "@types/node": "^12.20.55",
-    "typescript": "4.0.8"
+    "typescript": "4.9.5"
   },
   "optionalDependencies": {
     "ts-node": "~8.4.1",

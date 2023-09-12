@@ -11,8 +11,7 @@ import { GeographyApiService, MeteoApiService } from 'src/app/services/api-servi
 @UntilDestroy()
 @Component({
   selector: 'app-meteo',
-    templateUrl: './meteo.component.html',
-    styleUrls: ['../../../assets/styles/site.css']
+    templateUrl: './meteo.component.html'
 })
 export class MeteoComponent  implements OnInit {
   isFetching = false;

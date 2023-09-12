@@ -5,8 +5,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @UntilDestroy()
 @Component({
   selector: 'app-smart-select',
-  templateUrl: './smart-select.component.html',
-  styleUrls: ['../../../../assets/styles/site.css']
+  templateUrl: './smart-select.component.html'
 })
 export class SmartSelectComponent {
   @Input() items: string[] = [];
