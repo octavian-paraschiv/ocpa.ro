@@ -2,17 +2,17 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class Helper {
-    private feelsLikeMap: { [id: string]: { color: string, tip: string}  } = {};
-    private weatherTypeMap: { [id: string]:string } = {};
+    private feelsLikeMap: { [id: string]: string } = {};
+    private weatherTypeMap: { [id: string]: string } = {};
 
     constructor() {
-      this.feelsLikeMap['normal'] =       { color:'white',      tip: 'Seasonable' };
-      this.feelsLikeMap['warmer'] =       { color:'#ffffcc',    tip: 'Warmer' };
-      this.feelsLikeMap['much_warmer'] =  { color:'#ffff66',    tip: 'Much warmer' };
-      this.feelsLikeMap['hot'] =          { color:'#ffcc99',    tip: 'Hot' };      
-      this.feelsLikeMap['colder'] =       { color:'#e6f7ff',    tip: 'Colder' };
-      this.feelsLikeMap['much_colder'] =  { color:'#e6efff',    tip: 'Very cold' };
-      this.feelsLikeMap['frost'] =        { color:'#ccdfff',    tip: 'Frost' };
+      this.feelsLikeMap['normal'] = 'Seasonable';
+      this.feelsLikeMap['warmer'] = 'Warmer';
+      this.feelsLikeMap['much_warmer'] = 'Very warm';
+      this.feelsLikeMap['hot'] = 'Hot';      
+      this.feelsLikeMap['colder'] = 'Colder';
+      this.feelsLikeMap['much_colder'] = 'Very cold';
+      this.feelsLikeMap['frost'] = 'Frost';
 
       this.weatherTypeMap['00'] = 'Sunny';
       
@@ -49,12 +49,8 @@ export class Helper {
       this.weatherTypeMap['04_wind'] = 'Heavy Wind';
     }
 
-    public feelsLikeColor(desc: string): string {
-        return this.feelsLikeMap[desc].color;
-    }
-
     public feelsLikeTip(desc: string): string {
-        return this.feelsLikeMap[desc].tip;
+        return this.feelsLikeMap[desc];
     }
 
     public weatherType(desc: string): string {

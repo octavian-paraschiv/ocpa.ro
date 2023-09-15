@@ -23,6 +23,7 @@ import { ErrorInterceptor } from './helpers/error.interceptor';
 import { UserService } from './services/user.service';
 import { AuthenticationService } from './services/authentication.services';
 import { LoginComponent } from './components/login/login.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
     declarations: [
@@ -61,7 +62,8 @@ import { LoginComponent } from './components/login/login.component';
             { path: 'admin', component: AdminComponent, data: { title: 'Administration Module' } },
             { path: 'login', component: LoginComponent, data: { title: 'Administration Module' } },
     ]),
-      NoopAnimationsModule
+      NoopAnimationsModule,
+      FontAwesomeModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

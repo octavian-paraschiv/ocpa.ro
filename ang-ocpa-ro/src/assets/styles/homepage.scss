@@ -1,0 +1,71 @@
+////////////////////////
+/// home page styles ///
+////////////////////////
+
+app-home {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-areas: 
+    "t t t"
+    "c1 c2 ."
+    "c3 c4 ."
+    ". . .";
+}
+
+.t {
+    grid-area: t;
+    text-align: justify;
+}
+
+.c1 {
+    @extend .container;
+    grid-area: c1;
+}
+
+.c2 {
+    @extend .container;
+    grid-area: c2;
+}
+
+.c3 {
+    @extend .container;
+    grid-area: c3;
+}
+
+.c4 {
+    @extend .container;
+    grid-area: c4;
+}
+
+.home-image {
+    width: 15em;
+    height: 15em;
+    margin: 0;
+    margin-left: -1.5em;
+    padding: 0;
+    color: $home-image-color;
+}
+
+.home-image:hover {
+    color: $nav-alt-backcolor;
+}
+
+.alt-image-color {
+    color: $backcolor;
+}
+
+/* MOBILE
+----------------------------------------------------------*/
+@media only screen and (max-width: 1080px) {
+    app-home {
+        display: grid;
+        grid-template-columns: auto auto 1fr;
+        grid-template-rows: auto auto auto 1fr;
+        grid-template-areas: 
+        "t t t"
+        "c1 c2 ."
+        "c3 c4 ."
+        ". . .";
+    }
+}

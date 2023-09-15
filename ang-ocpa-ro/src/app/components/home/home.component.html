@@ -1,44 +1,49 @@
-<table cellpadding="5" cellspacing="5" border="0"  style="align-self: center;">
-    <tr>
-        <td colspan="2">
-            <h2 style="align-self: center;">Welcome! Please choose one of the categories below, or use the right-top menu.</h2>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <div class="container">
-                <a routerLink="/meteo">
-                    <img src="assets/images/meteo.jpg" class="home-image" />
-                    <div class="bottom-centered">Weather Forecast</div>
-                </a>
-            </div>
-        </td>
-        <td>
-            <div class="container">
-                <a routerLink="/protone">
-                    <img src="assets/images/protone.jpg" class="home-image" />
-                    <div class="bottom-centered" style="color: black;">ProTONE Player</div>
-                </a>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <div class="container">
-                <a routerLink="/electronics">
-                    <img src="assets/images/electronics.jpg" class="home-image" />
-                    <div class="bottom-centered">Electronics Blog</div>
-                </a>
-            </div>
-        </td>
-        <td>
-            <div class="container">
-                <a routerLink="/photography">
-                    <img src="assets/images/photography.jpg" class="home-image" />
-                    <div class="bottom-centered">Photo Album</div>
-                </a>
-            </div>
-        </td>
-    </tr>
-</table>
+<div class="t">
+    <h3>Welcome! Please choose one of the categories below, or use the right-top menu.</h3>
+</div>
 
+<div class="c1">
+    <a routerLink="/meteo">
+        <fa-layers class="home-image">
+            <fa-icon [icon]="faSquare" size="10x" transform="grow-6"></fa-icon>
+            <fa-icon [icon]="faSquare" class="alt-image-color" size="9x" transform="grow-6"></fa-icon>
+            <fa-icon [icon]="faWeather" transform="shrink-7 up-1" size="10x" ></fa-icon>
+            <fa-layers-text content="Weather Forecast" style="font-weight: bold" transform="down-60"></fa-layers-text>
+        </fa-layers>
+    </a>
+</div>
+
+<div class="c2">
+    <a routerLink="/protone">
+        <fa-layers class="home-image">
+            <fa-icon [icon]="faSquare" size="10x" transform="grow-6"></fa-icon>
+            <fa-icon [icon]="faSquare" class="alt-image-color" size="9x" transform="grow-6"></fa-icon>
+            <fa-icon [icon]="faSquare" size="8x" transform="up-1"></fa-icon>
+            <fa-icon [icon]="faAngle" class="alt-image-color" size="10x" transform="rotate-135 left-1.5 down-0.5" ></fa-icon>
+            <fa-icon [icon]="faPlay" class="alt-image-color" transform="shrink-10 right-1.5 up-2.5" size="9x" ></fa-icon>
+            <fa-layers-text content="ProTONE Player" style="font-weight: bold" transform="down-60"></fa-layers-text>
+        </fa-layers>
+    </a>
+</div>
+
+<div class="c3">
+    <a routerLink="/electronics">
+        <fa-layers class="home-image">
+            <fa-icon [icon]="faSquare" size="10x" transform="grow-6"></fa-icon>
+            <fa-icon [icon]="faSquare" class="alt-image-color" size="9x" transform="grow-6"></fa-icon>
+            <fa-icon [icon]="faElectronics" transform="shrink-7 up-1" size="10x" ></fa-icon>
+            <fa-layers-text content="Electronics Blog" style="font-weight: bold" transform="down-60"></fa-layers-text>
+        </fa-layers>
+    </a>
+</div>
+
+<div class="c4">
+    <a routerLink="/photography">
+        <fa-layers class="home-image">
+            <fa-icon [icon]="faSquare" size="10x" transform="grow-6"></fa-icon>
+            <fa-icon [icon]="faSquare" class="alt-image-color" size="9x" transform="grow-6"></fa-icon>
+            <fa-icon [icon]="faPhoto" transform="shrink-7 up-1" size="10x" ></fa-icon>
+            <fa-layers-text content="Photo Album" style="font-weight: bold" transform="down-60"></fa-layers-text>
+        </fa-layers>
+    </a>
+</div>

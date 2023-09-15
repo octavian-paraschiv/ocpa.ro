@@ -1,0 +1,25 @@
+$font-family: Roboto, 'Helvetica Neue', sans-serif;
+
+$forecolor: #053064;
+$backcolor: white;
+
+$nav-forecolor: $backcolor;
+$nav-backcolor: $forecolor;
+$nav-alt-backcolor: #0A60C8;
+
+$home-image-color: lighten($forecolor, 10%);
+
+$meteo-table-line-color: lighten($forecolor, 10%);
+$meteo-today-border-color: lighten(teal, 10%);
+$meteo-weekend-header-color: darken(maroon, 10%);
+
+$meteo-normal-color: $backcolor;
+$meteo-warmer-color: #ffffcc;
+$meteo-much-warmer-color: #ffff66;
+$meteo-hot-color: #ffcc99;
+$meteo-colder-color: #e6f7ff;
+$meteo-much-colder-color: #e6efff;
+$meteo-frost-color: #ccdfff;
+
+$meteo-temp-min: blue;
+$meteo-temp-max: red;

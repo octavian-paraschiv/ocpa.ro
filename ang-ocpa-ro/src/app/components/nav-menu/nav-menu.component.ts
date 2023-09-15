@@ -1,12 +1,22 @@
 import { Component } from '@angular/core';
 import { Router, ActivationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { faCloudSunRain, faSquare, faMicrochip, faPhotoFilm, faPlay,
+  faAngleRight, faEarth } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html'
 })
 export class NavMenuComponent {
+  faWeather = faCloudSunRain;
+  faElectronics = faMicrochip;
+  faSquare = faSquare;
+  faPhoto = faPhotoFilm;
+  faPlay = faPlay;
+  faAngle = faAngleRight;
+  faEarth = faEarth;
+
     isExpanded = false;
     title = 'OcPa\'s Web Site';
     path: string = 'ocpa';

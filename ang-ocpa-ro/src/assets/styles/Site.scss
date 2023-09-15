@@ -1,15 +1,31 @@
-﻿:root {
-    font-size: 1vw;
+﻿@import './variables.scss';
+@import './navbar.scss';
+@import './homepage.scss';
+@import './meteopage.scss';
+
+body {
+    color: $forecolor;
+    background-color: $backcolor;
 }
 
-/* DEFAULTS
-----------------------------------------------------------*/
+:root {
+    font-size: 1vw;
+    color: $forecolor;
+    background-color: $backcolor;
+}
+
+#mainContainer {
+    margin-left: 0.5em;
+}
+
 .container {
     margin: 0;
 }
 
 .main {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: $font-family;
+    font-size: 1vw;
+    color: $forecolor;
 }
 
 p, td {
@@ -25,10 +41,8 @@ td {
     margin-top: 0;
 }
 
-/* HEADINGS   
-----------------------------------------------------------*/
 h1, h2, h3, h4, h5, h6, div {
-    color: dimgrey;
+    color: $forecolor;
     text-transform: none;
     font-weight: normal;
 }
@@ -54,343 +68,16 @@ h5, div {
     font-size: 0.9rem;
 }
 
-/* custom classes   
-----------------------------------------------------------*/
-/* Container holding the image and the text */
 .container {
     position: relative;
     text-align: center;
-    color: white;
-}
-
-/* Bottom centered text */
-.bottom-centered {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 20px;
-    font-weight: bold;
-    color: White;
-    text-wrap: none;
-}
-
-.home-image {
-    width: 25vw;
-    height: 25vh;
-    min-width: 200px;
-    min-height: 100px;
-    max-width: 600px;
-    max-height: 300px;
-}
-
-/*-----*/
-.normal { background-color: white }
-.warmer { background-color: #ffffcc }
-.much_warmer { background-color: #ffff66 }
-.hot { background-color: #ffcc99 }
-.colder { background-color: #e6f7ff }
-.much_colder { background-color: #e6efff }
-.frost { background-color: #ccdfff }
-
-.meteo-td, .meteo-td-no-data {
-    text-align: left;
-    vertical-align: top;
-    border: 1px solid lightgray;
-    width: 12vw;
-}
-
-.meteo-td-today {
-    text-align: left;
-    vertical-align: top;
-    border: 5px solid teal;
-    width: 12vw;
-}
-
-.week-data {
-    display: flex;
-    flex-direction: row;
-    width: 91vw;
-}
-
-app-day-summary {
-    display: grid;
-    grid-template-columns: auto auto auto auto auto auto 1fr;
-    grid-template-rows: auto auto auto auto auto;
-    grid-template-areas: 
-    "h h h h h h h"
-    "e e e e e e e"
-    "s s d d d d d"
-    "hs ha hn ls la ln ."
-    "i i i i i i i"
-    ;
-    background-color: white;
-}   
-
-.day-summary-header-normal {
-    grid-area: h;
-    background-color: black;
-    text-transform: uppercase;
-    color: white;
-    font-weight: normal;
-    font-size: 1rem;
-    align-self: center;
-    margin-bottom: 2px;
-    padding: 2px;
-}
-
-.day-summary-header-weekend {
-    grid-area: h;
-    background-color: maroon;
-    text-transform: uppercase;
-    color: white;
-    font-weight: bold;
-    font-size: 1rem;
-    align-self: center;
-    margin-bottom: 2px;
-    padding: 2px;
-}
-
-.day-summary-no-data {
-    grid-area: e;
-    color: gray;
-    align-self: center;
-}
-
-.img-day-summary-forecast {
-    grid-area: s;
+    color: $backcolor;
     margin: 0;
     padding: 0;
-    align-self: center;
-    width: 3vw;
-    height: auto;
 }
 
-
-.img-day-summary-temp-max {
-    grid-area: hs;
-    margin-left: 2px;
-    margin-top: 2px;
-    padding: 0;
-    align-self: center;
-    height: 2vh;
-}
-
-.img-day-summary-temp-min {  
-    grid-area: ls;
-    margin-left: 5px;
-    margin-top: 2px;
-    padding: 0;
-    align-self: center;
-    height: 2vh;
-}
-
-.day-summary-temp-max-actual {
-    grid-area: ha;
-    padding: 0;
-    color: red;
-    font-size: 0.9rem;
-    align-self: center;
-    margin-top: 2px;
-}
-
-.day-summary-temp-max-normal {
-    grid-area: hn;
-    margin-top: 2px;
-    padding: 0;
-    color: red;
-    font-size: 0.8rem;
-    align-self: center;
-    text-align: start;
-}
-
-.day-summary-temp-min-actual {
-    grid-area: la;
-    margin: 0;
-    padding: 0;
-    color: blue;
-    font-size: 0.9rem;
-    align-self: center;
-    text-align: end;
-}
-
-.day-summary-temp-min-normal {
-    grid-area: ln;
-    margin: 0;
-    padding: 0;
-    color: blue;
-    font-size: 0.8rem;
-    align-self: center;
-    text-align: start;
-}
-
-app-day-details {
-    grid-area: i;
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-areas: 
-    "risk"
-    "pres"
-    "wind"
-    "rain"
-    "snow"
-    "snowc";
-    grid-template-rows: auto auto auto auto auto auto;
-    margin-top: 5px;
-    margin-left: 5px;
-}
-
-app-day-risks {
-    grid-area: risk;
-    display: block;
-    text-align: justify;
-    margin-bottom: 0;
-}
-
-.detail {
-    text-align: justify;
-    font-size: 0.72rem;
-    vertical-align: middle;
-    margin: 0;
-    color: black;
-}
-
-.hazard {
-    text-align: justify;
-    font-size: 0.72rem;
-    vertical-align: middle;
-    font-weight: bolder;
-    color: red;
-}
-.img-hazard {
-    width: 1vw;
-}
-
-.detail-wind {
-    grid-area: wind;
-    text-align: justify;
-}
-
-.detail-snow-cover {
-    grid-area: snowc;
-    text-align: justify;
-}
-
-.detail-snow {
-    grid-area: snow;
-    text-align: justify;
-}
-
-.detail-rain {
-    grid-area: rain;
-    text-align: justify;
-}
-
-.detail-pres {
-    grid-area: pres;
-    text-align: justify;
-}
-
-
-.detail-desc-label {
-    grid-area: d;
-    text-align: justify;
-    align-self: center;
-    font-size: 0.75rem;
-    font-weight: bold;
-    margin-left: 3px;
-    vertical-align: middle;
-    color: black;
-    white-space: nowrap;
-}
-
-.meteo-day {
-    width: 8vw;
-}
-
-.meteo-week {
-    display: flex;
-    flex-direction: row;
-}
-
-.meteo-controls {
-    display: grid;
-    grid-template-columns: min-content min-content;
-    grid-template-areas: 
-    "lr sr"
-    "ls ss"
-    "lc sc";
-    grid-template-rows: auto auto auto;
-    margin-top: 5px;
-    margin-bottom: 15px;
-}
-
-.label-region {
-    grid-area: lr;
-    text-align: right;
-    margin: 5px;
-}
-.label-subregion {
-    grid-area: ls;
-    text-align: right;
-    margin: 5px;
-}
-.label-city {
-    grid-area: lc;
-    text-align: right;
-    margin: 5px;
-}
-.select-region {
-    grid-area: sr;
-    margin: 5px;
-}
-.select-subregion {
-    grid-area: ss;
-    margin: 5px;
-}
-.select-city {
-    grid-area: sc;
-    margin: 5px;
-}
-
-/* MOBILE
-----------------------------------------------------------*/
 @media only screen and (max-width: 1080px) {
     :root {
         font-size: 2vw;
-    }
-
-    .meteo-td-no-data {
-        visibility: hidden;
-        height: 0;
-    }
-
-    .meteo-td {
-        width: 30vw;
-    }
-
-    .meteo-td-today {
-        width: 30vw;
-    }
-
-    .week-data {
-        flex-direction: column;
-        width: 32vw;
-    }
-
-    .img-day-summary-forecast {
-        width: 5vw;
-    }
-
-    .img-day-summary-temp-max {
-        height: 3vh;
-    }
-
-    .img-day-summary-temp-min {
-        height: 3vh;
-    }
-
-    .img-hazard {
-        width: 2vw;
     }
 }

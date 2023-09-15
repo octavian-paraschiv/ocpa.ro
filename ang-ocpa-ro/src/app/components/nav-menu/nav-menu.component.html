@@ -1,9 +1,46 @@
 
-  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-    <div class="container">
+  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
+    <div id="navbarContainer" class="container">
       <a class="navbar-brand" [routerLink]="['/']">
-        <img src="assets/images/{{path}}.jpg" style="height: 60px; width: 120px; padding-right: 20px;" />
-        <label>{{ title }}</label>
+        <div class="navbar-image">
+          <div *ngIf="path==='meteo'">
+            <fa-layers>
+                <fa-icon [icon]="faSquare" size="3x" transform="grow-2"></fa-icon>
+                <fa-icon [icon]="faSquare" class="navbar-alt-image-color" size="3x"></fa-icon>
+                <fa-icon [icon]="faWeather" transform="shrink-6 left-3 up-0.2" size="3x" ></fa-icon>
+            </fa-layers>
+          </div>
+          <div *ngIf="path==='protone'">
+            <fa-layers>
+              <fa-icon [icon]="faSquare" size="3x" transform="grow-2"></fa-icon>
+              <fa-icon [icon]="faAngle" class="navbar-alt-image-color" size="3x" transform="grow-2 rotate-135 down-1.5" ></fa-icon>
+              <fa-icon [icon]="faPlay" class="navbar-alt-image-color" transform="shrink-11 right-2.5 up-2" size="3x" ></fa-icon>
+            </fa-layers>
+          </div>
+          <div *ngIf="path==='electronics'">
+            <fa-layers>
+              <fa-icon [icon]="faSquare" size="3x" transform="grow-2"></fa-icon>
+              <fa-icon [icon]="faSquare" class="navbar-alt-image-color" size="3x"></fa-icon>
+              <fa-icon [icon]="faElectronics" transform="shrink-5 left-1 up-0.2" size="3x" ></fa-icon>
+            </fa-layers>
+          </div>
+          <div *ngIf="path==='photography'">
+            <fa-layers>
+              <fa-icon [icon]="faSquare" size="3x" transform="grow-2"></fa-icon>
+              <fa-icon [icon]="faSquare" class="navbar-alt-image-color" size="3x"></fa-icon>
+              <fa-icon [icon]="faPhoto" transform="shrink-6 left-3 up-0.2" size="3x" ></fa-icon>
+            </fa-layers>
+          </div>
+          <div *ngIf="path==='ocpa'">
+            <fa-layers>
+              <fa-icon [icon]="faSquare" size="3x" transform="grow-2"></fa-icon>
+              <fa-icon [icon]="faSquare" class="navbar-alt-image-color" size="3x"></fa-icon>
+              <fa-icon [icon]="faEarth" transform="shrink-8 left-1 up-2" size="3x" ></fa-icon>
+              <fa-layers-text content="ocpa.ro" size="sm" style="font-weight: bold" transform="shrink-4 down-15 right-15"></fa-layers-text>
+            </fa-layers>
+          </div>
+        </div>
+        <label class="navbar-title">{{ title }}</label>
       </a>
       <button
         class="navbar-toggler"
@@ -16,39 +53,39 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div
+      <div id="navbarMenu"
         class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
         [ngClass]="{ show: isExpanded }"
       >
-          <ul class="navbar-nav flex-grow">
-              <li class="nav-item"
-                  [routerLinkActive]="['link-active']"
-                  [routerLinkActiveOptions]="{ exact: true }">
-                  <a class="nav-link text-dark" [routerLink]="['/']">
-                      Home
-                  </a>
-              </li>
-              <li class="nav-item" [routerLinkActive]="['link-active']">
-                  <a class="nav-link text-dark" [routerLink]="['/protone']">
-                      ProTONE Player
-                  </a>
-              </li>
-              <li class="nav-item" [routerLinkActive]="['link-active']">
-                  <a class="nav-link text-dark" [routerLink]="['/meteo']">
-                      Weather Forecast
-                  </a>
-              </li>
-              <li class="nav-item" [routerLinkActive]="['link-active']">
-                  <a class="nav-link text-dark" [routerLink]="['/electronics']">
-                      Electronics Blog
-                  </a>
-              </li>
-              <li class="nav-item" [routerLinkActive]="['link-active']">
-                  <a class="nav-link text-dark" [routerLink]="['/photography']">
-                      Photo Album
-                  </a>
-              </li>
-          </ul>
+        <ul class="navbar-nav flex-grow">
+            <li class="nav-item"
+                [routerLinkActive]="['link-active']"
+                [routerLinkActiveOptions]="{ exact: true }">
+                <a class="nav-link" [routerLink]="['/']">
+                    Home
+                </a>
+            </li>
+            <li class="nav-item" [routerLinkActive]="['link-active']">
+                <a class="nav-link" [routerLink]="['/protone']">
+                    ProTONE Player
+                </a>
+            </li>
+            <li class="nav-item" [routerLinkActive]="['link-active']">
+                <a class="nav-link" [routerLink]="['/meteo']">
+                    Weather Forecast
+                </a>
+            </li>
+            <li class="nav-item" [routerLinkActive]="['link-active']">
+                <a class="nav-link" [routerLink]="['/electronics']">
+                    Electronics Blog
+                </a>
+            </li>
+            <li class="nav-item" [routerLinkActive]="['link-active']">
+                <a class="nav-link" [routerLink]="['/photography']">
+                    Photo Album
+                </a>
+            </li>
+        </ul>
       </div>
     </div>
   </nav>

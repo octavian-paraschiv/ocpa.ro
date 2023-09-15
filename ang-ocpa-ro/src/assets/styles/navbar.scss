@@ -1,0 +1,54 @@
+//////////////////////////////
+/// navigation menu styles ///
+//////////////////////////////
+
+#navbarContainer {
+    max-width: unset;
+}
+
+.nav-link {
+    color: $nav-forecolor;
+}
+
+.nav-link {
+    margin-left: 0.5em;
+    margin-right: 1em;
+}
+
+.nav-link:hover, .nav-link:focus, .link-active {
+    color: $nav-forecolor;
+    background-color: $nav-alt-backcolor;
+    border-radius: 1em;
+}
+
+body > app-root > div > app-nav-menu > nav {
+    background-color: $nav-backcolor;
+    border-radius: 0.2em;
+    width: 99.6vw;
+    margin-left: 0.2vw;
+    margin-top: 0.2vw;
+}
+
+
+.navbar-brand {
+    display: grid;
+    grid-template-columns: 2em 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "i t";
+}
+
+.navbar-title {
+    grid-area: t;
+    margin-left: 1em;
+    color: $nav-forecolor;
+}
+
+.navbar-image {
+    grid-area: i;
+    margin-top: 0.4em;
+    margin-left: -1em;
+}
+
+.navbar-alt-image-color {
+    color: $nav-forecolor;
+}
