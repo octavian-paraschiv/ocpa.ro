@@ -130,7 +130,33 @@ namespace ocpa.ro.api.Controllers
 			}
 		}
 
-		[HttpGet("city")]
+        [HttpGet("allCities")]
+        public IActionResult GetAllCities()
+        {
+            try
+            {
+                var query = from rgn in _regions
+                            from city in rgn.Cities
+                            orderby city.Name
+                            select new City
+							{
+								Default = city.Default,
+								Name = city.Name,
+								Latitude = city.Latitude,
+								Longitude = city.Longitude,
+								Region = rgn.Name,
+								Subregion = city.Subregion
+							};
+
+                return Ok(query.Distinct().ToList());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("city")]
 		public IActionResult GetCity(string region, string subregion, string city)
 		{
 			try
@@ -202,7 +228,15 @@ namespace ocpa.ro.api.Controllers
 			if (city2 == null)
 				throw new Exception($"Could not find any city named '{city}' in region '{region}', subregion '{subregion}'");
 
-			return city2;
+			return new City
+            {
+                Default = city2.Default,
+                Name = city2.Name,
+                Latitude = city2.Latitude,
+                Longitude = city2.Longitude,
+                Region = region,
+                Subregion = city2.Subregion
+            };
 		}
 
 		internal GridCoordinates _GetGridCoordinates(string region, string subregion, string city)

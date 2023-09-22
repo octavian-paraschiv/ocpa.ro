@@ -16,7 +16,8 @@ namespace ocpa.ro.api.Models
 	public class City
 	{
 		public string Name { get; set; }
-		public string Subregion { get; set; }
+        public string Region { get; set; }
+        public string Subregion { get; set; }
 		public double Latitude { get; set; }
 		public double Longitude { get; set; }
 		public bool Default { get; set; }
