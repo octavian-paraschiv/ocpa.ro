@@ -192,9 +192,6 @@ export class MeteoComponent  implements OnInit {
       }
       this.meteoData[r][c] = mdEx[i];
 
-      if (mdEx[i].date == '2022-10-30') {
-        this.todayData = mdEx[i];
-      }
     }
   }
 }
