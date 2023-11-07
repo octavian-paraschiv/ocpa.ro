@@ -43,38 +43,120 @@ export class MeteoComponent  implements OnInit {
   queryCity: string = undefined;
   queryUnit: string = undefined;
 
+  selectedCity: City =  {};
+  
   constructor(private readonly geoApi: GeographyApiService,
     private readonly meteoApi: MeteoApiService,
     private readonly route: ActivatedRoute) {
   }
 
+  get hint(): string {
+    return (this.geoApi?.cities?.length > 0) ?
+      'Please click/tap in the drop list below. If you can already see your city, then tap or click it.<br>' +
+      'Otherwise, please type the city name (or the name of the country or district where your city is located).<br>' +
+      'The drop list will narrow to the cities that match the typed text. If you see your city, tap or click on it.' : 
+      'Please select the desired city for the forecast.&nbsp;You may need to select the Region and Country/District first.';
+  }
+
+  citiesBuffer: City[] = [];
+  
+  searchTerm = '';
+  allCities: City[] = [];
+
+  filteredCities: City[] = [];
+
+  loadingCities = false;
+  bufferSize = 15;
+
+  onScrollToEnd() {
+    this.fetchMore();
+  }
+
+  onScroll(event: { end: number }) {
+    if (this.loadingCities || this.filteredCities.length <= this.citiesBuffer.length) {
+        return;
+    }
+
+    if ((event.end ?? 0) + 5 >= this.citiesBuffer.length) {
+        this.fetchMore();
+    }
+  }
+
+  onSearchCleared() {
+    this.initialize();
+  }
+
+  onSearch(event: {term: string}) {
+    if (event?.term?.length > 0 && this.searchTerm !== event?.term) {
+      this.searchTerm = event?.term;
+      this.loadingCities = true;
+      this.filterCities();
+    }
+
+    setTimeout(() => {
+      this.loadingCities = false;
+      const scrollContainer = document.querySelector('.ng-dropdown-panel-items');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = 0;
+      }
+    }, 100);
+  }
+
+  searchCities(): boolean {
+    return true;
+  }
+ 
+  private fetchMore() {
+      const len = this.citiesBuffer.length;
+      const more = (this.filteredCities).slice(len, this.bufferSize + len);
+      this.citiesBuffer = this.citiesBuffer.concat(more);
+  }
+  
   ngOnInit(): void {
+    this.initialize();
+  }
+
+  private initialize() {
+    this.searchTerm = '';
+    this.allCities = (this.geoApi?.cities);
+    this.filterCities();
+
     this.meteoData = [];
+    this.selectedCity = {};
     this.today = new Date().toISOString().slice(0, 10);
 
     this.route.queryParams
       .pipe(take(1), untilDestroyed(this))
       .subscribe(params => {
+
         this.queryRegion = params['region'];
         this.querySubregion = params['subregion'];
         this.queryCity = params['city'];
         this.queryUnit = params['unit'];
 
-        this.geoApi.getRegions()
-        .pipe(take(1), untilDestroyed(this))
-        .subscribe(regions => {
-          this.regions = regions;
-          if (this.regions?.length > 0) {
-            let selRegion = this.regions[0];
-            if (this.regions.includes(this.queryRegion ?? '')) {
-              selRegion = this.queryRegion;
-            }
-            this.selRegion = selRegion;            
-            this.onRegionChanged();
-          }
-        });
-      });
+        if (this.allCities?.length > 0) {
+          const defCity = this.allCities.find(c => c.name.indexOf('Bucuresti') > 0 && c.region === 'Romania');
+          this.selectedCity.name = this.queryCity ?? defCity.name;
+          this.selectedCity.region = this.queryRegion ?? defCity.region;
+          this.selectedCity.subregion = this.querySubregion ?? defCity.subregion;
+          this.onSmartCityChanged();
 
+        } else {
+          this.geoApi.getRegions()
+          .pipe(take(1), untilDestroyed(this))
+          .subscribe(regions => {
+            this.regions = regions;
+            if (this.regions?.length > 0) {
+              let selRegion = this.regions[0];
+              if (this.regions.includes(this.queryRegion ?? '')) {
+                selRegion = this.queryRegion;
+              }
+              this.selRegion = selRegion;            
+              this.onRegionChanged();
+            }
+          });
+        }
+      });
   }
 
   public onRegionChanged() {
@@ -128,21 +210,37 @@ export class MeteoComponent  implements OnInit {
     }, 2000);
   }
 
+  public onSmartCityChanged() {
+    this.meteoData = [];
+
+    if (this.timerId > 0) {
+      clearTimeout(this.timerId);
+      this.timerId = 0;
+    }
+
+    this.timerId = window.setTimeout(() => {
+      clearTimeout(this.timerId);
+      this.timerId = 0;
+      this.doFetch();
+    }, 2000);
+  }
+
+
   private doFetch() {
     this.isFetching = true;
     this.fetchEvent$.next();
 
-    this.geoApi.getCityInfo(this.selRegion, this.selSubregion, this.selCity)
+    this.geoApi.getCityInfo(this.lookupRegion, this.lookupSubregion, this.lookupCity)
       .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
       .subscribe(cityInfo => {
         this.city = cityInfo;
         this.meteoData = [];
-        this.geoApi.getGridCoordinates(this.selRegion, this.selSubregion, this.selCity)
+        this.geoApi.getGridCoordinates(this.lookupRegion, this.lookupSubregion, this.lookupCity)
           .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
           .subscribe(grid => {
             this.grid = grid;
             this.meteoData = [];
-            this.meteoApi.getData(this.selRegion, this.selSubregion, this.selCity, 0, 0)
+            this.meteoApi.getData(this.lookupRegion, this.lookupSubregion, this.lookupCity, 0, 0)
               .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
               .subscribe(meteoApiData => {
                 this.processApiData(meteoApiData);
@@ -150,6 +248,47 @@ export class MeteoComponent  implements OnInit {
               });
           });
       });
+  }
+
+  private get lookupRegion(): string {
+    return this.selectedCity?.region ?? this.selRegion;
+  }
+  private get lookupSubregion(): string {
+    return this.selectedCity?.subregion ?? this.selSubregion;
+  }
+  private get lookupCity(): string {
+    return this.selectedCity?.name ?? this.selCity;
+  }
+
+  private filterCities() {
+    const allCities = this.allCities ?? [];
+    if (allCities.length > 5) {
+      if (this.searchTerm?.length > 0) {
+        const terms = this.searchTerm.toLocaleUpperCase().split(' ').filter(t => t?.length > 0);
+        this.filteredCities = GeographyApiService.SortCities(terms, allCities.filter(city => {
+          for (let tt of terms) {
+            if ((city?.name ?? '').toLocaleUpperCase().includes(tt))
+              return true;
+            if ((city?.subregion ?? '').toLocaleUpperCase().includes(tt))
+              return true;
+            if ((city?.region ?? '').toLocaleUpperCase().includes(tt))
+              return true;
+          }
+          return false;
+        }));
+  
+      } else {
+        // no filter specified => no filtering needed
+        this.filteredCities = allCities;
+      }
+
+    } else {
+      // Less than 5 cities to show => no filtering needed
+      this.filteredCities = allCities;
+    }
+
+    this.citiesBuffer = (this.filteredCities.length > 5) ?
+      this.filteredCities.slice(0, 5) : this.filteredCities;
   }
 
   private processApiData(meteoApiData: MeteoData) {

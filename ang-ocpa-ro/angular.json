@@ -27,6 +27,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/assets/styles/Site.scss"
             ],
@@ -66,7 +67,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ocpa.ro._2:build"
+            "browserTarget": "ocpa.ro._2:build",
+            "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
             "production": {

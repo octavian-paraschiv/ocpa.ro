@@ -2,6 +2,11 @@
 /// meteo page styles ///
 /////////////////////////
 
+#hint {
+    margin-bottom: 2vh;
+    font-size: 0.8rem;
+}
+
 .normal { background-color: $meteo-normal-color; }
 .warmer { background-color: $meteo-warmer-color; }
 .much_warmer { background-color: $meteo-much-warmer-color; }
@@ -240,6 +245,11 @@ app-day-risks {
     grid-template-rows: auto auto auto;
     margin-top: 5px;
     margin-bottom: 15px;
+}
+
+.smart-meteo-controls {
+    margin-top: 1vh;
+    margin-bottom: 4vh;
 }
 
 .label-region {

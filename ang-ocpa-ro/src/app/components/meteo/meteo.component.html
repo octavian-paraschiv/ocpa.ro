@@ -1,5 +1,6 @@
-<h5 style="text-align: justify;">Please select the desired city for the forecast.&nbsp;You may need to select the Region and Country/District first.</h5>
-<div class="meteo-controls">
+<h5 style="text-align: justify;" [innerHtml]="hint" id="hint"></h5>
+
+<div class="meteo-controls" *ngIf="!(allCities?.length > 0)">
     <label class="label-region">Region:</label>
     <select ng-disabled="isFetching" [(ngModel)]="selRegion" (change)="onRegionChanged()" class="select-region">
         <option *ngFor="let region of regions" [ngValue]="region">{{region}}</option>
@@ -15,15 +16,56 @@
         <option *ngFor="let city of cities" [ngValue]="city">{{city}}</option>
     </select>
 </div>
-<ng-container *ngIf="meteoData && meteoData.length > 0">
-    <h5 style="text-align: justify;">Forecast for: {{selRegion}} / {{selSubregion}} / {{selCity}}</h5>
+
+<div class="smart-meteo-controls" *ngIf="(allCities?.length> 0)">
+    <ng-select placeholder="{{hint}}" id="smart-city-select"
+        [items]="citiesBuffer" 
+        [searchFn]="searchCities"
+        [virtualScroll]="true"
+        [loading]="loadingCities"
+        [(ngModel)]="selectedCity" 
+        bindLabel="name" 
+        (clear)="onSearchCleared()"
+        (change)="onSmartCityChanged()"
+        (scroll)="onScroll($event)"
+        (scrollToEnd)="onScrollToEnd()"
+        (search)="onSearch($event)">
+        
+        <ng-template ng-label-tmp let-item="item" let-index="index" let-search="searchTerm">
+            <div class="smart-city-label">
+                <label class="smart-city-label-name">{{item.name}}</label>
+                <label class="smart-city-label-info">({{item.subregion}}, {{item.region}})</label>
+                <div class="smart-city-label-flag">
+                    <img class="smart-city-label-flag-image" src="assets/countries/{{item | countryCode }}.png"/>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+            <div class="smart-city-card">
+                <div class="smart-city-card-body">
+                    <label class="smart-city-name">{{item.name}}</label>
+                    <label class="smart-city-info">({{item.subregion}}, {{item.region}})</label>
+                    <div class="smart-city-flag">
+                        <img class="smart-city-flag-image" src="assets/countries/{{item | countryCode }}.png"/>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+    </ng-select>
+</div>
+
+<ng-container *ngIf="meteoData?.length > 0">
+    <h5 id="fld1" style="text-align: justify;">Forecast for: {{lookupRegion}} / {{lookupSubregion}} / {{lookupCity}}</h5>
     <div *ngFor="let mw of meteoData" class="week-data">
         <div *ngFor="let md of mw" class="{{ md.forecast ? (md.date === today ? 'meteo-td-today' : 'meteo-td') : 'meteo-td-no-data' }} {{md.tempFeel}}">
             <app-day-summary *ngIf="md" [data]="md" class="{{md.tempFeel}}"></app-day-summary>
         </div>
     </div>
 </ng-container>
-<ng-container *ngIf="!meteoData || meteoData.length < 1">
-    <h6 style="text-align: justify; vertical-align: middle;">Please wait while fetching data for: {{selRegion}} / {{selSubregion}} / {{selCity}}</h6>
+
+<ng-container *ngIf="!(meteoData?.length > 0)" >
+    <h5 id="fld2" style="text-align: justify; vertical-align: middle;">Please wait while fetching data for: {{lookupRegion}} / {{lookupSubregion}} / {{lookupCity}}</h5>
     <img src="assets/images/spinner.gif" style="height: 10rem; color: transparent;" />
 </ng-container>

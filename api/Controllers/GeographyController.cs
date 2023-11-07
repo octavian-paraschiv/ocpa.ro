@@ -7,7 +7,9 @@ using ocpa.ro.api.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Text;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -139,16 +141,16 @@ namespace ocpa.ro.api.Controllers
                             from city in rgn.Cities
                             orderby city.Name
                             select new City
-							{
-								Default = city.Default,
-								Name = city.Name,
-								Latitude = city.Latitude,
-								Longitude = city.Longitude,
-								Region = rgn.Name,
-								Subregion = city.Subregion
-							};
+                            {
+                                Default = city.Default,
+                                Name = city.Name,
+                                Latitude = city.Latitude,
+                                Longitude = city.Longitude,
+                                Region = rgn.Name,
+                                Subregion = city.Subregion
+                            };
 
-                return Ok(query.Distinct().ToList());
+				return Ok(query.ToList());
             }
             catch (Exception ex)
             {

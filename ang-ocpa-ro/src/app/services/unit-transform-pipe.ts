@@ -1,5 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { Unit } from "../models/meteo";
+import { City } from "../models/geography";
+import { Iso3166HelperService } from "./iso3166-helper.service";
 
 @Pipe({ name: 'temp' })
 export class TempPipe implements PipeTransform {
@@ -48,6 +50,20 @@ export class PressurePipe implements PipeTransform {
             return `${Math.round(value / 33.863)} in`;
         }
         return `${Math.round(value)} mbar`;
+    }
+}
+
+@Pipe({ name: 'countryCode' })
+export class CountryCodePipe implements PipeTransform {
+    constructor(private readonly isoService: Iso3166HelperService) {
+    }
+
+    transform(city: City) {
+        let country = this.isoService.getByCountryName(city.subregion);
+        if (!country)
+            country = this.isoService.getByCountryName(city.region);
+        
+        return country?.IsoAlpha2?.toUpperCase() ?? 'XX';
     }
 }
 

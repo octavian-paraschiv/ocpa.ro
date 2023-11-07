@@ -23,7 +23,9 @@ export class JwtInterceptor implements HttpInterceptor {
         }
         
         if (!environment.production) {
-            const headers = request.headers.set('Access-Control-Allow-Origin', 'http://localhost:4200');
+            let headers = request.headers.set('Access-Control-Allow-Origin', '*');
+            headers = headers.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,DELETE,PUT');
+            headers = headers.set('Access-Control-Allow-Headers', '*');
             request = request.clone( { headers });
         }
 

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
@@ -16,7 +16,7 @@ import { MeteoComponent } from './components/meteo/meteo.component';
 import { DayDetailsComponent } from './components/meteo/day-details/day-details.component';
 import { DayRisksComponent } from './components/meteo/day-risks/day-risks.component';
 import { Helper } from './services/helper';
-import { DistancePipe, PressurePipe, SpeedPipe, TempPipe, VolumePipe } from './services/unit-transform-pipe';
+import { CountryCodePipe, DistancePipe, PressurePipe, SpeedPipe, TempPipe, VolumePipe } from './services/unit-transform-pipe';
 import { AdminComponent } from './components/admin/admin.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
@@ -24,6 +24,8 @@ import { UserService } from './services/user.service';
 import { AuthenticationService } from './services/authentication.services';
 import { LoginComponent } from './components/login/login.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { Iso3166HelperService } from './services/iso3166-helper.service';
 
 @NgModule({
     declarations: [
@@ -46,30 +48,49 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         SpeedPipe,
         DistancePipe,
         VolumePipe,
-        PressurePipe
+        PressurePipe,
+
+        CountryCodePipe
     ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-      RouterModule.forRoot([
-          { path: '', component: HomeComponent, pathMatch: 'full', data: { title: 'OcPa\'s Web Site' } },
-            { path: 'protone', component: ProTONEComponent, data: { title: 'ProTONE Player Web Site' } },
-            { path: 'meteo', component: MeteoComponent, data: { title: 'OcPa\'s Weather Forecast' } },
-            { path: 'photography', component: PhotographyComponent, data: { title: 'OcPa\'s Photo Album' } },
-            { path: 'electronics', component: ElectronicsComponent, data: { title: 'OcPa\'s Electronic Blog' } },
-            { path: 'admin', component: AdminComponent, data: { title: 'Administration Module' } },
-            { path: 'login', component: LoginComponent, data: { title: 'Administration Module' } },
+    RouterModule.forRoot([
+        { path: '', component: HomeComponent, pathMatch: 'full', data: { title: 'OcPa\'s Web Site' } },
+          { path: 'protone', component: ProTONEComponent, data: { title: 'ProTONE Player Web Site' } },
+          { path: 'meteo', component: MeteoComponent, data: { title: 'OcPa\'s Weather Forecast' } },
+          { path: 'photography', component: PhotographyComponent, data: { title: 'OcPa\'s Photo Album' } },
+          { path: 'electronics', component: ElectronicsComponent, data: { title: 'OcPa\'s Electronic Blog' } },
+          { path: 'admin', component: AdminComponent, data: { title: 'Administration Module' } },
+          { path: 'login', component: LoginComponent, data: { title: 'Administration Module' } },
     ]),
-      NoopAnimationsModule,
-      FontAwesomeModule
+    NoopAnimationsModule,
+    FontAwesomeModule,
+    NgSelectModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    ProtoneApiService,
+    
     GeographyApiService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (svc: GeographyApiService) => () => svc.init().toPromise(),
+      deps: [GeographyApiService],
+      multi: true
+    },
+
+    Iso3166HelperService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (svc: Iso3166HelperService) => () => svc.init().toPromise(),
+      deps: [Iso3166HelperService],
+      multi: true
+    },
+
+    ProtoneApiService,
     MeteoApiService,
     UserService,
     AuthenticationService,

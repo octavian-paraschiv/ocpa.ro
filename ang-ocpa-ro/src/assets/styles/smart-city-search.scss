@@ -1,0 +1,78 @@
+.smart-city-card {
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    border: 0;
+    border-radius: 4px;
+    margin: 5px;
+    margin-inline-start: 0.1vw;
+    margin-bottom: 0;
+}
+
+#smart-city-select {
+    width: 99vw;
+    max-width: 600px;
+
+    > .ng-select-container {
+       height: 5vh;
+       border: 2px solid #6d7e94;
+    }
+    > div > div > div.ng-input > input[type=text] {
+        font-size: 1.25em;
+    }
+}
+
+
+.smart-city-card-body {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: 
+    "f n r"
+}
+
+.smart-city-name {
+    font-weight: bold;
+    text-align: justify;
+    margin-top: 1.2vh;
+    // margin-bottom: 0;
+    margin-left: 0.5em;
+    grid-area: n;
+}
+.smart-city-flag {
+    grid-area: f;
+    min-height: 5vh;
+    max-height: 5vh;
+    margin: 0;
+    margin-left: 0.2em;
+    text-align: justify;
+}
+.smart-city-flag-image {
+    height: 5vh;
+    margin: 0;
+    // margin-left: 0.1em;
+}
+.smart-city-info {
+    grid-area: r;
+    margin-top: 1.2vh;
+    // margin-bottom: 0;
+    margin-left: 0.5em;
+    text-align: justify;
+}
+
+.smart-city-label {
+    @extend .smart-city-card-body;
+}
+.smart-city-label-name {
+    @extend .smart-city-name;
+}
+.smart-city-label-info {
+    @extend .smart-city-info;
+}
+.smart-city-label-flag {
+    @extend .smart-city-flag;    
+}
+.smart-city-label-flag-image {
+    @extend .smart-city-flag-image;
+    // margin: 0;
+    // margin-top: 0.4vh;
+}
