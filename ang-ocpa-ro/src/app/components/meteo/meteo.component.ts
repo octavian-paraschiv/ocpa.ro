@@ -44,6 +44,7 @@ export class MeteoComponent  implements OnInit {
   queryUnit: string = undefined;
 
   selectedCity: City =  {};
+  dropDownFocused = false;
   
   constructor(private readonly geoApi: GeographyApiService,
     private readonly meteoApi: MeteoApiService,
@@ -52,9 +53,10 @@ export class MeteoComponent  implements OnInit {
 
   get hint(): string {
     return (this.geoApi?.cities?.length > 0) ?
-      'Please click/tap in the drop list below. If you can already see your city, then tap or click it.<br>' +
-      'Otherwise, please type the city name (or the name of the country or district where your city is located).<br>' +
-      'The drop list will narrow to the cities that match the typed text. If you see your city, tap or click on it.' : 
+      'Please click/tap in the drop list below, then type the name or the city, or the country or district where your city is located.<br>' +
+      'The drop list will show the cities that match the typed text. Use the scroll to view all matching cities.<br>' +
+      'When you see your city, click/tap it.' : 
+      
       'Please select the desired city for the forecast.&nbsp;You may need to select the Region and Country/District first.';
   }
 
@@ -67,6 +69,10 @@ export class MeteoComponent  implements OnInit {
 
   loadingCities = false;
   bufferSize = 15;
+
+  onDropDownFocused(focused: boolean) {
+    this.dropDownFocused = focused;
+  }
 
   onScrollToEnd() {
     this.fetchMore();
@@ -211,22 +217,13 @@ export class MeteoComponent  implements OnInit {
   }
 
   public onSmartCityChanged() {
-    this.meteoData = [];
-
-    if (this.timerId > 0) {
-      clearTimeout(this.timerId);
-      this.timerId = 0;
-    }
-
-    this.timerId = window.setTimeout(() => {
-      clearTimeout(this.timerId);
-      this.timerId = 0;
-      this.doFetch();
-    }, 2000);
+    (document.activeElement as HTMLInputElement)?.blur();
+    this.doFetch();
   }
 
 
   private doFetch() {
+    this.meteoData = [];
     this.isFetching = true;
     this.fetchEvent$.next();
 

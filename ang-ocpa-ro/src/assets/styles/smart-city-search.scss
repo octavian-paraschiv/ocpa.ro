@@ -62,6 +62,10 @@
 .smart-city-label {
     @extend .smart-city-card-body;
 }
+.smart-city-label[dd-focused=true] {
+    display: none;
+}
+
 .smart-city-label-name {
     @extend .smart-city-name;
 }
