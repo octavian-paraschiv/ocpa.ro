@@ -1,15 +1,17 @@
-<div *ngIf="data?.wind > 0" class="detail-wind">
-    <label class="detail">Wind: <b>{{ data.windDirection }} / {{ data.wind | speed: unit }}</b></label>
-</div>
-<div *ngIf="data?.p00 > 0" class="detail-pres">
-    <label class="detail">Pressure: <b>{{ data.p00 | pressure: unit }}</b></label>
-</div>
-<div *ngIf="data?.snow > 0 || data?.snowCover > 0" class="detail-snow">
-    <label class="detail">Snow:&nbsp;</label>
-    <label *ngIf="data.snow > 0" class="detail">Day: <b>{{ data.snow | distance: unit }},&nbsp;</b></label>
-    <label *ngIf="data.snowCover > 0" class="detail">Cover: <b>{{ data.snowCover | distance: unit }}</b></label>
-</div>
-<div *ngIf="data?.rain > 0" class="detail-rain">
-    <label class="detail">Rain: <b>{{ data.rain | volume: unit }}</b></label>
+<div class="detail-info">
+    <div *ngIf="data?.wind > 0" class="detail-wind">
+        <label class="detail">Wind: <b>{{ data.windDirection }} / {{ data.wind | speed: unit }}</b></label>
+    </div>
+    <div *ngIf="data?.p00 > 0" class="detail-pres">
+        <label class="detail">Pressure: <b>{{ data.p00 | pressure: unit }}</b></label>
+    </div>
+    <div *ngIf="data?.snow > 0 || data?.snowCover > 0" class="detail-snow">
+        <label class="detail">Snow:&nbsp;</label>
+        <label *ngIf="data.snow > 0" class="detail">Day: <b>{{ data.snow | distance: unit }},&nbsp;</b></label>
+        <label *ngIf="data.snowCover > 0" class="detail">Cover: <b>{{ data.snowCover | distance: unit }}</b></label>
+    </div>
+    <div *ngIf="data?.rain > 0" class="detail-rain">
+        <label class="detail">Rain: <b>{{ data.rain | volume: unit }}</b></label>
+    </div>
 </div>
 <app-day-risks *ngIf="data?.hazards?.length > 0" [risks]="data.hazards"></app-day-risks>

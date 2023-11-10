@@ -1,5 +1,4 @@
-import { formatDate } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
@@ -15,25 +14,17 @@ import { GeographyApiService, MeteoApiService } from 'src/app/services/api-servi
 })
 export class MeteoComponent  implements OnInit {
   isFetching = false;
-  timerId = 0;
-
   fetchEvent$ = new Subject();
-  regionChanged$ = new Subject();
-  subregionChanged$ = new Subject();
 
   regions: string[];
   selRegion: string;
-
-  subregions: string[];
   selSubregion: string;
-
-  cities: string[];
   selCity: string;
 
   city: City;
   grid: GridCoordinates;
 
-  meteoData: MeteoDailyData[][] = [];
+  meteoData: MeteoDailyData[] = [];
 
   today: string;
   todayData: MeteoDailyData;
@@ -45,30 +36,33 @@ export class MeteoComponent  implements OnInit {
 
   selectedCity: City =  {};
   dropDownFocused = false;
-  
+
+  citiesBuffer: City[] = [];
+  searchTerm = '';
+  allCities: City[] = [];
+  filteredCities: City[] = [];
+  loadingCities = false;
+  bufferSize = 15;
+ 
   constructor(private readonly geoApi: GeographyApiService,
     private readonly meteoApi: MeteoApiService,
     private readonly route: ActivatedRoute) {
   }
 
-  get hint(): string {
-    return (this.geoApi?.cities?.length > 0) ?
-      'Please click/tap in the drop list below, then type the name or the city, or the country or district where your city is located.<br>' +
-      'The drop list will show the cities that match the typed text. Use the scroll to view all matching cities.<br>' +
-      'When you see your city, click/tap it.' : 
-      
-      'Please select the desired city for the forecast.&nbsp;You may need to select the Region and Country/District first.';
+  get dataGridStyle() {
+    if (this.today)
+    return { 'height': `${this.dataGridHeight}px` };
   }
 
-  citiesBuffer: City[] = [];
-  
-  searchTerm = '';
-  allCities: City[] = [];
+  get hint(): string {
+    return 'To search your city, click/tap in the drop list below, then type the name or the city.';
+  }
 
-  filteredCities: City[] = [];
-
-  loadingCities = false;
-  bufferSize = 15;
+  get dataHint(): string {
+    const location = `${this.lookupRegion} / ${this.lookupSubregion} / ${this.lookupCity}`;
+    return (this.meteoData?.length > 0) ?
+      `Forecast for: <b>${location}</b>` : `Please wait while fetching data for: <b>${location}</b>`;
+  }
 
   onDropDownFocused(focused: boolean) {
     this.dropDownFocused = focused;
@@ -157,63 +151,11 @@ export class MeteoComponent  implements OnInit {
               if (this.regions.includes(this.queryRegion ?? '')) {
                 selRegion = this.queryRegion;
               }
-              this.selRegion = selRegion;            
-              this.onRegionChanged();
+              this.selRegion = selRegion;
             }
           });
         }
       });
-  }
-
-  public onRegionChanged() {
-    this.meteoData = [];
-    this.regionChanged$.next();
-    this.geoApi.getSubregions(this.selRegion)
-      .pipe(takeUntil(this.regionChanged$), take(1), untilDestroyed(this))
-      .subscribe(subregions => {
-        this.subregions = subregions;
-        if (this.subregions?.length > 0) {
-          let selSubregion = this.subregions[0];
-          if (this.subregions.includes(this.querySubregion ?? '')) {
-            selSubregion = this.querySubregion;
-          }
-          this.selSubregion = selSubregion;
-          this.onSubregionChanged();
-        }
-      });
-  }
-
-  public onSubregionChanged() {
-    this.meteoData = [];
-    this.subregionChanged$.next();
-    this.geoApi.getCities(this.selRegion, this.selSubregion)
-      .pipe(takeUntil(this.subregionChanged$), take(1), untilDestroyed(this))
-      .subscribe(cities => {
-        this.cities = cities;
-        if (this.cities?.length > 0) {
-          let selCity = this.cities[0];
-          if (this.cities.includes(this.queryCity ?? '')) {
-            selCity = this.queryCity;
-          }
-          this.selCity = selCity;
-          this.onCityChanged();
-        }
-      });
-  }
-
-  public onCityChanged() {
-    this.meteoData = [];
-
-    if (this.timerId > 0) {
-      clearTimeout(this.timerId);
-      this.timerId = 0;
-    }
-
-    this.timerId = window.setTimeout(() => {
-      clearTimeout(this.timerId);
-      this.timerId = 0;
-      this.doFetch();
-    }, 2000);
   }
 
   public onSmartCityChanged() {
@@ -227,23 +169,11 @@ export class MeteoComponent  implements OnInit {
     this.isFetching = true;
     this.fetchEvent$.next();
 
-    this.geoApi.getCityInfo(this.lookupRegion, this.lookupSubregion, this.lookupCity)
+    this.meteoApi.getData(this.lookupRegion, this.lookupSubregion, this.lookupCity, 0, 0)
       .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
-      .subscribe(cityInfo => {
-        this.city = cityInfo;
-        this.meteoData = [];
-        this.geoApi.getGridCoordinates(this.lookupRegion, this.lookupSubregion, this.lookupCity)
-          .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
-          .subscribe(grid => {
-            this.grid = grid;
-            this.meteoData = [];
-            this.meteoApi.getData(this.lookupRegion, this.lookupSubregion, this.lookupCity, 0, 0)
-              .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
-              .subscribe(meteoApiData => {
-                this.processApiData(meteoApiData);
-                this.isFetching = false;
-              });
-          });
+      .subscribe(meteoApiData => {
+        this.processApiData(meteoApiData);
+        this.isFetching = false;
       });
   }
 
@@ -298,36 +228,42 @@ export class MeteoComponent  implements OnInit {
         data.date = date;
         mdEx.push(data);
       }
-
-      let startDate = new Date(meteoApiData.calendarRange.start);
-      let endDate = new Date(meteoApiData.calendarRange.end);
-
-      while(startDate.getDay() != 1 /* Monday */) {
-        startDate.setDate(startDate.getDate() - 1);
-        md = {
-          date: startDate.toISOString().slice(0, 10)
-        };
-        mdEx.push(md);
-      }
-
-      while(endDate.getDay() != 0 /* Sunday */) {
-        endDate.setDate(endDate.getDate() + 1);
-        md = {
-          date: endDate.toISOString().slice(0, 10)
-        };
-        mdEx.push(md);
-      }
     }
-    mdEx = mdEx.sort((m1, m2) => m1.date.localeCompare(m2.date));
+    this.meteoData = mdEx;
 
-    for(let i = 0; i < mdEx.length; i++) {
-      const r = Math.floor(i / 7);
-      const c = i % 7;
-      if (c === 0) {
-        this.meteoData[r] = [];
-      }
-      this.meteoData[r][c] = mdEx[i];
+    setTimeout(() => {
+      const todayInfo = document.getElementById(`day_${this.today}`);
+      todayInfo?.scrollIntoView();
+      this.calculateDataGridHeight();
+    }, 100);
+  }
 
+  @HostListener('window:resize', ['$event'])
+  onWindowResized(event) {
+    this.calculateDataGridHeight();
+  }
+
+  dataGridHeight = 200;
+  calculateDataGridHeight() {
+    let height = window.innerHeight;
+    height -= this.getAbsoluteHeight(document.getElementById('navbar'));
+    height -= this.getAbsoluteHeight(document.getElementById('dHint'));
+    height -= this.getAbsoluteHeight(document.getElementById('dControls'));
+    height -= this.getAbsoluteHeight(document.getElementById('dSmartControls'));
+    height -= this.getAbsoluteHeight(document.getElementById('dDataHint'));
+    height -= 10;
+    this.dataGridHeight = height;
+  }
+
+  private getAbsoluteHeight(el: HTMLElement) {
+    if (el) {
+      var styles = window.getComputedStyle(el);
+      var margin = parseFloat(styles['marginTop']) +
+                   parseFloat(styles['marginBottom']);
+    
+      return Math.ceil(el.offsetHeight + margin);
     }
+
+    return 0;
   }
 }

@@ -57,7 +57,7 @@ app-home {
 
 /* MOBILE
 ----------------------------------------------------------*/
-@media only screen and (max-width: 1080px) {
+@media screen and (max-width: 1080px) and (orientation: portrait) {
     app-home {
         display: grid;
         grid-template-columns: auto auto 1fr;

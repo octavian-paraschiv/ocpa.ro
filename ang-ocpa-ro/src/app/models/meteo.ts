@@ -7,7 +7,7 @@ export interface CalendarRange {
 }
 
 export interface MeteoDailyData {
-    date: string
+    date: string;
 
     tMinActual?: number,
     tMaxActual?: number,

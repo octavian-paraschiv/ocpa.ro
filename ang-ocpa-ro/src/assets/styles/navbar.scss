@@ -24,7 +24,7 @@
 body > app-root > div > app-nav-menu > nav {
     background-color: $nav-backcolor;
     border-radius: 0.2em;
-    width: 99.6vw;
+    width: calc(99vw - 10px);
     margin-left: 0.2vw;
     margin-top: 0.2vw;
 }
