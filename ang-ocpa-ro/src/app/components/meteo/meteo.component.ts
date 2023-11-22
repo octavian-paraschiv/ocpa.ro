@@ -195,15 +195,17 @@ export class MeteoComponent  implements OnInit {
       if (this.searchTerm?.length > 0) {
         const terms = this.searchTerm.toLocaleUpperCase().split(' ').filter(t => t?.length > 0);
         this.filteredCities = GeographyApiService.SortCities(terms, allCities.filter(city => {
+          let match = true;
+          // All search terms must match
           for (let tt of terms) {
-            if ((city?.name ?? '').toLocaleUpperCase().startsWith(tt))
-              return true;
-            if ((city?.subregion ?? '').toLocaleUpperCase().startsWith(tt))
-              return true;
-            if ((city?.region ?? '').toLocaleUpperCase().startsWith(tt))
-              return true;
+            let termMatch = false;
+            termMatch ||= (city?.name ?? '').toLocaleUpperCase().includes(tt);
+            termMatch ||= (city?.subregion ?? '').toLocaleUpperCase().startsWith(tt);
+            termMatch ||= (city?.region ?? '').toLocaleUpperCase().startsWith(tt);
+            match &&= termMatch;
+            if (!match) break;
           }
-          return false;
+          return match;
         }));
   
       } else {
