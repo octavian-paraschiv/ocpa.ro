@@ -6,6 +6,7 @@ import { take, takeUntil, filter } from 'rxjs/operators';
 import { City, GridCoordinates } from 'src/app/models/geography';
 import { MeteoDailyData, MeteoData } from 'src/app/models/meteo';
 import { GeographyApiService, MeteoApiService } from 'src/app/services/api-services';
+import { Helper } from 'src/app/services/helper';
 
 @UntilDestroy()
 @Component({
@@ -25,8 +26,6 @@ export class MeteoComponent  implements OnInit {
   grid: GridCoordinates;
 
   meteoData: MeteoDailyData[] = [];
-
-  today: string;
   todayData: MeteoDailyData;
 
   queryRegion: string = undefined;
@@ -46,11 +45,12 @@ export class MeteoComponent  implements OnInit {
  
   constructor(private readonly geoApi: GeographyApiService,
     private readonly meteoApi: MeteoApiService,
+    private readonly helper: Helper,
     private readonly route: ActivatedRoute) {
   }
 
   get dataGridStyle() {
-    if (this.today)
+    if (this.helper.today)
     return { 'height': `${this.dataGridHeight}px` };
   }
 
@@ -123,7 +123,6 @@ export class MeteoComponent  implements OnInit {
 
     this.meteoData = [];
     this.selectedCity = {};
-    this.today = new Date().toISOString().slice(0, 10);
 
     this.route.queryParams
       .pipe(take(1), untilDestroyed(this))
@@ -194,11 +193,11 @@ export class MeteoComponent  implements OnInit {
         const terms = this.searchTerm.toLocaleUpperCase().split(' ').filter(t => t?.length > 0);
         this.filteredCities = GeographyApiService.SortCities(terms, allCities.filter(city => {
           for (let tt of terms) {
-            if ((city?.name ?? '').toLocaleUpperCase().includes(tt))
+            if ((city?.name ?? '').toLocaleUpperCase().startsWith(tt))
               return true;
-            if ((city?.subregion ?? '').toLocaleUpperCase().includes(tt))
+            if ((city?.subregion ?? '').toLocaleUpperCase().startsWith(tt))
               return true;
-            if ((city?.region ?? '').toLocaleUpperCase().includes(tt))
+            if ((city?.region ?? '').toLocaleUpperCase().startsWith(tt))
               return true;
           }
           return false;
@@ -232,7 +231,7 @@ export class MeteoComponent  implements OnInit {
     this.meteoData = mdEx;
 
     setTimeout(() => {
-      const todayInfo = document.getElementById(`day_${this.today}`);
+      const todayInfo = document.getElementById(`day_${this.helper.today}`);
       todayInfo?.scrollIntoView();
       this.calculateDataGridHeight();
     }, 100);

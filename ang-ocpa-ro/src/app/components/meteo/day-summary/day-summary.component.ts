@@ -13,7 +13,6 @@ export class DaySummaryComponent implements OnChanges {
   @Input() unit = Unit.Metric; 
 
   isWeekend: boolean;
-  isToday: boolean;
   isValid: boolean
 
   feelsLike: string;
@@ -24,8 +23,6 @@ export class DaySummaryComponent implements OnChanges {
   }
   
   ngOnChanges() {
-    const today = new Date().toISOString().slice(0, 10);
-    this.isToday = today === this.data?.date;
     this.isWeekend = new Date(this.data?.date).getDay() % 6 === 0;
     this.isValid = this.data?.forecast?.length > 0;
   
@@ -54,10 +51,10 @@ export class DaySummaryComponent implements OnChanges {
   }
 
   get labelClass(): string {
-    let lblClass = this.isWeekend ? 'day-summary-header-weekend' : 'day-summary-header-normal';
-    if (this.isToday)
-      lblClass += ' day-summary-header-today';
+    return this.isWeekend ? 'day-summary-header-weekend' : 'day-summary-header-normal';
+  }
 
-    return lblClass;
+  get isToday(): boolean {
+    return this.helper.today === this.data?.date;
   }
 }

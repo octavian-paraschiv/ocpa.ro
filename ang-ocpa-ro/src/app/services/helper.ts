@@ -56,4 +56,8 @@ export class Helper {
     public weatherType(desc: string): string {
         return this.weatherTypeMap[desc];
     }
+
+    public get today(): string {
+        return new Date().toISOString().slice(0, 10);
+    }
 }

@@ -50,7 +50,7 @@
 <div class="outer-meteo-data-grid">
     <ng-container *ngIf="meteoData?.length > 0">
         <div class="meteo-data-grid" [ngStyle]="dataGridStyle">
-            <div id="day_{{md.date}}" *ngFor="let md of meteoData" class="{{ md.date === today ? 'meteo-td-today' : 'meteo-td' }} {{md.tempFeel}}">
+            <div id="day_{{md.date}}" *ngFor="let md of meteoData" class="{{ md.date === helper.today ? 'meteo-td-today' : 'meteo-td' }} {{md.tempFeel}}">
                 <app-day-summary *ngIf="md" [data]="md" class="{{md.tempFeel}}"></app-day-summary>
             </div>
         </div>
