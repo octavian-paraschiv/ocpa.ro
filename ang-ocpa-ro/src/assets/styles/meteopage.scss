@@ -40,18 +40,54 @@ app-meteo {
 .outer-meteo-data-grid {
     grid-area: odg;
     display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: 1fr;
+    grid-template-columns: repeat(5, 4rem) 1fr;
+    grid-template-rows: auto 1fr;
     grid-template-areas: 
-    "dg";
+    "minus7 minus1 zero plus1 plus7 ."
+    "dg dg dg dg dg dg";
+}
+.gridButton {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: $forecolor;
+    margin-bottom: 3px;
+    margin-right: 3px;
+    background-color: $backcolor;
+    border: 1px solid $forecolor;
+    border-radius: 3px;
+}
+.minus7 {
+    @extend .gridButton;
+    grid-area: minus7;
+}
+.minus1 {
+    @extend .gridButton;
+    grid-area: minus1;
+}
+.zero {
+    @extend .gridButton;
+    grid-area: zero;
+}
+.plus1 {
+    @extend .gridButton;
+    grid-area: plus1;
+}
+.plus7 {
+    @extend .gridButton;
+    grid-area: plus7;
 }
 
 .meteo-data-grid {
     grid-area: dg;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
     border: 1px solid $meteo-table-line-color;
     border-left: 0;
+    border-right: 0;
+}
+.meteo-data-grid-empty {
+    @extend .meteo-data-grid;
+    border: unset;
 }
 
 .meteo-td {
@@ -63,6 +99,11 @@ app-meteo {
 .meteo-td-today {
     @extend .meteo-td;
     border: 0.3rem solid $meteo-today-border-color;
+}
+
+.meteo-td-selected {
+    @extend .meteo-td;
+    border: 0.2rem solid $meteo-selected-border-color;
 }
 
 // ----------------------------------------------------------------

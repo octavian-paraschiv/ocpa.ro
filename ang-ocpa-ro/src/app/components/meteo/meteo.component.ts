@@ -42,6 +42,8 @@ export class MeteoComponent  implements OnInit {
   filteredCities: City[] = [];
   loadingCities = false;
   bufferSize = 15;
+
+  selectedDate: string = undefined;
  
   constructor(private readonly geoApi: GeographyApiService,
     private readonly meteoApi: MeteoApiService,
@@ -61,7 +63,8 @@ export class MeteoComponent  implements OnInit {
   get dataHint(): string {
     const location = `${this.lookupRegion} / ${this.lookupSubregion} / ${this.lookupCity}`;
     return (this.meteoData?.length > 0) ?
-      `Forecast for: <b>${location}</b>` : `Please wait while fetching data for: <b>${location}</b>`;
+      `Forecast for: <b>${location}</b><br />Range: <b>${this.meteoData[0].date}...${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the buttons below to go the desired date.` : 
+      `Please wait while fetching data for: <b>${location}</b>`;
   }
 
   onDropDownFocused(focused: boolean) {
@@ -228,13 +231,29 @@ export class MeteoComponent  implements OnInit {
         mdEx.push(data);
       }
     }
+
     this.meteoData = mdEx;
 
+    if (this.meteoData?.length > 0) {
+      if (this.helper.today.localeCompare(this.meteoData[0].date) < 0)
+        this.selectedDate = this.meteoData[0].date;
+      else
+        this.selectedDate = this.helper.today;
+    }
+
     setTimeout(() => {
-      const todayInfo = document.getElementById(`day_${this.helper.today}`);
+      const todayInfo = document.getElementById(`day_${this.selectedDate}`);
       todayInfo?.scrollIntoView();
       this.calculateDataGridHeight();
     }, 100);
+  }
+
+  meteoCellClass(date: string): string {
+    return (
+      (date === this.helper.today) ? 'meteo-td-today' : 
+      (date === this.selectedDate) ? 'meteo-td-selected' : 
+      'meteo-td'
+    );
   }
 
   @HostListener('window:resize', ['$event'])
@@ -250,6 +269,7 @@ export class MeteoComponent  implements OnInit {
     height -= this.getAbsoluteHeight(document.getElementById('dControls'));
     height -= this.getAbsoluteHeight(document.getElementById('dSmartControls'));
     height -= this.getAbsoluteHeight(document.getElementById('dDataHint'));
+    height -= this.getAbsoluteHeight(document.getElementById('btnDate'));
     height -= 10;
     this.dataGridHeight = height;
   }
@@ -262,7 +282,42 @@ export class MeteoComponent  implements OnInit {
     
       return Math.ceil(el.offsetHeight + margin);
     }
-
     return 0;
+  }
+
+  selectDate(daysDelta: number) {
+    if (this.meteoData?.length > 0) {
+
+      if (daysDelta === 0) {
+        this.resetDate();
+
+      } else {
+        let newDate = this.helper.isoDate(this.helper.addDays(this.selectedDate, daysDelta));
+        const startDate = this.meteoData[0].date;
+        const endDate = this.meteoData[this.meteoData.length - 1].date;
+
+        if (newDate.localeCompare(startDate) < 0)
+          newDate = startDate;
+        else if (newDate.localeCompare(endDate) > 0)
+          newDate = endDate;
+
+        this.selectedDate = newDate;
+      }
+
+      setTimeout(() => {
+        const todayInfo = document.getElementById(`day_${this.selectedDate}`);
+        todayInfo?.scrollIntoView();
+        this.calculateDataGridHeight();
+      }, 100);
+    }
+  }
+
+  private resetDate() {
+    if (this.meteoData?.length > 0) {
+      if (this.helper.today.localeCompare(this.meteoData[0].date) < 0)
+        this.selectedDate = this.meteoData[0].date;
+      else
+        this.selectedDate = this.helper.today;
+    }
   }
 }

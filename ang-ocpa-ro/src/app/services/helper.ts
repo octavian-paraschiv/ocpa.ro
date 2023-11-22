@@ -58,6 +58,16 @@ export class Helper {
     }
 
     public get today(): string {
-        return new Date().toISOString().slice(0, 10);
+        return this.isoDate(new Date());
+    }
+
+    public isoDate(date: string | Date) {
+        return new Date(date).toISOString().slice(0, 10);
+    }
+
+    public addDays(date: string | Date, days: number): Date {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
     }
 }

@@ -44,18 +44,25 @@
 </div>
 
 <div class="meteo-data-hint" id="dDataHint">
-    <h5 style="text-align: justify;" [innerHtml]="dataHint"></h5>
+    <h5 style="text-align: justify; font-size: 0.8rem;" [innerHtml]="dataHint"></h5>
 </div>
 
 <div class="outer-meteo-data-grid">
     <ng-container *ngIf="meteoData?.length > 0">
         <div class="meteo-data-grid" [ngStyle]="dataGridStyle">
-            <div id="day_{{md.date}}" *ngFor="let md of meteoData" class="{{ md.date === helper.today ? 'meteo-td-today' : 'meteo-td' }} {{md.tempFeel}}">
+            <div id="day_{{md.date}}" *ngFor="let md of meteoData" class="{{ meteoCellClass(md.date) }} {{md.tempFeel}}">
                 <app-day-summary *ngIf="md" [data]="md" class="{{md.tempFeel}}"></app-day-summary>
             </div>
         </div>
     </ng-container>
     <ng-container *ngIf="!(meteoData?.length > 0)" >
-        <img src="assets/images/spinner.gif" style="height: 10rem; color: transparent;" />
+        <img class="meteo-data-grid-empty" src="assets/images/spinner.gif" style="height: 10rem; color: transparent;" />
     </ng-container>
+
+    <button id="btnDate" class="minus7" (click)="selectDate(-7)">-7 days</button>
+    <button class="minus1" (click)="selectDate(-1)">-1 day</button>
+    <button class="zero" (click)="selectDate(0)">Today</button>
+    <button class="plus1" (click)="selectDate(1)">+1 day</button>
+    <button class="plus7" (click)="selectDate(7)">+7 days</button>
+
 </div>
