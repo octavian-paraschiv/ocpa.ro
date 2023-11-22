@@ -13,7 +13,7 @@
 // ----------------------------------------------------------------
 app-meteo {
     display: grid;
-    grid-template-columns: 30vw;
+    grid-template-columns: 40vw;
     grid-template-rows: auto auto auto 1fr;
     grid-template-areas: 
     "h"
@@ -93,10 +93,6 @@ app-day-summary {
 .day-summary-header-weekend {
     @extend .day-summary-header-normal;
     background-color: $meteo-weekend-header-color;
-}
-
-.day-summary-header-today {
-    width: calc(30vw - 1.4rem);
 }
 
 .img-day-summary-forecast {
@@ -255,14 +251,12 @@ app-day-risks {
 }
 
 // ----------------------------------------------------------------
+// mobile devices
 @media screen and (max-width: 1080px) and (orientation: portrait) {
     .detail-info {
         flex-direction: column;
     }
     app-meteo {
         grid-template-columns: 96vw;
-    }
-    .day-summary-header-today {
-        width: calc(96vw - 0.55rem);
     }
 }
