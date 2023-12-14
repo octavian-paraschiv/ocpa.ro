@@ -1,10 +1,7 @@
 ﻿namespace ocpa.ro.api.Helpers
 {
-    using ocpa.ro.api.Models;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
     using ThorusCommon.IO;
     using ThorusCommon.SQLite;
 
@@ -12,14 +9,14 @@
     {
         public class WeatherTypeHelper
         {
-            MeteoDataHelper _dataHelper;
+            IMeteoDataHelper _dataHelper;
 
             static readonly string[] wdirs = new string[]
             {
                 "W", "WSW", "SW", "SSW", "S", "SSE", "SE", "ESE", "E", "ENE", "NE", "NNE", "N", "NNW", "NW", "WNW"
             };
 
-            public WeatherTypeHelper(MeteoDataHelper meteoDataHelper)
+            public WeatherTypeHelper(IMeteoDataHelper meteoDataHelper)
             {
                 _dataHelper = meteoDataHelper;
             }
@@ -27,7 +24,7 @@
             public string GetWeatherType(Data meteoData, List<String> risks)
             {
                 float precip = meteoData.C_00;
-                float inst =  -meteoData.L_00;
+                float inst = -meteoData.L_00;
                 float fog = meteoData.F_SI;
 
                 float wind = GetWind(meteoData, out string _);
@@ -134,10 +131,10 @@
                 return (int)Math.Floor(7.6f * (w00 + w01));
             }
 
-          public string GetPrecipType(Data meteoData)
-          {
-                var te =  meteoData.T_TE;
-                var ts =  meteoData.T_TS;
+            public string GetPrecipType(Data meteoData)
+            {
+                var te = meteoData.T_TE;
+                var ts = meteoData.T_TS;
                 var t01 = meteoData.T_01;
 
                 return PrecipTypeComputer<string>.Compute(
@@ -163,7 +160,7 @@
 
             public string GetTempFeel(Data meteoData)
             {
-                float num =  meteoData.T_SH;
+                float num = meteoData.T_SH;
                 float num2 = meteoData.T_SL;
                 float num3 = meteoData.T_NH;
                 float num4 = meteoData.T_NL;

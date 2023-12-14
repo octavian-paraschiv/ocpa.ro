@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ocpa.ro.api.Models
 {
@@ -16,6 +15,7 @@ namespace ocpa.ro.api.Models
     {
         ApiUser = 0,
         Admin = 1,
+        Patient = 2
     }
 
     public class User
@@ -26,12 +26,6 @@ namespace ocpa.ro.api.Models
 
         public string PasswordHash { get; set; }
 
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string SaltValue { get; set; }
-
         public UserType Type { get; set; }
     }
 
@@ -39,8 +33,6 @@ namespace ocpa.ro.api.Models
     {
         [Required]
         public string LoginId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
 
         [Required]
         public string Token { get; set; }

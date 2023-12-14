@@ -1,5 +1,6 @@
 ﻿using api.Controllers.Models;
 using api.Helpers;
+using Microsoft.AspNetCore.Hosting;
 using ocpa.ro.api.Helpers.Meteo.Helpers;
 using ocpa.ro.api.Models;
 using System;
@@ -9,155 +10,170 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using ThorusCommon.IO;
 using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Helpers
 {
-	public class MeteoDataHelper
-	{
-		private string _dataFolder = ".";
-		private WeatherTypeHelper _precipHelper;
-		private MeteoScaleSettings _scale;
+    public interface IMeteoDataHelper
+    {
+        void HandleDatabasePart(UploadDataPart part);
+        void ReplaceDatabase(string base64);
+        CalendarRange GetCalendarRange(int days);
+        List<Data> GetData(string region, GridCoordinates gc, int skip, int take);
+        MeteoScaleSettings Scale { get; }
 
-		static MeteoDB _db = null;
+    }
 
-		public MeteoScaleSettings Scale => _scale;
+    public class MeteoDataHelper : IMeteoDataHelper
+    {
+        private WeatherTypeHelper _precipHelper;
 
-		public MeteoDataHelper(string dataFolder, MeteoScaleSettings scale)
-		{
-			_dataFolder = dataFolder;
+        static MeteoDB _db = null;
 
-			if (_db == null)
-				_db = MeteoDB.OpenOrCreate(Path.Combine(dataFolder, "Snapshot.db3"), false);
+        private MeteoScaleSettings _scale;
+        private IniFile _iniFile;
+        private string _dataFolder;
 
-			_precipHelper = new WeatherTypeHelper(this);
-			_scale = scale;
-		}
+        public MeteoScaleSettings Scale => _scale;
 
-		public void HandleDatabasePart(UploadDataPart part)
-		{
-			List<string> partFiles = new List<string>();
-			if (part.PartIndex == 0)
-			{
-				partFiles = Directory.GetFiles(_dataFolder, "db_*.part").ToList();
-				if (partFiles?.Count > 0)
-					partFiles.ForEach(pf => File.Delete(pf));
-			}				
+        public MeteoDataHelper(IWebHostEnvironment hostingEnvironment)
+        {
+            string rootPath = Path.GetDirectoryName(hostingEnvironment.ContentRootPath);
+            _dataFolder = Path.Combine(rootPath, "Content/Meteo");
 
-			File.WriteAllText(Path.Combine(_dataFolder, $"db_{part.PartIndex:d3}.part"), part.PartBase64);
+            if (_db == null)
+                _db = MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
 
-			partFiles = Directory.GetFiles(_dataFolder, "db_*.part").OrderBy(pf => pf).ToList();
-			if (partFiles?.Count == part.TotalParts)
-			{
-				StringBuilder sb = new StringBuilder();
-				foreach (string pf in partFiles)
-				{
-					sb.Append(File.ReadAllText(pf));
-					File.Delete(pf);
-				}
+            _precipHelper = new WeatherTypeHelper(this);
 
-				ReplaceDatabase(sb.ToString());
-			}
-		}
+            var iniPath = System.IO.Path.Combine(_dataFolder, "ScaleSettings.ini");
+            _iniFile = new IniFile(iniPath);
+            _scale = new MeteoScaleSettings(_iniFile);
+        }
 
-		public void ReplaceDatabase(string base64)
-		{
-			byte[] data = Convert.FromBase64String(base64);
+        public void HandleDatabasePart(UploadDataPart part)
+        {
+            List<string> partFiles = new List<string>();
+            if (part.PartIndex == 0)
+            {
+                partFiles = Directory.GetFiles(_dataFolder, "db_*.part").ToList();
+                if (partFiles?.Count > 0)
+                    partFiles.ForEach(pf => File.Delete(pf));
+            }
 
-			using (MemoryStream input = new MemoryStream(data))
-			using (GZipStream zipped = new GZipStream(input, CompressionMode.Decompress))
-			using (MemoryStream unzipped = new MemoryStream())
-			{
-				zipped.CopyTo(unzipped);
-				File.WriteAllBytes(Path.Combine(_dataFolder, "Snapshot.db3"), unzipped.ToArray());
-			}
+            File.WriteAllText(Path.Combine(_dataFolder, $"db_{part.PartIndex:d3}.part"), part.PartBase64);
 
-			if (_db != null)
-				_db.Close();
+            partFiles = Directory.GetFiles(_dataFolder, "db_*.part").OrderBy(pf => pf).ToList();
+            if (partFiles?.Count == part.TotalParts)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (string pf in partFiles)
+                {
+                    sb.Append(File.ReadAllText(pf));
+                    File.Delete(pf);
+                }
 
-			_db = MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
-		}
+                ReplaceDatabase(sb.ToString());
+            }
+        }
 
-		public CalendarRange GetCalendarRange(int days)
-		{
-			CalendarRange result = new CalendarRange();
-			try
-			{
-				var x = _db.Data
-					.Where(d => d.RegionId == 1 && d.R == 0 && d.C == 0)
-					.OrderBy(d => d.Timestamp)
-					.Distinct();
+        public void ReplaceDatabase(string base64)
+        {
+            byte[] data = Convert.FromBase64String(base64);
 
-				var xx = x.Select(d => d.Timestamp).ToList();
+            using (MemoryStream input = new MemoryStream(data))
+            using (GZipStream zipped = new GZipStream(input, CompressionMode.Decompress))
+            using (MemoryStream unzipped = new MemoryStream())
+            {
+                zipped.CopyTo(unzipped);
+                File.WriteAllBytes(Path.Combine(_dataFolder, "Snapshot.db3"), unzipped.ToArray());
+            }
 
-				if (days == 0)
-					days = xx.Count;
+            if (_db != null)
+                _db.Close();
 
-				var start = xx[0];
-				var end = xx[days - 1];
+            _db = MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
+        }
 
-				result = new CalendarRange
-				{
-					Start = DateTime.ParseExact(start, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-					End = DateTime.ParseExact(end, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-					Length = days
-				};
-			}
-			catch
-			{
-			}
-			return result;
-		}
+        public CalendarRange GetCalendarRange(int days)
+        {
+            CalendarRange result = new CalendarRange();
+            try
+            {
+                var x = _db.Data
+                    .Where(d => d.RegionId == 1 && d.R == 0 && d.C == 0)
+                    .OrderBy(d => d.Timestamp)
+                    .Distinct();
 
-		public List<Data> GetData(string region, GridCoordinates gc, int skip, int take)
-		{
-			var regionId = (from r in _db.Regions
-							where r.Name == region
-							select r.Id).FirstOrDefault();
+                var xx = x.Select(d => d.Timestamp).ToList();
 
-			var x = _db.Data
-				.Where(d => d.RegionId == regionId && d.R == gc.R && d.C == gc.C)
-				.OrderBy(d => d.Timestamp)
-				.Skip(skip)
-				.Take(take);
+                if (days == 0)
+                    days = xx.Count;
 
-			return x.ToList();
-		}
-	}
+                var start = xx[0];
+                var end = xx[days - 1];
 
-	public static class ExtensionMethods
-	{
-		public static int Round(this float input)
-		{
-			return (int)Math.Round(input);
-		}
+                result = new CalendarRange
+                {
+                    Start = DateTime.ParseExact(start, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    End = DateTime.ParseExact(end, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    Length = days
+                };
+            }
+            catch
+            {
+            }
+            return result;
+        }
 
-		public static T GetValue<T>(this Dictionary<string, float> data, string key, T defaultValue = default)
-			where T: IComparable, IConvertible, IFormattable
-		{
-			T val = defaultValue;
-			Type type = typeof(T);
+        public List<Data> GetData(string region, GridCoordinates gc, int skip, int take)
+        {
+            var regionId = (from r in _db.Regions
+                            where r.Name == region
+                            select r.Id).FirstOrDefault();
 
-			try
-			{
-				double raw = data[key];
+            var x = _db.Data
+                .Where(d => d.RegionId == regionId && d.R == gc.R && d.C == gc.C)
+                .OrderBy(d => d.Timestamp)
+                .Skip(skip)
+                .Take(take);
 
-				if (type != typeof(float) &&
-					type != typeof(double) &&
-					type != typeof(decimal))
-				{
-					raw = Math.Round(raw, 0);
-				}
+            return x.ToList();
+        }
+    }
 
-				val = (T)Convert.ChangeType(raw, type);
-			}
-			catch
-			{
-				val = defaultValue;
-			}
+    public static class ExtensionMethods
+    {
+        public static int Round(this float input)
+        {
+            return (int)Math.Round(input);
+        }
 
-			return val;
-		}
-	}
+        public static T GetValue<T>(this Dictionary<string, float> data, string key, T defaultValue = default)
+            where T : IComparable, IConvertible, IFormattable
+        {
+            T val = defaultValue;
+            Type type = typeof(T);
+
+            try
+            {
+                double raw = data[key];
+
+                if (type != typeof(float) &&
+                    type != typeof(double) &&
+                    type != typeof(decimal))
+                {
+                    raw = Math.Round(raw, 0);
+                }
+
+                val = (T)Convert.ChangeType(raw, type);
+            }
+            catch
+            {
+                val = defaultValue;
+            }
+
+            return val;
+        }
+    }
 }

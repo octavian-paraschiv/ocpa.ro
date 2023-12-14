@@ -1,21 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Globalization;
-using System.Security.Cryptography;
-using System.Text;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using ThorusCommon.SQLite;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
 using ocpa.ro.api.Models;
+using System.IO;
+using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Helpers
 {
     public interface IAuthHelper
     {
-        public User AuthorizeUser(AuthenticateRequest req);
-        public User SaveUser(User user);
-        public User GetUser(string loginId);
+        User AuthorizeUser(AuthenticateRequest req);
+        User SaveUser(User user);
+        User GetUser(string loginId);
     }
 
     public class AuthHelper : IAuthHelper
@@ -67,9 +62,6 @@ namespace ocpa.ro.api.Helpers
                 if (dbu == null)
                     dbu = new User { Id = -1, LoginId = user.LoginId };
 
-                dbu.SaltValue = user.SaltValue;
-                dbu.FirstName = user.FirstName;
-                dbu.LastName = user.LastName;
                 dbu.Type = user.Type;
                 dbu.PasswordHash = user.PasswordHash;
 

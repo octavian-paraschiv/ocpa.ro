@@ -24,7 +24,7 @@ namespace ocpa.ro.api.Helpers
 
         public string GenerateJwtToken(User user)
         {
-            // generate token that is valid for 4 hours
+            // generate token that is valid for 1 hour
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -34,11 +34,11 @@ namespace ocpa.ro.api.Helpers
                     new Claim("id", user?.LoginId),
                     new Claim(ClaimTypes.Role, user?.Type.ToString())
                 }),
-                
+
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Audience"],
 
-                Expires = DateTime.UtcNow.AddMinutes(5),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
