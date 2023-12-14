@@ -26,6 +26,7 @@ import { LoginComponent } from './components/login/login.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Iso3166HelperService } from './services/iso3166-helper.service';
+import { MeteoPhotosComponent } from 'src/app/components/meteo-photos/meteo-photos.component';
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import { Iso3166HelperService } from './services/iso3166-helper.service';
         HomeComponent,
         ProTONEComponent,
         MeteoComponent,
+        MeteoPhotosComponent,
         ElectronicsComponent,
         PhotographyComponent,
 
@@ -61,6 +63,7 @@ import { Iso3166HelperService } from './services/iso3166-helper.service';
         { path: '', component: HomeComponent, pathMatch: 'full', data: { title: 'OcPa\'s Web Site' } },
           { path: 'protone', component: ProTONEComponent, data: { title: 'ProTONE Player Web Site' } },
           { path: 'meteo', component: MeteoComponent, data: { title: 'OcPa\'s Weather Forecast' } },
+          { path: 'meteo-photos', component: MeteoPhotosComponent, data: { title: 'OcPa\'s Animated Forecast' } },
           { path: 'photography', component: PhotographyComponent, data: { title: 'OcPa\'s Photo Album' } },
           { path: 'electronics', component: ElectronicsComponent, data: { title: 'OcPa\'s Electronic Blog' } },
           { path: 'admin', component: AdminComponent, data: { title: 'Administration Module' } },

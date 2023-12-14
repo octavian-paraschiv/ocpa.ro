@@ -3,7 +3,7 @@
     <div id="navbarContainer" class="container">
       <a class="navbar-brand" [routerLink]="['/']">
         <div class="navbar-image">
-          <div *ngIf="path==='meteo'">
+          <div *ngIf="path==='meteo' || path==='meteo-photos'">
             <fa-layers>
                 <fa-icon [icon]="faSquare" size="3x" transform="grow-2"></fa-icon>
                 <fa-icon [icon]="faSquare" class="navbar-alt-image-color" size="3x"></fa-icon>
@@ -75,6 +75,11 @@
                     Weather Forecast
                 </a>
             </li>
+            <li class="nav-item" [routerLinkActive]="['link-active']">
+              <a class="nav-link" [routerLink]="['/meteo-photos']">
+                  Animated Forecast
+              </a>
+          </li>
             <li class="nav-item" [routerLinkActive]="['link-active']">
                 <a class="nav-link" [routerLink]="['/electronics']">
                     Electronics Blog
