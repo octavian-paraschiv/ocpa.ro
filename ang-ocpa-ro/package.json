@@ -25,6 +25,7 @@
     "@ngneat/until-destroy": "^8.1.4",
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.2",
+    "mini.css": "^3.0.1",
     "popper.js": "^1.16.0",
     "rxjs": "^6.6.7",
     "tslib": "^2.0.0",

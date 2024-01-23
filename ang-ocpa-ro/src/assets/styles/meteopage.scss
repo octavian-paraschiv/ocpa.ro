@@ -13,13 +13,12 @@
 // ----------------------------------------------------------------
 app-meteo {
     display: grid;
-    grid-template-columns: 40vw;
+    grid-template-columns: 40vw 51vw;
     grid-template-rows: auto auto auto 1fr;
     grid-template-areas: 
-    "h"
-    "c"
-    "dh"
-    "odg";
+    "h h"
+    "c dh"
+    "odg odg";
 }
 
 .meteo-hint {
@@ -33,7 +32,7 @@ app-meteo {
 
 .meteo-data-hint {
     @extend .meteo-hint;
-    margin-top: 1vh;
+    margin-left: 1vw;
     grid-area: dh;
 }
 
@@ -47,7 +46,7 @@ app-meteo {
     "dg dg dg dg dg dg";
 }
 .gridButton {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: bold;
     color: $forecolor;
     margin-bottom: 3px;
@@ -79,7 +78,10 @@ app-meteo {
 
 .meteo-data-grid {
     grid-area: dg;
-    overflow-x: hidden;
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    flex-direction: column;
+    overflow-x: auto;
     overflow-y: hidden;
     border: 1px solid $meteo-table-line-color;
     border-left: 0;
@@ -124,7 +126,7 @@ app-day-summary {
     text-transform: uppercase;
     color: $backcolor;
     font-weight: normal;
-    font-size: 1rem;
+    font-size: 0.85rem;
     align-self: center;
     margin-bottom: 2px;
     padding: 2px;
@@ -150,7 +152,7 @@ app-day-summary {
     grid-area: d;
     text-align: justify;
     align-self: center;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: bold;
     vertical-align: middle;
     color: $forecolor;
@@ -165,7 +167,7 @@ app-day-summary {
     margin-right: 2px;
     padding: 0;
     align-self: center;
-    height: 3vh;
+    height: 2vh;
 }
 
 .img-day-summary-temp-min {  
@@ -175,14 +177,14 @@ app-day-summary {
     margin-top: 2px;
     padding: 0;
     align-self: center;
-    height: 3vh;
+    height: 2vh;
 }
 
 .day-summary-temp-max-actual {
     grid-area: ha;
     padding: 0;
     color: $meteo-temp-max;
-    font-size: 1rem;
+    font-size: 0.85rem;
     align-self: center;
     margin-top: 2px;
 }
@@ -192,7 +194,7 @@ app-day-summary {
     margin-top: 2px;
     padding: 0;
     color: $meteo-temp-max;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     align-self: center;
     text-align: start;
 }
@@ -202,7 +204,7 @@ app-day-summary {
     margin: 0;
     padding: 0;
     color: $meteo-temp-min;
-    font-size: 1rem;
+    font-size: 0.85rem;
     align-self: center;
     text-align: end;
 }
@@ -212,7 +214,7 @@ app-day-summary {
     margin: 0;
     padding: 0;
     color: $meteo-temp-min;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     align-self: center;
     text-align: start;
 }
@@ -221,18 +223,19 @@ app-day-summary {
 app-day-details {
     grid-area: i;
     display: grid;
-    grid-template-rows: auto auto auto;
-    grid-template-columns: auto auto 1fr;
+    grid-template-rows: auto auto auto auto;
+    grid-template-columns: 1fr;
     grid-template-areas: 
-    "risk risk risk"
-    "info info info"
-    "snow snow snowc";
+    "risk"
+    "info"
+    "snow"
+    "snowc";
     margin-top: 3px;
 }
 
 .detail {
     text-align: justify;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     vertical-align: middle;
     margin: 0;
     color: $forecolor;
@@ -241,7 +244,7 @@ app-day-details {
 .detail-info {
     grid-area: info;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     column-gap: 10px;
 }
 
@@ -277,7 +280,7 @@ app-day-risks {
 
 .hazard {
     text-align: justify;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     vertical-align: middle;
     font-weight: bolder;
     color: $meteo-temp-max;
@@ -288,16 +291,50 @@ app-day-risks {
     margin-right: 2px;
     padding: 0;
     align-self: center;
-    height: 3vh;
+    height: 2vh;
 }
 
 // ----------------------------------------------------------------
 // mobile devices
 @media screen and (max-width: 1080px) and (orientation: portrait) {
     .detail-info {
-        flex-direction: column;
+        flex-direction: row;
     }
     app-meteo {
         grid-template-columns: 96vw;
+        grid-template-areas: 
+        "h"
+        "c"
+        "dh"
+        "odg";
+    }
+    .meteo-data-hint {
+        margin-left: unset;
+        margin-top: 1vh;
+    }
+   
+    .meteo-data-grid {
+        display: unset;
+        grid-template-columns: unset;
+        flex-direction: unset;
+        overflow-x: hidden;
+    }
+    app-day-details {
+        grid-template-rows: auto auto;
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+        "risk"
+        "info";
+    }
+    .detail-info {
+        display: grid;
+        grid-template-rows: auto auto;
+        grid-template-columns: auto auto 1fr;
+        grid-template-areas:
+        "wind pres rain"
+        "snow snow snow";
+    }
+    .no-data {
+        display: none;
     }
 }

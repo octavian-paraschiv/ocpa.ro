@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { Injectable } from "@angular/core";
 
 @Injectable()
@@ -62,7 +63,8 @@ export class Helper {
     }
 
     public isoDate(date: string | Date) {
-        return new Date(date).toISOString().slice(0, 10);
+        // return new Date(date).toISOString().slice(0, 10);
+        return formatDate(date, 'yyyy-MM-dd', 'en-US');
     }
 
     public addDays(date: string | Date, days: number): Date {

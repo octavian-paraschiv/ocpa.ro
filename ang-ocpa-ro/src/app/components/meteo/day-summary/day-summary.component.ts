@@ -47,7 +47,7 @@ export class DaySummaryComponent implements OnChanges {
       }
     }
 
-    this.desc = this.desc.trim();
+    this.desc = (this.desc ?? '').trim();
   }
 
   get labelClass(): string {

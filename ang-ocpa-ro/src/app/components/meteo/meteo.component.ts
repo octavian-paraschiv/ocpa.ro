@@ -53,17 +53,19 @@ export class MeteoComponent  implements OnInit {
 
   get dataGridStyle() {
     if (this.helper.today)
-    return { 'height': `${this.dataGridHeight}px` };
+      return { 'height': `${this.dataGridHeight}px` };
+
+    return undefined;
   }
 
   get hint(): string {
-    return 'To search your city, click/tap in the drop list below, then type the name or the city.';
+    return 'To search your city, click/tap in the drop list below, then type the city name.';
   }
 
   get dataHint(): string {
     const location = `${this.lookupRegion} / ${this.lookupSubregion} / ${this.lookupCity}`;
     return (this.meteoData?.length > 0) ?
-      `Forecast for: <b>${location}</b><br />Range: <b>${this.meteoData[0].date}...${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the buttons below to go the desired date.` : 
+      `Forecast for: <b>${location}</b><br />Range: <b>${this.meteoData[0].date}...${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the +/- buttons to go the desired date.` : 
       `Please wait while fetching data for: <b>${location}</b>`;
   }
 
@@ -236,6 +238,30 @@ export class MeteoComponent  implements OnInit {
 
     this.meteoData = mdEx;
 
+    if (mdEx.length > 0) {
+      
+      for(;;) {
+        const dt = new Date(this.meteoData[0].date);
+        if (dt.getDay() == 0)
+          break;
+        
+        dt.setDate(dt.getDate() - 1);
+        const date = this.helper.isoDate(dt);
+        this.meteoData = [ { date } as MeteoDailyData, ...this.meteoData];
+      }
+
+      for(;;) {
+        const dt = new Date(this.meteoData[this.meteoData.length - 1].date);
+        if (dt.getDay() == 6)
+          break;
+        
+        dt.setDate(dt.getDate() + 1);
+        const date = this.helper.isoDate(dt);
+
+        this.meteoData = [ ...this.meteoData, { date } as MeteoDailyData];
+      }
+    }
+
     if (this.meteoData?.length > 0) {
       if (this.helper.today.localeCompare(this.meteoData[0].date) < 0)
         this.selectedDate = this.meteoData[0].date;
@@ -269,7 +295,10 @@ export class MeteoComponent  implements OnInit {
     height -= this.getAbsoluteHeight(document.getElementById('navbar'));
     height -= this.getAbsoluteHeight(document.getElementById('dHint'));
     height -= this.getAbsoluteHeight(document.getElementById('dControls'));
-    height -= this.getAbsoluteHeight(document.getElementById('dSmartControls'));
+    
+    if (window.innerWidth <= 1080)
+      height -= this.getAbsoluteHeight(document.getElementById('dSmartControls'));
+
     height -= this.getAbsoluteHeight(document.getElementById('dDataHint'));
     height -= this.getAbsoluteHeight(document.getElementById('btnDate'));
     height -= 10;

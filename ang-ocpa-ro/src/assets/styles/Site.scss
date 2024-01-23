@@ -15,13 +15,9 @@ body {
 }
 
 :root {
-    font-size: 0.9vw;
+    font-size: 0.85vw;
     color: $forecolor;
     background-color: $backcolor;
-}
-
-#mainContainer {
-    margin-left: 0.5em;
 }
 
 .main {
@@ -81,11 +77,21 @@ h5, div {
     overflow-x: hidden;
 }
 
+#mainContainer {
+    margin-left: 0.5em;
+    min-width: 99vw;
+    max-width: 99vw;
+}
+
 @media screen and (max-width: 1080px) and (orientation: portrait) {
     :root {
-        font-size: 4vw;
+        font-size: 3vw;
     }
     .container {
+        max-width: unset;
+    }
+    #mainContainer {
+        min-width: unset;
         max-width: unset;
     }
 }
