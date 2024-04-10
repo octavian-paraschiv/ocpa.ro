@@ -30,17 +30,17 @@ namespace ocpa.ro.api.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context?.Request?.Path.Value?.EndsWith("protone-suite-docs", System.StringComparison.OrdinalIgnoreCase) ?? false)
+            if (context?.Request?.Path.Value?.EndsWith("wiki", System.StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
-                string html = _wikiHelper.GetDefaultResponse();
+                string html = _wikiHelper.DefaultResponse;
 
-                if (context.Request.Query.TryGetValue("res", out StringValues res))
+                if (context.Request.Query.TryGetValue("p", out StringValues p))
                 {
-                    var mdRes = res.FirstOrDefault();
-                    if (mdRes?.Length > 0)
+                    var wikiResourcePath = string.Join('/', p.Where(v => v?.Length > 0).Select(v => v));
+                    if (wikiResourcePath?.Length > 0)
                     {
-                        var html2 = await _wikiHelper.ProcessMarkdownFile(mdRes).ConfigureAwait(false);
+                        var html2 = await _wikiHelper.ProcessWikiFile(wikiResourcePath).ConfigureAwait(false);
                         if (html2?.Length > 0)
                         {
                             html = html2;

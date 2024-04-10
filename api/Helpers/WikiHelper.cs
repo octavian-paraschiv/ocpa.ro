@@ -1,38 +1,55 @@
 ﻿using Markdig;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting.Internal;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Helpers
 {
     public interface IWikiHelper
     {
-        string GetDefaultResponse();
-        Task<string> ProcessMarkdownFile(string markdownResource);
+        string DefaultResponse { get; }
+        Task<string> ProcessWikiFile(string wikiResourcePath);
     }
 
     public class WikiHelper : IWikiHelper
     {
-        private IConfiguration _configuration = null;
         private IWebHostEnvironment _hostingEnvironment = null;
+        static readonly string _defaultResponse = "<html><h1>NOT FOUND</h1><html>";
 
-        public WikiHelper(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
+        public WikiHelper(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
-            _configuration = configuration;
         }
 
-        public string GetDefaultResponse() => "<html><h1>NOT FOUND</h1><html>";
+        public string DefaultResponse => _defaultResponse;
 
-        public async Task<string> ProcessMarkdownFile(string markdownResource)
+        public async Task<string> ProcessWikiFile(string wikiResourcePath)
         {
-            string html = null;
+            string html = DefaultResponse;
                     
             try
             {
-                // Configure the pipeline with all advanced extensions active
-                var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-                html = Markdown.ToHtml($"This is a text with some *{markdownResource}*", pipeline);
+                if (!wikiResourcePath.EndsWith(".md"))
+                    wikiResourcePath += ".md";
+
+                string rootPath = Path.GetDirectoryName(_hostingEnvironment.ContentRootPath);
+                wikiResourcePath = Path.Combine(rootPath, $"Content/wiki/{wikiResourcePath}");
+                
+
+                if (File.Exists(wikiResourcePath)) 
+                {
+                    var markdown = await File.ReadAllTextAsync(wikiResourcePath).ConfigureAwait(false);
+                    if (markdown?.Length > 0)
+                    {
+                        var pipeline = new MarkdownPipelineBuilder()
+                            .UseAdvancedExtensions()
+                            .Build();
+
+                        html = Markdown.ToHtml(markdown, pipeline);
+                    }
+                }
             }
             catch
             {
