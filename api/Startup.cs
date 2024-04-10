@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using ocpa.ro.api.Helpers;
+using ocpa.ro.api.Middlewares;
 using ocpa.ro.api.Policies;
 using System.Text;
 using ThorusCommon.IO;
@@ -73,6 +74,8 @@ namespace ocpa.ro.api
 
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
+            services.AddTransient<IWikiHelper, WikiHelper>();
+
             services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
@@ -100,6 +103,8 @@ namespace ocpa.ro.api
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseWiki();
 
             app.UseEndpoints(endpoints =>
             {
