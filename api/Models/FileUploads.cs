@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Net.Http.Headers;
-using System;
-using System.IO;
-
-
-namespace ocpa.ro.api.Models
+﻿namespace ocpa.ro.api.Models
 {
     public class UploadDataPart
     {

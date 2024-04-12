@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ocpa.ro.api.ExtensionMethods;
 using ocpa.ro.api.Helpers;
-using ocpa.ro.api.Helpers.Meteo.Helpers;
 using ocpa.ro.api.Models;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace ocpa.ro.api.Controllers
     [ApiController]
     public class MeteoController : ApiControllerBase
     {
-        private IMeteoDataHelper _dataHelper = null;
+        private readonly IMeteoDataHelper _dataHelper = null;
 
         public MeteoController(IWebHostEnvironment hostingEnvironment, IMeteoDataHelper meteoDataHelper)
             : base(hostingEnvironment)
@@ -58,7 +58,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var range = _GetRange();
+                var range = InternalGetRange();
                 return Ok(range);
             }
             catch (Exception ex)
@@ -82,7 +82,7 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        private CalendarRange _GetRange()
+        private CalendarRange InternalGetRange()
         {
             return _dataHelper.GetCalendarRange(0);
         }
@@ -96,7 +96,7 @@ namespace ocpa.ro.api.Controllers
 
             try
             {
-                CalendarRange range = _GetRange();
+                CalendarRange range = InternalGetRange();
 
                 meteoData.CalendarRange = new CalendarRange
                 {
@@ -112,8 +112,6 @@ namespace ocpa.ro.api.Controllers
                 var allData = _dataHelper.GetData(region, gc, skip, take);
                 if (allData?.Count > 0)
                 {
-                    var weatherHelper = new WeatherTypeHelper(_dataHelper);
-
                     meteoData.Data = new Dictionary<string, MeteoDailyData>();
                     meteoData.CalendarRange.End = range.Start.AddDays(allData.Count - 1);
                     meteoData.CalendarRange.Length = allData.Count;
@@ -121,8 +119,8 @@ namespace ocpa.ro.api.Controllers
                     allData.ForEach(d =>
                     {
                         List<string> risks = new List<string>();
-                        var forecast = weatherHelper.GetWeatherType(d, risks);
-                        var wind = weatherHelper.GetWind(d, out string direction);
+                        var wind = WeatherTypeExtensions.GetWind(d, out string windDirection);
+                        var forecast = _dataHelper.GetWeatherType(d, wind, risks);
 
                         MeteoDailyData value = new MeteoDailyData
                         {
@@ -140,9 +138,9 @@ namespace ocpa.ro.api.Controllers
                             P00 = d.P_00.Round(),
                             P01 = d.P_01.Round(),
 
-                            TempFeel = weatherHelper.GetTempFeel(d),
+                            TempFeel = _dataHelper.GetTempFeel(d),
                             Wind = wind,
-                            WindDirection = direction,
+                            WindDirection = windDirection,
 
                             Hazards = risks,
                             Forecast = forecast,

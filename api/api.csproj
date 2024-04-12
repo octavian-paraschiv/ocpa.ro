@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <RootNamespace>ocpa.ro.api</RootNamespace>
+    <AssemblyName>api</AssemblyName>
+    <StartupObject>ocpa.ro.api.Program</StartupObject>
+    <WarningsAsErrors>true</WarningsAsErrors>
+    <WarningLevel>5</WarningLevel>
   </PropertyGroup>
-
-    <PropertyGroup>
-        <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
-        <RootNamespace>ocpa.ro.api</RootNamespace>
-        <AssemblyName>api</AssemblyName>
-        <StartupObject>ocpa.ro.api.Program</StartupObject>
-    </PropertyGroup>
 
     <ItemGroup>
       <Compile Remove="FileUpload\**" />
@@ -35,10 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="sqlite3.x64.dll">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="sqlite3.x86.dll">
+      <None Update="sqlite3.dll">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Models;
 using System;
@@ -7,7 +6,7 @@ using System.Collections.Generic;
 
 namespace ocpa.ro.api.Controllers
 {
-	[Route("[controller]")]
+    [Route("[controller]")]
 	[ApiController]
 	public class SensorsController : ApiControllerBase
     {

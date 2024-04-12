@@ -1,7 +1,6 @@
 ﻿using api.Controllers.Models;
 using api.Helpers;
 using Microsoft.AspNetCore.Hosting;
-using ocpa.ro.api.Helpers.Meteo.Helpers;
 using ocpa.ro.api.Models;
 using System;
 using System.Collections.Generic;
@@ -26,13 +25,11 @@ namespace ocpa.ro.api.Helpers
 
     public class MeteoDataHelper : IMeteoDataHelper
     {
-        private WeatherTypeHelper _precipHelper;
-
         static MeteoDB _db = null;
 
-        private MeteoScaleSettings _scale;
-        private IniFile _iniFile;
-        private string _dataFolder;
+        private readonly MeteoScaleSettings _scale;
+        private readonly IniFile _iniFile;
+        private readonly string _dataFolder;
 
         public MeteoScaleSettings Scale => _scale;
 
@@ -41,10 +38,7 @@ namespace ocpa.ro.api.Helpers
             string rootPath = Path.GetDirectoryName(hostingEnvironment.ContentRootPath);
             _dataFolder = Path.Combine(rootPath, "Content/Meteo");
 
-            if (_db == null)
-                _db = MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
-
-            _precipHelper = new WeatherTypeHelper(this);
+            _db ??= MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
 
             var iniPath = System.IO.Path.Combine(_dataFolder, "ScaleSettings.ini");
             _iniFile = new IniFile(iniPath);
@@ -89,8 +83,7 @@ namespace ocpa.ro.api.Helpers
                 File.WriteAllBytes(Path.Combine(_dataFolder, "Snapshot.db3"), unzipped.ToArray());
             }
 
-            if (_db != null)
-                _db.Close();
+            _db?.Close();
 
             _db = MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
         }
@@ -152,9 +145,9 @@ namespace ocpa.ro.api.Helpers
         public static T GetValue<T>(this Dictionary<string, float> data, string key, T defaultValue = default)
             where T : IComparable, IConvertible, IFormattable
         {
-            T val = defaultValue;
             Type type = typeof(T);
 
+            T val;
             try
             {
                 double raw = data[key];

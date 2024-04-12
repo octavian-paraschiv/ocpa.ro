@@ -16,11 +16,6 @@ namespace ocpa.ro.api
 {
     public class Startup
     {
-        static Startup()
-        {
-            DllUtility.SelectProperDllVersion("sqlite3");
-        }
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;

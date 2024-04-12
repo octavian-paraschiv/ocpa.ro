@@ -25,8 +25,7 @@ namespace ocpa.ro.api.Helpers
 
     public class MedicalDataHelper : IMedicalDataHelper
     {
-        private string _dataFolder = ".";
-        private MedicalDB _mdb = null;
+        private readonly MedicalDB _mdb = null;
 
         static readonly JsonSerializerSettings _ss = new JsonSerializerSettings
         {
@@ -47,8 +46,7 @@ namespace ocpa.ro.api.Helpers
             string rootPath = Path.GetDirectoryName(hostingEnvironment.ContentRootPath);
             string dataFolder = Path.Combine(rootPath, "Content/Medical");
 
-            if (_mdb == null)
-                _mdb = MedicalDB.Open(Path.Combine(dataFolder, "Medical.db3"), true);
+            _mdb ??= MedicalDB.Open(Path.Combine(dataFolder, "Medical.db3"), true);
         }
 
         public List<T> UnfilteredTable<T>() where T : IMedicalDbTable, new()
@@ -165,14 +163,9 @@ namespace ocpa.ro.api.Helpers
     public class MedicalDB
     {
         private SQLiteConnection _db = null;
-        private string _origPath = null;
+        private readonly string _origPath = null;
 
         public SQLiteConnection Database => _db;
-
-        static MedicalDB()
-        {
-            DllUtility.SelectProperDllVersion("sqlite3");
-        }
 
         public static MedicalDB Open(string path, bool write)
         {

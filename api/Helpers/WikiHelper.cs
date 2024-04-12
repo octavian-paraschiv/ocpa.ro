@@ -1,7 +1,5 @@
 ﻿using Markdig;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting.Internal;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -15,8 +13,8 @@ namespace ocpa.ro.api.Helpers
 
     public class WikiHelper : IWikiHelper
     {
-        private IWebHostEnvironment _hostingEnvironment = null;
-        static readonly string _defaultResponse = "<html><h1>NOT FOUND</h1><html>";
+        private readonly IWebHostEnvironment _hostingEnvironment = null;
+        private static readonly string _defaultResponse = "<html><h1>NOT FOUND</h1><html>";
 
         public WikiHelper(IWebHostEnvironment hostingEnvironment)
         {

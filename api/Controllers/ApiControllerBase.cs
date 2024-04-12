@@ -3,13 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ocpa.ro.api.Helpers;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -42,17 +38,16 @@ namespace ocpa.ro.api.Controllers
         {
             string json = JsonConvert.SerializeObject(data);
 
-            using (MemoryStream output = new MemoryStream())
-            using (GZipStream gzip = new GZipStream(output, CompressionLevel.Optimal))
-            {
-                var inData = Encoding.ASCII.GetBytes(json);
-                gzip.Write(inData, 0, inData.Length);
-                gzip.Close();
+            using MemoryStream output = new MemoryStream();
+            using GZipStream gzip = new GZipStream(output, CompressionLevel.Optimal);
 
-                var outData = output.ToArray();
+            var inData = Encoding.ASCII.GetBytes(json);
+            gzip.Write(inData, 0, inData.Length);
+            gzip.Close();
 
-                return Ok(Convert.ToBase64String(outData));
-            }
+            var outData = output.ToArray();
+
+            return Ok(Convert.ToBase64String(outData));
         }
     }
 }
