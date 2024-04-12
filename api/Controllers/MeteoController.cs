@@ -72,7 +72,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment)._GetGridCoordinates(region, subregion, city);
+                GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment).InternalGetGridCoordinates(region, subregion, city);
                 var data = GetMeteoData(gridCoordinates, region, skip, take);
                 return Ok(data);
             }

@@ -15,15 +15,12 @@ namespace ocpa.ro.api.Helpers
 
     public class AuthHelper : IAuthHelper
     {
-        private IConfiguration _configuration = null;
-        private IWebHostEnvironment _hostingEnvironment = null;
+        private readonly IWebHostEnvironment _hostingEnvironment = null;
+        private readonly SQLiteConnection _db = null;
 
-        private SQLiteConnection _db = null;
-
-        public AuthHelper(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
+        public AuthHelper(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
-            _configuration = configuration;
 
             string rootPath = Path.GetDirectoryName(_hostingEnvironment.ContentRootPath);
             string authDbFolder = Path.Combine(rootPath, "Content");
@@ -59,8 +56,7 @@ namespace ocpa.ro.api.Helpers
             try
             {
                 var dbu = _db.Get<User>(u => u.LoginId == user.LoginId);
-                if (dbu == null)
-                    dbu = new User { Id = -1, LoginId = user.LoginId };
+                dbu ??= new User { Id = -1, LoginId = user.LoginId };
 
                 dbu.Type = user.Type;
                 dbu.PasswordHash = user.PasswordHash;

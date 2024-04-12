@@ -13,7 +13,7 @@ namespace ocpa.ro.api.Controllers
     [Authorize(Roles = "Admin, Patient")]
     public class MedicalController : ApiControllerBase
     {
-        private IMedicalDataHelper _dataHelper = null;
+        private readonly IMedicalDataHelper _dataHelper = null;
 
         public MedicalController(IWebHostEnvironment hostingEnvironment, IMedicalDataHelper dbHelper)
             : base(hostingEnvironment)

@@ -159,7 +159,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                City city2 = _GetCity(region, subregion, city);
+                City city2 = InternalGetCity(region, subregion, city);
                 return Ok(city2);
             }
             catch (Exception ex)
@@ -173,7 +173,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var grid = _GetGridCoordinates(region, subregion, city);
+                var grid = InternalGetGridCoordinates(region, subregion, city);
                 return Ok(grid);
             }
             catch (Exception ex)
@@ -187,10 +187,7 @@ namespace ocpa.ro.api.Controllers
             Init();
 
             Region region2 = _regions.Where((Region rgn) => rgn.Name == region).FirstOrDefault();
-            if (region2 == null)
-                throw new Exception($"Could not find any region named '{region}'");
-
-            return region2;
+            return region2 ?? throw new Exception($"Could not find any region named '{region}'");
         }
 
         internal void ValidateSubregion(string region, string subregion)
@@ -209,7 +206,7 @@ namespace ocpa.ro.api.Controllers
                 throw new Exception($"Could not find any subregion named '{subregion}' in region '{region}'");
         }
 
-        internal City _GetCity(string region, string subregion, string city)
+        internal City InternalGetCity(string region, string subregion, string city)
         {
             ValidateSubregion(region, subregion);
 
@@ -223,10 +220,9 @@ namespace ocpa.ro.api.Controllers
 
                           select c).FirstOrDefault();
 
-            if (city2 == null)
-                throw new Exception($"Could not find any city named '{city}' in region '{region}', subregion '{subregion}'");
-
-            return new City
+            return city2 == null
+                ? throw new Exception($"Could not find any city named '{city}' in region '{region}', subregion '{subregion}'")
+                : new City
             {
                 Default = city2.Default,
                 Name = city2.Name,
@@ -237,10 +233,10 @@ namespace ocpa.ro.api.Controllers
             };
         }
 
-        internal GridCoordinates _GetGridCoordinates(string region, string subregion, string city)
+        internal GridCoordinates InternalGetGridCoordinates(string region, string subregion, string city)
         {
             Region region2 = GetRegion(region);
-            City city2 = _GetCity(region, subregion, city);
+            City city2 = InternalGetCity(region, subregion, city);
 
             if (region2.MinLat >= city2.Latitude || city2.Latitude >= region2.MaxLat)
                 throw new Exception($"City '{city}' has latitude outside region '{region}'");

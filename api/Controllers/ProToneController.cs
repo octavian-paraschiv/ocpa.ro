@@ -76,9 +76,9 @@ namespace ocpa.ro.api.Controllers
                 List<BuildInfo> builds = FetchBuilds(v, release);
                 return Ok(builds);
             }
-			catch (Exception ex)
+            catch (Exception ex)
             {
-				return BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 

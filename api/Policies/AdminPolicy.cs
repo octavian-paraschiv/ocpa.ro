@@ -11,7 +11,7 @@ namespace ocpa.ro.api.Policies
 
     public class AdminHandler : AuthorizationHandler<AdminRequirement>
     {
-        private IAuthHelper _authHelper;
+        private readonly IAuthHelper _authHelper;
 
         public AdminHandler(IAuthHelper authHelper)
         {
