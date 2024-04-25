@@ -1,0 +1,1 @@
+/OPMedia.ProTONE/SettingsForm/InternetSettingsPanel/DeezerConfigPage.md
