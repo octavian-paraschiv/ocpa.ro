@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using ocpa.ro.api.Helpers;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Middlewares
@@ -29,30 +27,47 @@ namespace ocpa.ro.api.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context?.Request?.Path.Value?.EndsWith("wiki", System.StringComparison.OrdinalIgnoreCase) ?? false)
-            {
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                string html = _wikiHelper.DefaultResponse;
+            var reqPath = context?.Request?.Path.Value ?? string.Empty;
 
-                if (context.Request.Query.TryGetValue("p", out StringValues p))
+            if (reqPath.StartsWith("/wiki/", System.StringComparison.OrdinalIgnoreCase))
+            {
+                if (!context.Request?.Method?.Equals(HttpMethods.Get, System.StringComparison.OrdinalIgnoreCase) ?? false)
                 {
-                    var wikiResourcePath = string.Join('/', p.Where(v => v?.Length > 0).Select(v => v));
-                    if (wikiResourcePath?.Length > 0)
+                    context.Response.StatusCode = StatusCodes.Status405MethodNotAllowed;
+                    return;
+                }
+
+
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                string rsp = _wikiHelper.DefaultResponse;
+
+                string resourcePath = reqPath.Replace("/wiki/", string.Empty);
+                var ext = System.IO.Path.GetExtension(resourcePath);
+
+                if (ext?.Length > 0)
+                {
+                    switch (ext.ToUpperInvariant())
                     {
-                        var html2 = await _wikiHelper.ProcessWikiFile(wikiResourcePath).ConfigureAwait(false);
-                        if (html2?.Length > 0)
-                        {
-                            html = html2;
-                            context.Response.StatusCode = StatusCodes.Status200OK;
-                        }
+                        case ".MD":
+                            var html2 = await _wikiHelper.ProcessWikiFile(resourcePath).ConfigureAwait(false);
+                            if (html2?.Length > 0)
+                            {
+                                rsp = html2;
+                                context.Response.StatusCode = StatusCodes.Status200OK;
+                            }
+                            break;
+
+                        default:
+                            var redir = reqPath.Replace("/wiki/", "/Content/wiki/");
+                            context.Response.Redirect(redir);
+                            return;
                     }
                 }
 
-                await context.Response.WriteAsync(html).ConfigureAwait(false);
+                await context.Response.WriteAsync(rsp).ConfigureAwait(false);
                 return;
             }
 
-            // Call the next delegate/middleware in the pipeline.
             await _next(context);
         }
     }

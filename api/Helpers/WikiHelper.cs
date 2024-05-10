@@ -25,8 +25,8 @@ namespace ocpa.ro.api.Helpers
 
         public async Task<string> ProcessWikiFile(string wikiResourcePath)
         {
-            string html = DefaultResponse;
-                    
+            string html = DefaultResponse.Replace("NOT FOUND", $"{wikiResourcePath}: NOT FOUND");
+
             try
             {
                 if (!wikiResourcePath.EndsWith(".md"))
@@ -34,18 +34,35 @@ namespace ocpa.ro.api.Helpers
 
                 string rootPath = Path.GetDirectoryName(_hostingEnvironment.ContentRootPath);
                 wikiResourcePath = Path.Combine(rootPath, $"Content/wiki/{wikiResourcePath}");
-                
 
-                if (File.Exists(wikiResourcePath)) 
+
+                if (File.Exists(wikiResourcePath))
                 {
                     var markdown = await File.ReadAllTextAsync(wikiResourcePath).ConfigureAwait(false);
                     if (markdown?.Length > 0)
                     {
                         var pipeline = new MarkdownPipelineBuilder()
+                            .UseBootstrap()
+                            .UseEmojiAndSmiley()
+                            .UseSoftlineBreakAsHardlineBreak()
                             .UseAdvancedExtensions()
                             .Build();
 
-                        html = Markdown.ToHtml(markdown, pipeline);
+                        var body = Markdown.ToHtml(markdown, pipeline);
+                        html = $"<html>" +
+                            $"<head>" +
+                            $"<meta charset=\"utf-8\">" +
+                            $"<meta http-equiv=\"cache-control\" content=\"no-cache\">" +
+                            $"<style>" +
+                            $".markdown-body {{ font-family: Arial; font-size: 12px; line-height: 1.3; word-wrap: break-word; }}" +
+                            $"</style>" +
+                            $"</head>" +
+                            $"<body>" +
+                            $"<div class=\"markdown-body\">" +
+                            $"{body}" +
+                            $"</div>" +
+                            $"</body>" +
+                            $"<html>";
                     }
                 }
             }
@@ -57,3 +74,4 @@ namespace ocpa.ro.api.Helpers
         }
     }
 }
+
