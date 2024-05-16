@@ -7,8 +7,7 @@ namespace ocpa.ro.api.Middlewares
 {
     public static class RequestCultureMiddlewareExtensions
     {
-        public static IApplicationBuilder UseWiki(
-            this IApplicationBuilder builder)
+        public static IApplicationBuilder UseWiki(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<WikiMiddleware>();
         }

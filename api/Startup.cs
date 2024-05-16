@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Helpers.Meteo;
@@ -76,7 +77,15 @@ namespace ocpa.ro.api
             services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(option =>
+            {
+                option.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Backend API for ocpa.ro",
+                        Version = "v1"
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
