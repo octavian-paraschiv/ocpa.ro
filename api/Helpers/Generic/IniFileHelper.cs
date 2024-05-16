@@ -4,16 +4,16 @@ using System;
 using System.Globalization;
 using System.IO;
 
-namespace api.Helpers
+namespace ocpa.ro.api.Helpers.Generic
 {
-    public class IniFile
+    public class IniFileHelper
     {
         private readonly string _iniFilePath;
         private readonly FileSystemWatcher _watchConfigFile;
 
         private IniData _iniData;
 
-        public IniFile(string iniFilePath)
+        public IniFileHelper(string iniFilePath)
         {
             _iniFilePath = iniFilePath;
 

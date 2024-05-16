@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Helpers;
-using ocpa.ro.api.Models;
+using ocpa.ro.api.Helpers.Medical;
+using ocpa.ro.api.Models.Generic;
 using ocpa.ro.api.Models.Medical.Database;
 using System;
 
@@ -11,6 +11,7 @@ namespace ocpa.ro.api.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin, Patient")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class MedicalController : ApiControllerBase
     {
         private readonly IMedicalDataHelper _dataHelper = null;

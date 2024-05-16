@@ -1,23 +1,23 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using ocpa.ro.api.Models;
+using ocpa.ro.api.Models.Authentication;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ocpa.ro.api.Helpers
+namespace ocpa.ro.api.Helpers.Authentication
 {
-    public interface IJwtTokenGenerator
+    public interface IJwtTokenHelper
     {
         string GenerateJwtToken(User user);
     }
 
-    public class JwtTokenGenerator : IJwtTokenGenerator
+    public class JwtTokenHelper : IJwtTokenHelper
     {
         IConfiguration _configuration;
 
-        public JwtTokenGenerator(IConfiguration configuration)
+        public JwtTokenHelper(IConfiguration configuration)
         {
             _configuration = configuration;
         }

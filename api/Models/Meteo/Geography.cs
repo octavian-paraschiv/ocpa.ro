@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ocpa.ro.api.Models
+namespace ocpa.ro.api.Models.Meteo
 {
     public class Region
     {

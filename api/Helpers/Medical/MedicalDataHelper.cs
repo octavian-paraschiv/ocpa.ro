@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ocpa.ro.api.Models;
+using ocpa.ro.api.Models.Generic;
 using ocpa.ro.api.Models.Medical.Database;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Net;
 using ThorusCommon.SQLite;
 
-namespace ocpa.ro.api.Helpers
+namespace ocpa.ro.api.Helpers.Medical
 {
     public interface IMedicalDataHelper
     {
@@ -61,7 +61,7 @@ namespace ocpa.ro.api.Helpers
                 .Where(ttd => categoryCode == string.Empty || categoryCode == ttd.TestCategoryCode.ToUpper());
 
             if (!types.Any())
-                throw new System.Exception("ERROR_TEST_TYPE_NOT_FOUND");
+                throw new Exception("ERROR_TEST_TYPE_NOT_FOUND");
 
             return types.ToList();
         }
@@ -74,12 +74,12 @@ namespace ocpa.ro.api.Helpers
             if (persons?.Count() > 0)
             {
                 if (persons.Count() > 1)
-                    throw new System.Exception("MULTIPLE_PERSONS_FOUND");
+                    throw new Exception("MULTIPLE_PERSONS_FOUND");
 
                 return persons.First();
             }
 
-            throw new System.Exception("ERROR_PERSON_NOT_FOUND");
+            throw new Exception("ERROR_PERSON_NOT_FOUND");
         }
 
         public List<TestDetail> Tests(int? id, int? pid, string cnp, string category, string type, DateTime? from, DateTime? to)
@@ -103,14 +103,14 @@ namespace ocpa.ro.api.Helpers
                     (testId < 0 || testId == td.TestId) &&
                     (category == string.Empty || category == td.TestCategoryCode) &&
                     (type == string.Empty || type == td.TestTypeCode) &&
-                    (dtFrom <= td.Date) &&
-                    (dtTo >= td.Date)
+                    dtFrom <= td.Date &&
+                    dtTo >= td.Date
                 );
 
             if (tests?.Count() > 0)
                 return tests.ToList();
 
-            throw new System.Exception("TESTS_NOT_FOUND");
+            throw new Exception("TESTS_NOT_FOUND");
         }
 
         public int SaveMedicalRecord<T>(T record) where T : IMedicalDbTable, new()
@@ -129,17 +129,17 @@ namespace ocpa.ro.api.Helpers
                     if (_mdb.Database.Update(updateRecord) > 0)
                         return (int)HttpStatusCode.OK;
 
-                    throw new System.Exception("ERROR_RECORD_NOT_UPDATED");
+                    throw new Exception("ERROR_RECORD_NOT_UPDATED");
                 }
 
-                throw new System.Exception("ERROR_UPDATE_RECORD_NOT_FOUND");
+                throw new Exception("ERROR_UPDATE_RECORD_NOT_FOUND");
             }
             else
             {
                 if (_mdb.Database.Insert(record) > 0)
                     return (int)HttpStatusCode.Created;
 
-                throw new System.Exception("ERROR_RECORD_NOT_INSERTED");
+                throw new Exception("ERROR_RECORD_NOT_INSERTED");
             }
         }
 
@@ -151,10 +151,10 @@ namespace ocpa.ro.api.Helpers
                 if (_mdb.Database.Delete(origRecord) > 0)
                     return (int)HttpStatusCode.OK;
 
-                throw new System.Exception("ERROR_RECORD_NOT_DELETED");
+                throw new Exception("ERROR_RECORD_NOT_DELETED");
             }
 
-            throw new System.Exception("ERROR_DELETE_RECORD_NOT_FOUND");
+            throw new Exception("ERROR_DELETE_RECORD_NOT_FOUND");
         }
     }
 
@@ -184,9 +184,9 @@ namespace ocpa.ro.api.Helpers
         {
             Close();
             if (!File.Exists(_origPath))
-                throw new System.Exception($"{_origPath} does not exist.");
+                throw new Exception($"{_origPath} does not exist.");
 
-            SQLiteOpenFlags openFlags = ((!write) ? SQLiteOpenFlags.ReadOnly : SQLiteOpenFlags.ReadWrite);
+            SQLiteOpenFlags openFlags = !write ? SQLiteOpenFlags.ReadOnly : SQLiteOpenFlags.ReadWrite;
             _db = new SQLiteConnection(_origPath, openFlags);
         }
 

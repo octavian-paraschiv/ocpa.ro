@@ -6,7 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using ocpa.ro.api.Helpers;
+using ocpa.ro.api.Helpers.Authentication;
+using ocpa.ro.api.Helpers.Medical;
+using ocpa.ro.api.Helpers.Meteo;
+using ocpa.ro.api.Helpers.Wiki;
 using ocpa.ro.api.Middlewares;
 using ocpa.ro.api.Policies;
 using System.Text;
@@ -66,13 +69,14 @@ namespace ocpa.ro.api
             services.AddSingleton<IAuthorizationHandler, AdminHandler>();
 
 
-            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
 
             services.AddTransient<IWikiHelper, WikiHelper>();
 
             services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -104,6 +108,9 @@ namespace ocpa.ro.api
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
     }
 }

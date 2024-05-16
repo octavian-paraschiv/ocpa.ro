@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using ocpa.ro.api.Models;
+using ocpa.ro.api.Models.ProTONE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,14 +22,9 @@ namespace ocpa.ro.api.Controllers
         {
         }
 
-        [HttpGet]
-        [Route("content")]
-        public string GetContentPath()
-        {
-            return ContentPath;
-        }
-
         [HttpGet("v1")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult OldGetV1([FromQuery] string release = null, [FromQuery] string version = null)
         {
             try
@@ -56,6 +52,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<BuildInfo>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult Get([FromQuery] string release = null, [FromQuery] string version = null)
         {
             try

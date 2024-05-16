@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using ocpa.ro.api.Helpers;
+using ocpa.ro.api.Helpers.Authentication;
+using ocpa.ro.api.Models.Authentication;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace ocpa.ro.api.Policies
             if (user == null)
                 return Task.CompletedTask;
 
-            if (user.Type != Models.UserType.Admin) 
+            if (user.Type != UserType.Admin) 
                 return Task.CompletedTask;
 
             context?.Succeed(requirement);

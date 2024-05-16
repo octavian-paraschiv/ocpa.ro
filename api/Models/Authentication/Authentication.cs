@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ocpa.ro.api.Models
+namespace ocpa.ro.api.Models.Authentication
 {
     public class AuthenticateRequest
     {

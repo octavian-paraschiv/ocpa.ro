@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ocpa.ro.api.Helpers
+namespace ocpa.ro.api.Helpers.Wiki
 {
     public interface IWikiHelper
     {

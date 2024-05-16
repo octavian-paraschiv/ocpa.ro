@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Converters;
 using System;
 
-namespace ocpa.ro.api.Models
+namespace ocpa.ro.api.Models.ProTONE
 {
     public enum BuildType
     {

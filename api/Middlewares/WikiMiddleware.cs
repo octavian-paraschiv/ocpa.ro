@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using ocpa.ro.api.Helpers;
+using ocpa.ro.api.Helpers.Wiki;
 using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Middlewares

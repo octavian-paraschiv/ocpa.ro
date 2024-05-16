@@ -1,7 +1,6 @@
-﻿using ocpa.ro.api.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace api.Controllers.Models
+namespace ocpa.ro.api.Models.Meteo
 {
     public static class MeteoConstants
     {

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using ocpa.ro.api.Helpers;
 using ThorusCommon.IO;
 using ThorusCommon.SQLite;
 
-namespace ocpa.ro.api.ExtensionMethods
+namespace ocpa.ro.api.Helpers.Meteo
 {
-    public static class WeatherTypeExtensions
+    public static class WeatherTypeHelper
     {
         static readonly string[] wdirs = new string[]
         {
@@ -14,32 +13,32 @@ namespace ocpa.ro.api.ExtensionMethods
         };
 
 
-        public static string GetWeatherType(this IMeteoDataHelper _dataHelper, Data meteoData, int wind, List<string> risks)
+        public static string GetWeatherType(MeteoScaleHelpers scale, Data meteoData, int wind, List<string> risks)
         {
             float precip = meteoData.C_00;
             float inst = -meteoData.L_00;
             float fog = meteoData.F_SI;
 
-            var inst_threshold = _dataHelper.Scale.Instability.Weak;
-            var inst_heavy = _dataHelper.Scale.Instability.Heavy;
+            var inst_threshold = scale.Instability.Weak;
+            var inst_heavy = scale.Instability.Heavy;
 
-            var precip_weak = _dataHelper.Scale.Precip.Weak;
-            var precip_moderate = _dataHelper.Scale.Precip.Moderate;
-            var precip_heavy = _dataHelper.Scale.Precip.Heavy;
-            var precip_extreme = _dataHelper.Scale.Precip.Extreme;
+            var precip_weak = scale.Precip.Weak;
+            var precip_moderate = scale.Precip.Moderate;
+            var precip_heavy = scale.Precip.Heavy;
+            var precip_extreme = scale.Precip.Extreme;
 
-            var fog_weak = _dataHelper.Scale.Fog.Weak;
-            var fog_moderate = _dataHelper.Scale.Fog.Moderate;
-            var fog_heavy = _dataHelper.Scale.Fog.Heavy;
-            var fog_extreme = _dataHelper.Scale.Fog.Extreme;
+            var fog_weak = scale.Fog.Weak;
+            var fog_moderate = scale.Fog.Moderate;
+            var fog_heavy = scale.Fog.Heavy;
+            var fog_extreme = scale.Fog.Extreme;
 
-            var wind_weak = _dataHelper.Scale.Wind.Weak;
-            var wind_moderate = _dataHelper.Scale.Wind.Moderate;
-            var wind_heavy = _dataHelper.Scale.Wind.Heavy;
-            var wind_extreme = _dataHelper.Scale.Wind.Extreme;
+            var wind_weak = scale.Wind.Weak;
+            var wind_moderate = scale.Wind.Moderate;
+            var wind_heavy = scale.Wind.Heavy;
+            var wind_extreme = scale.Wind.Extreme;
 
             string intensity = "00";
-            string type = _dataHelper.GetPrecipType(meteoData);
+            string type = GetPrecipType(scale, meteoData);
             if (type == "rain" && inst >= inst_threshold)
                 type = "inst";
 
@@ -120,7 +119,7 @@ namespace ocpa.ro.api.ExtensionMethods
             return (int)Math.Round(7.6f * (w00 + w01));
         }
 
-        public static string GetPrecipType(this IMeteoDataHelper _dataHelper, Data meteoData)
+        public static string GetPrecipType(MeteoScaleHelpers scale, Data meteoData)
         {
             var te = meteoData.T_TE;
             var ts = meteoData.T_TS;
@@ -131,7 +130,7 @@ namespace ocpa.ro.api.ExtensionMethods
                 te, ts, t01,
 
                 // Boundary temperatures as read from config file
-                _dataHelper.Scale.Boundaries,
+                scale.Boundaries,
 
                 // Computed precip type: snow
                 () => "snow",
@@ -147,18 +146,18 @@ namespace ocpa.ro.api.ExtensionMethods
             );
         }
 
-        public static string GetTempFeel(this IMeteoDataHelper _dataHelper, Data meteoData)
+        public static string GetTempFeel(MeteoScaleHelpers scale, Data meteoData)
         {
             float num = meteoData.T_SH;
             float num2 = meteoData.T_SL;
             float num3 = meteoData.T_NH;
 
-            float colder = _dataHelper.Scale.Temperature.Colder;
-            float cold = _dataHelper.Scale.Temperature.Cold;
-            float warm = _dataHelper.Scale.Temperature.Warm;
-            float warmer = _dataHelper.Scale.Temperature.Warmer;
-            float hot = _dataHelper.Scale.Temperature.Hot;
-            float frost = _dataHelper.Scale.Temperature.Frost;
+            float colder = scale.Temperature.Colder;
+            float cold = scale.Temperature.Cold;
+            float warm = scale.Temperature.Warm;
+            float warmer = scale.Temperature.Warmer;
+            float hot = scale.Temperature.Hot;
+            float frost = scale.Temperature.Frost;
 
             if (num >= hot)
                 return "hot";

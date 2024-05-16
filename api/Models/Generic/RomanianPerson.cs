@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace ocpa.ro.api.Models
+namespace ocpa.ro.api.Models.Generic
 {
     public static class SIRUTA
     {
@@ -71,7 +71,7 @@ namespace ocpa.ro.api.Models
         {
             cnp = (cnp ?? "").Trim();
             if (cnp.Length != 13)
-                throw new System.Exception("ERROR_BAD_CNP");
+                throw new Exception("ERROR_BAD_CNP");
 
             int sum = 0;
             for (int i = 0; i < ControlConstant.Length; i++)
@@ -81,12 +81,12 @@ namespace ocpa.ro.api.Models
                 sum += c1 * c2;
             }
 
-            int q = (sum % 11);
+            int q = sum % 11;
             if (q == 10)
                 q = 1;
 
             if (cnp.Last() != q + '0')
-                throw new System.Exception("ERROR_BAD_CNP");
+                throw new Exception("ERROR_BAD_CNP");
 
             return cnp;
         }
@@ -124,7 +124,7 @@ namespace ocpa.ro.api.Models
             string birthPlace = CNP.Substring(7, 2);
             NNN = CNP.Substring(9, 3);
 
-            Gender = (g % 2 == 0) ? "F" : "M";
+            Gender = g % 2 == 0 ? "F" : "M";
 
             string dateFmt = "yyyyMMdd";
 

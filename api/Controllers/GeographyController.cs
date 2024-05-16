@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using ocpa.ro.api.Models;
+using ocpa.ro.api.Models.Meteo;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -63,6 +64,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("regions")]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetRegionNames()
         {
             try
@@ -80,6 +83,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("subregions")]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetSubregionNames([FromQuery] string region)
         {
             try
@@ -88,8 +93,8 @@ namespace ocpa.ro.api.Controllers
 
                 var query = from rgn in _regions
                             from city in rgn.Cities
-                            
-                            where 
+
+                            where
                                 string.Equals(rgn.Name, region, StringComparison.OrdinalIgnoreCase)
 
                             orderby city.Subregion
@@ -104,6 +109,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("cities")]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetCityNames([FromQuery] string region, [FromQuery] string subregion)
         {
             try
@@ -112,8 +119,8 @@ namespace ocpa.ro.api.Controllers
 
                 var query = from rgn in _regions
                             from city in rgn.Cities
-                            
-                            where 
+
+                            where
                                 string.Equals(rgn.Name, region, StringComparison.OrdinalIgnoreCase) &&
                                 string.Equals(city.Subregion, subregion, StringComparison.OrdinalIgnoreCase)
 
@@ -129,6 +136,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("allCities")]
+        [ProducesResponseType(typeof(List<City>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetAllCities()
         {
             try
@@ -155,6 +164,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("city")]
+        [ProducesResponseType(typeof(City), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetCity(string region, string subregion, string city)
         {
             try
@@ -169,6 +180,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("grid")]
+        [ProducesResponseType(typeof(GridCoordinates), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetGridCoordinates([FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city)
         {
             try
@@ -211,26 +224,26 @@ namespace ocpa.ro.api.Controllers
             ValidateSubregion(region, subregion);
 
             City city2 = (from rgn in _regions
-                        from c in rgn.Cities
-                            
-                        where
-                            string.Equals(rgn.Name, region, StringComparison.OrdinalIgnoreCase) &&
-                            string.Equals(c.Subregion, subregion, StringComparison.OrdinalIgnoreCase) &&
-                            string.Equals(c.Name, city, StringComparison.OrdinalIgnoreCase)
+                          from c in rgn.Cities
+
+                          where
+                              string.Equals(rgn.Name, region, StringComparison.OrdinalIgnoreCase) &&
+                              string.Equals(c.Subregion, subregion, StringComparison.OrdinalIgnoreCase) &&
+                              string.Equals(c.Name, city, StringComparison.OrdinalIgnoreCase)
 
                           select c).FirstOrDefault();
 
             return city2 == null
                 ? throw new Exception($"Could not find any city named '{city}' in region '{region}', subregion '{subregion}'")
                 : new City
-            {
-                Default = city2.Default,
-                Name = city2.Name,
-                Latitude = city2.Latitude,
-                Longitude = city2.Longitude,
-                Region = region,
-                Subregion = city2.Subregion
-            };
+                {
+                    Default = city2.Default,
+                    Name = city2.Name,
+                    Latitude = city2.Latitude,
+                    Longitude = city2.Longitude,
+                    Region = region,
+                    Subregion = city2.Subregion
+                };
         }
 
         internal GridCoordinates InternalGetGridCoordinates(string region, string subregion, string city)

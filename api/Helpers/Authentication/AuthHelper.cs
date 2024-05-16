@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using ocpa.ro.api.Models;
+using ocpa.ro.api.Models.Authentication;
 using System.IO;
 using ThorusCommon.SQLite;
 
-namespace ocpa.ro.api.Helpers
+namespace ocpa.ro.api.Helpers.Authentication
 {
     public interface IAuthHelper
     {
