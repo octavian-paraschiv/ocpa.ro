@@ -11,7 +11,6 @@ using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Helpers.Meteo;
 using ocpa.ro.api.Helpers.Wiki;
-using ocpa.ro.api.Middlewares;
 using ocpa.ro.api.Policies;
 using System.Text;
 
@@ -110,8 +109,6 @@ namespace ocpa.ro.api
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseWiki();
 
             app.UseEndpoints(endpoints =>
             {
