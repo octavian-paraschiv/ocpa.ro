@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using ocpa.ro.api.Helpers.Authentication;
-using ocpa.ro.api.Models.Authentication;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Policies
 {
-    public class AdminRequirement : IAuthorizationRequirement
-    {
-    }
-
-    public class AdminHandler : AuthorizationHandler<AdminRequirement>
+    public class AdminHandler : AuthorizationHandler<RolesAuthorizationRequirement>
     {
         private readonly IAuthHelper _authHelper;
 
@@ -19,22 +16,39 @@ namespace ocpa.ro.api.Policies
             _authHelper = authHelper;
         }
 
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AdminRequirement requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RolesAuthorizationRequirement requirement)
         {
+            bool ok = false;
+
             var loginId = context?.User.Claims.FirstOrDefault()?.Value;
-            if (context != null && string.IsNullOrEmpty(loginId))
+            if (loginId?.Length > 0)
+            {
+                var user = _authHelper.GetUser(loginId);
+                var userType = user?.Type.ToString();
+
+                if (userType?.Length > 0)
+                {
+                    if (requirement?.AllowedRoles?.Any() ?? false)
+                    {
+                        // Specific roles requested, check if the user has a matching role
+                        ok = requirement.AllowedRoles.Contains(userType, StringComparer.OrdinalIgnoreCase);
+                    }
+                    else
+                    {
+                        // No specific role requested, just needs to be a registered user
+                        ok = true;
+                    }
+                }
+            }
+
+            if (ok)
+            {
+                context?.Succeed(requirement);
                 return Task.CompletedTask;
+            }
 
-            var user = _authHelper.GetUser(loginId);
-            if (user == null)
-                return Task.CompletedTask;
-
-            if (user.Type != UserType.Admin) 
-                return Task.CompletedTask;
-
-            context?.Succeed(requirement);
-
-            return Task.CompletedTask;
+            return requirement.HandleAsync(context);
         }
+
     }
 }

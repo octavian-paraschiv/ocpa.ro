@@ -125,7 +125,7 @@ namespace ocpa.ro.api.Helpers.Meteo
             var ts = meteoData.T_TS;
             var t01 = meteoData.T_01;
 
-            return PrecipTypeComputer<string>.Compute(
+            return PrecipTypeComputer.Compute<string>(
                 // Actual temperatures
                 te, ts, t01,
 

@@ -29,15 +29,9 @@ namespace ocpa.ro.api.Controllers
             if (user == null)
                 return Unauthorized();
 
-            var token = _jwtTokenGenerator.GenerateJwtToken(user);
-            if (token == null)
+            var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+            if (string.IsNullOrEmpty(rsp?.Token))
                 return Unauthorized();
-
-            var rsp = new AuthenticateResponse
-            {
-                LoginId = user.LoginId,
-                Token = token
-            };
 
             return Ok(rsp);
         }

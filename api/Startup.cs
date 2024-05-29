@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ocpa.ro.api.Helpers.Authentication;
+using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Helpers.Meteo;
 using ocpa.ro.api.Helpers.Wiki;
@@ -65,15 +66,15 @@ namespace ocpa.ro.api
             services.AddSingleton<IAuthHelper, AuthHelper>();
             services.AddSingleton<IMeteoDataHelper, MeteoDataHelper>();
             services.AddSingleton<IMedicalDataHelper, MedicalDataHelper>();
-
             services.AddSingleton<IAuthorizationHandler, AdminHandler>();
-
 
             services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
 
+            services.AddTransient<IMultipartRequestHelper, MultipartRequestHelper>();
             services.AddTransient<IWikiHelper, WikiHelper>();
 
-            services.AddControllers()
+            services
+                .AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
             services.AddSwaggerGen(option =>

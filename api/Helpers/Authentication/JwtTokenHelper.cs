@@ -10,7 +10,7 @@ namespace ocpa.ro.api.Helpers.Authentication
 {
     public interface IJwtTokenHelper
     {
-        string GenerateJwtToken(User user);
+        AuthenticateResponse GenerateJwtToken(User user);
     }
 
     public class JwtTokenHelper : IJwtTokenHelper
@@ -22,7 +22,7 @@ namespace ocpa.ro.api.Helpers.Authentication
             _configuration = configuration;
         }
 
-        public string GenerateJwtToken(User user)
+        public AuthenticateResponse GenerateJwtToken(User user)
         {
             // generate token that is valid for 1 hour
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -42,7 +42,13 @@ namespace ocpa.ro.api.Helpers.Authentication
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+
+            return new AuthenticateResponse
+            {
+                Expires = tokenDescriptor.Expires.Value,
+                LoginId = user?.LoginId,
+                Token = tokenHandler.WriteToken(token)
+            };
         }
     }
-}
+}   

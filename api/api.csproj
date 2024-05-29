@@ -11,32 +11,9 @@
   </PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="FileUpload\**" />
-	  <Content Remove="FileUpload\**" />
-	  <EmbeddedResource Remove="FileUpload\**" />
-	  <None Remove="FileUpload\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Remove="web.config" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Reference Include="ThorusCommon.IO">
 		<HintPath>..\..\Thorus\bin\ThorusCommon.IO.dll</HintPath>
 	  </Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Resource Include="web.config">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Resource>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="sqlite3.dll">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -47,6 +24,7 @@
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.7.0" />
+	  <PackageReference Include="ThorusCommon.IO" Version="1.0.49" />
 	</ItemGroup>
 
 </Project>

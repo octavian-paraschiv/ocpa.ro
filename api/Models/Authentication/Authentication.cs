@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ocpa.ro.api.Models.Authentication
 {
@@ -36,6 +37,9 @@ namespace ocpa.ro.api.Models.Authentication
 
         [Required]
         public string Token { get; set; }
+
+        [Required]
+        public DateTime Expires { get; set; }
     }
 
 }

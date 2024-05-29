@@ -7,15 +7,14 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Helpers.Meteo
 {
     public interface IMeteoDataHelper
     {
-        UploadDataPartResponse HandleDatabasePart(UploadDataPart part);
-        void ReplaceDatabase(string base64);
+        Task ReplaceDatabase(byte[] data);
         CalendarRange GetCalendarRange(int days);
         MeteoData GetMeteoData(GridCoordinates gc, string region, int skip, int take);
         MeteoScaleHelpers Scale { get; }
@@ -44,55 +43,17 @@ namespace ocpa.ro.api.Helpers.Meteo
             _scale = new MeteoScaleHelpers(_iniFile);
         }
 
-        public UploadDataPartResponse HandleDatabasePart(UploadDataPart part)
+        public async Task ReplaceDatabase(byte[] data)
         {
-            try
-            {
-                List<string> partFiles = new List<string>();
-                if (part.PartIndex == 0)
-                {
-                    partFiles = Directory.GetFiles(_dataFolder, "db_*.part").ToList();
-                    if (partFiles?.Count > 0)
-                        partFiles.ForEach(pf => File.Delete(pf));
-                }
-
-                File.WriteAllText(Path.Combine(_dataFolder, $"db_{part.PartIndex:d3}.part"), part.PartBase64);
-
-                partFiles = Directory.GetFiles(_dataFolder, "db_*.part").OrderBy(pf => pf).ToList();
-                if (partFiles?.Count == part.TotalParts)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    foreach (string pf in partFiles)
-                    {
-                        sb.Append(File.ReadAllText(pf));
-                        File.Delete(pf);
-                    }
-
-                    ReplaceDatabase(sb.ToString());
-                    return UploadDataPartResponse.Finished;
-                }
-            }
-            catch (Exception ex)
-            {
-                return UploadDataPartResponse.Abort(ex.Message);
-            }
-
-            return UploadDataPartResponse.Continue;
-        }
-
-        public void ReplaceDatabase(string base64)
-        {
-            byte[] data = Convert.FromBase64String(base64);
+            _db?.Close();
 
             using (MemoryStream input = new MemoryStream(data))
             using (GZipStream zipped = new GZipStream(input, CompressionMode.Decompress))
             using (MemoryStream unzipped = new MemoryStream())
             {
-                zipped.CopyTo(unzipped);
-                File.WriteAllBytes(Path.Combine(_dataFolder, "Snapshot.db3"), unzipped.ToArray());
+                await zipped.CopyToAsync(unzipped);
+                await File.WriteAllBytesAsync(Path.Combine(_dataFolder, "Snapshot.db3"), unzipped.ToArray());
             }
-
-            _db?.Close();
 
             _db = MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
         }
