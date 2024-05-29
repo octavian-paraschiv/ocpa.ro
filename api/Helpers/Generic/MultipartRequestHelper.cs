@@ -17,7 +17,7 @@ namespace ocpa.ro.api.Helpers.Generic
     public class MultipartRequestHelper : IMultipartRequestHelper
     {
         const int MultipartBoundaryLengthLimit = 8192;
-        const long MaxFileSize = 256 * 1024L * 1024L;
+        public const long MaxFileSize = 256 * 1024L * 1024L;
 
         public async Task<byte[]> GetMultipartRequestData(HttpRequest request)
         {

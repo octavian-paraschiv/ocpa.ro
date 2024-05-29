@@ -66,6 +66,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ApiExplorerSettings(IgnoreApi = true)]
         [DisableFormValueModelBinding]
+        [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
         public async Task<IActionResult> UploadDatabase()
         {
             try

@@ -21,13 +21,13 @@ namespace ocpa.ro.api.Helpers.Meteo
 
     }
 
-    public class MeteoDataHelper : IMeteoDataHelper
+    public class MeteoDataHelper : IMeteoDataHelper, IDisposable
     {
-        static MeteoDB _db = null;
-
+        private MeteoDB _db = null;
         private readonly MeteoScaleHelpers _scale;
         private readonly IniFileHelper _iniFile;
         private readonly string _dataFolder;
+        private readonly string _dbPath;
 
         public MeteoScaleHelpers Scale => _scale;
 
@@ -35,8 +35,9 @@ namespace ocpa.ro.api.Helpers.Meteo
         {
             string rootPath = Path.GetDirectoryName(hostingEnvironment.ContentRootPath);
             _dataFolder = Path.Combine(rootPath, "Content/Meteo");
+            _dbPath = Path.Combine(_dataFolder, "Snapshot.db3");
 
-            _db ??= MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
+            _db = MeteoDB.OpenOrCreate(_dbPath, false);
 
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
             _iniFile = new IniFileHelper(iniPath);
@@ -52,10 +53,12 @@ namespace ocpa.ro.api.Helpers.Meteo
             using (MemoryStream unzipped = new MemoryStream())
             {
                 await zipped.CopyToAsync(unzipped);
-                await File.WriteAllBytesAsync(Path.Combine(_dataFolder, "Snapshot.db3"), unzipped.ToArray());
+
+                var tmpFile = Path.GetTempFileName();
+                await File.WriteAllBytesAsync(_dbPath, unzipped.ToArray());
             }
 
-            _db = MeteoDB.OpenOrCreate(Path.Combine(_dataFolder, "Snapshot.db3"), false);
+            _db = MeteoDB.OpenOrCreate(_dbPath, false);
         }
 
         public CalendarRange GetCalendarRange(int days)
@@ -169,6 +172,11 @@ namespace ocpa.ro.api.Helpers.Meteo
                 .Take(take);
 
             return x.ToList();
+        }
+
+        public void Dispose()
+        {
+            _db?.SaveAndClose();
         }
     }
 

@@ -24,7 +24,7 @@
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.7.0" />
-	  <PackageReference Include="ThorusCommon.IO" Version="1.0.49" />
+	  <PackageReference Include="ThorusCommon.IO" Version="1.0.53" />
 	</ItemGroup>
 
 </Project>
