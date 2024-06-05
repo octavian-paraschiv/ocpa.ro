@@ -9,6 +9,7 @@ namespace ocpa.ro.api.Controllers
 
     [Route("[controller]")]
     [ApiController]
+    [ProducesErrorResponseType(typeof(void))]
     public class WikiController : ApiControllerBase
     {
         private readonly IWikiHelper _wikiHelper;
@@ -20,7 +21,8 @@ namespace ocpa.ro.api.Controllers
 
         [HttpGet("{*resourcePath}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [Produces("text/html")]
         public async Task<IActionResult> GetWikiResource([FromRoute] string resourcePath)
         {
             try

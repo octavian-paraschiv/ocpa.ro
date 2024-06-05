@@ -1,7 +1,7 @@
 
   <nav id="navbar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
     <div id="navbarContainer" class="container">
-      <a class="navbar-brand" [routerLink]="['/']">
+      <a class="navbar-brand">
         <div class="navbar-image">
           <div *ngIf="path==='meteo' || path==='meteo-photos'">
             <fa-layers>
@@ -58,36 +58,51 @@
         [ngClass]="{ show: isExpanded }"
       >
         <ul class="navbar-nav flex-grow">
-            <li class="nav-item"
+            <li *ngIf="isNonAdminPath" class="nav-item"
                 [routerLinkActive]="['link-active']"
                 [routerLinkActiveOptions]="{ exact: true }">
                 <a class="nav-link" [routerLink]="['/']">
                     Home
                 </a>
             </li>
-            <li class="nav-item" [routerLinkActive]="['link-active']">
+            <li *ngIf="isNonAdminPath" class="nav-item" [routerLinkActive]="['link-active']">
                 <a class="nav-link" [routerLink]="['/protone']">
                     ProTONE Player
                 </a>
             </li>
-            <li class="nav-item" [routerLinkActive]="['link-active']">
+            <li *ngIf="isNonAdminPath" class="nav-item" [routerLinkActive]="['link-active']">
                 <a class="nav-link" [routerLink]="['/meteo']">
                     Weather Forecast
                 </a>
             </li>
-            <li class="nav-item" [routerLinkActive]="['link-active']">
+            <li *ngIf="isNonAdminPath" class="nav-item" [routerLinkActive]="['link-active']">
               <a class="nav-link" [routerLink]="['/meteo-photos']">
                   Animated Forecast
               </a>
           </li>
-            <li class="nav-item" [routerLinkActive]="['link-active']">
+            <li *ngIf="isNonAdminPath" class="nav-item" [routerLinkActive]="['link-active']">
                 <a class="nav-link" [routerLink]="['/electronics']">
                     Electronics Blog
                 </a>
             </li>
-            <li class="nav-item" [routerLinkActive]="['link-active']">
+            <li *ngIf="isNonAdminPath" class="nav-item" [routerLinkActive]="['link-active']">
                 <a class="nav-link" [routerLink]="['/photography']">
                     Photo Album
+                </a>
+            </li>
+            <li *ngIf="isAdminMode || isLoginPath" class="nav-item">
+              <a class="nav-link" (click)="logout()">
+                  Exit Admin Mode
+              </a>
+            </li>
+            <li *ngIf="isAdminMode" class="nav-item" [routerLinkActive]="['link-active']">
+              <a class="nav-link" [routerLink]="['/admin/users']">
+                  Manage Users
+              </a>
+            </li>
+            <li *ngIf="isAdminMode" class="nav-item" [routerLinkActive]="['link-active']">
+                <a class="nav-link" [routerLink]="['/admin/meteo-database']">
+                  Manage Meteo Database
                 </a>
             </li>
         </ul>

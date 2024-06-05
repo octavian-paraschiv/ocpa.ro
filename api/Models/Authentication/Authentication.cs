@@ -39,7 +39,13 @@ namespace ocpa.ro.api.Models.Authentication
         public string Token { get; set; }
 
         [Required]
+        public UserType Type { get; set; }
+
+        [Required]
         public DateTime Expires { get; set; }
+
+        [Required]
+        public int Validity { get; set; }
     }
 
 }

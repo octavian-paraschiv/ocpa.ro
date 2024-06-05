@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@ag-grid-community/angular": "^31.3.2",
     "@angular/animations": "16.2.4",
     "@angular/common": "16.2.4",
     "@angular/compiler": "16.2.4",
@@ -24,10 +25,13 @@
     "@ng-select/ng-select": "^11.1.1",
     "@ngneat/until-destroy": "^8.1.4",
     "@popperjs/core": "^2.11.6",
+    "ag-grid-angular": "^31.3.2",
+    "ag-grid-community": "^31.3.2",
     "bootstrap": "^5.2.2",
     "mini.css": "^3.0.1",
     "popper.js": "^1.16.0",
     "rxjs": "^6.6.7",
+    "sha1": "^1.1.1",
     "tslib": "^2.0.0",
     "zone.js": "~0.13.2"
   },

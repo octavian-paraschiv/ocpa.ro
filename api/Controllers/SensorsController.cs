@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Models;
 using System;
@@ -8,6 +9,9 @@ namespace ocpa.ro.api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [ProducesErrorResponseType(typeof(void))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class SensorsController : ApiControllerBase
     {
         private const int count = 5;
@@ -17,7 +21,8 @@ namespace ocpa.ro.api.Controllers
         {
         }
 
-        [HttpGet("sensors")]
+        [HttpGet("data")]
+        [ProducesResponseType(typeof(SensorDataCollection), StatusCodes.Status200OK)]
         public SensorDataCollection ReadSensors()
         {
             SensorDataCollection sensorDataCollection = new SensorDataCollection

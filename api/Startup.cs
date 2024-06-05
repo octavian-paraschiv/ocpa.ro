@@ -7,13 +7,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Helpers.Meteo;
 using ocpa.ro.api.Helpers.Wiki;
+using ocpa.ro.api.Models.Configuration;
 using ocpa.ro.api.Policies;
-using System.Text;
 
 namespace ocpa.ro.api
 {
@@ -29,6 +30,8 @@ namespace ocpa.ro.api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Configuration.ResolveConfiguration(services, JwtConfig.SectionName, out JwtConfig jwtConfig);
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy => policy
@@ -51,9 +54,9 @@ namespace ocpa.ro.api
 
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                    ValidIssuer = jwtConfig.Issuer,
+                    ValidAudience = jwtConfig.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(jwtConfig.KeyBytes),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,

@@ -5,28 +5,30 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
-import { HomeComponent } from './components/home/home.component';
-import { ProTONEComponent } from './components/protone/protone.component';
-import { PhotographyComponent } from './components/photography/photography.component';
-import { ElectronicsComponent } from './components/electronics/electronics.component';
+import { HomeComponent } from './components/non-auth/home/home.component';
+import { ProTONEComponent } from './components/non-auth/protone/protone.component';
+import { PhotographyComponent } from './components/non-auth/photography/photography.component';
+import { ElectronicsComponent } from './components/non-auth/electronics/electronics.component';
 import { GeographyApiService, MeteoApiService, ProtoneApiService } from './services/api-services';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { DaySummaryComponent } from './components/meteo/day-summary/day-summary.component';
-import { MeteoComponent } from './components/meteo/meteo.component';
-import { DayDetailsComponent } from './components/meteo/day-details/day-details.component';
-import { DayRisksComponent } from './components/meteo/day-risks/day-risks.component';
+import { DaySummaryComponent } from './components/non-auth/meteo/day-summary/day-summary.component';
+import { MeteoComponent } from './components/non-auth/meteo/meteo.component';
+import { DayDetailsComponent } from './components/non-auth/meteo/day-details/day-details.component';
+import { DayRisksComponent } from './components/non-auth/meteo/day-risks/day-risks.component';
 import { Helper } from './services/helper';
 import { CountryCodePipe, DistancePipe, PressurePipe, SpeedPipe, TempPipe, VolumePipe } from './services/unit-transform-pipe';
-import { AdminComponent } from './components/admin/admin.component';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { UserService } from './services/user.service';
 import { AuthenticationService } from './services/authentication.services';
-import { LoginComponent } from './components/login/login.component';
+import { LoginComponent } from './components/auth/login/login.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Iso3166HelperService } from './services/iso3166-helper.service';
-import { MeteoPhotosComponent } from 'src/app/components/meteo-photos/meteo-photos.component';
+import { MeteoPhotosComponent } from 'src/app/components/non-auth/meteo-photos/meteo-photos.component';
+import { UsersComponent } from 'src/app/components/auth/users/users.component';
+import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
+import { AgGridAngular, AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
     declarations: [
@@ -39,7 +41,7 @@ import { MeteoPhotosComponent } from 'src/app/components/meteo-photos/meteo-phot
         ElectronicsComponent,
         PhotographyComponent,
 
-        AdminComponent,
+        UsersComponent,
         LoginComponent,
 
         DaySummaryComponent,
@@ -60,23 +62,30 @@ import { MeteoPhotosComponent } from 'src/app/components/meteo-photos/meteo-phot
     ReactiveFormsModule,
     FormsModule,
     RouterModule.forRoot([
-        { path: '', component: HomeComponent, pathMatch: 'full', data: { title: 'OcPa\'s Web Site' } },
+          { path: '', component: HomeComponent, pathMatch: 'full', data: { title: 'OcPa\'s Web Site' } },
           { path: 'protone', component: ProTONEComponent, data: { title: 'ProTONE Player Web Site' } },
           { path: 'meteo', component: MeteoComponent, data: { title: 'OcPa\'s Weather Forecast' } },
           { path: 'meteo-photos', component: MeteoPhotosComponent, data: { title: 'OcPa\'s Animated Forecast' } },
           { path: 'photography', component: PhotographyComponent, data: { title: 'OcPa\'s Photo Album' } },
           { path: 'electronics', component: ElectronicsComponent, data: { title: 'OcPa\'s Electronic Blog' } },
-          { path: 'admin', component: AdminComponent, data: { title: 'Administration Module' } },
-          { path: 'login', component: LoginComponent, data: { title: 'Administration Module' } },
+
+          { path: 'login', component: LoginComponent, data: { title: 'Login Module' } },
+          
+          { path: 'admin', component: UsersComponent, data: { title: 'Manage Users' } },
+          { path: 'admin/users', component: UsersComponent, data: { title: 'Manage Users' } },
+          { path: 'admin/meteo-database', component: MeteoDatabaseComponent, data: { title: 'Manage Meteo Database' } },
     ]),
     NoopAnimationsModule,
     FontAwesomeModule,
-    NgSelectModule
+    NgSelectModule,
+    AgGridModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     
+    AuthenticationService,
+
     GeographyApiService,
     {
       provide: APP_INITIALIZER,
@@ -96,7 +105,6 @@ import { MeteoPhotosComponent } from 'src/app/components/meteo-photos/meteo-phot
     ProtoneApiService,
     MeteoApiService,
     UserService,
-    AuthenticationService,
     Helper
   ],
   bootstrap: [AppComponent]

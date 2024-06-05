@@ -12,6 +12,9 @@ namespace ocpa.ro.api.Controllers
     [ApiController]
     [Authorize(Roles = "Admin, Patient")]
     [ApiExplorerSettings(IgnoreApi = true)]
+    [ProducesErrorResponseType(typeof(void))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class MedicalController : ApiControllerBase
     {
         private readonly IMedicalDataHelper _dataHelper = null;

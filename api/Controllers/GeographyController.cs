@@ -12,6 +12,10 @@ namespace ocpa.ro.api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [ProducesErrorResponseType(typeof(void))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+
     public class GeographyController : ApiControllerBase
     {
         private static string _configFilePath;

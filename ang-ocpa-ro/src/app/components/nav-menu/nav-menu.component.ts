@@ -3,6 +3,8 @@ import { Router, ActivationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { faCloudSunRain, faSquare, faMicrochip, faPhotoFilm, faPlay,
   faAngleRight, faEarth } from '@fortawesome/free-solid-svg-icons';
+import { AuthenticationService } from 'src/app/services/authentication.services';
+import { UserType } from 'src/app/models/user';
 
 @Component({
   selector: 'app-nav-menu',
@@ -21,7 +23,8 @@ export class NavMenuComponent {
     title = 'OcPa\'s Web Site';
     path: string = 'ocpa';
 
-    constructor(private readonly router: Router) {
+    constructor(private readonly router: Router,
+      private readonly authService: AuthenticationService) {
         this.router.events
             .pipe(filter(e => e instanceof ActivationStart))
             .subscribe(e => {
@@ -44,5 +47,31 @@ export class NavMenuComponent {
 
   toggle() {
     this.isExpanded = !this.isExpanded;
+  }
+
+  get isAdminMode(): boolean {
+    return this.isAdminPath && this.authService.validAdminUser;
+  }
+
+  get isAdminPath() {
+    return this.path?.startsWith('/admin') ||
+      this.path?.startsWith('admin');
+  }
+
+  get isLoginPath() {
+    return this.path?.startsWith('/login') ||
+      this.path?.startsWith('login');
+  }
+
+  get isNonAdminPath() {
+    return !this.isAdminMode && !this.isLoginPath;
+  }
+
+  logout() {
+    this.authService.logout(true);
+  }
+
+  enterAdminMode() {
+    this.router.navigate(['/admin']);
   }
 }

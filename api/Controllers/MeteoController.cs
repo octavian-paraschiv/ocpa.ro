@@ -13,6 +13,9 @@ namespace ocpa.ro.api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [ProducesErrorResponseType(typeof(void))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class MeteoController : ApiControllerBase
     {
         private readonly IMeteoDataHelper _dataHelper = null;

@@ -14,6 +14,9 @@ namespace ocpa.ro.api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [ProducesErrorResponseType(typeof(void))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class ProToneController : ApiControllerBase
     {
         static readonly Version transitionVersion = new Version("3.1.59");

@@ -1,9 +1,10 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UntilDestroy } from '@ngneat/until-destroy';
+import { UserType } from 'src/app/models/user';
 
 @UntilDestroy()
 @Component({
@@ -18,12 +19,11 @@ export class LoginComponent implements OnInit {
 
     constructor(
         private formBuilder: UntypedFormBuilder,
-        private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthenticationService
     ) { 
         // redirect to admin if already logged in
-        if (this.authenticationService.currentUserValue) { 
+        if (this.authenticationService.validAdminUser) { 
             this.router.navigate(['/admin']);
         }
     }
@@ -47,14 +47,17 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.authenticationService.login(this.f.username.value, this.f.password.value)
+        this.authenticationService.authenticate(this.f.username.value, this.f.password.value, UserType.Admin)
             .pipe(first())
             .subscribe({
-                next: () => this.router.navigate(['/admin']),
-                error: error => {
-                    this.error = error;
-                    this.loading = false;
-                }
+                next: msg => (msg?.length > 0) ? this.handleError(msg) : this.router.navigate(['/admin']),
+                error: () => this.handleError('Incorrect user name or password.')
             });
+    }
+
+    handleError(err: any) {
+        this.error = err;
+        this.loading = false;
+        this.f.password.reset();
     }
 }

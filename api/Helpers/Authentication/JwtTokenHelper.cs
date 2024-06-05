@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ocpa.ro.api.Models.Authentication;
+using ocpa.ro.api.Models.Configuration;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace ocpa.ro.api.Helpers.Authentication
 {
@@ -15,18 +15,18 @@ namespace ocpa.ro.api.Helpers.Authentication
 
     public class JwtTokenHelper : IJwtTokenHelper
     {
-        IConfiguration _configuration;
+        private JwtConfig _jwtConfig;
 
-        public JwtTokenHelper(IConfiguration configuration)
+        public JwtTokenHelper(IOptions<JwtConfig> jwtConfigOptions)
         {
-            _configuration = configuration;
+            _jwtConfig = jwtConfigOptions?.Value ?? throw new ArgumentNullException(nameof(jwtConfigOptions));
         }
 
         public AuthenticateResponse GenerateJwtToken(User user)
         {
             // generate token that is valid for 1 hour
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -35,20 +35,25 @@ namespace ocpa.ro.api.Helpers.Authentication
                     new Claim(ClaimTypes.Role, user?.Type.ToString())
                 }),
 
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"],
+                Issuer = _jwtConfig.Issuer,
+                Audience = _jwtConfig.Audience,
 
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Expires = DateTime.UtcNow.AddSeconds(_jwtConfig.Validity),
+
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_jwtConfig.KeyBytes),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return new AuthenticateResponse
             {
                 Expires = tokenDescriptor.Expires.Value,
+                Validity = _jwtConfig.Validity,
                 LoginId = user?.LoginId,
-                Token = tokenHandler.WriteToken(token)
+                Token = tokenHandler.WriteToken(token),
+                Type = user?.Type ?? default,
             };
         }
     }
-}   
+}

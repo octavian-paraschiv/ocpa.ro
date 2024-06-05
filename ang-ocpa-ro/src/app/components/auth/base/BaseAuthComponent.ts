@@ -1,26 +1,22 @@
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { interval } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 
 @UntilDestroy()
-@Component({
-    selector: 'app-admin',
-    templateUrl: './admin.component.html'
-})
-export class AdminComponent implements OnInit, OnDestroy {
+export abstract class BaseAuthComponent implements OnInit, OnDestroy {
 
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
         private ngZone: NgZone
     ) { 
-        // redirect to login if not already logged in
-        if (!this.authenticationService.currentUserValue || 
-            !this.authenticationService.currentUserValue.token) { 
+        const ua = navigator.userAgent;
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua))
+            this.router.navigate(['/']); // Forbid Admin mode when using a mobile device
+        else if (!this.authenticationService.validAdminUser)
             this.router.navigate(['/login']);
-        }
     }
 
     ngOnInit() {
@@ -33,15 +29,18 @@ export class AdminComponent implements OnInit, OnDestroy {
                 }
               });
           });
+
+        this.onInit();
     }
 
     ngOnDestroy(): void {
-        this.authenticationService.logout();
+        this.onDestroy();
     }
 
     logout() {
-        this.authenticationService.logout();
-        this.router.navigate(['/login']);
+        this.authenticationService.logout(true);
     }
 
+    protected onInit() {}
+    protected onDestroy() {}
 }

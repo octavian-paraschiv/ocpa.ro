@@ -186,7 +186,7 @@ namespace ocpa.ro.api.Helpers.Medical
             if (!File.Exists(_origPath))
                 throw new Exception($"{_origPath} does not exist.");
 
-            SQLiteOpenFlags openFlags = !write ? SQLiteOpenFlags.ReadOnly : SQLiteOpenFlags.ReadWrite;
+            SQLiteOpenFlags openFlags = write ? SQLiteOpenFlags.ReadWrite : SQLiteOpenFlags.ReadOnly;
             _db = new SQLiteConnection(_origPath, openFlags);
         }
 

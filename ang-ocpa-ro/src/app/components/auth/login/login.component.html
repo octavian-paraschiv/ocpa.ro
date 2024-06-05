@@ -1,5 +1,5 @@
 ﻿<div class="col-md-6 offset-md-3 mt-5">
-    <h4 class="card-header">Please enter your credentials for the Administration Module:</h4>
+    <h4 class="card-header">Please enter your username and password:</h4>
     <div class="card-body">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
@@ -20,7 +20,7 @@
                 <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                 Login
             </button>
-            <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+            <div *ngIf="error" class="alert alert-danger mt-3 mb-0" [innerHtml]="error"></div>
         </form>
     </div>
 </div>

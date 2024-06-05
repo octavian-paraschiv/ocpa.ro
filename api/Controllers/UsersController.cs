@@ -10,6 +10,9 @@ namespace ocpa.ro.api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [ProducesErrorResponseType(typeof(void))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class UsersController : ApiControllerBase
     {
         private readonly IJwtTokenHelper _jwtTokenGenerator;
@@ -21,8 +24,9 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpPost("authenticate")]
+        [Consumes("application/x-www-form-urlencoded")]
         [ProducesResponseType(typeof(AuthenticateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(UnauthorizedResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Authenticate([FromForm] AuthenticateRequest model)
         {
             var user = _authHelper.AuthorizeUser(model);
@@ -37,18 +41,38 @@ namespace ocpa.ro.api.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        public IActionResult GetAllUsers()
+        {
+            try
+            {
+                return Ok(_authHelper.AllUsers());
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("save")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult SaveUser([FromBody] User user)
         {
             try
             {
-                var dbu = _authHelper.SaveUser(user);
+                var dbu = _authHelper.SaveUser(user, out bool inserted);
                 if (dbu != null)
                 {
                     dbu.PasswordHash = null;
-                    return Ok(dbu);
+
+                    return inserted ?
+                        StatusCode(StatusCodes.Status201Created, dbu) :
+                        Ok(dbu);
                 }
             }
             catch (Exception ex)
@@ -57,6 +81,23 @@ namespace ocpa.ro.api.Controllers
             }
 
             return BadRequest();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("delete/{loginId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public IActionResult DeleteUser([FromRoute] string loginId)
+        {
+            try
+            {
+                return StatusCode(_authHelper.DeleteUser(loginId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

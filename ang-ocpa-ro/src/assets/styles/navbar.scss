@@ -21,7 +21,7 @@
     border-radius: 1em;
 }
 
-body > app-root > div > app-nav-menu > nav {
+body > app-root > div > app-nav-menu > nav, body > app-root > div > app-admin-nav-menu > nav {
     background-color: $nav-backcolor;
     border-radius: 0.2em;
     width: calc(99vw - 10px);
