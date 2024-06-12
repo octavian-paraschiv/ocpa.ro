@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthenticationResponse, UserType } from '../models/user';
 import { environment } from 'src/environments/environment';
-import * as sha1 from 'sha1';
 import { Router } from '@angular/router';
 
 @Injectable()
@@ -42,12 +41,12 @@ export class AuthenticationService {
     }
 
     authenticate(username: string, password: string, reqUserType: UserType): Observable<string> {
+        const hash = environment.ext.calc(username, password, environment.ext.seed())
         const formParams = new HttpParams()
             .set('loginId', username)
-            .set('password', sha1(password));
+            .set('password', hash);
 
-            const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-
+        const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         return this.http.post<AuthenticationResponse>(
             `${environment.apiUrl}/users/authenticate`, 
             formParams, { headers, withCredentials: true } )

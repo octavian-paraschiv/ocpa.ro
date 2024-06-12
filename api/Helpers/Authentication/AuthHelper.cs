@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using ocpa.ro.api.Models.Authentication;
+using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Helpers.Authentication
@@ -21,6 +23,18 @@ namespace ocpa.ro.api.Helpers.Authentication
         private readonly IWebHostEnvironment _hostingEnvironment = null;
         private readonly SQLiteConnection _db = null;
 
+        static readonly Assembly _extAsm = load();
+
+        private static Assembly load()
+        {
+            using (var stream = typeof(ThorusCommon.IO.Constants).Assembly.GetManifestResourceStream("ThorusCommon.IO.ext.dll"))
+            {
+                var bytes = new byte[stream.Length];
+                stream.Read(bytes, 0, bytes.Length);
+                return Assembly.Load(bytes);
+            }
+        }
+
         public AuthHelper(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
@@ -36,7 +50,14 @@ namespace ocpa.ro.api.Helpers.Authentication
         {
             try
             {
-                return _db.Get<User>(u => u.LoginId == req.LoginId && u.PasswordHash == req.Password);
+                var loginId = (req.LoginId ?? "").ToLowerInvariant();
+                var user = _db.Get<User>(u => u.LoginId.ToLower() == loginId);
+                if (user?.PasswordHash?.Length > 0 && req?.Password?.Length > 0)
+                {
+                    var seed = ext("j", req.Password);
+                    var calc = ext("k", user.PasswordHash, seed);
+                    return (calc == req.Password) ? user : null;
+                }
             }
             catch { }
 
@@ -61,10 +82,14 @@ namespace ocpa.ro.api.Helpers.Authentication
 
             try
             {
-                dbu = _db.Get<User>(u => u.LoginId == user.LoginId);
-                dbu ??= new User { Id = -1, LoginId = user.LoginId };
+                var loginId = (user.LoginId ?? "").ToLowerInvariant();
 
-                dbu.Type = user.Type;
+                dbu = _db.Get<User>(u => u.LoginId.ToLower() == loginId);
+                dbu ??= new User { Id = -1, LoginId = loginId };
+
+                if (user.Type != default)
+                    dbu.Type = user.Type;
+
                 dbu.PasswordHash = user.PasswordHash;
 
                 if (dbu.Id < 0)
@@ -112,7 +137,28 @@ namespace ocpa.ro.api.Helpers.Authentication
                 Id = u.Id,
                 LoginId = u.LoginId,
                 Type = u.Type,
+                PasswordHash = null,
             }).ToArray();
+        }
+
+        private static string ext(string method, params object[] args)
+        {
+            try
+            {
+                var field = _extAsm?.GetType("ext")?.GetField(method, BindingFlags.Static | BindingFlags.Public);
+                switch ((args?.Length).GetValueOrDefault())
+                {
+                    case 0:
+                        return (field.GetValue(null) as Func<string>)();
+                    case 1:
+                        return (field.GetValue(null) as Func<string, string>)(args[0] as string);
+                    case 2:
+                        return (field.GetValue(null) as Func<string, string, string>)(args[0] as string, args[1] as string);
+                }
+            }
+            catch { }
+
+            return null;
         }
     }
 }

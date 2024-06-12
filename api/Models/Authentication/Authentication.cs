@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Models.Authentication
 {
@@ -21,6 +22,7 @@ namespace ocpa.ro.api.Models.Authentication
 
     public class User
     {
+        [PrimaryKey]
         public int Id { get; set; }
 
         public string LoginId { get; set; }

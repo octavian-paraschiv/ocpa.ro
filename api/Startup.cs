@@ -56,7 +56,7 @@ namespace ocpa.ro.api
                 {
                     ValidIssuer = jwtConfig.Issuer,
                     ValidAudience = jwtConfig.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(jwtConfig.KeyBytes),
+                    IssuerSigningKey = new SymmetricSecurityKey(JwtConfig.KeyBytes),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
@@ -89,6 +89,7 @@ namespace ocpa.ro.api
                         Version = "v1"
                     });
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,10 +115,7 @@ namespace ocpa.ro.api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
 
             app.UseSwagger();
             app.UseSwaggerUI();

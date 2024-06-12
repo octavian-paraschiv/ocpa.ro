@@ -28,11 +28,12 @@
     "ag-grid-angular": "^31.3.2",
     "ag-grid-community": "^31.3.2",
     "bootstrap": "^5.2.2",
+    "crypto-js": "^4.2.0",
     "mini.css": "^3.0.1",
     "popper.js": "^1.16.0",
     "rxjs": "^6.6.7",
-    "sha1": "^1.1.1",
     "tslib": "^2.0.0",
+    "uuid": "^10.0.0",
     "zone.js": "~0.13.2"
   },
   "devDependencies": {

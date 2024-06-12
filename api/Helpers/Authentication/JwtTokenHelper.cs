@@ -40,7 +40,7 @@ namespace ocpa.ro.api.Helpers.Authentication
 
                 Expires = DateTime.UtcNow.AddSeconds(_jwtConfig.Validity),
 
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_jwtConfig.KeyBytes),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(JwtConfig.KeyBytes),
                     SecurityAlgorithms.HmacSha256Signature)
             };
 
