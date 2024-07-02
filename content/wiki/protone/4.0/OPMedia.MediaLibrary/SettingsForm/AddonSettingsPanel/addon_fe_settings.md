@@ -1,0 +1,1 @@
+/OPMedia.MediaLibrary/SettingsForm/AddonSettingsPanel/addon_fe_settings.md

@@ -1,0 +1,8 @@
+version: 1.0.{build}
+skip_tags: true
+image: Visual Studio 2017
+
+build_script:
+-ps: Invoke-WebRequest -URI "https://ocpa.ro/api/meteo/data?region=Europe&subregion=Serbia&city=Belgrade&skip=0&take=0"
+-ps: Invoke-WebRequest -URI "https://ocpa.ro/api/meteo/data?region=Romania&subregion=Constanta&city=Constanta&skip=0&take=0"
+-ps: Invoke-WebRequest -URI "https://ocpa.ro/api/meteo/data?region=Romania&subregion=Timis&city=Timisoara&skip=0&take=0"

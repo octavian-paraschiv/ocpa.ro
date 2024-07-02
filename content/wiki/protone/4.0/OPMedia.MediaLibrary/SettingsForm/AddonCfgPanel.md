@@ -1,0 +1,1 @@
+/OPMedia.MediaLibrary/SettingsForm/AddonCfgPanel.md

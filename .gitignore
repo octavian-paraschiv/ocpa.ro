@@ -1,0 +1,8 @@
+packages
+.vs
+/ang-ocpa-ro/node_modules
+/api/bin
+/api/obj
+.angular
+ang-ocpa-ro/dist*/
+api/api/
