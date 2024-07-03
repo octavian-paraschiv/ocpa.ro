@@ -1,1 +1,0 @@
-/OPMedia.MediaLibrary/OPMediaAddonsBuiltinCatalogExplorerAddonPanel/CatalogItemPropMC.md

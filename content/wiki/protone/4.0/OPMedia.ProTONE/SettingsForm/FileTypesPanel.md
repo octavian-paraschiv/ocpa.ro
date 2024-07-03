@@ -1,1 +1,0 @@
-/OPMedia.ProTONE/SettingsForm/FileTypesPanel.md

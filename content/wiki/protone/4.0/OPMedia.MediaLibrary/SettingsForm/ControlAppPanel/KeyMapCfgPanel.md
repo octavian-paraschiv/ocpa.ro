@@ -1,1 +1,0 @@
-/OPMedia.MediaLibrary/SettingsForm/ControlAppPanel/KeyMapCfgPanel.md

@@ -1,1 +1,0 @@
-/OPMedia.ProTONE/SettingsForm/ControlAppPanel/KeyMapCfgPanel.md

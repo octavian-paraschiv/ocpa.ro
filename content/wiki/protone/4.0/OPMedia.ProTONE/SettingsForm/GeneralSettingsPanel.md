@@ -1,1 +1,0 @@
-/OPMedia.ProTONE/SettingsForm/GeneralSettingsPanel.md

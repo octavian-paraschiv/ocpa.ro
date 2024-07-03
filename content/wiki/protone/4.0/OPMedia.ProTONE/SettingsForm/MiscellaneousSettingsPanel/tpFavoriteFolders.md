@@ -1,1 +1,0 @@
-/OPMedia.ProTONE/SettingsForm/MiscellaneousSettingsPanel/tpFavoriteFolders.md

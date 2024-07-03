@@ -1,1 +1,0 @@
-/OPMedia.MediaLibrary/SettingsForm/GeneralSettingsPanel.md

@@ -1,1 +1,0 @@
-/OPMedia.MediaLibrary/SettingsForm/TroubleshootingPanel/DiagnosticsPage.md
