@@ -13,6 +13,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ApiControllerBase
     {
         private readonly IJwtTokenHelper _jwtTokenGenerator;
@@ -27,6 +28,7 @@ namespace ocpa.ro.api.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         [ProducesResponseType(typeof(AuthenticateResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [AllowAnonymous]
         public IActionResult Authenticate([FromForm] AuthenticateRequest model)
         {
             var user = _authHelper.AuthorizeUser(model);
@@ -40,7 +42,7 @@ namespace ocpa.ro.api.Controllers
             return Ok(rsp);
         }
 
-        [Authorize(Roles = "Admin")]
+
         [HttpGet]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -56,7 +58,6 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost("save")]
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -83,7 +84,6 @@ namespace ocpa.ro.api.Controllers
             return BadRequest();
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("delete/{loginId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

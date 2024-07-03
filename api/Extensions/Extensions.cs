@@ -32,7 +32,7 @@ namespace ocpa.ro.api.Extensions
                 return null;
 
             string rootPath = Path.GetDirectoryName(hostingEnvironment.ContentRootPath);
-            return Path.Combine(rootPath, "Content");
+            return Path.Combine(rootPath, "../Content");
         }
     }
 }

@@ -32,6 +32,7 @@ namespace ocpa.ro.api.Controllers
 
         [HttpGet("paths")]
         [ApiExplorerSettings(IgnoreApi = true)]
+        [AllowAnonymous]
         public IActionResult GetContentRootPath()
         {
             return Ok(new Dictionary<string, string>
