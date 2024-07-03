@@ -50,4 +50,8 @@ export class ProTONEComponent implements OnInit {
 
         return [];
     }
+
+    public comment(bi: BuildInfo): string {
+        return ` ${bi?.comment ?? ''}`.trim();
+    }
 }
