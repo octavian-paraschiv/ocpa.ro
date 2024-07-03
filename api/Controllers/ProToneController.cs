@@ -117,39 +117,36 @@ namespace ocpa.ro.api.Controllers
         private List<BuildInfo> GetProtoneBuilds(BuildType buildType, Version minVersion)
         {
             List<BuildInfo> list = new List<BuildInfo>();
+            string folder = "legacy";
 
-            string folder = (buildType == BuildType.Legacy) ? "legacy" : "current";
-            string path = System.IO.Path.Combine(_hostingEnvironment.ContentPath(), $"ProTONE/{folder}");
+            switch (buildType)
+            {
+                case BuildType.Experimental:
+                    folder = "beta";
+                    break;
+
+                case BuildType.Release:
+                    folder = "current";
+                    break;
+
+                case BuildType.Legacy:
+                default:
+                    folder = "legacy";
+                    break;
+            }
+
+            string path = Path.Combine(_hostingEnvironment.ContentPath(), $"ProTONE/{folder}");
 
             if (string.IsNullOrEmpty(path) == false)
             {
                 var files = Directory.GetFiles(path, "*.exe");
-                if (files != null && files.Length > 0)
+                if (files?.Length > 0)
                 {
-                    var fileList = files.ToList();
-                    foreach (var file in fileList)
+                    files.ToList().ForEach(file =>
                     {
                         BuildInfo bi = ReadBuildInfo(file);
-                        if (bi != null)
-                        {
-                            switch (buildType)
-                            {
-                                case BuildType.Legacy:
-                                    list.Add(bi);
-                                    break;
-
-                                case BuildType.Release:
-                                    if (bi.IsRelease)
-                                        list.Add(bi);
-                                    break;
-
-                                case BuildType.Experimental:
-                                    if (!bi.IsRelease)
-                                        list.Add(bi);
-                                    break;
-                            }
-                        }
-                    }
+                        list.Add(bi);
+                    });
                 }
             }
 
