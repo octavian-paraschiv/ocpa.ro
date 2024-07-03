@@ -104,7 +104,7 @@ namespace ocpa.ro.api.Helpers.Content
 
         private ContentUnit ExplorePath(string path, int? level, string filter)
         {
-            filter = filter ?? "*";
+            filter ??= "*";
 
             if (File.Exists(path))
             {

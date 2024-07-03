@@ -8,7 +8,6 @@ using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Models.Content;
 using ocpa.ro.api.Policies;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Controllers
@@ -28,18 +27,6 @@ namespace ocpa.ro.api.Controllers
         {
             _contentHelper = contentHelper ?? throw new ArgumentNullException(nameof(contentHelper));
             _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
-        }
-
-        [HttpGet("paths")]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [AllowAnonymous]
-        public IActionResult GetContentRootPath()
-        {
-            return Ok(new Dictionary<string, string>
-            {
-                { "_hostingEnvironment.ContentRootPath", _hostingEnvironment.ContentRootPath },
-                { "_hostingEnvironment.ContentPath()", _hostingEnvironment.ContentPath() }
-            });
         }
 
         [HttpGet("{*contentPath}")]
