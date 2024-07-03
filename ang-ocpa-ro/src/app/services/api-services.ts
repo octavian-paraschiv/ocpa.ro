@@ -143,6 +143,11 @@ export class MeteoApiService {
     constructor(private readonly httpClient: HttpClient) {
     }
 
+    public getStudioDownloadUrl(): Observable<string> {
+        const uri = `${environment.apiUrl}/meteo/studioDownloadUrl`;
+        return this.httpClient.get<string>(uri);
+    }
+
     public getRange(region: string): Observable<CalendarRange> {
         const uri = `${environment.apiUrl}/meteo/range?region=${region}`;
         return this.httpClient.get<CalendarRange>(uri);

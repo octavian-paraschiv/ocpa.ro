@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
@@ -32,6 +33,10 @@ namespace ocpa.ro.api.Extensions
                 return null;
 
             string rootPath = Path.GetDirectoryName(hostingEnvironment.ContentRootPath);
+
+            if (hostingEnvironment.IsDevelopment())
+                return Path.Combine(rootPath, "Content");
+
             return Path.Combine(rootPath, "../Content");
         }
     }

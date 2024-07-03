@@ -19,7 +19,7 @@ namespace ocpa.ro.api.Helpers.Meteo
         CalendarRange GetCalendarRange(int days);
         MeteoData GetMeteoData(GridCoordinates gc, string region, int skip, int take);
         MeteoScaleHelpers Scale { get; }
-
+        public string LatestStudioFile { get; }
     }
 
     public class MeteoDataHelper : IMeteoDataHelper, IDisposable
@@ -42,6 +42,27 @@ namespace ocpa.ro.api.Helpers.Meteo
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
             _iniFile = new IniFileHelper(iniPath);
             _scale = new MeteoScaleHelpers(_iniFile);
+        }
+
+        public string LatestStudioFile
+        {
+            get
+            {
+                string path = Path.Combine(_dataFolder, $"current");
+                if (path?.Length > 0 && Directory.Exists(path))
+                {
+                    var files = Directory.GetFiles(path, "Thorus Weather Studio *.exe");
+                    if (files?.Length > 0)
+                    {
+                        return files
+                            .Select(f => Path.GetFileName(f))
+                            .OrderByDescending(f => new Version(f.Replace("Thorus Weather Studio", "").Replace(".exe", "").Trim()))
+                            .FirstOrDefault();
+                    }
+                }
+
+                return null;
+            }
         }
 
         public async Task ReplaceDatabase(byte[] data)

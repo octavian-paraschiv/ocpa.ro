@@ -137,7 +137,7 @@ namespace ocpa.ro.api.Controllers
 
             string path = Path.Combine(_hostingEnvironment.ContentPath(), $"ProTONE/{folder}");
 
-            if (string.IsNullOrEmpty(path) == false)
+            if (path?.Length > 0 && Directory.Exists(path))
             {
                 var files = Directory.GetFiles(path, "*.exe");
                 if (files?.Length > 0)

@@ -28,6 +28,25 @@ namespace ocpa.ro.api.Controllers
             _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
         }
 
+        [HttpGet("studioDownloadUrl")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        public IActionResult GetStudioDownloadUrl()
+        {
+            try
+            {
+                var fileName = _dataHelper.LatestStudioFile;
+                if (fileName?.Length > 0)
+                    return Ok($"{Request.Scheme}://{Request.Host}/content/Meteo/current/{fileName}");
+            }
+            catch
+            {
+            }
+
+            return NotFound();
+        }
+
         [HttpGet("range")]
         [ProducesResponseType(typeof(CalendarRange), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

@@ -1,1 +1,3 @@
-<h5 style="text-align: justify;">Upload meteo database</h5>
+<h5 style="text-align: justify;" *ngIf="studioDownloadUrl?.length > 0">
+    Download latest Thorus Weather Studio from <a href="{{studioDownloadUrl}}">here.</a>
+</h5>

@@ -42,6 +42,7 @@ import { AgGridModule } from 'ag-grid-angular';
         PhotographyComponent,
 
         UsersComponent,
+        MeteoDatabaseComponent,
         LoginComponent,
 
         DaySummaryComponent,
