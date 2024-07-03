@@ -10,7 +10,7 @@
                 <a href="{{latestBuild.url}}">{{latestBuild.title}}</a>
             </td>
             <td>
-                <h5>&nbsp;[Built on: {{latestBuild.buildDate | date: 'yyyy-MM-dd' }}comment(latestBuild)]</h5>
+                <h5>&nbsp;[Built on: {{latestBuild.buildDate | date: 'yyyy-MM-dd' }}{{comment(latestBuild)}}]</h5>
             </td>
         </tr>
     </ng-container>
@@ -27,7 +27,7 @@
                 <a href="{{bi.url}}">{{bi.title}}</a>
             </td>
             <td>
-                <h5>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}comment(bi)]</h5>
+                <h5>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}{{comment(bi)}}]</h5>
             </td>
         </tr>
     </ng-container>
@@ -45,7 +45,7 @@
                 <a href="{{bi.url}}">{{bi.title}}</a>
             </td>
             <td>
-                <h5>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}comment(bi)]</h5>
+                <h5>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}{{comment(bi)}}]</h5>
             </td>
         </tr>
     </ng-container>
