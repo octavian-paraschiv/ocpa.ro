@@ -52,6 +52,9 @@ export class ProTONEComponent implements OnInit {
     }
 
     public comment(bi: BuildInfo): string {
-        return ` [${bi?.comment ?? ''}]`.trimEnd();
+        let cm = '';
+        if (bi?.comment?.length > 0)
+            cm = `, ${bi.comment}`;
+        return cm;
     }
 }
