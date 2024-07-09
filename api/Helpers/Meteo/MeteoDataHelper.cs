@@ -15,29 +15,36 @@ namespace ocpa.ro.api.Helpers.Meteo
 {
     public interface IMeteoDataHelper
     {
-        Task ReplaceDatabase(byte[] data);
-        CalendarRange GetCalendarRange(int days);
-        MeteoData GetMeteoData(GridCoordinates gc, string region, int skip, int take);
+        Task ReplaceDatabase(int dbIdx, byte[] data);
+        CalendarRange GetCalendarRange(int dbIdx, int days);
+        MeteoData GetMeteoData(int dbIdx, GridCoordinates gc, string region, int skip, int take);
         MeteoScaleHelpers Scale { get; }
         public string LatestStudioFile { get; }
     }
 
     public class MeteoDataHelper : IMeteoDataHelper, IDisposable
     {
-        private MeteoDB _db = null;
+        public const int DbCount = 5;
+
         private readonly MeteoScaleHelpers _scale;
         private readonly IniFileHelper _iniFile;
         private readonly string _dataFolder;
-        private readonly string _dbPath;
+
+        private MeteoDB[] _databases = new MeteoDB[DbCount];
+        private readonly string[] _dbPaths = new string[DbCount];
 
         public MeteoScaleHelpers Scale => _scale;
 
         public MeteoDataHelper(IWebHostEnvironment hostingEnvironment)
         {
             _dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Meteo");
-            _dbPath = Path.Combine(_dataFolder, "Snapshot.db3");
 
-            _db = MeteoDB.OpenOrCreate(_dbPath, false);
+            for (int i = 0; i <= _databases.Length; i++)
+            {
+                var dbName = i > 0 ? $"Preview{i}" : "Snapshot";
+                _dbPaths[i] = Path.Combine(_dataFolder, $"{dbName}.db3");
+                _databases[i] = MeteoDB.OpenOrCreate(_dbPaths[i], false);
+            }
 
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
             _iniFile = new IniFileHelper(iniPath);
@@ -65,9 +72,9 @@ namespace ocpa.ro.api.Helpers.Meteo
             }
         }
 
-        public async Task ReplaceDatabase(byte[] data)
+        public async Task ReplaceDatabase(int dbIdx, byte[] data)
         {
-            _db?.Close();
+            _databases[dbIdx]?.Close();
 
             using (MemoryStream input = new MemoryStream(data))
             using (GZipStream zipped = new GZipStream(input, CompressionMode.Decompress))
@@ -76,18 +83,18 @@ namespace ocpa.ro.api.Helpers.Meteo
                 await zipped.CopyToAsync(unzipped);
 
                 var tmpFile = Path.GetTempFileName();
-                await File.WriteAllBytesAsync(_dbPath, unzipped.ToArray());
+                await File.WriteAllBytesAsync(_dbPaths[dbIdx], unzipped.ToArray());
             }
 
-            _db = MeteoDB.OpenOrCreate(_dbPath, false);
+            _databases[dbIdx] = MeteoDB.OpenOrCreate(_dbPaths[dbIdx], false);
         }
 
-        public CalendarRange GetCalendarRange(int days)
+        public CalendarRange GetCalendarRange(int dbIdx, int days)
         {
             CalendarRange result = new CalendarRange();
             try
             {
-                var x = _db.Data
+                var x = _databases[dbIdx].Data
                     .Where(d => d.RegionId == 1 && d.R == 0 && d.C == 0)
                     .OrderBy(d => d.Timestamp)
                     .Distinct();
@@ -113,13 +120,13 @@ namespace ocpa.ro.api.Helpers.Meteo
             return result;
         }
 
-        public MeteoData GetMeteoData(GridCoordinates gc, string region, int skip, int take)
+        public MeteoData GetMeteoData(int dbIdx, GridCoordinates gc, string region, int skip, int take)
         {
             MeteoData meteoData = new MeteoData { GridCoordinates = gc };
 
             try
             {
-                CalendarRange range = GetCalendarRange(0);
+                CalendarRange range = GetCalendarRange(dbIdx, 0);
 
                 meteoData.CalendarRange = new CalendarRange
                 {
@@ -132,7 +139,7 @@ namespace ocpa.ro.api.Helpers.Meteo
 
                 take = Math.Min(range.Length - skip, Math.Max(0, range.Length));
 
-                var allData = GetData(region, gc, skip, take);
+                var allData = GetData(dbIdx, region, gc, skip, take);
                 if (allData?.Count > 0)
                 {
                     meteoData.Data = new Dictionary<string, MeteoDailyData>();
@@ -180,13 +187,13 @@ namespace ocpa.ro.api.Helpers.Meteo
         }
 
 
-        private List<Data> GetData(string region, GridCoordinates gc, int skip, int take)
+        private List<Data> GetData(int dbIdx, string region, GridCoordinates gc, int skip, int take)
         {
-            var regionId = (from r in _db.Regions
+            var regionId = (from r in _databases[dbIdx].Regions
                             where r.Name == region
                             select r.Id).FirstOrDefault();
 
-            var x = _db.Data
+            var x = _databases[dbIdx].Data
                 .Where(d => d.RegionId == regionId && d.R == gc.R && d.C == gc.C)
                 .OrderBy(d => d.Timestamp)
                 .Skip(skip)
@@ -197,7 +204,8 @@ namespace ocpa.ro.api.Helpers.Meteo
 
         public void Dispose()
         {
-            _db?.SaveAndClose();
+            foreach (var db in _databases)
+                db?.SaveAndClose();
         }
     }
 
