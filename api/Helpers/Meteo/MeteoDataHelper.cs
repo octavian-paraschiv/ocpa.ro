@@ -39,7 +39,7 @@ namespace ocpa.ro.api.Helpers.Meteo
         {
             _dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Meteo");
 
-            for (int i = 0; i <= _databases.Length; i++)
+            for (int i = 0; i < _databases.Length; i++)
             {
                 var dbName = i > 0 ? $"Preview{i}" : "Snapshot";
                 _dbPaths[i] = Path.Combine(_dataFolder, $"{dbName}.db3");
