@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Models.Authentication;
+using ocpa.ro.api.Policies;
 using System;
 
 namespace ocpa.ro.api.Controllers
@@ -46,6 +47,7 @@ namespace ocpa.ro.api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ApiExplorerIgnore]
         public IActionResult GetAllUsers()
         {
             try
@@ -62,6 +64,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ApiExplorerIgnore]
         public IActionResult SaveUser([FromBody] User user)
         {
             try
@@ -88,6 +91,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ApiExplorerIgnore]
         public IActionResult DeleteUser([FromRoute] string loginId)
         {
             try

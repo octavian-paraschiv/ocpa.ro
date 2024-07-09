@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Models.Generic;
 using ocpa.ro.api.Models.Medical.Database;
+using ocpa.ro.api.Policies;
 using System;
 
 namespace ocpa.ro.api.Controllers
@@ -11,7 +12,7 @@ namespace ocpa.ro.api.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin, Patient")]
-    [ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerIgnore]
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]

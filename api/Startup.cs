@@ -99,22 +99,25 @@ namespace ocpa.ro.api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
+            bool isDevelopment = env.IsDevelopment();
+
+            ApiExplorerIgnoreAttribute.IsDevelopment = isDevelopment;
+
+            if (isDevelopment)
                 app.UseDeveloperExceptionPage();
-            }
 
             app.UseRouting();
 
-#if DEBUG
-            app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(url => true)
-                .AllowCredentials());
-#else
-            app.UseCors();
-#endif
+            if (isDevelopment)
+            {
+                app.UseCors(x => x
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(url => true)
+                    .AllowCredentials());
+            }
+            else
+                app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
