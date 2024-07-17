@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-    "@ag-grid-community/angular": "^31.3.2",
     "@angular/animations": "16.2.4",
     "@angular/common": "16.2.4",
     "@angular/compiler": "16.2.4",
@@ -25,8 +24,6 @@
     "@ng-select/ng-select": "^11.1.1",
     "@ngneat/until-destroy": "^8.1.4",
     "@popperjs/core": "^2.11.6",
-    "ag-grid-angular": "^31.3.2",
-    "ag-grid-community": "^31.3.2",
     "bootstrap": "^5.2.2",
     "crypto-js": "^4.2.0",
     "mini.css": "^3.0.1",

@@ -28,7 +28,6 @@ import { Iso3166HelperService } from './services/iso3166-helper.service';
 import { MeteoPhotosComponent } from 'src/app/components/non-auth/meteo-photos/meteo-photos.component';
 import { UsersComponent } from 'src/app/components/auth/users/users.component';
 import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
-import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
     declarations: [
@@ -79,7 +78,6 @@ import { AgGridModule } from 'ag-grid-angular';
     NoopAnimationsModule,
     FontAwesomeModule,
     NgSelectModule,
-    AgGridModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
