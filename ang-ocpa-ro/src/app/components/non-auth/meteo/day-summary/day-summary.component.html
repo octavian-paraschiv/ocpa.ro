@@ -1,11 +1,11 @@
-<label *ngIf="desc?.length > 0" class="detail-desc-label" [innerHtml]="desc"></label>
+<label *ngIf="desc?.length > 0" class="mat-small detail-desc-label" [innerHtml]="desc"></label>
 <label class="{{labelClass}}">{{data?.date | date: 'EEE, yyyy-MM-dd' }}</label>
-<label *ngIf="!isValid" class="day-summary-no-data">[no data]</label>
-<img *ngIf="isValid" class="img-day-summary-forecast" src="assets/icons/meteo/precip_{{data.forecast}}.png" />
-<img *ngIf="isValid" class="img-day-summary-temp-max" src="assets/icons/meteo/day.png" />
-<label *ngIf="isValid" class="day-summary-temp-max-actual">{{data.tMaxActual | temp: unit}}</label>
-<label *ngIf="isValid" class="day-summary-temp-max-normal">&nbsp;[{{data.tMaxNormal | temp: unit}}]</label>
-<img *ngIf="isValid" class="img-day-summary-temp-min" src="assets/icons/meteo/night.png" />
-<label *ngIf="isValid" class="day-summary-temp-min-actual">{{data.tMinActual | temp: unit}}</label>
-<label *ngIf="isValid" class="day-summary-temp-min-normal">&nbsp;[{{data.tMinNormal | temp: unit}}]</label>
+<label *ngIf="!isValid" class="mat-small day-summary-no-data">[no data]</label>
+<img *ngIf="isValid" class="mat-small img-day-summary-forecast" src="assets/icons/meteo/precip_{{data.forecast}}.png" />
+<img *ngIf="isValid" class="mat-small img-day-summary-temp-max" src="assets/icons/meteo/day.png" />
+<label *ngIf="isValid" class="mat-small day-summary-temp-max-actual">{{data.tMaxActual | temp: unit}}</label>
+<label *ngIf="isValid" class="mat-small day-summary-temp-max-normal">&nbsp;[{{data.tMaxNormal | temp: unit}}]</label>
+<img *ngIf="isValid" class="mat-small img-day-summary-temp-min" src="assets/icons/meteo/night.png" />
+<label *ngIf="isValid" class="mat-small day-summary-temp-min-actual">{{data.tMinActual | temp: unit}}</label>
+<label *ngIf="isValid" class="mat-small day-summary-temp-min-normal">&nbsp;[{{data.tMinNormal | temp: unit}}]</label>
 <app-day-details *ngIf="isValid" [data]="data" [unit]="unit"></app-day-details>

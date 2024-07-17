@@ -25,29 +25,32 @@ export class DaySummaryComponent implements OnChanges {
   ngOnChanges() {
     this.isWeekend = new Date(this.data?.date).getDay() % 6 === 0;
     this.isValid = this.data?.forecast?.length > 0;
+    let desc = '';
   
     if (this.isValid) {
       this.feelsLike = this.helper.feelsLikeTip(this?.data?.tempFeel);
       this.weatherType = this.helper.weatherType(this?.data?.forecast);
       
-      this.desc = '';
-
       if (this.weatherType?.length > 0) {
-        if (this.desc.length > 0) {
-          this.desc += '; ';
+        if (desc.length > 0) {
+          desc += '; ';
         }
-        this.desc += this.weatherType;
+        desc += this.weatherType;
       }
 
       if (this.feelsLike?.length > 0) {
-        if (this.desc.length > 0) {
-          this.desc += '; ';
+        if (desc.length > 0) {
+          desc += '; ';
         }
-        this.desc += this.feelsLike;
+        desc += this.feelsLike;
       }
     }
 
-    this.desc = (this.desc ?? '').trim();
+    desc = desc.trim();
+    if (desc.length > 0)
+      this.desc = `<b>${desc}</b>`;
+    else
+      this.desc = '';
   }
 
   get labelClass(): string {

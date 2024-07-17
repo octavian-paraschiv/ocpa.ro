@@ -1,9 +1,11 @@
-﻿@import './variables.scss';
+﻿@import './material.scss';
+@import './variables.scss';
 @import './navbar.scss';
 @import './homepage.scss';
 @import './smart-city-search.scss';
 @import './meteopage.scss';
 @import './meteo-photos.scss';
+@import './protone.scss';
 
 app-root {
     height: 95vh;
@@ -15,21 +17,17 @@ body {
 }
 
 :root {
-    font-size: 0.85vw;
     color: $forecolor;
     background-color: $backcolor;
 }
 
 .main {
     font-family: $font-family;
-    font-size: 1rem;
     color: $forecolor;
     overflow-x: hidden;
 }
 
 p, td {
-    font-size: 0.95rem;
-    line-height: 1.3em;
     padding-bottom: 0;
 }
 
@@ -40,31 +38,10 @@ td {
     margin-top: 0;
 }
 
-h1, h2, h3, h4, h5, h6, div {
+h1, h2, h3, h4, h5, h6, div, label {
     color: $forecolor;
     text-transform: none;
-    font-weight: normal;
-}
-
-h1 {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-h2 {
-    font-size: 1.3rem;
-}
-
-h3, .dropDown, .list {
-    font-size: 1.1rem;
-}
-
-h4 {
-    font-size: 1rem;
-}
-
-h5, div {
-    font-size: 0.9rem;
+    align-content: start;
 }
 
 .container {

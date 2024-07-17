@@ -23,7 +23,7 @@ app-meteo {
 
 .meteo-hint {
     grid-area: h;
-    font-size: 0.8rem;
+    margin-top: 1vh;
 }
 
 .smart-meteo-controls {
@@ -46,8 +46,6 @@ app-meteo {
     "dg dg dg dg dg dg";
 }
 .gridButton {
-    font-size: 0.75rem;
-    font-weight: bold;
     color: $forecolor;
     margin-bottom: 3px;
     margin-right: 3px;
@@ -125,8 +123,6 @@ app-day-summary {
     grid-area: h;
     text-transform: uppercase;
     color: $backcolor;
-    font-weight: normal;
-    font-size: 0.85rem;
     align-self: center;
     margin-bottom: 2px;
     padding: 2px;
@@ -152,8 +148,6 @@ app-day-summary {
     grid-area: d;
     text-align: justify;
     align-self: center;
-    font-size: 0.8rem;
-    font-weight: bold;
     vertical-align: middle;
     color: $forecolor;
     white-space: nowrap;
@@ -184,7 +178,6 @@ app-day-summary {
     grid-area: ha;
     padding: 0;
     color: $meteo-temp-max;
-    font-size: 0.85rem;
     align-self: center;
     margin-top: 2px;
 }
@@ -194,7 +187,6 @@ app-day-summary {
     margin-top: 2px;
     padding: 0;
     color: $meteo-temp-max;
-    font-size: 0.75rem;
     align-self: center;
     text-align: start;
 }
@@ -204,7 +196,6 @@ app-day-summary {
     margin: 0;
     padding: 0;
     color: $meteo-temp-min;
-    font-size: 0.85rem;
     align-self: center;
     text-align: end;
 }
@@ -214,7 +205,6 @@ app-day-summary {
     margin: 0;
     padding: 0;
     color: $meteo-temp-min;
-    font-size: 0.75rem;
     align-self: center;
     text-align: start;
 }
@@ -235,7 +225,6 @@ app-day-details {
 
 .detail {
     text-align: justify;
-    font-size: 0.75rem;
     vertical-align: middle;
     margin: 0;
     color: $forecolor;
@@ -280,9 +269,7 @@ app-day-risks {
 
 .hazard {
     text-align: justify;
-    font-size: 0.8rem;
-    vertical-align: middle;
-    font-weight: bolder;
+    vertical-align: top;
     color: $meteo-temp-max;
 }
 

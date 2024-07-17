@@ -19,7 +19,6 @@ export class NavMenuComponent {
   faAngle = faAngleRight;
   faEarth = faEarth;
 
-    isExpanded = false;
     title = 'OcPa\'s Web Site';
     path: string = 'ocpa';
 
@@ -40,14 +39,6 @@ export class NavMenuComponent {
                 catch { }
             });
     }
-
-  collapse() {
-    this.isExpanded = false;
-  }
-
-  toggle() {
-    this.isExpanded = !this.isExpanded;
-  }
 
   get isAdminMode(): boolean {
     return this.isAdminPath && this.authService.validAdminUser;

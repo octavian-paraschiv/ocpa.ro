@@ -1,5 +1,6 @@
-<div class="meteo-hint" id="dHint">
-    <h5 style="text-align: justify;" [innerHtml]="hint" id="hint"></h5>
+<div class="meteo-hint" id="dHint" style="text-align: start;">
+    <label class="mat-body-1" [innerHtml]="hint" id="hint">
+    </label>
 </div>
 
 <div class="smart-meteo-controls" id="dSmartControls" *ngIf="(allCities?.length> 0)">
