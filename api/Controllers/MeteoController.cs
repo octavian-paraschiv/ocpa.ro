@@ -29,7 +29,7 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("studio-download-url")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         [ApiExplorerIgnore]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -54,7 +54,7 @@ namespace ocpa.ro.api.Controllers
         public IActionResult GetRange() => GetRange(0);
 
         [HttpGet("range/{dbi}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         [ApiExplorerIgnore]
         [ProducesResponseType(typeof(CalendarRange), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -79,7 +79,7 @@ namespace ocpa.ro.api.Controllers
 
 
         [HttpGet("data/{dbi}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         [ApiExplorerIgnore]
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -99,7 +99,7 @@ namespace ocpa.ro.api.Controllers
         }
 
 
-        [Authorize(Roles = "ApiUser")]
+        [Authorize(Roles = "API")]
         [HttpPost("database")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
@@ -109,7 +109,7 @@ namespace ocpa.ro.api.Controllers
         [Consumes("multipart/form-data")]
         public Task<IActionResult> UploadDatabase() => UploadDatabase(0);
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         [HttpPost("database/{dbi}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]

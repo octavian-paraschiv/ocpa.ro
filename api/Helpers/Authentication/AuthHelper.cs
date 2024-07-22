@@ -17,6 +17,7 @@ namespace ocpa.ro.api.Helpers.Authentication
         int DeleteUser(string loginId);
         User[] AllUsers();
         UserType[] AllUserTypes();
+        UserType GetUserType(int id = -1, string code = null);
     }
 
     public class AuthHelper : IAuthHelper
@@ -137,5 +138,20 @@ namespace ocpa.ro.api.Helpers.Authentication
         {
             return _db.Table<UserType>().ToArray();
         }
+
+        public UserType GetUserType(int id = -1, string code = null)
+        {
+            try
+            {
+                return _db.Table<UserType>().FirstOrDefault(ut =>
+                    (id < 0 || id == ut.Id) &&
+                    (code == null || code.ToLower() == ut.Code.ToLower())
+                );
+            }
+            catch { }
+
+            return null;
+        }
+
     }
 }

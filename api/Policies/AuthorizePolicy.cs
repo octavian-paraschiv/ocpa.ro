@@ -34,14 +34,14 @@ namespace ocpa.ro.api.Policies
                 if (loginId?.Length > 0)
                 {
                     var user = _authHelper.GetUser(loginId);
-                    var userType = user?.Type.ToString();
+                    var userType = _authHelper.GetUserType(id: user.Type);
 
-                    if (userType?.Length > 0)
+                    if (userType != null)
                     {
                         if (requirement?.AllowedRoles?.Any() ?? false)
                         {
                             // Specific roles requested, check if the user has a matching role
-                            allow = requirement.AllowedRoles.Contains(userType, StringComparer.OrdinalIgnoreCase);
+                            allow = requirement.AllowedRoles.Contains(userType.Code, StringComparer.OrdinalIgnoreCase);
                         }
                         else
                         {

@@ -17,7 +17,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "ADM")]
     public class ContentController : ApiControllerBase
     {
         private readonly IContentHelper _contentHelper;

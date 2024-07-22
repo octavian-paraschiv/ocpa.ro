@@ -130,7 +130,7 @@ export class GeographyApiService {
     }
 
     private getAllCities(): Observable<City[]> {
-        const uri = `${environment.apiUrl}/geography/allCities`;
+        const uri = `${environment.apiUrl}/geography/cities/all`;
         return this.httpClient.get<City[]>(uri);
     }
 }

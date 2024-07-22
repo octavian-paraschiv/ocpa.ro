@@ -11,7 +11,7 @@ namespace ocpa.ro.api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, Patient")]
+    [Authorize(Roles = "ADM, APP")]
     [ApiExplorerIgnore]
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
@@ -109,15 +109,15 @@ namespace ocpa.ro.api.Controllers
         public IActionResult SaveTest([FromBody] Test r) => SaveMedicalRecord(r);
 
         [HttpPost("test-types")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         public IActionResult SaveTestType([FromBody] TestType r) => SaveMedicalRecord(r);
 
         [HttpPost("test-categories")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         public IActionResult SaveTestCategory([FromBody] TestCategory r) => SaveMedicalRecord(r);
 
         [HttpPost("labs")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         public IActionResult SaveLab([FromBody] Lab r) => SaveMedicalRecord(r);
 
 
@@ -125,15 +125,15 @@ namespace ocpa.ro.api.Controllers
         public IActionResult DeleteTest([FromBody] Test r) => DeleteMedicalRecord(r);
 
         [HttpDelete("test-types")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         public IActionResult DeleteTestType([FromBody] TestType r) => DeleteMedicalRecord(r);
 
         [HttpDelete("test-categories")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         public IActionResult DeleteTestCategory([FromBody] TestCategory r) => DeleteMedicalRecord(r);
 
         [HttpDelete("labs")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "ADM")]
         public IActionResult DeleteLab([FromBody] Lab r) => DeleteMedicalRecord(r);
 
         private IActionResult SaveMedicalRecord<T>(T t) where T : IMedicalDbTable, new()
