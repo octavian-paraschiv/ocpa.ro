@@ -1,66 +1,79 @@
 <div style="text-align: start;">
     <br>
-    <label class="mat-body-1">
+    <label class="mat-body">
         The recommended way to install ProTONE is to download and run the Installer. Please choose the desired version from below.
     </label>
     <br><br>
-    <table>
-        <ng-container *ngIf="latestBuild">
-            <tr>
-                <td colspan="2"><label class="mat-body-strong">* The latest ProTONE release is:</label></td>
-            </tr>
-            <tr>
-                <td>
+    <ng-container *ngIf="latestBuild">
+        <ul class="no-bullets">
+            <li><label class="mat-body-strong">The latest ProTONE release is:</label></li>
+            <li>
+                <span>
+                    <label>&nbsp;*&nbsp;</label>
                     <a href="{{latestBuild.url}}">{{latestBuild.title}}</a>
-                </td>
-                <td>
                     <label>&nbsp;[Built on: {{latestBuild.buildDate | date: 'yyyy-MM-dd' }}{{comment(latestBuild)}}]</label>
-                </td>
-            </tr>
-        </ng-container>
-    
-        <ng-container *ngIf="legacyBuilds?.length> 0">
-            <tr>
-                <td colspan="2">&nbsp;</td>
-            </tr>
-            <tr>
-                <td colspan="2"><label class="mat-body-strong">* Earlier releases:</label></td>
-            </tr>
-            <tr *ngFor="let bi of legacyBuilds">
-                <td>
+                </span>
+            </li>
+        </ul>
+    </ng-container>
+    <br>
+    <ng-container *ngIf="legacyBuilds?.length> 0">
+        <ul class="no-bullets">
+            <li><label class="mat-body-strong">Earlier releases:</label></li>
+            <li *ngFor="let bi of legacyBuilds">
+                <span>
+                    <label>&nbsp;*&nbsp;</label>
                     <a href="{{bi.url}}">{{bi.title}}</a>
-                </td>
-                <td>
                     <label>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}{{comment(bi)}}]</label>
-                </td>
-            </tr>
-        </ng-container>
-    
-        <ng-container *ngIf="developmentBuilds?.length> 0">
-            <tr>
-                <td colspan="2">&nbsp;</td>
-            </tr>
-            <tr>
-                <td colspan="2"><label class="mat-body-strong">* Dev/Tester builds:</label></td>
-            </tr>
-    
-            <tr *ngFor="let bi of developmentBuilds">
-                <td>
+                </span>
+            </li>
+        </ul>
+    </ng-container>
+    <br>
+    <ng-container *ngIf="developmentBuilds?.length> 0">
+        <ul class="no-bullets">
+            <li><label class="mat-body-strong">Dev/Tester builds:</label></li>
+            <li *ngFor="let bi of developmentBuilds">
+                <span>
+                    <label>&nbsp;*&nbsp;</label>
                     <a href="{{bi.url}}">{{bi.title}}</a>
-                </td>
-                <td>
                     <label>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}{{comment(bi)}}]</label>
-                </td>
-            </tr>
-        </ng-container>
-    
-    </table>
+                </span>
+            </li>
+        </ul>
+    </ng-container>
     <br>
-    <label class="mat-body-strong">* Other information:</label>
-    <br>
-    <label>&nbsp;Use this link to report bugs:<a href="https://github.com/octavian-paraschiv/protone-suite/issues/new"> Report ProTONE Bugs</a></label>
-    <br>
-    <label>&nbsp;ProTONE is an Open Source software, whose source code is available here: <a target="new" href="https://github.com/octavian-paraschiv/protone-suite">ProTONE Github Repository</a>.</label>
-    <br>
-    <label>&nbsp;To build the code, you need to have Visual Studio 2019 or 2022, with .NET Development workload and .NET 4.7.2 targeting pack.</label>
+    <ul class="no-bullets">
+        <li><label class="mat-body-strong">Other Useful information:</label></li>
+        <li>
+            <span>
+                <label>&nbsp;*&nbsp;Link to&nbsp;</label>
+                <a target="new" href="https://github.com/octavian-paraschiv/protone-suite/issues/new">Report ProTONE Bugs</a>
+            </span>
+        </li>
+        <li>
+            <span>
+                <label>&nbsp;*&nbsp;Link to&nbsp;</label>
+                <a target="new" href="https://github.com/octavian-paraschiv/protone-suite">Source Code (Github repo)</a>
+            </span>
+        </li>
+        <li>
+            <span>
+                <label>&nbsp;*&nbsp;Required for building/debugging the code:&nbsp;</label>
+                <ul>
+                    <li>
+                        <a target="new" href="https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&passive=false&cid=2030">
+                            Visual Studio 2022
+                        </a>         
+                    </li>
+                    <li>
+                        <label>.NET Development workload</label>         
+                    </li>
+                    <li>
+                        <label>.NET 4.7.2 targeting pack.</label>         
+                    </li>
+                </ul>
+            </span>
+        </li>
+    </ul>
 </div>

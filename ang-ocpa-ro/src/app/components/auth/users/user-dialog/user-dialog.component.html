@@ -1,0 +1,61 @@
+<mat-card class="mat-user-card">
+    <mat-card-header style="padding: 0; padding-left: 0.1rem; padding-top: 0.1rem; padding-bottom: 0.1rem;">
+        <mat-card-subtitle [innerHtml]="title"></mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider style="margin: 0;"></mat-divider>
+    <mat-card-content class="mat-user-card-content" style="padding: 0;">
+        <form mat-dialog-content class="user-dialog-form" [formGroup]="userForm" (ngSubmit)="onOk()" style="padding: 1rem;">
+            <div style="display: grid;">
+                <mat-form-field appearance="outline" class="user-form-control">
+                    <mat-label>Username</mat-label>
+                    <input formControlName="u1" matInput>
+                    <mat-error *ngIf="f?.u1?.errors?.required">Username is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="user-form-control" >
+                    <mat-label>User type</mat-label>
+                    <mat-select formControlName="t1">
+                        <mat-option *ngFor="let userType of userTypes;" [value]="userType.id">
+                          {{userType.description}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <label class="mat-small domHide" [attr.domHide]="!editMode">
+                    To keep the password as-is,<br>leave both password fields empty.
+                </label>
+                <mat-form-field appearance="outline" class="user-form-control">
+                    <mat-label>Password</mat-label>
+                    <input formControlName="p1" matInput [type]="hide ? 'password' : 'text'">
+                    <div class="password-hide-icon"
+                        matSuffix
+                        tabindex="-1"
+                        (click)="hide = !hide"
+                        [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </div>
+                    <mat-error *ngIf="f?.p1?.errors?.required">The password is required</mat-error>
+                    <mat-error *ngIf="f?.p1?.errors?.minlength">The password must have at least 8 characters</mat-error>
+                </mat-form-field>    
+                <mat-form-field appearance="outline" class="user-form-control" >
+                    <mat-label>Repeat password</mat-label>
+                    <input formControlName="p2" matInput [type]="hide ? 'password' : 'text'">
+                    <div class="password-hide-icon"
+                        matSuffix
+                        tabindex="-1"
+                        (click)="hide = !hide"
+                        [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide">
+                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </div>
+                    <mat-error *ngIf="f?.p2?.errors?.required">The password is required</mat-error>
+                    <mat-error *ngIf="f?.p2?.errors?.minlength">The password must have at least 8 characters</mat-error>
+                    <mat-error *ngIf="f?.p2?.errors?.unmatched">The two passwords must match.</mat-error>
+                </mat-form-field>   
+                <div mat-dialog-actions class="user-form-control">
+                    <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>OK</button>
+                    <button style="margin: 0; padding: 0; " mat-raised-button (click)="onCancel()">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

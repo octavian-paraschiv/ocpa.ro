@@ -72,9 +72,7 @@ export class GeographyApiService {
         return this.httpClient.get<GridCoordinates>(uri);
     }
 
-    public 
-
-    get cities(): City[] {
+    public get cities(): City[] {
         return GeographyApiService.SortCities([], this._cities);
     }
 

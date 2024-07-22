@@ -9,7 +9,7 @@ export abstract class BaseAuthComponent implements OnInit, OnDestroy {
 
     constructor(
         private router: Router,
-        private authenticationService: AuthenticationService,
+        protected authenticationService: AuthenticationService,
         private ngZone: NgZone
     ) { 
         const ua = navigator.userAgent;

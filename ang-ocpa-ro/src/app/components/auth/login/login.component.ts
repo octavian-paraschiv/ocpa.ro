@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { UserType } from 'src/app/models/user';
+import { UserTypeService } from 'src/app/services/user-type.service';
 
 @UntilDestroy()
 @Component({
@@ -12,16 +13,21 @@ import { UserType } from 'src/app/models/user';
     templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
+    private readonly adminUserType: UserType = undefined;
     loginForm: UntypedFormGroup;
     loading = false;
     submitted = false;
     error = '';
+    hide = true;
 
     constructor(
+        private readonly userTypeService: UserTypeService,
         private formBuilder: UntypedFormBuilder,
         private router: Router,
         private authenticationService: AuthenticationService
     ) { 
+        this.adminUserType = this.userTypeService.userType("ADM");
+
         // redirect to admin if already logged in
         if (this.authenticationService.validAdminUser) { 
             this.router.navigate(['/admin']);
@@ -47,7 +53,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.authenticationService.authenticate(this.f.username.value, this.f.password.value, UserType.Admin)
+        this.authenticationService.authenticate(this.f.username.value, this.f.password.value, this.adminUserType)
             .pipe(first())
             .subscribe({
                 next: msg => (msg?.length > 0) ? this.handleError(msg) : this.router.navigate(['/admin']),
@@ -58,6 +64,6 @@ export class LoginComponent implements OnInit {
     handleError(err: any) {
         this.error = err;
         this.loading = false;
-        this.f.password.reset();
+        // this.f.password.reset();
     }
 }

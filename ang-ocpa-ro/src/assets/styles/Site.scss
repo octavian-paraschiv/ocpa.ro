@@ -1,11 +1,12 @@
-﻿@import './material.scss';
-@import './variables.scss';
+﻿@import './variables.scss';
 @import './navbar.scss';
 @import './homepage.scss';
 @import './smart-city-search.scss';
 @import './meteopage.scss';
 @import './meteo-photos.scss';
 @import './protone.scss';
+@import './login-form.scss';
+@import './users-page.scss';
 
 app-root {
     height: 95vh;
@@ -73,5 +74,13 @@ h1, h2, h3, h4, h5, h6, div, label {
     }
 }
 
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
 
+.domHide[domHide=true]  {
+    display: none;
+    visibility: hidden;
+}
 

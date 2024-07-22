@@ -1,1 +1,53 @@
-<h5 style="text-align: justify;">Users</h5>
+<mat-card class="mat-user-card">
+    <mat-card-content>
+        <table mat-table [dataSource]="users" >
+            <!-- Add Column -->
+            <ng-container matColumnDef="user-add">
+                <th mat-header-cell *matHeaderCellDef>
+                    <a class="table-link" (click)="saveUser()" title="Add new user">
+                        <fa-icon [icon]="faAdd" [transform]="size"></fa-icon>
+                    </a>
+                </th>
+                <td mat-cell *matCellDef="let user"></td>
+            </ng-container>
+            <!-- Edit Column -->
+            <ng-container matColumnDef="user-edit">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let user">
+                    <a class="table-link" (click)="saveUser(user)" title="Edit '{{user.loginId}}'">
+                        <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
+                    </a>
+                </td>
+            </ng-container>
+            <!-- Delete Column -->
+            <ng-container matColumnDef="user-delete">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let user">
+                    <a *ngIf="user.loginId !== currentLoginId" class="table-link" (click)="onDelete(user.loginId)" title="Delete '{{user.loginId}}'">
+                        <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
+                    </a>
+                </td>
+            </ng-container>
+            <!-- LoginId Column -->
+            <ng-container matColumnDef="user-loginId">
+                <th mat-header-cell *matHeaderCellDef>Login ID</th>
+                <td mat-cell *matCellDef="let user">
+                    <span>{{user.loginId}}</span>
+                    <span *ngIf="user.loginId === currentLoginId">&nbsp;[Logged in]</span>
+                </td>
+            </ng-container>
+            <!-- Type Column -->
+            <ng-container matColumnDef="user-type">
+                <th mat-header-cell *matHeaderCellDef>Type</th>
+                <td mat-cell *matCellDef="let user">{{userType(user)}}</td>
+            </ng-container>
+             <!-- Filler Column -->
+             <ng-container matColumnDef="filler">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let user"></td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </mat-card-content>
+</mat-card>

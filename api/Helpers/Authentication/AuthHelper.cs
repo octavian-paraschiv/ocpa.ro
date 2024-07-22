@@ -16,6 +16,7 @@ namespace ocpa.ro.api.Helpers.Authentication
         User GetUser(string loginId);
         int DeleteUser(string loginId);
         User[] AllUsers();
+        UserType[] AllUserTypes();
     }
 
     public class AuthHelper : IAuthHelper
@@ -67,18 +68,24 @@ namespace ocpa.ro.api.Helpers.Authentication
 
             try
             {
-                var loginId = (user.LoginId ?? "").ToLowerInvariant();
+                var loginId = user.LoginId?.ToLowerInvariant();
+                var id = user.Id;
 
-                dbu = _db.Get<User>(u => u.LoginId.ToLower() == loginId);
-                dbu ??= new User { Id = -1, LoginId = loginId };
+                dbu = _db.Table<User>().FirstOrDefault(u =>
+                    (loginId == null || loginId == u.LoginId.ToLower()) &&
+                    (id <= 0 || id == u.Id));
 
-                if (user.Type != default)
-                    dbu.Type = user.Type;
+                bool newUser = (dbu == null);
 
+                dbu ??= new User { LoginId = loginId };
+
+                dbu.Type = user.Type;
                 dbu.PasswordHash = user.PasswordHash;
 
-                if (dbu.Id < 0)
+                if (newUser)
                 {
+                    dbu.Id = (_db.Table<User>().OrderByDescending(u => u.Id).FirstOrDefault()?.Id ?? 0) + 1;
+
                     if (_db.Insert(dbu) > 0)
                         inserted = true;
                     else
@@ -103,7 +110,7 @@ namespace ocpa.ro.api.Helpers.Authentication
         {
             try
             {
-                var dbu = _db.Get<User>(u => u.LoginId == loginId);
+                var dbu = _db.Get<User>(u => u.LoginId.ToLower() == loginId.ToLower());
                 if (dbu == null)
                     return StatusCodes.Status404NotFound;
 
@@ -124,6 +131,11 @@ namespace ocpa.ro.api.Helpers.Authentication
                 Type = u.Type,
                 PasswordHash = null,
             }).ToArray();
+        }
+
+        public UserType[] AllUserTypes()
+        {
+            return _db.Table<UserType>().ToArray();
         }
     }
 }

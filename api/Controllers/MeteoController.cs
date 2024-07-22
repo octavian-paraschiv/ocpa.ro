@@ -28,7 +28,7 @@ namespace ocpa.ro.api.Controllers
             _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
         }
 
-        [HttpGet("studioDownloadUrl")]
+        [HttpGet("studio-download-url")]
         [Authorize(Roles = "Admin")]
         [ApiExplorerIgnore]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]

@@ -44,8 +44,8 @@ namespace ocpa.ro.api.Controllers
         }
 
 
-        [HttpGet]
-        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [HttpGet("all")]
+        [ProducesResponseType(typeof(User[]), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ApiExplorerIgnore]
         public IActionResult GetAllUsers()

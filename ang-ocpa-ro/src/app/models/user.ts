@@ -1,17 +1,20 @@
-export enum UserType {
-    ApiUser = 0,
-    Admin = 1,
-    Patient = 2
-}
 export interface User {
-    id: number;
-    loginId: string;
-    passwordHash: string;
-    userType: UserType;
+    id?: number;
+    loginId?: string | undefined;
+    passwordHash?: string | undefined;
+    type?: number;
 }
-export interface AuthenticationResponse {
+
+export interface UserType {
+    id?: number;
+    code?: string | undefined;
+    description?: string | undefined;
+}
+
+export interface AuthenticateResponse {
     loginId: string;
-    token?: string;
-    type: UserType;
+    token: string;
+    type: number;
+    expires: Date;
     validity: number;
 }

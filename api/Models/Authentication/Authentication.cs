@@ -13,11 +13,16 @@ namespace ocpa.ro.api.Models.Authentication
         public string Password { get; set; }
     }
 
-    public enum UserType
+    public class UserType
     {
-        ApiUser = 0,
-        Admin = 1,
-        Patient = 2
+        [PrimaryKey]
+        public int Id { get; set; }
+
+        [NotNull]
+        public string Code { get; set; }
+
+        [NotNull]
+        public string Description { get; set; }
     }
 
     public class User
@@ -25,11 +30,14 @@ namespace ocpa.ro.api.Models.Authentication
         [PrimaryKey]
         public int Id { get; set; }
 
+        [NotNull]
         public string LoginId { get; set; }
 
+        [NotNull]
         public string PasswordHash { get; set; }
 
-        public UserType Type { get; set; }
+        [NotNull]
+        public int Type { get; set; }
     }
 
     public class AuthenticateResponse
@@ -41,7 +49,7 @@ namespace ocpa.ro.api.Models.Authentication
         public string Token { get; set; }
 
         [Required]
-        public UserType Type { get; set; }
+        public int Type { get; set; }
 
         [Required]
         public DateTime Expires { get; set; }

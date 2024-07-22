@@ -28,10 +28,9 @@ import { Iso3166HelperService } from './services/iso3166-helper.service';
 import { MeteoPhotosComponent } from 'src/app/components/non-auth/meteo-photos/meteo-photos.component';
 import { UsersComponent } from 'src/app/components/auth/users/users.component';
 import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgFor } from '@angular/common';
+import { MaterialModule } from 'src/app/material.module';
+import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
+import { UserTypeService } from 'src/app/services/user-type.service';
 
 @NgModule({
     declarations: [
@@ -45,6 +44,8 @@ import { NgFor } from '@angular/common';
         PhotographyComponent,
 
         UsersComponent,
+        UserDialogComponent,
+
         MeteoDatabaseComponent,
         LoginComponent,
 
@@ -58,7 +59,7 @@ import { NgFor } from '@angular/common';
         VolumePipe,
         PressurePipe,
 
-        CountryCodePipe
+        CountryCodePipe,
     ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -82,10 +83,7 @@ import { NgFor } from '@angular/common';
     NoopAnimationsModule,
     FontAwesomeModule,
     NgSelectModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    NgFor
+    MaterialModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -106,6 +104,14 @@ import { NgFor } from '@angular/common';
       provide: APP_INITIALIZER,
       useFactory: (svc: Iso3166HelperService) => () => svc.init().toPromise(),
       deps: [Iso3166HelperService],
+      multi: true
+    },
+
+    UserTypeService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (svc: UserTypeService) => () => svc.init().toPromise(),
+      deps: [UserTypeService],
       multi: true
     },
 

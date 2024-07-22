@@ -26,7 +26,7 @@ namespace ocpa.ro.api.Controllers
             _dataHelper = dbHelper;
         }
 
-        [HttpGet("testTypes")]
+        [HttpGet("test-types")]
         public IActionResult GetTestTypes([FromQuery] string category)
         {
             try
@@ -52,7 +52,7 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        [HttpGet("testCategories")]
+        [HttpGet("test-categories")]
         public IActionResult GetTestCategories()
         {
             try
@@ -108,11 +108,11 @@ namespace ocpa.ro.api.Controllers
         [HttpPost("tests")]
         public IActionResult SaveTest([FromBody] Test r) => SaveMedicalRecord(r);
 
-        [HttpPost("testTypes")]
+        [HttpPost("test-types")]
         [Authorize(Roles = "Admin")]
         public IActionResult SaveTestType([FromBody] TestType r) => SaveMedicalRecord(r);
 
-        [HttpPost("testCategories")]
+        [HttpPost("test-categories")]
         [Authorize(Roles = "Admin")]
         public IActionResult SaveTestCategory([FromBody] TestCategory r) => SaveMedicalRecord(r);
 
@@ -124,11 +124,11 @@ namespace ocpa.ro.api.Controllers
         [HttpDelete("tests")]
         public IActionResult DeleteTest([FromBody] Test r) => DeleteMedicalRecord(r);
 
-        [HttpDelete("testTypes")]
+        [HttpDelete("test-types")]
         [Authorize(Roles = "Admin")]
         public IActionResult DeleteTestType([FromBody] TestType r) => DeleteMedicalRecord(r);
 
-        [HttpDelete("testCategories")]
+        [HttpDelete("test-categories")]
         [Authorize(Roles = "Admin")]
         public IActionResult DeleteTestCategory([FromBody] TestCategory r) => DeleteMedicalRecord(r);
 

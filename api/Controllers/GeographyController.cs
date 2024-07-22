@@ -140,7 +140,7 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        [HttpGet("allCities")]
+        [HttpGet("cities/all")]
         [ProducesResponseType(typeof(List<City>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetAllCities()
