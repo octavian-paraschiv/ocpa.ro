@@ -14,7 +14,6 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [Authorize(Roles = "Admin")]
     public class UserTypesController : ApiControllerBase
     {
         private readonly IJwtTokenHelper _jwtTokenGenerator;
