@@ -142,7 +142,7 @@ export class MeteoApiService {
     }
 
     public getStudioDownloadUrl(): Observable<string> {
-        const uri = `${environment.apiUrl}/meteo/studioDownloadUrl`;
+        const uri = `${environment.apiUrl}/meteo/studio-download-url`;
         return this.httpClient.get<string>(uri);
     }
 
