@@ -2,12 +2,6 @@
 using System.Text.Json.Serialization;
 using ThorusCommon.SQLite;
 
-namespace ocpa.ro.api.Models.Medical
-{
-
-}
-
-
 namespace ocpa.ro.api.Models.Medical.Database
 {
     public interface IMedicalDbTable
@@ -15,7 +9,7 @@ namespace ocpa.ro.api.Models.Medical.Database
         long Id { get; set; }
     }
 
-    public class IMedicalDbView
+    public interface IMedicalDbView
     {
     }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -12,15 +13,16 @@ namespace ocpa.ro.api.Controllers
 
     public class KeepAliveController : ApiControllerBase
     {
-        public KeepAliveController(IWebHostEnvironment hostingEnvironment) : base(hostingEnvironment)
+        public KeepAliveController(IWebHostEnvironment hostingEnvironment, ILogger logger)
+            : base(hostingEnvironment, logger, null)
         {
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        public string KeepAlive()
+        public IActionResult KeepAlive()
         {
-            return "ok";
+            return Ok("ok");
         }
     }
 }

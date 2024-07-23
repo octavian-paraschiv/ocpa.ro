@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 
@@ -17,13 +18,14 @@ namespace ocpa.ro.api.Controllers
         private const int count = 5;
         private static readonly Random rnd = new Random();
 
-        public SensorsController(IWebHostEnvironment hostingEnvironment) : base(hostingEnvironment)
+        public SensorsController(IWebHostEnvironment hostingEnvironment, ILogger logger)
+            : base(hostingEnvironment, logger, null)
         {
         }
 
         [HttpGet("data")]
         [ProducesResponseType(typeof(SensorDataCollection), StatusCodes.Status200OK)]
-        public SensorDataCollection ReadSensors()
+        public IActionResult ReadSensors()
         {
             SensorDataCollection sensorDataCollection = new SensorDataCollection
             {
@@ -38,7 +40,7 @@ namespace ocpa.ro.api.Controllers
                     Pressure = rnd.Next(25, 75)
                 });
             }
-            return sensorDataCollection;
+            return Ok(sensorDataCollection);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Content;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,13 +20,11 @@ namespace ocpa.ro.api.Helpers.Content
         public HttpStatusCode DeleteContent(string contentPath);
     }
 
-    public class ContentHelper : IContentHelper
+    public class ContentHelper : BaseHelper, IContentHelper
     {
-        private readonly IWebHostEnvironment _hostingEnvironment = null;
-
-        public ContentHelper(IWebHostEnvironment hostingEnvironment)
+        public ContentHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
+            : base(hostingEnvironment, logger)
         {
-            _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
         }
 
         public async Task<UpdatedContentUnit> CreateOrUpdateContent(string contentPath, byte[] contentBytes)
@@ -170,8 +169,9 @@ namespace ocpa.ro.api.Helpers.Content
                 await File.WriteAllBytesAsync(path, contentBytes);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
             }
 
             return false;

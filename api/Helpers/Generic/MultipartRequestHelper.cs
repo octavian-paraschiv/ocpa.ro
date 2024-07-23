@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
+using ocpa.ro.api.Exceptions;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -22,10 +23,10 @@ namespace ocpa.ro.api.Helpers.Generic
         public async Task<byte[]> GetMultipartRequestData(HttpRequest request)
         {
             if (!(request?.ContentType?.Length > 0))
-                throw new Exception("No content type");
+                throw new ExtendedException("No content type");
 
             if (!request.ContentType.StartsWith("multipart/", StringComparison.OrdinalIgnoreCase))
-                throw new Exception("Content type is not multipart");
+                throw new ExtendedException("Content type is not multipart");
 
             var boundary = GetBoundary(MediaTypeHeaderValue.Parse(request.ContentType), MultipartBoundaryLengthLimit);
             var reader = new MultipartReader(boundary, request.Body);
@@ -48,10 +49,10 @@ namespace ocpa.ro.api.Helpers.Generic
                         await section.Body.CopyToAsync(memoryStream);
 
                         if (memoryStream.Length == 0)
-                            throw new Exception($"The request couldn't be processed ({name} section has no data)");
+                            throw new ExtendedException($"The request couldn't be processed ({name} section has no data)");
 
                         if (memoryStream.Length > MaxFileSize)
-                            throw new Exception($"The request couldn't be processed ({name} section has too many data)");
+                            throw new ExtendedException($"The request couldn't be processed ({name} section has too many data)");
 
                         switch (name.ToLowerInvariant())
                         {
@@ -71,17 +72,17 @@ namespace ocpa.ro.api.Helpers.Generic
             }
 
             if (!(data?.Length > 0))
-                throw new Exception($"The request couldn't be processed - no data section found");
+                throw new ExtendedException($"The request couldn't be processed - no data section found");
 
             if (!(signature?.Length > 0))
-                throw new Exception($"The request couldn't be processed - no signature section found");
+                throw new ExtendedException($"The request couldn't be processed - no signature section found");
 
             if (!(dataFileName?.Length > 0))
-                throw new Exception($"The request couldn't be processed - no file name found");
+                throw new ExtendedException($"The request couldn't be processed - no file name found");
 
             var actualSignature = GetHMACSHA1Hash(data, dataFileName);
             if (actualSignature != signature)
-                throw new Exception($"The request couldn't be processed - bad signature");
+                throw new ExtendedException($"The request couldn't be processed - bad signature");
 
             return data;
 
@@ -106,7 +107,7 @@ namespace ocpa.ro.api.Helpers.Generic
             var boundary = HeaderUtilities.RemoveQuotes(contentType.Boundary).Value;
 
             if (string.IsNullOrWhiteSpace(boundary))
-                throw new Exception("Missing content-type boundary.");
+                throw new ExtendedException("Missing content-type boundary.");
 
             if (boundary.Length > lengthLimit)
                 throw new InvalidDataException($"Multipart boundary exceeded length limit {lengthLimit}.");

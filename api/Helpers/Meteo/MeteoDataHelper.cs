@@ -2,6 +2,7 @@
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Models.Meteo;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,20 +23,20 @@ namespace ocpa.ro.api.Helpers.Meteo
         public string LatestStudioFile { get; }
     }
 
-    public class MeteoDataHelper : IMeteoDataHelper, IDisposable
+    public class MeteoDataHelper : BaseHelper, IMeteoDataHelper, IDisposable
     {
         public const int DbCount = 5;
 
         private readonly MeteoScaleHelpers _scale;
-        private readonly IniFileHelper _iniFile;
         private readonly string _dataFolder;
 
-        private MeteoDB[] _databases = new MeteoDB[DbCount];
+        private readonly MeteoDB[] _databases = new MeteoDB[DbCount];
         private readonly string[] _dbPaths = new string[DbCount];
 
         public MeteoScaleHelpers Scale => _scale;
 
-        public MeteoDataHelper(IWebHostEnvironment hostingEnvironment)
+        public MeteoDataHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
+            : base(hostingEnvironment, logger)
         {
             _dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Meteo");
 
@@ -47,8 +48,8 @@ namespace ocpa.ro.api.Helpers.Meteo
             }
 
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
-            _iniFile = new IniFileHelper(iniPath);
-            _scale = new MeteoScaleHelpers(_iniFile);
+            var iniFile = new IniFileHelper(hostingEnvironment, logger, iniPath);
+            _scale = new MeteoScaleHelpers(iniFile);
         }
 
         public string LatestStudioFile
@@ -81,8 +82,6 @@ namespace ocpa.ro.api.Helpers.Meteo
             using (MemoryStream unzipped = new MemoryStream())
             {
                 await zipped.CopyToAsync(unzipped);
-
-                var tmpFile = Path.GetTempFileName();
                 await File.WriteAllBytesAsync(_dbPaths[dbIdx], unzipped.ToArray());
             }
 
@@ -114,9 +113,11 @@ namespace ocpa.ro.api.Helpers.Meteo
                     Length = days
                 };
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
             }
+
             return result;
         }
 
@@ -134,9 +135,6 @@ namespace ocpa.ro.api.Helpers.Meteo
                 };
 
                 skip = Math.Min(range.Length - 1, Math.Max(0, skip));
-
-                int remaining = range.Length - skip;
-
                 take = Math.Min(range.Length - skip, Math.Max(0, range.Length));
 
                 var allData = GetData(dbIdx, region, gc, skip, take);
@@ -180,9 +178,11 @@ namespace ocpa.ro.api.Helpers.Meteo
                     });
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
             }
+
             return meteoData;
         }
 
@@ -203,6 +203,12 @@ namespace ocpa.ro.api.Helpers.Meteo
         }
 
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
             foreach (var db in _databases)
                 db?.SaveAndClose();

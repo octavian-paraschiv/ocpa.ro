@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Meteo;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +25,8 @@ namespace ocpa.ro.api.Controllers
         private static FileSystemWatcher _watchConfigFile;
         private static List<Region> _regions;
 
-        public GeographyController(IWebHostEnvironment hostingEnvironment) : base(hostingEnvironment)
+        public GeographyController(IWebHostEnvironment hostingEnvironment, ILogger logger)
+            : base(hostingEnvironment, logger, null)
         {
             Init();
         }
@@ -56,8 +59,9 @@ namespace ocpa.ro.api.Controllers
                         ReadConfigFile();
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    LogException(ex);
                 }
             };
         }
@@ -204,8 +208,8 @@ namespace ocpa.ro.api.Controllers
         {
             Init();
 
-            Region region2 = _regions.Where((Region rgn) => rgn.Name == region).FirstOrDefault();
-            return region2 ?? throw new Exception($"Could not find any region named '{region}'");
+            Region region2 = _regions.Find(rgn => rgn.Name == region);
+            return region2 ?? throw new ExtendedException($"Could not find any region named '{region}'");
         }
 
         internal void ValidateSubregion(string region, string subregion)
@@ -221,7 +225,7 @@ namespace ocpa.ro.api.Controllers
                        select 1).Count();
 
             if (num < 1)
-                throw new Exception($"Could not find any subregion named '{subregion}' in region '{region}'");
+                throw new ExtendedException($"Could not find any subregion named '{subregion}' in region '{region}'");
         }
 
         internal City InternalGetCity(string region, string subregion, string city)
@@ -239,7 +243,7 @@ namespace ocpa.ro.api.Controllers
                           select c).FirstOrDefault();
 
             return city2 == null
-                ? throw new Exception($"Could not find any city named '{city}' in region '{region}', subregion '{subregion}'")
+                ? throw new ExtendedException($"Could not find any city named '{city}' in region '{region}', subregion '{subregion}'")
                 : new City
                 {
                     Default = city2.Default,
@@ -257,10 +261,10 @@ namespace ocpa.ro.api.Controllers
             City city2 = InternalGetCity(region, subregion, city);
 
             if (region2.MinLat >= city2.Latitude || city2.Latitude >= region2.MaxLat)
-                throw new Exception($"City '{city}' has latitude outside region '{region}'");
+                throw new ExtendedException($"City '{city}' has latitude outside region '{region}'");
 
             if (region2.MinLon >= city2.Longitude || city2.Longitude >= region2.MaxLon)
-                throw new Exception($"City '{city}' has longitude outside region '{region}'");
+                throw new ExtendedException($"City '{city}' has longitude outside region '{region}'");
 
             int num = 1 + (int)((region2.MaxLon - region2.MinLon) / region2.GridResolution);
             int num2 = 1 + (int)((region2.MaxLat - region2.MinLat) / region2.GridResolution);

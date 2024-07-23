@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Generic;
 using ocpa.ro.api.Models.Medical.Database;
@@ -60,7 +61,7 @@ namespace ocpa.ro.api.Helpers.Medical
                 .Where(ttd => categoryCode == string.Empty || categoryCode == ttd.TestCategoryCode.ToUpper());
 
             if (!types.Any())
-                throw new Exception("ERROR_TEST_TYPE_NOT_FOUND");
+                throw new ExtendedException("ERROR_TEST_TYPE_NOT_FOUND");
 
             return types.ToList();
         }
@@ -73,12 +74,12 @@ namespace ocpa.ro.api.Helpers.Medical
             if (persons?.Count() > 0)
             {
                 if (persons.Count() > 1)
-                    throw new Exception("MULTIPLE_PERSONS_FOUND");
+                    throw new ExtendedException("MULTIPLE_PERSONS_FOUND");
 
                 return persons.First();
             }
 
-            throw new Exception("ERROR_PERSON_NOT_FOUND");
+            throw new ExtendedException("ERROR_PERSON_NOT_FOUND");
         }
 
         public List<TestDetail> Tests(int? id, int? pid, string cnp, string category, string type, DateTime? from, DateTime? to)
@@ -109,7 +110,7 @@ namespace ocpa.ro.api.Helpers.Medical
             if (tests?.Count() > 0)
                 return tests.ToList();
 
-            throw new Exception("TESTS_NOT_FOUND");
+            throw new ExtendedException("TESTS_NOT_FOUND");
         }
 
         public int SaveMedicalRecord<T>(T record) where T : IMedicalDbTable, new()
@@ -128,17 +129,17 @@ namespace ocpa.ro.api.Helpers.Medical
                     if (_mdb.Database.Update(updateRecord) > 0)
                         return (int)HttpStatusCode.OK;
 
-                    throw new Exception("ERROR_RECORD_NOT_UPDATED");
+                    throw new ExtendedException("ERROR_RECORD_NOT_UPDATED");
                 }
 
-                throw new Exception("ERROR_UPDATE_RECORD_NOT_FOUND");
+                throw new ExtendedException("ERROR_UPDATE_RECORD_NOT_FOUND");
             }
             else
             {
                 if (_mdb.Database.Insert(record) > 0)
                     return (int)HttpStatusCode.Created;
 
-                throw new Exception("ERROR_RECORD_NOT_INSERTED");
+                throw new ExtendedException("ERROR_RECORD_NOT_INSERTED");
             }
         }
 
@@ -150,10 +151,10 @@ namespace ocpa.ro.api.Helpers.Medical
                 if (_mdb.Database.Delete(origRecord) > 0)
                     return (int)HttpStatusCode.OK;
 
-                throw new Exception("ERROR_RECORD_NOT_DELETED");
+                throw new ExtendedException("ERROR_RECORD_NOT_DELETED");
             }
 
-            throw new Exception("ERROR_DELETE_RECORD_NOT_FOUND");
+            throw new ExtendedException("ERROR_DELETE_RECORD_NOT_FOUND");
         }
     }
 
@@ -183,7 +184,7 @@ namespace ocpa.ro.api.Helpers.Medical
         {
             Close();
             if (!File.Exists(_origPath))
-                throw new Exception($"{_origPath} does not exist.");
+                throw new ExtendedException($"{_origPath} does not exist.");
 
             SQLiteOpenFlags openFlags = write ? SQLiteOpenFlags.ReadWrite : SQLiteOpenFlags.ReadOnly;
             _db = new SQLiteConnection(_origPath, openFlags);

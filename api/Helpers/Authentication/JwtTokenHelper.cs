@@ -4,6 +4,7 @@ using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Models.Configuration;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 
 namespace ocpa.ro.api.Helpers.Authentication
@@ -15,7 +16,7 @@ namespace ocpa.ro.api.Helpers.Authentication
 
     public class JwtTokenHelper : IJwtTokenHelper
     {
-        private JwtConfig _jwtConfig;
+        private readonly JwtConfig _jwtConfig;
 
         public JwtTokenHelper(IOptions<JwtConfig> jwtConfigOptions)
         {
@@ -40,7 +41,7 @@ namespace ocpa.ro.api.Helpers.Authentication
 
                 Expires = DateTime.UtcNow.AddSeconds(_jwtConfig.Validity),
 
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(JwtConfig.KeyBytes),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(JwtConfig.KeyBytes.ToArray()),
                     SecurityAlgorithms.HmacSha256Signature)
             };
 

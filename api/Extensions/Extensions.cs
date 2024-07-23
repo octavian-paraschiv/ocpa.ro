@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
@@ -11,6 +12,18 @@ namespace ocpa.ro.api.Extensions
 {
     public static class Extensions
     {
+        public static IServiceCollection AddSerilog(this IServiceCollection services, IConfiguration configuration)
+        {
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
+
+            services.AddSingleton(Log.Logger);
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+
+            return services;
+        }
+
         public static void ResolveConfiguration<T>(this IConfiguration configuration, IServiceCollection services, string sectionName,
                out T loadedConfiguration) where T : class, new()
         {

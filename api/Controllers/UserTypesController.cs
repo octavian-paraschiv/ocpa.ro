@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Policies;
+using Serilog;
 using System;
 
 namespace ocpa.ro.api.Controllers
@@ -15,12 +16,9 @@ namespace ocpa.ro.api.Controllers
     [Consumes("application/json")]
     public class UserTypesController : ApiControllerBase
     {
-        private readonly IJwtTokenHelper _jwtTokenGenerator;
-
-        public UserTypesController(IWebHostEnvironment hostingEnvironment, IAuthHelper authHelper, IJwtTokenHelper jwtTokenGenerator)
-            : base(hostingEnvironment, authHelper)
+        public UserTypesController(IWebHostEnvironment hostingEnvironment, IAuthHelper authHelper, ILogger logger)
+            : base(hostingEnvironment, logger, authHelper)
         {
-            _jwtTokenGenerator = jwtTokenGenerator;
         }
 
         [HttpGet("all")]

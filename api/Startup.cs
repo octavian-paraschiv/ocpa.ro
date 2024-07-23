@@ -14,8 +14,12 @@ using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Helpers.Meteo;
 using ocpa.ro.api.Helpers.Wiki;
+using ocpa.ro.api.Middlewares;
 using ocpa.ro.api.Models.Configuration;
 using ocpa.ro.api.Policies;
+using Serilog;
+using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace ocpa.ro.api
 {
@@ -58,7 +62,7 @@ namespace ocpa.ro.api
                 {
                     ValidIssuer = jwtConfig.Issuer,
                     ValidAudience = jwtConfig.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(JwtConfig.KeyBytes),
+                    IssuerSigningKey = new SymmetricSecurityKey(JwtConfig.KeyBytes.ToArray()),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
@@ -79,10 +83,11 @@ namespace ocpa.ro.api
             services.AddTransient<IMultipartRequestHelper, MultipartRequestHelper>();
             services.AddTransient<IWikiHelper, WikiHelper>();
 
+            services.AddSerilog(Configuration);
 
             services
                 .AddControllers()
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 
             services.AddSwaggerGen(option =>
             {
@@ -102,6 +107,8 @@ namespace ocpa.ro.api
             bool isDevelopment = env.IsDevelopment();
 
             ApiExplorerIgnoreAttribute.IsDevelopment = isDevelopment;
+
+            app.UseMiddleware<GlobalExceptionHandler>();
 
             if (isDevelopment)
                 app.UseDeveloperExceptionPage();

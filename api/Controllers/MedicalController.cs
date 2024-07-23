@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Models.Generic;
 using ocpa.ro.api.Models.Medical.Database;
 using ocpa.ro.api.Policies;
+using Serilog;
 using System;
+using System.Collections.Generic;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -20,13 +23,15 @@ namespace ocpa.ro.api.Controllers
     {
         private readonly IMedicalDataHelper _dataHelper = null;
 
-        public MedicalController(IWebHostEnvironment hostingEnvironment, IMedicalDataHelper dbHelper)
-            : base(hostingEnvironment)
+        public MedicalController(IWebHostEnvironment hostingEnvironment, IMedicalDataHelper dbHelper, ILogger logger)
+            : base(hostingEnvironment, logger, null)
         {
             _dataHelper = dbHelper;
         }
 
         [HttpGet("test-types")]
+        [ProducesResponseType(typeof(List<TestTypeDetail>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetTestTypes([FromQuery] string category)
         {
             try
@@ -40,6 +45,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("labs")]
+        [ProducesResponseType(typeof(List<Lab>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetLabs()
         {
             try
@@ -53,6 +60,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("test-categories")]
+        [ProducesResponseType(typeof(List<TestCategory>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetTestCategories()
         {
             try
@@ -66,6 +75,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("person")]
+        [ProducesResponseType(typeof(Person), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetPerson([FromQuery] string loginId)
         {
             try
@@ -91,6 +102,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("tests")]
+        [ProducesResponseType(typeof(List<TestDetail>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetTests([FromQuery] int? id, [FromQuery] int? pid, [FromQuery] string cnp,
             [FromQuery] string category, [FromQuery] string type,
             [FromQuery] DateTime? from, [FromQuery] DateTime? to)

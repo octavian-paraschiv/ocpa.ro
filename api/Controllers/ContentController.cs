@@ -7,6 +7,7 @@ using ocpa.ro.api.Helpers.Content;
 using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Models.Content;
 using ocpa.ro.api.Policies;
+using Serilog;
 using System;
 using System.Threading.Tasks;
 
@@ -23,7 +24,8 @@ namespace ocpa.ro.api.Controllers
         private readonly IContentHelper _contentHelper;
         private readonly IMultipartRequestHelper _multipartHelper = null;
 
-        public ContentController(IWebHostEnvironment hostingEnvironment, IContentHelper contentHelper, IMultipartRequestHelper multipartHelper) : base(hostingEnvironment)
+        public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger, IContentHelper contentHelper, IMultipartRequestHelper multipartHelper) 
+            : base(hostingEnvironment, logger, null)
         {
             _contentHelper = contentHelper ?? throw new ArgumentNullException(nameof(contentHelper));
             _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
@@ -35,17 +37,20 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public IActionResult GetContent([FromRoute] string contentPath, [FromQuery] int? level = null, [FromQuery] string filter = null)
         {
+            IActionResult result = NotFound(contentPath);
+
             try
             {
                 var content = _contentHelper.ListContent(contentPath, level, filter);
                 if ((content?.Type ?? ContentUnitType.None) != ContentUnitType.None)
-                    return Ok(content);
+                    result = Ok(content);
             }
             catch
             {
+                result = NotFound(contentPath);
             }
 
-            return NotFound(contentPath);
+            return result;
         }
 
         [HttpPost("{*contentPath}")]

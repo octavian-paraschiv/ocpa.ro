@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Wiki;
+using Serilog;
+using System;
 using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Controllers
@@ -14,7 +16,8 @@ namespace ocpa.ro.api.Controllers
     {
         private readonly IWikiHelper _wikiHelper;
 
-        public WikiController(IWebHostEnvironment hostingEnvironment, IWikiHelper wikiHelper) : base(hostingEnvironment)
+        public WikiController(IWebHostEnvironment hostingEnvironment, IWikiHelper wikiHelper, ILogger logger)
+            : base(hostingEnvironment, logger, null)
         {
             _wikiHelper = wikiHelper;
         }
@@ -39,8 +42,9 @@ namespace ocpa.ro.api.Controllers
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
             }
 
             return NotFound($"Resource not found: {resourcePath}");

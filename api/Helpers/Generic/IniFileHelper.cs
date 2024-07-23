@@ -1,31 +1,33 @@
 ﻿using IniParser;
 using IniParser.Model;
+using Microsoft.AspNetCore.Hosting;
+using Serilog;
 using System;
 using System.Globalization;
 using System.IO;
 
 namespace ocpa.ro.api.Helpers.Generic
 {
-    public class IniFileHelper
+    public class IniFileHelper : BaseHelper
     {
         private readonly string _iniFilePath;
-        private readonly FileSystemWatcher _watchConfigFile;
-
         private IniData _iniData;
 
-        public IniFileHelper(string iniFilePath)
+        public IniFileHelper(IWebHostEnvironment hostingEnvironment, ILogger logger, string iniFilePath)
+            : base(hostingEnvironment, logger)
         {
             _iniFilePath = iniFilePath;
 
             ReadIniFile();
 
-            _watchConfigFile = new FileSystemWatcher
+            var watchConfigFile = new FileSystemWatcher
             {
                 Path = Path.GetDirectoryName(_iniFilePath),
                 Filter = Path.GetFileName(_iniFilePath),
                 EnableRaisingEvents = true
             };
-            _watchConfigFile.Changed += delegate (object s, FileSystemEventArgs e)
+
+            watchConfigFile.Changed += (s, e) =>
             {
                 try
                 {
@@ -36,8 +38,9 @@ namespace ocpa.ro.api.Helpers.Generic
                         ReadIniFile();
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    LogException(ex);
                 }
             };
         }
@@ -92,16 +95,17 @@ namespace ocpa.ro.api.Helpers.Generic
                             }
                         }
                     }
-                    catch (Exception)
+                    catch
                     {
                         result = defValue;
                     }
                 }
             }
-            catch (Exception)
+            catch
             {
                 result = defValue;
             }
+
             return result;
         }
     }

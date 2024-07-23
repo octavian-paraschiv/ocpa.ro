@@ -1,6 +1,8 @@
 ﻿using Markdig;
 using Microsoft.AspNetCore.Hosting;
 using ocpa.ro.api.Extensions;
+using Serilog;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,13 +14,11 @@ namespace ocpa.ro.api.Helpers.Wiki
         Task<byte[]> ProcessWikiResource(string wikiResourcePath);
     }
 
-    public class WikiHelper : IWikiHelper
+    public class WikiHelper : BaseHelper, IWikiHelper
     {
-        private readonly IWebHostEnvironment _hostingEnvironment = null;
-
-        public WikiHelper(IWebHostEnvironment hostingEnvironment)
+        public WikiHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
+            : base(hostingEnvironment, logger)
         {
-            _hostingEnvironment = hostingEnvironment;
         }
 
         public async Task<byte[]> ProcessWikiResource(string wikiResourcePath)
@@ -69,8 +69,9 @@ namespace ocpa.ro.api.Helpers.Wiki
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
                 data = null;
             }
 

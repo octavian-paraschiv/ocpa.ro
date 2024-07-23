@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.ProTONE;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,7 +23,8 @@ namespace ocpa.ro.api.Controllers
     {
         static readonly Version transitionVersion = new Version("3.1.59");
 
-        public ProToneController(IWebHostEnvironment hostingEnvironment) : base(hostingEnvironment)
+        public ProToneController(IWebHostEnvironment hostingEnvironment, ILogger logger)
+            : base(hostingEnvironment, logger, null)
         {
         }
 
@@ -130,7 +132,6 @@ namespace ocpa.ro.api.Controllers
                     break;
 
                 case BuildType.Legacy:
-                default:
                     folder = "legacy";
                     break;
             }
@@ -187,7 +188,7 @@ namespace ocpa.ro.api.Controllers
                         string dts = System.IO.File.ReadAllText(infoFile);
 
                         string[] fields = dts.Split(',');
-                        if (fields != null && fields.Length > 0)
+                        if (fields.Length > 0)
                         {
                             DateTimeConverter dtc = new DateTimeConverter();
                             bi.BuildDate = (DateTime)dtc.ConvertFromInvariantString(fields[0]);
@@ -211,8 +212,9 @@ namespace ocpa.ro.api.Controllers
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
             }
 
             return bi;

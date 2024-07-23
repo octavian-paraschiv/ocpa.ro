@@ -6,3 +6,4 @@ packages
 .angular
 ang-ocpa-ro/dist*/
 api/api/
+*.log

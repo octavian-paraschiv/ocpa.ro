@@ -6,6 +6,7 @@ using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Helpers.Meteo;
 using ocpa.ro.api.Models.Meteo;
 using ocpa.ro.api.Policies;
+using Serilog;
 using System;
 using System.Threading.Tasks;
 
@@ -21,8 +22,8 @@ namespace ocpa.ro.api.Controllers
         private readonly IMeteoDataHelper _dataHelper = null;
         private readonly IMultipartRequestHelper _multipartHelper = null;
 
-        public MeteoController(IWebHostEnvironment hostingEnvironment, IMeteoDataHelper meteoDataHelper, IMultipartRequestHelper multipartHelper)
-            : base(hostingEnvironment)
+        public MeteoController(IWebHostEnvironment hostingEnvironment, IMeteoDataHelper meteoDataHelper, IMultipartRequestHelper multipartHelper, ILogger logger)
+            : base(hostingEnvironment, logger, null)
         {
             _dataHelper = meteoDataHelper ?? throw new ArgumentNullException(nameof(meteoDataHelper));
             _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
@@ -41,8 +42,9 @@ namespace ocpa.ro.api.Controllers
                 if (fileName?.Length > 0)
                     return Ok($"{Request.Scheme}://{Request.Host}/content/Meteo/current/{fileName}");
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
             }
 
             return NotFound();
@@ -58,7 +60,7 @@ namespace ocpa.ro.api.Controllers
         [ApiExplorerIgnore]
         [ProducesResponseType(typeof(CalendarRange), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public IActionResult GetRange([FromRoute] int dbi = 0)
+        public IActionResult GetRange([FromRoute] int dbi)
         {
             try
             {
@@ -75,7 +77,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetMeteoData([FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city,
-           [FromQuery] int skip = 0, [FromQuery] int take = 10) => GetMeteoData(region, subregion, city, skip, take, 0);
+           [FromQuery] int skip = 0, [FromQuery] int take = 10) => GetMeteoData(region, subregion, city, 0, skip, take);
 
 
         [HttpGet("data/{dbi}")]
@@ -83,12 +85,12 @@ namespace ocpa.ro.api.Controllers
         [ApiExplorerIgnore]
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public IActionResult GetMeteoData([FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city,
-            [FromQuery] int skip = 0, [FromQuery] int take = 10, [FromRoute] int dbi = 0)
+        public IActionResult GetMeteoData([FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city, [FromRoute] int dbi,
+            [FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
             try
             {
-                GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment).InternalGetGridCoordinates(region, subregion, city);
+                GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment, _logger).InternalGetGridCoordinates(region, subregion, city);
                 var data = _dataHelper.GetMeteoData(dbi, gridCoordinates, region, skip, take);
                 return Ok(data);
             }
@@ -117,7 +119,7 @@ namespace ocpa.ro.api.Controllers
         [DisableFormValueModelBinding]
         [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UploadDatabase([FromRoute] int dbi = 0)
+        public async Task<IActionResult> UploadDatabase([FromRoute] int dbi)
         {
             try
             {

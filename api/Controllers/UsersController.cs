@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Policies;
+using Serilog;
 using System;
 
 namespace ocpa.ro.api.Controllers
@@ -19,8 +20,8 @@ namespace ocpa.ro.api.Controllers
     {
         private readonly IJwtTokenHelper _jwtTokenGenerator;
 
-        public UsersController(IWebHostEnvironment hostingEnvironment, IAuthHelper authHelper, IJwtTokenHelper jwtTokenGenerator)
-            : base(hostingEnvironment, authHelper)
+        public UsersController(IWebHostEnvironment hostingEnvironment, IAuthHelper authHelper, IJwtTokenHelper jwtTokenGenerator, ILogger logger)
+            : base(hostingEnvironment, logger, authHelper)
         {
             _jwtTokenGenerator = jwtTokenGenerator;
         }

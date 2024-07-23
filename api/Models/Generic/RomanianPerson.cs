@@ -1,14 +1,16 @@
-﻿using ocpa.ro.api.Models.Medical.Database;
+﻿using ocpa.ro.api.Exceptions;
+using ocpa.ro.api.Models.Medical.Database;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 
 namespace ocpa.ro.api.Models.Generic
 {
-    public static class SIRUTA
+    public static class SirutaCodes
     {
-        public static readonly Dictionary<string, string> Counties = new Dictionary<string, string>
+        public static readonly ReadOnlyDictionary<string, string> Counties = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
         {
             { "01" , "Alba" },
             { "02" , "Arad" },
@@ -60,7 +62,7 @@ namespace ocpa.ro.api.Models.Generic
             { "52" , "Giurgiu" },
             { "47" , "Bucuresti - Sector 7 (desființat)" },
             { "48" , "Bucuresti - Sector 8 (desființat)" },
-        };
+        });
     }
 
     public static class CnpValidator
@@ -71,7 +73,7 @@ namespace ocpa.ro.api.Models.Generic
         {
             cnp = (cnp ?? "").Trim();
             if (cnp.Length != 13)
-                throw new Exception("ERROR_BAD_CNP");
+                throw new ExtendedException("ERROR_BAD_CNP");
 
             int sum = 0;
             for (int i = 0; i < ControlConstant.Length; i++)
@@ -86,7 +88,7 @@ namespace ocpa.ro.api.Models.Generic
                 q = 1;
 
             if (cnp.Last() != q + '0')
-                throw new Exception("ERROR_BAD_CNP");
+                throw new ExtendedException("ERROR_BAD_CNP");
 
             return cnp;
         }
@@ -111,7 +113,7 @@ namespace ocpa.ro.api.Models.Generic
             }
             catch
             {
-                throw new Exception("ERROR_BAD_CNP_IN_DATABASE");
+                throw new ExtendedException("ERROR_BAD_CNP_IN_DATABASE");
             }
 
             ParseCnp();
@@ -156,7 +158,7 @@ namespace ocpa.ro.api.Models.Generic
                 .ParseExact(date, dateFmt, CultureInfo.InvariantCulture)
                 .ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 
-            if (SIRUTA.Counties.TryGetValue(birthPlace, out string county))
+            if (SirutaCodes.Counties.TryGetValue(birthPlace, out string county))
                 BirthPlace = county;
             else
                 BirthPlace = "????";

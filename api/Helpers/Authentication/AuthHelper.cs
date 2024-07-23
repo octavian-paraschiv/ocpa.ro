@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Authentication;
+using Serilog;
+using System;
 using System.IO;
 using System.Linq;
 using ThorusCommon.SQLite;
@@ -20,15 +22,13 @@ namespace ocpa.ro.api.Helpers.Authentication
         UserType GetUserType(int id = -1, string code = null);
     }
 
-    public class AuthHelper : IAuthHelper
+    public class AuthHelper : BaseHelper, IAuthHelper
     {
-        private readonly IWebHostEnvironment _hostingEnvironment = null;
         private readonly SQLiteConnection _db = null;
 
-        public AuthHelper(IWebHostEnvironment hostingEnvironment)
+        public AuthHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
+            : base(hostingEnvironment, logger)
         {
-            _hostingEnvironment = hostingEnvironment;
-
             string authDbFile = Path.Combine(_hostingEnvironment.ContentPath(), "auth.db");
             _db = new SQLiteConnection(authDbFile, SQLiteOpenFlags.ReadWrite);
         }
@@ -46,7 +46,10 @@ namespace ocpa.ro.api.Helpers.Authentication
                     return (calc == req.Password) ? user : null;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
 
             return null;
         }
@@ -57,7 +60,10 @@ namespace ocpa.ro.api.Helpers.Authentication
             {
                 return _db.Get<User>(u => u.LoginId == loginId);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
 
             return null;
         }
@@ -98,8 +104,9 @@ namespace ocpa.ro.api.Helpers.Authentication
                         dbu = null;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
                 dbu = null;
             }
 
@@ -118,7 +125,10 @@ namespace ocpa.ro.api.Helpers.Authentication
                 if (_db.Delete(dbu) > 0)
                     return StatusCodes.Status204NoContent;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
 
             return StatusCodes.Status400BadRequest;
         }
@@ -148,7 +158,10 @@ namespace ocpa.ro.api.Helpers.Authentication
                     (code == null || code.ToLower() == ut.Code.ToLower())
                 );
             }
-            catch { }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
 
             return null;
         }

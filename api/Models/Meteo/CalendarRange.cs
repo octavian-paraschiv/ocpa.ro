@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -26,7 +27,7 @@ namespace ocpa.ro.api.Models.Meteo
         }
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return DateTime.ParseExact(reader.GetString(), MeteoConstants.DateFormat, null);
+            return DateTime.ParseExact(reader.GetString(), MeteoConstants.DateFormat, CultureInfo.InvariantCulture);
         }
     }
 }
