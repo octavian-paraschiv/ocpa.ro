@@ -11,6 +11,8 @@ import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/u
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { UserTypeService } from 'src/app/services/user-type.service';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @UntilDestroy()
 @Component({
@@ -30,6 +32,7 @@ export class UsersComponent extends BaseAuthComponent {
         router: Router,
         ngZone: NgZone,
         authenticationService: AuthenticationService,
+        private readonly snackBar: MatSnackBar,
         private readonly userService: UserService,
         private readonly userTypeService: UserTypeService,
         private readonly dialog: MatDialog
@@ -44,9 +47,18 @@ export class UsersComponent extends BaseAuthComponent {
     }
 
     onDelete(loginId: string) {
-        this.userService.deleteUser(loginId)
-            .pipe(untilDestroyed(this))
-            .subscribe(() => this.onInit());
+        MessageBoxComponent.show(this.dialog, {
+            title: 'Confirm',
+            message: `Are you sure you want to delete user: <b>${loginId}</b>?`
+        } as MessageBoxOptions)
+        .pipe(untilDestroyed(this))
+        .subscribe(res => {
+            if (res) {
+                this.userService.deleteUser(loginId)
+                .pipe(untilDestroyed(this))
+                .subscribe(() => this.onInit());
+            }
+        });
     }
 
     saveUser(user: User = undefined) {
@@ -55,7 +67,16 @@ export class UsersComponent extends BaseAuthComponent {
                 untilDestroyed(this),
                 switchMap(user => user ? this.userService.saveUser(user) : of(undefined as User))
                 
-            ).subscribe(user => user ? this.onInit() : console.log(`[${user ? 'MOD' : 'ADD'}] User not saved`));
+            ).subscribe(user => {
+                if (user) {
+                    this.onInit();
+                    this.snackBar.open(`User \`${user.loginId}\' succesfully saved.`, 
+                        undefined, { duration: 5000 });
+                } else {
+                    this.snackBar.open(`Failed to save user ${user.loginId ?? ''}`.trimEnd(), 
+                        undefined, { duration: 5000 });
+                }
+            });
     }
 
     userType(user: User) {

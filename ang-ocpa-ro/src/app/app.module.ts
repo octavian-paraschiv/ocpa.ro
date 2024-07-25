@@ -31,6 +31,7 @@ import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/m
 import { MaterialModule } from 'src/app/material.module';
 import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
 import { UserTypeService } from 'src/app/services/user-type.service';
+import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { UserTypeService } from 'src/app/services/user-type.service';
 
         UsersComponent,
         UserDialogComponent,
+        MessageBoxComponent,
 
         MeteoDatabaseComponent,
         LoginComponent,

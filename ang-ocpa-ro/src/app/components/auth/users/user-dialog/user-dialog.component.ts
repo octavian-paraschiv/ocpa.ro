@@ -1,6 +1,6 @@
-import {Component, Inject} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
-import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User, UserType } from 'src/app/models/user';
@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
     selector: 'user-dialog.component',
     templateUrl: './user-dialog.component.html'
 })
-export class UserDialogComponent {
+export class UserDialogComponent implements OnInit {
     userForm: UntypedFormGroup;
     hide = true;
     editMode = false;
