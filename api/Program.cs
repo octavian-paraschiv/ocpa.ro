@@ -19,7 +19,7 @@ namespace ocpa.ro.api
             if (!isDev)
             {
                 var dllDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-                logDir = Path.Combine(dllDir, "../../content/Logs").NormalizePath();
+                logDir = Path.Combine(dllDir, "../../../Logs").NormalizePath();
             }
 
             Environment.SetEnvironmentVariable("LOGDIR", logDir);
