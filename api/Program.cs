@@ -3,7 +3,6 @@ using Microsoft.Extensions.Hosting;
 using ocpa.ro.api.Extensions;
 using System;
 using System.IO;
-using System.Reflection;
 
 namespace ocpa.ro.api
 {
@@ -19,8 +18,8 @@ namespace ocpa.ro.api
 
             if (!isDev)
             {
-                var dllDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                logDir = Path.Combine(dllDir, "../../Content/Logs").NormalizePath();
+                var dllDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+                logDir = Path.Combine(dllDir, "../../content/Logs").NormalizePath();
             }
 
             Environment.SetEnvironmentVariable("LOGDIR", logDir);
