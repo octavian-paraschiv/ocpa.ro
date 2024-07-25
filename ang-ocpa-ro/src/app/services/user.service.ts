@@ -18,6 +18,6 @@ export class UserService {
     }
 
     deleteUser(loginId: string): Observable<Object> {
-        return this.http.delete(`${environment.apiUrl}/users/delete/${loginId}`);
+        return this.http.post(`${environment.apiUrl}/users/delete/${loginId}`, undefined);
     }
 }
