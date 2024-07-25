@@ -88,8 +88,8 @@ namespace ocpa.ro.api.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("delete/{loginId}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPost("delete/{loginId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ApiExplorerIgnore]

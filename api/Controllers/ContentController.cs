@@ -24,7 +24,7 @@ namespace ocpa.ro.api.Controllers
         private readonly IContentHelper _contentHelper;
         private readonly IMultipartRequestHelper _multipartHelper = null;
 
-        public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger, IContentHelper contentHelper, IMultipartRequestHelper multipartHelper) 
+        public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger, IContentHelper contentHelper, IMultipartRequestHelper multipartHelper)
             : base(hostingEnvironment, logger, null)
         {
             _contentHelper = contentHelper ?? throw new ArgumentNullException(nameof(contentHelper));
@@ -80,7 +80,7 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        [HttpDelete("{*contentPath}")]
+        [HttpPost("delete/{*contentPath}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]

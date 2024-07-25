@@ -123,7 +123,7 @@ namespace ocpa.ro.api.Helpers.Authentication
                     return StatusCodes.Status404NotFound;
 
                 if (_db.Delete(dbu) > 0)
-                    return StatusCodes.Status204NoContent;
+                    return StatusCodes.Status200OK;
             }
             catch (Exception ex)
             {

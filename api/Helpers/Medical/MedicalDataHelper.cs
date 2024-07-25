@@ -16,12 +16,12 @@ namespace ocpa.ro.api.Helpers.Medical
 {
     public interface IMedicalDataHelper
     {
-        List<T> UnfilteredTable<T>() where T : IMedicalDbTable, new();
+        List<T> AllOfType<T>() where T : class, IMedicalDbTable, new();
         List<TestTypeDetail> TestTypes(string categoryCode);
         Person Person(string loginId);
         List<TestDetail> Tests(int? id, int? pid, string cnp, string category, string type, DateTime? from, DateTime? to);
-        int SaveMedicalRecord<T>(T record) where T : IMedicalDbTable, new();
-        int DeleteMedicalRecord<T>(T record) where T : IMedicalDbTable, new();
+        int SaveMedicalRecord<T>(T record) where T : class, IMedicalDbTable, new();
+        int DeleteMedicalRecord<T>(int id) where T : class, IMedicalDbTable, new();
     }
 
     public class MedicalDataHelper : IMedicalDataHelper
@@ -48,7 +48,7 @@ namespace ocpa.ro.api.Helpers.Medical
             _mdb = MedicalDB.Open(Path.Combine(dataFolder, "Medical.db3"), true);
         }
 
-        public List<T> UnfilteredTable<T>() where T : IMedicalDbTable, new()
+        public List<T> AllOfType<T>() where T : class, IMedicalDbTable, new()
         {
             return _mdb.Database.Table<T>().ToList();
         }
@@ -113,7 +113,7 @@ namespace ocpa.ro.api.Helpers.Medical
             throw new ExtendedException("TESTS_NOT_FOUND");
         }
 
-        public int SaveMedicalRecord<T>(T record) where T : IMedicalDbTable, new()
+        public int SaveMedicalRecord<T>(T record) where T : class, IMedicalDbTable, new()
         {
             if (record.Id > 0)
             {
@@ -143,9 +143,9 @@ namespace ocpa.ro.api.Helpers.Medical
             }
         }
 
-        public int DeleteMedicalRecord<T>(T record) where T : IMedicalDbTable, new()
+        public int DeleteMedicalRecord<T>(int id) where T : class, IMedicalDbTable, new()
         {
-            T origRecord = _mdb.Database.Table<T>().FirstOrDefault(t => t.Id == record.Id);
+            T origRecord = _mdb.Database.Table<T>().FirstOrDefault(t => t.Id == id);
             if (origRecord != null)
             {
                 if (_mdb.Database.Delete(origRecord) > 0)

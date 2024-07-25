@@ -51,7 +51,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_dataHelper.UnfilteredTable<Lab>());
+                return Ok(_dataHelper.AllOfType<Lab>());
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_dataHelper.UnfilteredTable<TestCategory>());
+                return Ok(_dataHelper.AllOfType<TestCategory>());
             }
             catch (Exception ex)
             {
@@ -134,22 +134,22 @@ namespace ocpa.ro.api.Controllers
         public IActionResult SaveLab([FromBody] Lab r) => SaveMedicalRecord(r);
 
 
-        [HttpDelete("tests")]
-        public IActionResult DeleteTest([FromBody] Test r) => DeleteMedicalRecord(r);
+        [HttpPost("delete/test/{id}")]
+        public IActionResult DeleteTest([FromRoute] int id) => DeleteMedicalRecord<Test>(id);
 
-        [HttpDelete("test-types")]
+        [HttpPost("delete/test-type/{id}")]
         [Authorize(Roles = "ADM")]
-        public IActionResult DeleteTestType([FromBody] TestType r) => DeleteMedicalRecord(r);
+        public IActionResult DeleteTestType([FromRoute] int id) => DeleteMedicalRecord<TestType>(id);
 
-        [HttpDelete("test-categories")]
+        [HttpPost("delete/test-category/{id}")]
         [Authorize(Roles = "ADM")]
-        public IActionResult DeleteTestCategory([FromBody] TestCategory r) => DeleteMedicalRecord(r);
+        public IActionResult DeleteTestCategory([FromRoute] int id) => DeleteMedicalRecord<TestCategory>(id);
 
-        [HttpDelete("labs")]
+        [HttpPost("delete/lab/{id}")]
         [Authorize(Roles = "ADM")]
-        public IActionResult DeleteLab([FromBody] Lab r) => DeleteMedicalRecord(r);
+        public IActionResult DeleteLab([FromRoute] int id) => DeleteMedicalRecord<Lab>(id);
 
-        private IActionResult SaveMedicalRecord<T>(T t) where T : IMedicalDbTable, new()
+        private IActionResult SaveMedicalRecord<T>(T t) where T : class, IMedicalDbTable, new()
         {
             try
             {
@@ -161,11 +161,11 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        private IActionResult DeleteMedicalRecord<T>(T t) where T : IMedicalDbTable, new()
+        private IActionResult DeleteMedicalRecord<T>(int id) where T : class, IMedicalDbTable, new()
         {
             try
             {
-                return StatusCode(_dataHelper.DeleteMedicalRecord(t));
+                return StatusCode(_dataHelper.DeleteMedicalRecord<T>(id));
             }
             catch (Exception ex)
             {
