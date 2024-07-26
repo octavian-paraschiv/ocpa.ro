@@ -7,3 +7,4 @@ packages
 ang-ocpa-ro/dist*/
 api/api/
 *.log
+api/Properties/PublishProfiles/**
