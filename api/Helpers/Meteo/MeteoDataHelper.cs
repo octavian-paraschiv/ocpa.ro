@@ -44,7 +44,7 @@ namespace ocpa.ro.api.Helpers.Meteo
             {
                 var dbName = i > 0 ? $"Preview{i}" : "Snapshot";
                 _dbPaths[i] = Path.Combine(_dataFolder, $"{dbName}.db3");
-                _databases[i] = MeteoDB.OpenOrCreate(_dbPaths[i], false);
+                _databases[i] = MeteoDB.OpenOrCreate(_dbPaths[i], true);
             }
 
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
@@ -75,17 +75,42 @@ namespace ocpa.ro.api.Helpers.Meteo
 
         public async Task ReplaceDatabase(int dbIdx, byte[] data)
         {
-            _databases[dbIdx]?.Close();
+            if (dbIdx < 0)
+                dbIdx = 0;
+            if (dbIdx > DbCount - 1)
+                dbIdx = DbCount - 1;
 
             using (MemoryStream input = new MemoryStream(data))
             using (GZipStream zipped = new GZipStream(input, CompressionMode.Decompress))
             using (MemoryStream unzipped = new MemoryStream())
             {
                 await zipped.CopyToAsync(unzipped);
-                await File.WriteAllBytesAsync(_dbPaths[dbIdx], unzipped.ToArray());
-            }
 
-            _databases[dbIdx] = MeteoDB.OpenOrCreate(_dbPaths[dbIdx], false);
+                if (_databases[dbIdx] != null)
+                {
+                    var tmpDatabasePath = Path.Combine(_dataFolder, $"tmp_{dbIdx}.db3");
+                    await File.WriteAllBytesAsync(tmpDatabasePath, unzipped.ToArray());
+
+                    // Database already open, so create a temporary one
+                    using (var tmpDb = MeteoDB.OpenOrCreate(tmpDatabasePath, true))
+                    {
+                        _databases[dbIdx].PurgeAll<ThorusCommon.SQLite.Region>();
+                        _databases[dbIdx].InsertAll(tmpDb.Regions);
+
+                        _databases[dbIdx].PurgeAll<Data>();
+                        _databases[dbIdx].InsertAll(tmpDb.Data);
+                    }
+                }
+                else
+                {
+                    await File.WriteAllBytesAsync(_dbPaths[dbIdx], unzipped.ToArray());
+
+                    // Database not yet open, so open/create it now
+                    var dbName = dbIdx > 0 ? $"Preview{dbIdx}" : "Snapshot";
+                    _dbPaths[dbIdx] = Path.Combine(_dataFolder, $"{dbName}.db3");
+                    _databases[dbIdx] = MeteoDB.OpenOrCreate(_dbPaths[dbIdx], false);
+                }
+            }
         }
 
         public CalendarRange GetCalendarRange(int dbIdx, int days)
