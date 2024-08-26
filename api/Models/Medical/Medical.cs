@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ocpa.ro.api.Models.Generic;
+using System;
 using System.Text.Json.Serialization;
 using ThorusCommon.SQLite;
 
@@ -68,10 +69,13 @@ namespace ocpa.ro.api.Models.Medical.Database
         [NotNull]
         public DateTime Date { get; set; }
 
+        [JsonConverter(typeof(NumberTruncateJsonConverter<double>))]
         public double? Value { get; set; }
 
+        [JsonConverter(typeof(NumberTruncateJsonConverter<double>))]
         public double? MinRefOverride { get; set; }
 
+        [JsonConverter(typeof(NumberTruncateJsonConverter<double>))]
         public double? MaxRefOverride { get; set; }
 
         [NotNull]
@@ -112,9 +116,11 @@ namespace ocpa.ro.api.Models.Medical.Database
         public string Code { get; set; }
 
         [NotNull]
+        [JsonConverter(typeof(NumberTruncateJsonConverter<double>))]
         public double MinRef { get; set; }
 
         [NotNull]
+        [JsonConverter(typeof(NumberTruncateJsonConverter<double>))]
         public double MaxRef { get; set; }
 
         [NotNull]
