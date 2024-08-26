@@ -100,6 +100,8 @@ namespace ocpa.ro.api.Helpers.Meteo
                         _databases[dbIdx].PurgeAll<Data>();
                         _databases[dbIdx].InsertAll(tmpDb.Data);
                     }
+
+                    File.Delete(tmpDatabasePath);
                 }
                 else
                 {

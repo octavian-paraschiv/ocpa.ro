@@ -69,6 +69,7 @@ namespace ocpa.ro.api.Controllers
             }
             catch (Exception ex)
             {
+                LogException(ex);
                 return BadRequest(ex.Message);
             }
         }
@@ -96,6 +97,7 @@ namespace ocpa.ro.api.Controllers
             }
             catch (Exception ex)
             {
+                LogException(ex);
                 return BadRequest(ex.Message);
             }
         }
@@ -129,6 +131,7 @@ namespace ocpa.ro.api.Controllers
             }
             catch (Exception ex)
             {
+                LogException(ex);
                 return BadRequest(ex.Message);
             }
         }
