@@ -4,8 +4,8 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { UserType } from 'src/app/models/user';
 import { UserTypeService } from 'src/app/services/user-type.service';
+import { UserType } from 'src/app/models/models-swagger';
 
 @UntilDestroy()
 @Component({

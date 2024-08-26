@@ -2,11 +2,9 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { environment } from "src/environments/environment";
-import { City, GridCoordinates } from "../models/geography";
-import { CalendarRange, MeteoData } from "../models/meteo";
-import { BuildInfo  } from "../models/protone";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { catchError, map } from "rxjs/operators";
+import { BuildInfo, City, GridCoordinates, CalendarRange, MeteoData } from 'src/app/models/models-swagger';
 
 @UntilDestroy()
 @Injectable()

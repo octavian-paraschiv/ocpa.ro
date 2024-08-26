@@ -2,9 +2,8 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
-import { take, takeUntil, filter } from 'rxjs/operators';
-import { City, GridCoordinates } from 'src/app/models/geography';
-import { MeteoDailyData, MeteoData } from 'src/app/models/meteo';
+import { take, takeUntil } from 'rxjs/operators';
+import { City, GridCoordinates, MeteoDailyData, MeteoData } from 'src/app/models/models-swagger';
 import { GeographyApiService, MeteoApiService } from 'src/app/services/api-services';
 import { Helper } from 'src/app/services/helper';
 

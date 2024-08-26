@@ -4,7 +4,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UserService } from 'src/app/services/user.service';
-import { User } from 'src/app/models/user';
 import { faSquarePlus, faSquarePen, faSquareMinus } from '@fortawesome/free-solid-svg-icons';
 import { MatDialog } from '@angular/material/dialog';
 import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
@@ -13,6 +12,7 @@ import { of } from 'rxjs';
 import { UserTypeService } from 'src/app/services/user-type.service';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from 'src/app/models/models-swagger';
 
 @UntilDestroy()
 @Component({

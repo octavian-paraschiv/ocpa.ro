@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthenticateResponse, UserType } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { UserTypeService } from 'src/app/services/user-type.service';
+import { AuthenticateResponse, UserType } from 'src/app/models/models-swagger';
 
 @Injectable()
 export class AuthenticationService {

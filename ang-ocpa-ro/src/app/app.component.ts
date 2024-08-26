@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivationStart, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { UserType } from 'src/app/models/user';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 
 @Component({

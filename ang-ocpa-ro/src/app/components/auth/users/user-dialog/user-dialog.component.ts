@@ -3,7 +3,7 @@ import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Val
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { User, UserType } from 'src/app/models/user';
+import { UserType, User } from 'src/app/models/models-swagger';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UserTypeService } from 'src/app/services/user-type.service';
 import { environment } from 'src/environments/environment';

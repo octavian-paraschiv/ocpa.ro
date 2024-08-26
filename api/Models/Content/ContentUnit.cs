@@ -1,10 +1,13 @@
-﻿using ocpa.ro.api.Extensions;
+﻿using Microsoft.AspNetCore.Mvc;
+using ocpa.ro.api.Extensions;
+using ocpa.ro.api.Policies;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Net;
 
 namespace ocpa.ro.api.Models.Content
 {
-    public enum AContentUnitType
+    public enum ContentUnitType
     {
         None = 0,
         Folder,
@@ -14,7 +17,8 @@ namespace ocpa.ro.api.Models.Content
     
     public class ContentUnit
     {
-        public AContentUnitType Type { get; set; }
+        
+        public ContentUnitType Type { get; set; }
 
         public string Name { get; set; }
 

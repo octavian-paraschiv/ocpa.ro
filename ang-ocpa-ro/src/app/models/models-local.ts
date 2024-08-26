@@ -1,15 +1,6 @@
-export interface City {
-    name?: string,
-    region?: string,
-    subregion?: string,
-    latitude?: number,
-    longitude?: number,
-    default?: boolean
-}
-
-export interface GridCoordinates {
-    r: number,
-    c: number
+export enum Unit { 
+    Metric,
+    Imperial 
 }
 
 export interface IsoCountry {
@@ -24,5 +15,4 @@ export interface IsoCountry {
     Demonym2?: string;
     Demonym3?: string;
     PhoneCode?: string;
-  }
-  
+}

@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { MeteoDailyData, Unit } from 'src/app/models/meteo';
+import { UntilDestroy } from '@ngneat/until-destroy';
+import { Unit } from 'src/app/models/models-local';
+import { MeteoDailyData } from 'src/app/models/models-swagger';
 import { Helper } from 'src/app/services/helper';
 
 @UntilDestroy()

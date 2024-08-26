@@ -8,3 +8,6 @@ ang-ocpa-ro/dist*/
 api/api/
 *.log
 api/Properties/PublishProfiles/**
+content/ProTONE/
+content/Meteo/
+content/auth.db

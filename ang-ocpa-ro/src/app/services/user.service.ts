@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User, UserType } from '../models/user';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
+import { User } from 'src/app/models/models-swagger';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {

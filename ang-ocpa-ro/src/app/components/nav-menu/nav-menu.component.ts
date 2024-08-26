@@ -4,7 +4,7 @@ import { filter } from 'rxjs/operators';
 import { faCloudSunRain, faSquare, faMicrochip, faPhotoFilm, faPlay,
   faAngleRight, faEarth } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/services/authentication.services';
-import { UserType } from 'src/app/models/user';
+
 
 @Component({
   selector: 'app-nav-menu',
