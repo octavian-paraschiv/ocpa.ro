@@ -94,9 +94,6 @@ namespace ocpa.ro.api.Helpers.Meteo
                     // Database already open, so create a temporary one
                     using (var tmpDb = MeteoDB.OpenOrCreate(tmpDatabasePath, true))
                     {
-                        _databases[dbIdx].PurgeAll<ThorusCommon.SQLite.Region>();
-                        _databases[dbIdx].InsertAll(tmpDb.Regions);
-
                         _databases[dbIdx].PurgeAll<Data>();
                         _databases[dbIdx].InsertAll(tmpDb.Data);
                     }
@@ -162,7 +159,7 @@ namespace ocpa.ro.api.Helpers.Meteo
                 };
 
                 skip = Math.Min(range.Length - 1, Math.Max(0, skip));
-                take = Math.Min(range.Length - skip, Math.Max(0, range.Length));
+                take = Math.Min(range.Length - skip, Math.Max(0, take));
 
                 var allData = GetData(dbIdx, region, gc, skip, take);
                 if (allData?.Count > 0)
