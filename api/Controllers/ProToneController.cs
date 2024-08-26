@@ -40,7 +40,7 @@ namespace ocpa.ro.api.Controllers
                 if (!string.IsNullOrEmpty(version))
                 {
                     v = new BuildVersion(version);
-                    if (v < transitionVersion)
+                    if (v.LessThan(transitionVersion))
                     {
                         // older API's were sending app version in query string 
                         // Force all these apps to upgrade to 3.1.59 which is the transition build
@@ -69,7 +69,7 @@ namespace ocpa.ro.api.Controllers
                 if (!string.IsNullOrEmpty(version))
                 {
                     v = new BuildVersion(version);
-                    if (v < transitionVersion)
+                    if (v.LessThan(transitionVersion))
                     {
                         // older API's were sending app version in query string 
                         // Force all these apps to upgrade to 3.1.59 which is the transition build
@@ -153,8 +153,8 @@ namespace ocpa.ro.api.Controllers
 
             // Filter builds (keep only those with a higher version) and sort by version
             var ret = (from build in list
-                       where (minVersion == null || minVersion < build.Version)
-                       orderby build.Version ascending
+                       where minVersion == null || minVersion.LessThan(build.Version)
+                       orderby build.Version.ToString() ascending
                        select build);
 
             return ret.ToList();

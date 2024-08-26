@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ocpa.ro.api.Models.ProTONE
 {
@@ -10,7 +9,7 @@ namespace ocpa.ro.api.Models.ProTONE
         Release,
     }
 
-    public sealed class BuildVersion : IComparable, IEquatable<BuildVersion>
+    public sealed class BuildVersion
     {
         public int Major { get; set; }
         public int Minor { get; set; }
@@ -19,44 +18,18 @@ namespace ocpa.ro.api.Models.ProTONE
         public BuildVersion(string version)
         {
             var ver = new Version(version);
-            this.Major = ver.Major;
-            this.Minor = ver.Minor;
-            this.Build = ver.Build;
+            Major = ver.Major;
+            Minor = ver.Minor;
+            Build = ver.Build;
         }
 
         public override string ToString() => $"{Major}.{Minor}.{Build}";
-        public override int GetHashCode() => ToString().GetHashCode();
 
-        public override bool Equals(object obj) => Equals(obj as BuildVersion);
-
-        public bool Equals([AllowNull] BuildVersion other)
+        internal bool LessThan(BuildVersion transitionVersion)
         {
-            return other is BuildVersion version &&
-                  Major == version.Major &&
-                  Minor == version.Minor &&
-                  Build == version.Build;
-        }
-
-        public int CompareTo(object obj)
-        {
-            return string.CompareOrdinal(ToString(), (obj as BuildVersion)?.ToString());
-        }
-
-        public static bool operator ==(BuildVersion left, BuildVersion right)
-        {
-            return left?.Equals(right) ?? false;
-        }
-        public static bool operator >(BuildVersion left, BuildVersion right)
-        {
-            return (left?.CompareTo(right) ?? 0) > 0;
-        }
-        public static bool operator <(BuildVersion left, BuildVersion right)
-        {
-            return (left?.CompareTo(right) ?? 0) < 0;
-        }
-        public static bool operator !=(BuildVersion left, BuildVersion right)
-        {
-            return !(left == right);
+            var ts1 = ToString();
+            var ts2 = transitionVersion?.ToString() ?? string.Empty;
+            return string.Compare(ts1, ts2, StringComparison.OrdinalIgnoreCase) < 0;
         }
     }
 
