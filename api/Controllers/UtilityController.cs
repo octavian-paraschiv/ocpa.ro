@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Diagnostics;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -11,18 +12,27 @@ namespace ocpa.ro.api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
 
-    public class KeepAliveController : ApiControllerBase
+    public class UtilityController : ApiControllerBase
     {
-        public KeepAliveController(IWebHostEnvironment hostingEnvironment, ILogger logger)
+        public UtilityController(IWebHostEnvironment hostingEnvironment, ILogger logger)
             : base(hostingEnvironment, logger, null)
         {
         }
 
-        [HttpGet]
+        [HttpGet("keep-alive")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public IActionResult KeepAlive()
         {
             return Ok("ok");
+        }
+
+        [HttpGet("backend-version")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public IActionResult BackendVersion()
+        {
+            var location = typeof(Program).Assembly.Location;
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(location);
+            return Ok(fvi.FileVersion);
         }
     }
 }
