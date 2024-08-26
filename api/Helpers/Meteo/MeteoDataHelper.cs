@@ -159,7 +159,11 @@ namespace ocpa.ro.api.Helpers.Meteo
                 };
 
                 skip = Math.Min(range.Length - 1, Math.Max(0, skip));
-                take = Math.Min(range.Length - skip, Math.Max(0, take));
+
+                if (take > 0)
+                    take = Math.Min(range.Length - skip, take);
+                else
+                    take = range.Length - skip;
 
                 var allData = GetData(dbIdx, region, gc, skip, take);
                 if (allData?.Count > 0)
