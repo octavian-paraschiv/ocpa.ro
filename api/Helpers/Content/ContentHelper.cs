@@ -35,17 +35,17 @@ namespace ocpa.ro.api.Helpers.Content
             {
                 Children = unit?.Children,
                 Path = contentPath,
-                Type = unit?.Type ?? ContentUnitType.None,
+                Type = unit?.Type ?? AContentUnitType.None,
                 StatusCode = HttpStatusCode.NotFound
             };
 
-            var unitType = unit?.Type ?? ContentUnitType.None;
+            var unitType = unit?.Type ?? AContentUnitType.None;
 
-            if (unitType == ContentUnitType.None || unitType == ContentUnitType.File)
+            if (unitType == AContentUnitType.None || unitType == AContentUnitType.File)
             {
                 if (await WriteContent(contentPath, contentBytes))
                 {
-                    ucu.StatusCode = unit.Type == ContentUnitType.None ?
+                    ucu.StatusCode = unit.Type == AContentUnitType.None ?
                         HttpStatusCode.Created : HttpStatusCode.OK;
                 }
                 else
@@ -66,14 +66,14 @@ namespace ocpa.ro.api.Helpers.Content
                 contentPath = contentPath.TrimEnd("/*".ToCharArray());
 
             var unit = ListContent(contentPath, 0);
-            var unitType = unit?.Type ?? ContentUnitType.None;
+            var unitType = unit?.Type ?? AContentUnitType.None;
 
             string path = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
 
-            if (unitType == ContentUnitType.None)
+            if (unitType == AContentUnitType.None)
                 return HttpStatusCode.NotFound;
 
-            if (unitType == ContentUnitType.Folder)
+            if (unitType == AContentUnitType.Folder)
             {
                 if (contentOnly)
                 {
@@ -89,7 +89,7 @@ namespace ocpa.ro.api.Helpers.Content
                 else
                     Directory.Delete(path, false);
             }
-            else if (unitType == ContentUnitType.File)
+            else if (unitType == AContentUnitType.File)
                 File.Delete(path);
 
             return HttpStatusCode.OK;
@@ -109,7 +109,7 @@ namespace ocpa.ro.api.Helpers.Content
             {
                 return new ContentUnit
                 {
-                    Type = ContentUnitType.File,
+                    Type = AContentUnitType.File,
                     Name = Path.GetFileName(path),
                     Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), Path.GetDirectoryName(path))
                 };
@@ -135,7 +135,7 @@ namespace ocpa.ro.api.Helpers.Content
 
                         return new ContentUnit
                         {
-                            Type = ContentUnitType.Folder,
+                            Type = AContentUnitType.Folder,
                             Name = Path.GetFileName(path),
                             Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), Path.GetDirectoryName(path)),
                             Children = list
@@ -146,7 +146,7 @@ namespace ocpa.ro.api.Helpers.Content
                 {
                     return new ContentUnit
                     {
-                        Type = ContentUnitType.Folder,
+                        Type = AContentUnitType.Folder,
                         Name = Path.GetFileName(path),
                         Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), Path.GetDirectoryName(path))
                     };
@@ -155,7 +155,7 @@ namespace ocpa.ro.api.Helpers.Content
 
             return new ContentUnit
             {
-                Type = ContentUnitType.None,
+                Type = AContentUnitType.None,
                 Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), Path.GetDirectoryName(path))
             };
         }

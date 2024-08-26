@@ -42,7 +42,7 @@ namespace ocpa.ro.api.Controllers
             try
             {
                 var content = _contentHelper.ListContent(contentPath, level, filter);
-                if ((content?.Type ?? ContentUnitType.None) != ContentUnitType.None)
+                if ((content?.Type ?? AContentUnitType.None) != AContentUnitType.None)
                     result = Ok(content);
             }
             catch

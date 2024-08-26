@@ -4,16 +4,18 @@ using System.Net;
 
 namespace ocpa.ro.api.Models.Content
 {
-    public enum ContentUnitType
+    public enum AContentUnitType
     {
         None = 0,
         Folder,
         File
     }
 
+    
     public class ContentUnit
     {
-        public ContentUnitType Type { get; set; }
+        public AContentUnitType Type { get; set; }
+
         public string Name { get; set; }
 
         private string _path;

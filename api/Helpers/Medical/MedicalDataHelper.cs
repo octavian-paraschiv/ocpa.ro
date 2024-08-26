@@ -7,6 +7,7 @@ using ocpa.ro.api.Models.Generic;
 using ocpa.ro.api.Models.Medical.Database;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -93,7 +94,7 @@ namespace ocpa.ro.api.Helpers.Medical
             category = (category ?? string.Empty).ToUpper();
             type = (type ?? string.Empty).ToUpper();
 
-            DateTime dtFrom = from.GetValueOrDefault(new DateTime(1900, 1, 1));
+            DateTime dtFrom = from.GetValueOrDefault(DateTime.Parse("1900-01-01", CultureInfo.InvariantCulture));
             DateTime dtTo = to.GetValueOrDefault(DateTime.Now.AddDays(1));
 
             var tests = _mdb.Database.Table<TestDetail>()
@@ -120,6 +121,7 @@ namespace ocpa.ro.api.Helpers.Medical
                 T origRecord = _mdb.Database.Table<T>().FirstOrDefault(t => t.Id == record.Id);
                 if (origRecord != null)
                 {
+                    // TO DO: refactor this w/o Newtonsoft.Json
                     var j1 = JObject.FromObject(origRecord, _ser);
                     var j2 = JObject.FromObject(record, _ser);
                     j1.Merge(j2, _ms);

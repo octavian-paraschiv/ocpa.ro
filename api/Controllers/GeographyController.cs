@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Meteo;
@@ -10,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -21,9 +21,8 @@ namespace ocpa.ro.api.Controllers
 
     public class GeographyController : ApiControllerBase
     {
-        private static string _configFilePath;
-        private static FileSystemWatcher _watchConfigFile;
-        private static List<Region> _regions;
+        private string _configFilePath;
+        private List<Region> _regions;
 
         public GeographyController(IWebHostEnvironment hostingEnvironment, ILogger logger)
             : base(hostingEnvironment, logger, null)
@@ -37,39 +36,42 @@ namespace ocpa.ro.api.Controllers
                 return;
 
             _configFilePath = null;
-            _watchConfigFile = null;
             _regions = new List<Region>();
             _configFilePath = Path.Combine(_hostingEnvironment.ContentPath(), $"meteo/GeographicData.json");
 
             ReadConfigFile();
-            _watchConfigFile = new FileSystemWatcher
+
+            var watchConfigFile = new FileSystemWatcher
             {
                 Path = Path.GetDirectoryName(_configFilePath),
                 Filter = Path.GetFileName(_configFilePath),
                 EnableRaisingEvents = true
             };
-            _watchConfigFile.Changed += delegate (object s, FileSystemEventArgs e)
-            {
-                try
-                {
-                    WatcherChangeTypes changeType = e.ChangeType;
-                    WatcherChangeTypes watcherChangeTypes = changeType;
-                    if (watcherChangeTypes == WatcherChangeTypes.Created || watcherChangeTypes == WatcherChangeTypes.Changed)
-                    {
-                        ReadConfigFile();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogException(ex);
-                }
-            };
+
+            watchConfigFile.Created += OnFileChanged;
+            watchConfigFile.Changed += OnFileChanged;
         }
 
-        private static void ReadConfigFile()
+        private void OnFileChanged(object s, FileSystemEventArgs e)
+        {
+            try
+            {
+                if (e.ChangeType == WatcherChangeTypes.Created ||
+                    e.ChangeType == WatcherChangeTypes.Changed)
+                {
+                    ReadConfigFile();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+        }
+
+        private void ReadConfigFile()
         {
             string value = System.IO.File.ReadAllText(_configFilePath);
-            _regions = JsonConvert.DeserializeObject<List<Region>>(value);
+            _regions = JsonSerializer.Deserialize<List<Region>>(value);
         }
 
         [HttpGet("regions")]

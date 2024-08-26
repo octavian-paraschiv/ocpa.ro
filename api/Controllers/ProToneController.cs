@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.ProTONE;
 using Serilog;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 
 namespace ocpa.ro.api.Controllers
@@ -21,7 +21,7 @@ namespace ocpa.ro.api.Controllers
     [Consumes("application/json")]
     public class ProToneController : ApiControllerBase
     {
-        static readonly Version transitionVersion = new Version("3.1.59");
+        static readonly BuildVersion transitionVersion = new BuildVersion("3.1.59");
 
         public ProToneController(IWebHostEnvironment hostingEnvironment, ILogger logger)
             : base(hostingEnvironment, logger, null)
@@ -35,11 +35,11 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                Version v = null;
+                BuildVersion v = null;
 
                 if (!string.IsNullOrEmpty(version))
                 {
-                    v = new Version(version);
+                    v = new BuildVersion(version);
                     if (v < transitionVersion)
                     {
                         // older API's were sending app version in query string 
@@ -49,7 +49,7 @@ namespace ocpa.ro.api.Controllers
                 }
 
                 List<BuildInfo> builds = FetchBuilds(v, release);
-                return Ok(JsonConvert.SerializeObject(builds));
+                return Ok(JsonSerializer.Serialize(builds));
             }
             catch (Exception ex)
             {
@@ -64,11 +64,11 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                Version v = null;
+                BuildVersion v = null;
 
                 if (!string.IsNullOrEmpty(version))
                 {
-                    v = new Version(version);
+                    v = new BuildVersion(version);
                     if (v < transitionVersion)
                     {
                         // older API's were sending app version in query string 
@@ -86,7 +86,7 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        private List<BuildInfo> FetchBuilds(Version v, string release = "")
+        private List<BuildInfo> FetchBuilds(BuildVersion v, string release = "")
         {
             List<BuildInfo> builds = new List<BuildInfo>();
 
@@ -116,7 +116,7 @@ namespace ocpa.ro.api.Controllers
             return builds;
         }
 
-        private List<BuildInfo> GetProtoneBuilds(BuildType buildType, Version minVersion)
+        private List<BuildInfo> GetProtoneBuilds(BuildType buildType, BuildVersion minVersion)
         {
             List<BuildInfo> list = new List<BuildInfo>();
             string folder = "legacy";
@@ -178,7 +178,7 @@ namespace ocpa.ro.api.Controllers
                     bi = new BuildInfo
                     {
                         Title = fileTitle,
-                        Version = new Version(vs),
+                        Version = new BuildVersion(vs),
                         URL = $"{Request.Scheme}://{Request.Host}/content/ProTONE/{folder}/{fileName}"
                     };
 

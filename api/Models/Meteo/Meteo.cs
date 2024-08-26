@@ -9,6 +9,7 @@ namespace ocpa.ro.api.Models.Meteo
 
     public class MeteoDailyData
     {
+        public string Date { get; set; }
         public int TMinActual { get; set; }
         public int TMaxActual { get; set; }
         public int TMinNormal { get; set; }
