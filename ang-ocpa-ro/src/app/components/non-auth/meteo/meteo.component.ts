@@ -64,7 +64,7 @@ export class MeteoComponent  implements OnInit {
   get dataHint(): string {
     const location = `${this.lookupRegion} / ${this.lookupSubregion} / ${this.lookupCity}`;
     return (this.meteoData?.length > 0) ?
-      `Forecast for: <b>${location}</b><br />Range: <b>${this.meteoData[0].date}...${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the +/- buttons to go the desired date.` : 
+      `Forecast for: <b>${location}</b><br>Period: <b>${this.meteoData[0].date}...${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the +/- buttons to go the desired date.` : 
       `Please wait while fetching data for: <b>${location}</b>`;
   }
 
@@ -290,18 +290,46 @@ export class MeteoComponent  implements OnInit {
 
   dataGridHeight = 200;
   calculateDataGridHeight() {
+    const isMobile = (window.innerWidth <= 1080);
     let height = window.innerHeight;
+    
     height -= this.getAbsoluteHeight(document.getElementById('navbar'));
     height -= this.getAbsoluteHeight(document.getElementById('dHint'));
     height -= this.getAbsoluteHeight(document.getElementById('dControls'));
     
-    if (window.innerWidth <= 1080)
+    if (isMobile)
       height -= this.getAbsoluteHeight(document.getElementById('dSmartControls'));
 
     height -= this.getAbsoluteHeight(document.getElementById('dDataHint'));
     height -= this.getAbsoluteHeight(document.getElementById('btnDate'));
-    height -= 10;
-    this.dataGridHeight = height;
+    height -= 5;
+
+    let actualheight = 0;
+    let dt = this.selectedDate;
+    const lastDate = this.meteoData[this.meteoData.length - 1].date;
+
+    for(; dt < lastDate ;) {
+      const id = `day_${dt}`;
+      const elem = document.getElementById(id);
+      const elemHeight = this.getAbsoluteHeight(elem);
+      
+      if (actualheight + elemHeight < height) {
+        actualheight += elemHeight;
+        const dd = new Date(lastDate).getTime() - new Date(dt).getTime();
+        const diffDays = Math.floor(dd / (1000 * 60 * 60 * 24)); 
+        if (diffDays > 0) {
+          console.debug(`${id} -> VISIBLE`);
+          const daysDelta = isMobile ? 1 : Math.min(7, diffDays);
+          dt = this.helper.isoDate(this.helper.addDays(dt, daysDelta));
+          continue;
+        }
+      }
+
+      console.debug(`${id} -> NOT VISIBLE`);
+      break;
+    }
+
+    this.dataGridHeight = actualheight - 1;
   }
 
   private getAbsoluteHeight(el: HTMLElement) {
