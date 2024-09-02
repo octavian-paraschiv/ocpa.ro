@@ -2,6 +2,10 @@
 /// meteo page styles ///
 /////////////////////////
 
+.meteo-mat-small {
+    font-size: 0.73rem;
+}
+
 .normal { background-color: $meteo-normal-color; }
 .warmer { background-color: $meteo-warmer-color; }
 .much_warmer { background-color: $meteo-much-warmer-color; }
@@ -13,7 +17,7 @@
 // ----------------------------------------------------------------
 app-meteo {
     display: grid;
-    grid-template-columns: 40vw 51vw;
+    grid-template-columns: 40vw 57vw;
     grid-template-rows: auto auto auto 1fr;
     grid-template-areas: 
     "h h"
@@ -28,12 +32,20 @@ app-meteo {
 
 .smart-meteo-controls {
     grid-area: c;
+    margin-top: 10px;
 }
 
 .meteo-data-hint {
     @extend .meteo-hint;
     margin-left: 1vw;
+    margin-top: 0;
     grid-area: dh;
+    text-align: justify;
+}
+
+.meteo-data-hint-label {
+    @extend .meteo-mat-small;
+    margin: 0;
 }
 
 .outer-meteo-data-grid {
@@ -45,13 +57,15 @@ app-meteo {
     "minus7 minus1 zero plus1 plus7 ."
     "dg dg dg dg dg dg";
 }
+
 .gridButton {
     color: $forecolor;
-    margin-bottom: 3px;
+    margin-bottom: 10px;
     margin-right: 3px;
     background-color: $backcolor;
     border: 1px solid $forecolor;
     border-radius: 3px;
+    font-size: 0.75rem;
 }
 .minus7 {
     @extend .gridButton;
