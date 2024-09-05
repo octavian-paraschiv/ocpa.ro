@@ -95,6 +95,8 @@ namespace ocpa.ro.api
 
             services.AddSwaggerGen(option =>
             {
+                option.DocumentFilter<IgnoreWhenNotInDevFilter>();
+
                 option.SwaggerDoc("v1",
                     new OpenApiInfo
                     {
@@ -109,8 +111,6 @@ namespace ocpa.ro.api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             bool isDevelopment = env.IsDevelopment();
-
-            ApiExplorerIgnoreAttribute.IsDevelopment = isDevelopment;
 
             app.UseMiddleware<GlobalExceptionHandler>();
 

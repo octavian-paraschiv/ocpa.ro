@@ -15,7 +15,7 @@ namespace ocpa.ro.api.Controllers
     [Route("[controller]")]
     [ApiController]
     [Authorize(Roles = "ADM, APP")]
-    [ApiExplorerIgnore]
+    [IgnoreWhenNotInDev]
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]

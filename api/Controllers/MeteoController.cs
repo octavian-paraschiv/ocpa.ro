@@ -31,7 +31,7 @@ namespace ocpa.ro.api.Controllers
 
         [HttpGet("studio-download-url")]
         [Authorize(Roles = "ADM")]
-        [ApiExplorerIgnore]
+        [IgnoreWhenNotInDev]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public IActionResult GetStudioDownloadUrl()
@@ -57,7 +57,7 @@ namespace ocpa.ro.api.Controllers
 
         [HttpGet("range/{dbi}")]
         [Authorize(Roles = "ADM")]
-        [ApiExplorerIgnore]
+        [IgnoreWhenNotInDev]
         [ProducesResponseType(typeof(CalendarRange), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetRange([FromRoute] int dbi)
@@ -83,7 +83,7 @@ namespace ocpa.ro.api.Controllers
 
         [HttpGet("data/{dbi}")]
         [Authorize(Roles = "ADM")]
-        [ApiExplorerIgnore]
+        [IgnoreWhenNotInDev]
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetMeteoData([FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city, [FromRoute] int dbi,
@@ -107,7 +107,7 @@ namespace ocpa.ro.api.Controllers
         [HttpPost("database")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
-        [ApiExplorerIgnore]
+        [IgnoreWhenNotInDev]
         [DisableFormValueModelBinding]
         [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
         [Consumes("multipart/form-data")]
@@ -117,7 +117,7 @@ namespace ocpa.ro.api.Controllers
         [HttpPost("database/{dbi}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
-        [ApiExplorerIgnore]
+        [IgnoreWhenNotInDev]
         [DisableFormValueModelBinding]
         [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
         [Consumes("multipart/form-data")]

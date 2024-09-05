@@ -24,7 +24,7 @@ namespace ocpa.ro.api.Controllers
         [HttpGet("all")]
         [ProducesResponseType(typeof(UserType[]), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [ApiExplorerIgnore]
+        [IgnoreWhenNotInDev]
         public IActionResult GetAllUserTypes()
         {
             try

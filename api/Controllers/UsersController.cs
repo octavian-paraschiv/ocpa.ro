@@ -48,7 +48,7 @@ namespace ocpa.ro.api.Controllers
         [HttpGet("all")]
         [ProducesResponseType(typeof(User[]), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [ApiExplorerIgnore]
+        [IgnoreWhenNotInDev]
         public IActionResult GetAllUsers()
         {
             try
@@ -65,7 +65,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        [ApiExplorerIgnore]
+        [IgnoreWhenNotInDev]
         public IActionResult SaveUser([FromBody] User user)
         {
             try
@@ -92,7 +92,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        [ApiExplorerIgnore]
+        [IgnoreWhenNotInDev]
         public IActionResult DeleteUser([FromRoute] string loginId)
         {
             try
