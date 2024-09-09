@@ -27,4 +27,10 @@
 
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Template.db3">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
