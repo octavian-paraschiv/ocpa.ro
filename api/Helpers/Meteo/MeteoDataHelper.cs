@@ -16,21 +16,28 @@ namespace ocpa.ro.api.Helpers.Meteo
 {
     public interface IMeteoDataHelper
     {
-        Task ReplaceDatabase(int dbIdx, byte[] data);
-        CalendarRange GetCalendarRange(int dbIdx, int days);
-        MeteoData GetMeteoData(int dbIdx, GridCoordinates gc, string region, int skip, int take);
+        Task SavePreviewDatabase(int dbIdx, byte[] data);
+        public void PromotePreviewDatabase(PromoteDatabaseModel promote);
+        MeteoData GetMeteoData(bool operational, GridCoordinates gc, string region, int skip, int take);
         MeteoScaleHelpers Scale { get; }
         public string LatestStudioFile { get; }
     }
 
+    public class PromoteDatabaseModel
+    {
+        public int Dbi { get; set; } = 0;
+        public bool Operational { get; set; } = false;
+    }
+
     public class MeteoDataHelper : BaseHelper, IMeteoDataHelper, IDisposable
     {
-        public const int DbCount = 5;
+        public const int DbCount = 6;
 
         private readonly MeteoScaleHelpers _scale;
         private readonly string _dataFolder;
 
-        private readonly MeteoDB[] _databases = new MeteoDB[DbCount];
+        private readonly MeteoDB[] _databases = new MeteoDB[2];
+
         private readonly string[] _dbPaths = new string[DbCount];
 
         public MeteoScaleHelpers Scale => _scale;
@@ -40,12 +47,16 @@ namespace ocpa.ro.api.Helpers.Meteo
         {
             _dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Meteo");
 
-            for (int i = 0; i < _databases.Length; i++)
-            {
-                var dbName = i > 0 ? $"Preview{i}" : "Snapshot";
-                _dbPaths[i] = Path.Combine(_dataFolder, $"{dbName}.db3");
-                _databases[i] = MeteoDB.OpenOrCreate(_dbPaths[i], true);
-            }
+            int i = 0;
+
+            _dbPaths[0] = Path.Combine(_dataFolder, $"Snapshot.db3");
+            _databases[0] = MeteoDB.OpenOrCreate(_dbPaths[0], true);
+
+            _dbPaths[1] = Path.Combine(_dataFolder, $"Preview.db3");
+            _databases[1] = MeteoDB.OpenOrCreate(_dbPaths[1], true);
+
+            for (i = 2; i < _databases.Length; i++)
+                _dbPaths[i] = Path.Combine(_dataFolder, $"Preview{i - 2}.db3");
 
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
             var iniFile = new IniFileHelper(hostingEnvironment, logger, iniPath);
@@ -73,42 +84,27 @@ namespace ocpa.ro.api.Helpers.Meteo
             }
         }
 
-        public async Task ReplaceDatabase(int dbIdx, byte[] data)
+        public async Task SavePreviewDatabase(int dbIdx, byte[] data)
         {
-            if (dbIdx < 0)
-                dbIdx = 0;
-            if (dbIdx > DbCount - 1)
-                dbIdx = DbCount - 1;
+            int idx = Math.Max(0, Math.Min(DbCount - 1, dbIdx + 2));
 
             using (MemoryStream input = new MemoryStream(data))
             using (GZipStream zipped = new GZipStream(input, CompressionMode.Decompress))
             using (MemoryStream unzipped = new MemoryStream())
             {
                 await zipped.CopyToAsync(unzipped);
+                await File.WriteAllBytesAsync(_dbPaths[idx], unzipped.ToArray());
+            }
+        }
 
-                if (_databases[dbIdx] != null)
-                {
-                    var tmpDatabasePath = Path.Combine(_dataFolder, $"tmp_{dbIdx}.db3");
-                    await File.WriteAllBytesAsync(tmpDatabasePath, unzipped.ToArray());
-
-                    // Database already open, so create a temporary one
-                    using (var tmpDb = MeteoDB.OpenOrCreate(tmpDatabasePath, true))
-                    {
-                        _databases[dbIdx].PurgeAll<Data>();
-                        _databases[dbIdx].InsertAll(tmpDb.Data);
-                    }
-
-                    File.Delete(tmpDatabasePath);
-                }
-                else
-                {
-                    await File.WriteAllBytesAsync(_dbPaths[dbIdx], unzipped.ToArray());
-
-                    // Database not yet open, so open/create it now
-                    var dbName = dbIdx > 0 ? $"Preview{dbIdx}" : "Snapshot";
-                    _dbPaths[dbIdx] = Path.Combine(_dataFolder, $"{dbName}.db3");
-                    _databases[dbIdx] = MeteoDB.OpenOrCreate(_dbPaths[dbIdx], false);
-                }
+        public void PromotePreviewDatabase(PromoteDatabaseModel promote)
+        {
+            int idx = Math.Max(0, Math.Min(DbCount - 1, promote.Dbi + 2));
+            using (var tmpDb = MeteoDB.OpenOrCreate(_dbPaths[idx], false))
+            {
+                int dbIdx = promote.Operational ? 0 : 1;
+                _databases[dbIdx].PurgeAll<Data>();
+                _databases[dbIdx].InsertAll(tmpDb.Data);
             }
         }
 
@@ -145,12 +141,14 @@ namespace ocpa.ro.api.Helpers.Meteo
             return result;
         }
 
-        public MeteoData GetMeteoData(int dbIdx, GridCoordinates gc, string region, int skip, int take)
+        public MeteoData GetMeteoData(bool operational, GridCoordinates gc, string region, int skip, int take)
         {
             MeteoData meteoData = new MeteoData { GridCoordinates = gc };
 
             try
             {
+                int dbIdx = operational ? 0 : 1;
+
                 CalendarRange range = GetCalendarRange(dbIdx, 0);
 
                 meteoData.CalendarRange = new CalendarRange

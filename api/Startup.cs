@@ -95,6 +95,7 @@ namespace ocpa.ro.api
 
             services.AddSwaggerGen(option =>
             {
+                option.EnableAnnotations();
                 option.DocumentFilter<IgnoreWhenNotInDevFilter>();
 
                 option.SwaggerDoc("v1",
