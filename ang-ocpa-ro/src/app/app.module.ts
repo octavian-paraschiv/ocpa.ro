@@ -9,7 +9,7 @@ import { HomeComponent } from './components/non-auth/home/home.component';
 import { ProTONEComponent } from './components/non-auth/protone/protone.component';
 import { PhotographyComponent } from './components/non-auth/photography/photography.component';
 import { ElectronicsComponent } from './components/non-auth/electronics/electronics.component';
-import { GeographyApiService, MeteoApiService, ProtoneApiService } from './services/api-services';
+import { ContentApiService, GeographyApiService, MeteoApiService, ProtoneApiService } from './services/api-services';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DaySummaryComponent } from './components/non-auth/meteo/day-summary/day-summary.component';
 import { MeteoComponent } from './components/non-auth/meteo/meteo.component';
@@ -120,6 +120,9 @@ import { MessageBoxComponent } from 'src/app/components/shared/message-box/messa
     ProtoneApiService,
     MeteoApiService,
     UserService,
+
+    ContentApiService,
+
     Helper
   ],
   bootstrap: [AppComponent]

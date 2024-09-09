@@ -4,7 +4,7 @@ import { Observable, of } from "rxjs";
 import { environment } from "src/environments/environment";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { catchError, map } from "rxjs/operators";
-import { BuildInfo, City, GridCoordinates, CalendarRange, MeteoData } from 'src/app/models/models-swagger';
+import { BuildInfo, City, GridCoordinates, CalendarRange, MeteoData, ContentUnit } from 'src/app/models/models-swagger';
 
 @UntilDestroy()
 @Injectable()
@@ -144,13 +144,33 @@ export class MeteoApiService {
         return this.httpClient.get<string>(uri);
     }
 
-    public getRange(region: string): Observable<CalendarRange> {
-        const uri = `${environment.apiUrl}/meteo/range?region=${region}`;
-        return this.httpClient.get<CalendarRange>(uri);
-    }
-
     public getData(region: string, subregion: string, city: string, skip: number = 0, take: number = 0): Observable<MeteoData> {
         const uri = `${environment.apiUrl}/meteo/data?region=${region}&subregion=${subregion}&city=${city}&skip=${skip}&take=${take}`;
         return this.httpClient.get<MeteoData>(uri);
     }
 }
+
+@UntilDestroy()
+@Injectable()
+export class ContentApiService {
+    constructor(private readonly httpClient: HttpClient) {
+    }
+
+    public getContent(path: string = undefined, 
+        level: number = 0, 
+        filter: string = undefined): Observable<ContentUnit> {
+
+        if (!(path?.length > 0))
+            path = '.';
+
+        const uri = new URL(`${environment.apiUrl}/Content/${path}`);
+        
+        if (level > 0)
+            uri.searchParams.append('level', `${level}`);
+        if (filter?.length > 0)
+            uri.searchParams.append('filter', filter);
+
+        return this.httpClient.get<ContentUnit>(uri.toString());
+    }
+}
+
