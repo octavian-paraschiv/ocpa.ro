@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, NgZone, ViewChild } from '@angular/core';
+import { Component, NgZone, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
@@ -6,7 +6,7 @@ import { ContentApiService, MeteoApiService } from 'src/app/services/api-service
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { take } from 'rxjs/operators';
 import { ContentUnit, ContentUnitType } from 'src/app/models/models-swagger';
-import { faEye, faSquareMinus, faSquarePlus, faUpload, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faSquareMinus, faUpload, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
@@ -28,7 +28,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
 
     selectedDatabase: ContentUnit = {};
     databases: ContentUnit[] = [];
-    displayedColumns: string[] = [ 'db-view', 'db-upload', 'db-promote', 'db-delete', 'db-name', 'db-filler' ];
+    displayedColumns: string[] = [ 'db-view', 'db-upload', 'db-promote', 'db-name', 'db-filler' ];
 
     studioDownloadUrl: string = undefined;
 
@@ -66,7 +66,16 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
-                // todo effective promote
+                this.fileOpen((data: ArrayBuffer) => {
+                    this.meteoApi.upload(this.dbi(db), data)
+                        .pipe(untilDestroyed(this))
+                        .subscribe({
+                            next: () => this.snackBar.open(`Succesfully uploaded selected file as \`${db.name}\'.`, 
+                                undefined, { duration: 5000 }),
+                            error: err => this.snackBar.open(`Error while uploading selected file as \`${db.name}\': ${err.toString()}`, 
+                                undefined, { duration: 5000 })
+                        });
+                });
             }
         });
     }
@@ -80,7 +89,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         .subscribe(res => {
             if (res) {
                 this.selectedDatabase = db;
-                this.dataBrowser.initWithParams(this.dbi(), false);
+                this.dataBrowser.initWithParams(this.dbi(db), false);
             }
         });
     }
@@ -95,27 +104,30 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
-                // todo effective promote
+                this.meteoApi.promote(this.dbi(db))
+                    .pipe(untilDestroyed(this))
+                    .subscribe({
+                        next: () => this.snackBar.open(`Database \`${db.name}\' succesfully promoted to online.`, 
+                            undefined, { duration: 5000 }),
+                        error: err => this.snackBar.open(`Error while promoting \`${db.name}\': ${err.toString()}`, 
+                            undefined, { duration: 5000 })
+                    });
             }
         });
     }
 
-    delete(db: ContentUnit) {
-        MessageBoxComponent.show(this.dialog, {
-            title: 'Confirm',
-            message: `Are you sure you want to delete <b>${db.name}</b>?<br>
-            If your proceed, you will not be able to recover its contents.`
-        } as MessageBoxOptions)
-        .pipe(untilDestroyed(this))
-        .subscribe(res => {
-            if (res) {
-                // todo effective delete
-            }
-        });
+    dbi(db: ContentUnit): number {
+        return (db?.name === 'Snapshot.db3') ? -1 : 
+        parseInt(db.name.replace('Preview', '').replace('.db3', ''));
     }
 
-    dbi(): number {
-        return (this.selectedDatabase?.name === 'Snapshot.db3') ? -1 : 
-        parseInt(this.selectedDatabase.name.replace('Preview', '').replace('.db3', ''));
+    private fileOpen(callback: (ArrayBuffer) => void) {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = ".db3";
+        input.onchange = function () {
+            input.files[0].arrayBuffer().then(callback);
+        }
+        input.click();
     }
 }

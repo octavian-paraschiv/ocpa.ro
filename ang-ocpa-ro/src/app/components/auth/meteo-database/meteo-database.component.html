@@ -33,15 +33,6 @@
                 </a>
             </td>
         </ng-container>
-        <!-- Delete Column -->
-        <ng-container matColumnDef="db-delete">
-            <td mat-cell *matCellDef="let db">
-                <a *ngIf="db.name !== 'Snapshot.db3'"
-                    class="table-link" (click)="delete(db)" title="Delete preview database">
-                    <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
-                </a>
-            </td>
-        </ng-container>
         <!-- Name Column -->
         <ng-container matColumnDef="db-name">
             <td mat-cell *matCellDef="let db">{{db.name}}&nbsp;&nbsp;&nbsp;&nbsp;[{{db.name === 'Snapshot.db3' ? 'ONLINE' : 'Offline (preview)'}}]</td>

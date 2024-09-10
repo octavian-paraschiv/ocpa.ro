@@ -1,10 +1,12 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { environment } from "src/environments/environment";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { catchError, map } from "rxjs/operators";
-import { BuildInfo, City, GridCoordinates, CalendarRange, MeteoData, ContentUnit } from 'src/app/models/models-swagger';
+import { BuildInfo, City, GridCoordinates, CalendarRange, MeteoData, ContentUnit, PromoteDatabaseModel } from 'src/app/models/models-swagger';
+import * as pako from 'pako';
+import * as CryptoJS from 'crypto-js';
 
 @UntilDestroy()
 @Injectable()
@@ -153,6 +155,30 @@ export class MeteoApiService {
 
         return this.httpClient.get<MeteoData>(uri);
     }
+
+    public promote(dbi: number): Observable<any> {
+        const uri = `${environment.apiUrl}/meteo/database/preview/promote`;
+        const body: PromoteDatabaseModel = {
+            dbi,
+            operational: true
+        };
+        return this.httpClient.post(uri, body);
+    }
+
+    public upload(dbi: number, data: ArrayBuffer): Observable<any> {
+        const uri = `${environment.apiUrl}/meteo/database/preview/${dbi}`;
+        const formData = new FormData();
+        const fileName = `Preview${dbi}.db3`;
+        const compressed = pako.gzip(new Uint8Array(data));
+        const signature = CryptoJS.HmacSHA1(CryptoJS.lib.WordArray.create(compressed), fileName);
+        const blob = new Blob([compressed], { type: 'application/gzip' });
+
+        formData.append("signature", signature.toString(CryptoJS.enc.Base64));
+        formData.append("data", blob, fileName);
+
+        // const headers = new HttpHeaders({ 'Content-Type': 'multipart/form-data' });
+        return this.httpClient.post(uri, formData);
+    }
 }
 
 @UntilDestroy()
@@ -176,6 +202,11 @@ export class ContentApiService {
             uri.searchParams.append('filter', filter);
 
         return this.httpClient.get<ContentUnit>(uri.toString());
+    }
+
+    public deleteContent(path: string): Observable<any> {
+        const uri = `${environment.apiUrl}/Content/delete/${path}`;
+        return this.httpClient.post(uri, {});
     }
 }
 
