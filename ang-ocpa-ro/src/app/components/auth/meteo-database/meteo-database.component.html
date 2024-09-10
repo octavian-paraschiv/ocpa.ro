@@ -1,24 +1,59 @@
-<h5 style="text-align: justify;" *ngIf="studioDownloadUrl?.length > 0">
-    Download latest Thorus Weather Studio from <a href="{{studioDownloadUrl}}">here.</a>
-</h5>
+<div style="text-align: justify;">
+    <label mat-small *ngIf="studioDownloadUrl?.length > 0">
+        Download latest Thorus Weather Studio from <a href="{{studioDownloadUrl}}">here.</a>
+    </label>
+</div>
 
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-    
-    <!-- This is the tree node template for leaf nodes -->
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-        <!-- use a disabled button to provide padding for tree leaf -->
-        <button mat-icon-button>
-            <fa-icon [icon]="faFile" transform="shrink-3"></fa-icon>
-        </button>
-        {{node.name}}
-    </mat-tree-node>
+<div style="text-align: justify; margin-top: 1rem;">
+    <label mat-small style="margin-bottom: 0.2rem;">Database list:</label>
+    <table mat-table [dataSource]="databases">
+        <!-- Upload Column -->
+        <ng-container matColumnDef="db-upload">
+            <td mat-cell *matCellDef="let db">
+                <a *ngIf="db.name !== 'Snapshot.db3'"
+                    class="table-link" (click)="upload(db)" title="Upload preview database">
+                    <fa-icon [icon]="faUpload" [transform]="size"></fa-icon>
+                </a>
+            </td>
+        </ng-container>
+        <!-- View Column -->
+        <ng-container matColumnDef="db-view">
+            <td mat-cell *matCellDef="let db">
+                <a class="table-link" (click)="view(db)" title="View database">
+                    <fa-icon [icon]="faEye" [transform]="size"></fa-icon>
+                </a>
+            </td>
+        </ng-container>
+        <!-- Promote Column -->
+        <ng-container matColumnDef="db-promote">
+            <td mat-cell *matCellDef="let db">
+                <a *ngIf="db.name !== 'Snapshot.db3'"
+                    class="table-link" (click)="promote(db)" title="Promote as ONLINE">
+                    <fa-icon [icon]="faPromote" [transform]="size"></fa-icon>
+                </a>
+            </td>
+        </ng-container>
+        <!-- Delete Column -->
+        <ng-container matColumnDef="db-delete">
+            <td mat-cell *matCellDef="let db">
+                <a *ngIf="db.name !== 'Snapshot.db3'"
+                    class="table-link" (click)="delete(db)" title="Delete preview database">
+                    <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
+                </a>
+            </td>
+        </ng-container>
+        <!-- Name Column -->
+        <ng-container matColumnDef="db-name">
+            <td mat-cell *matCellDef="let db">{{db.name}}&nbsp;&nbsp;&nbsp;&nbsp;[{{db.name === 'Snapshot.db3' ? 'ONLINE' : 'Offline (preview)'}}]</td>
+        </ng-container>
+        <!-- Filler Column -->
+        <ng-container matColumnDef="db-filler">
+            <td mat-cell *matCellDef="let db"></td>
+        </ng-container>
+        <tr mat-row class="meteo-db-row" *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
 
-    <!-- This is the tree node template for expandable nodes -->
-    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
-            <fa-icon [icon]="folderIcon(node)" transform="shrink-3"></fa-icon>
-        </button>
-        {{node.name}}
-  </mat-tree-node>
-
-</mat-tree>
+<div>
+    <app-meteo-data-browser #meteoDataBrowser class="meteo-data-browser"></app-meteo-data-browser>
+</div>

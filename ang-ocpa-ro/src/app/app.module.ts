@@ -32,6 +32,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
 import { UserTypeService } from 'src/app/services/user-type.service';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
+import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
 
 @NgModule({
     declarations: [
@@ -54,6 +55,7 @@ import { MessageBoxComponent } from 'src/app/components/shared/message-box/messa
         DaySummaryComponent,
         DayDetailsComponent,
         DayRisksComponent,
+        MeteoDataBrowserComponent,
 
         TempPipe,
         SpeedPipe,

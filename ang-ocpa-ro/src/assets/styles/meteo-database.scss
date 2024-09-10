@@ -1,0 +1,34 @@
+.meteo-db-row {
+    height: 2rem !important;
+}
+
+.mat-column-db-view {
+    width: 50px;
+    max-width: 50px;
+    color: navy;
+}
+
+.mat-column-db-promote {
+    @extend .mat-column-crud;
+    color: limegreen;
+}
+
+.mat-column-db-upload {
+    @extend .mat-column-crud;
+    color: green;
+}
+
+.mat-column-db-delete {
+    @extend .mat-column-crud;
+    color: red;
+}
+
+.mat-column-db-name {
+    width: 300px;
+    max-width: 300px;
+}
+
+.mat-column-db-filler {
+    width: auto;
+    max-width: 1000px;
+}

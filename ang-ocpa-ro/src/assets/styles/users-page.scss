@@ -23,12 +23,6 @@
     height: 50%;
 }
 
-.mat-column-crud {
-    width: 16px;
-    min-width: 16px;
-    max-width: 16px;
-}
-
 .mat-column-user-add {
     @extend .mat-column-crud;
     color: green;

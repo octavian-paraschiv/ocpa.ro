@@ -48,8 +48,11 @@ app-meteo {
     margin: 0;
 }
 
-.outer-meteo-data-grid {
+.meteo-data-browser {
     grid-area: odg;
+}
+
+.outer-meteo-data-grid {
     display: grid;
     grid-template-columns: repeat(5, 4rem) 1fr;
     grid-template-rows: auto 1fr;

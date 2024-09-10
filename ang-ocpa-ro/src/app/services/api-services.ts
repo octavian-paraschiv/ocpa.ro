@@ -144,8 +144,13 @@ export class MeteoApiService {
         return this.httpClient.get<string>(uri);
     }
 
-    public getData(region: string, subregion: string, city: string, skip: number = 0, take: number = 0): Observable<MeteoData> {
-        const uri = `${environment.apiUrl}/meteo/data?region=${region}&subregion=${subregion}&city=${city}&skip=${skip}&take=${take}`;
+    public getData(dbi: number, region: string, subregion: string, city: string, skip: number = 0, take: number = 0): Observable<MeteoData> {
+        const endpointRoot = `${environment.apiUrl}/meteo/data`;
+        const queryString = `region=${region}&subregion=${subregion}&city=${city}&skip=${skip}&take=${take}`;
+        const uri = (dbi >= 0) ? 
+            `${endpointRoot}/preview/${dbi}?${queryString}` :
+            `${endpointRoot}?${queryString}`;
+
         return this.httpClient.get<MeteoData>(uri);
     }
 }
