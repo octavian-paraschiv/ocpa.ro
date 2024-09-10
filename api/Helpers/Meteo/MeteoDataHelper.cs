@@ -56,7 +56,13 @@ namespace ocpa.ro.api.Helpers.Meteo
             _databases[1] = MeteoDB.OpenOrCreate(_dbPaths[1], true);
 
             for (i = 2; i < _dbPaths.Length; i++)
+            {
                 _dbPaths[i] = Path.Combine(_dataFolder, $"Preview{i - 2}.db3");
+                using (var db = MeteoDB.OpenOrCreate(_dbPaths[i], true))
+                {
+                    _ = db.Regions.ToArray();
+                }
+            }
 
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
             var iniFile = new IniFileHelper(hostingEnvironment, logger, iniPath);

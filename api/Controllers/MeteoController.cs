@@ -62,7 +62,9 @@ namespace ocpa.ro.api.Controllers
             try
             {
                 GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment, _logger).InternalGetGridCoordinates(region, subregion, city);
+
                 var data = _dataHelper.GetMeteoData(true, gridCoordinates, region, skip, take);
+                data.Name = "Snapshot.db3";
                 return Ok(data);
             }
             catch (Exception ex)
@@ -91,7 +93,10 @@ namespace ocpa.ro.api.Controllers
                 });
 
                 GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment, _logger).InternalGetGridCoordinates(region, subregion, city);
+
                 var data = _dataHelper.GetMeteoData(false, gridCoordinates, region, skip, take);
+                data.Name = (dbi >= 0) ? $"Preview{dbi}.db3" : "Snapshot.db3";
+
                 return Ok(data);
             }
             catch (Exception ex)

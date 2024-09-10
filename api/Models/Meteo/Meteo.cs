@@ -36,6 +36,10 @@ namespace ocpa.ro.api.Models.Meteo
 
     public class MeteoData
     {
+        public string Name { get; set; }
+
+        public int DataCount => Data?.Count ?? 0;
+
         public GridCoordinates GridCoordinates { get; set; }
         public CalendarRange CalendarRange { get; set; }
         public Dictionary<string, MeteoDailyData> Data { get; set; }
