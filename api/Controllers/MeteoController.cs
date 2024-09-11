@@ -56,23 +56,11 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetMeteoData", Description = "Get Meteo Data")]
-        public IActionResult GetMeteoData([FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city,
-           [FromQuery] int skip = 0, [FromQuery] int take = 10)
-        {
-            try
-            {
-                GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment, _logger).InternalGetGridCoordinates(region, subregion, city);
+        public Task<IActionResult> GetMeteoData([FromQuery] string region,
+            [FromQuery] string subregion, [FromQuery] string city,
+            [FromQuery] int skip = 0, [FromQuery] int take = 10)
 
-                var data = _dataHelper.GetMeteoData(true, gridCoordinates, region, skip, take);
-                data.Name = "Snapshot.db3";
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return BadRequest(ex.Message);
-            }
-        }
+            => GetMeteoData(-1, region, subregion, city, skip, take);
 
 
         [HttpGet("data/preview/{dbi}")]
@@ -81,22 +69,16 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetPreviewMeteoData", Description = "Get Preview Meteo Data (by index)")]
-        public IActionResult GetMeteoData([FromRoute] int dbi, [FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city,
+        public async Task<IActionResult> GetMeteoData([FromRoute] int dbi, [FromQuery] string region,
+            [FromQuery] string subregion, [FromQuery] string city,
             [FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
             try
             {
-                _dataHelper.PromotePreviewDatabase(new PromoteDatabaseModel
-                {
-                    Dbi = dbi,
-                    Operational = false
-                });
+                GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment, _logger)
+                    .InternalGetGridCoordinates(region, subregion, city);
 
-                GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment, _logger).InternalGetGridCoordinates(region, subregion, city);
-
-                var data = _dataHelper.GetMeteoData(false, gridCoordinates, region, skip, take);
-                data.Name = (dbi >= 0) ? $"Preview{dbi}.db3" : "Snapshot.db3";
-
+                var data = await _dataHelper.GetMeteoData(dbi, gridCoordinates, region, skip, take);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -115,7 +97,9 @@ namespace ocpa.ro.api.Controllers
         [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
         [Consumes("multipart/form-data")]
         [SwaggerOperation(OperationId = "UploadPreviewDatabase", Description = "Upload Preview Database (index 0)")]
-        public Task<IActionResult> UploadPreviewDatabase() => UploadPreviewDatabaseByIndex(0);
+        public Task<IActionResult> UploadPreviewDatabase()
+            // By convention, databases uploaded via Thorus are always uploaded in the last position
+            => UploadPreviewDatabaseByDbi(MeteoDataHelper.DbCount - 2);
 
 
         [Authorize(Roles = "ADM")]
@@ -127,7 +111,7 @@ namespace ocpa.ro.api.Controllers
         [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
         [Consumes("multipart/form-data")]
         [SwaggerOperation(OperationId = "UploadPreviewDatabaseByIndex", Description = "Upload a Preview Database (by index)")]
-        public async Task<IActionResult> UploadPreviewDatabaseByIndex([FromRoute] int dbi)
+        public async Task<IActionResult> UploadPreviewDatabaseByDbi([FromRoute] int dbi)
         {
             try
             {
@@ -143,18 +127,37 @@ namespace ocpa.ro.api.Controllers
         }
 
         [Authorize(Roles = "ADM")]
-        [HttpPost("database/preview/promote")]
+        [HttpPost("database/preview/promote/{dbi}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
-        [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
         [SwaggerOperation(OperationId = "PromotePreviewDatabase", Description = "Promote a Preview Database")]
-        public IActionResult PromotePreviewDatabase([FromBody] PromoteDatabaseModel promote)
+        public async Task<IActionResult> PromotePreviewDatabase([FromRoute] int dbi)
         {
             try
             {
-                _dataHelper.PromotePreviewDatabase(promote);
+                await _dataHelper.PromotePreviewDatabase(dbi);
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "ADM")]
+        [HttpGet("database/all")]
+        [ProducesResponseType(typeof(MeteoDbInfo[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "GetAllDatabases", Description = "Get a list with all databases")]
+        public async Task<IActionResult> GetAllDatabases()
+        {
+            try
+            {
+                var info = await _dataHelper.GetDatabases();
+                return Ok(info);
             }
             catch (Exception ex)
             {

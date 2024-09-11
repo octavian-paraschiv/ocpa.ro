@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ThorusCommon.SQLite;
 
@@ -16,49 +17,41 @@ namespace ocpa.ro.api.Helpers.Meteo
 {
     public interface IMeteoDataHelper
     {
-        Task SavePreviewDatabase(int dbIdx, byte[] data);
-        public void PromotePreviewDatabase(PromoteDatabaseModel promote);
-        MeteoData GetMeteoData(bool operational, GridCoordinates gc, string region, int skip, int take);
+        Task SavePreviewDatabase(int dbi, byte[] data);
+        Task PromotePreviewDatabase(int dbi);
+        Task<MeteoData> GetMeteoData(int dbi, GridCoordinates gc, string region, int skip, int take);
+        Task<MeteoDbInfo[]> GetDatabases();
+
         MeteoScaleHelpers Scale { get; }
-        public string LatestStudioFile { get; }
+
+        string LatestStudioFile { get; }
     }
 
-    public class PromoteDatabaseModel
+    public class MeteoDataHelper : BaseHelper, IMeteoDataHelper
     {
-        public int Dbi { get; set; } = 0;
-        public bool Operational { get; set; } = false;
-    }
-
-    public class MeteoDataHelper : BaseHelper, IMeteoDataHelper, IDisposable
-    {
-        public const int DbCount = 6;
+        public const int DbCount = 5;
 
         private readonly MeteoScaleHelpers _scale;
         private readonly string _dataFolder;
 
-        private readonly MeteoDB[] _databases = new MeteoDB[2];
-
         private readonly string[] _dbPaths = new string[DbCount];
 
         public MeteoScaleHelpers Scale => _scale;
+
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
 
         public MeteoDataHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
             : base(hostingEnvironment, logger)
         {
             _dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Meteo");
 
-            int i = 0;
-
-            _dbPaths[0] = Path.Combine(_dataFolder, $"Snapshot.db3");
-            _databases[0] = MeteoDB.OpenOrCreate(_dbPaths[0], true);
-
-            _dbPaths[1] = Path.Combine(_dataFolder, $"Preview.db3");
-            _databases[1] = MeteoDB.OpenOrCreate(_dbPaths[1], true);
-
-            for (i = 2; i < _dbPaths.Length; i++)
+            for (int i = 0; i < _dbPaths.Length; i++)
             {
-                _dbPaths[i] = Path.Combine(_dataFolder, $"Preview{i - 2}.db3");
-                using (var db = MeteoDB.OpenOrCreate(_dbPaths[i], true))
+                var dbName = i == 0 ? "Snapshot.db3" : $"Preview{i - 1}.db3";
+                _dbPaths[i] = Path.Combine(_dataFolder, dbName);
+
+                // "Touch" the databases to ensure they're created
+                using (var db = MeteoDB.OpenOrCreate(_dbPaths[i], false))
                 {
                     _ = db.Regions.ToArray();
                 }
@@ -90,72 +83,113 @@ namespace ocpa.ro.api.Helpers.Meteo
             }
         }
 
-        public async Task SavePreviewDatabase(int dbIdx, byte[] data)
+        public async Task SavePreviewDatabase(int dbi, byte[] data)
         {
-            int idx = Math.Max(0, Math.Min(DbCount - 1, dbIdx + 2));
+            int idx = DbiToIdx(dbi, false);
 
             using (MemoryStream input = new MemoryStream(data))
             using (GZipStream zipped = new GZipStream(input, CompressionMode.Decompress))
             using (MemoryStream unzipped = new MemoryStream())
             {
                 await zipped.CopyToAsync(unzipped);
-                await File.WriteAllBytesAsync(_dbPaths[idx], unzipped.ToArray());
+
+                try
+                {
+                    await _lock.WaitAsync();
+                    await File.WriteAllBytesAsync(_dbPaths[idx], unzipped.ToArray());
+                }
+                finally
+                {
+                    _lock.Release();
+                }
             }
         }
 
-        public void PromotePreviewDatabase(PromoteDatabaseModel promote)
+        public async Task PromotePreviewDatabase(int dbi)
         {
-            int idx = Math.Max(0, Math.Min(DbCount - 1, promote.Dbi + 2));
-            using (var tmpDb = MeteoDB.OpenOrCreate(_dbPaths[idx], false))
-            {
-                int dbIdx = promote.Operational ? 0 : 1;
-                _databases[dbIdx].PurgeAll<Data>();
-                _databases[dbIdx].InsertAll(tmpDb.Data);
-            }
-        }
+            int idx = DbiToIdx(dbi, false);
 
-        public CalendarRange GetCalendarRange(int dbIdx, int days)
-        {
-            CalendarRange result = new CalendarRange();
             try
             {
-                var x = _databases[dbIdx].Data
-                    .Where(d => d.RegionId == 1 && d.R == 0 && d.C == 0)
-                    .OrderBy(d => d.Timestamp)
-                    .Distinct();
-
-                var xx = x.Select(d => d.Timestamp).ToList();
-
-                if (days == 0)
-                    days = xx.Count;
-
-                var start = xx[0];
-                var end = xx[days - 1];
-
-                result = new CalendarRange
-                {
-                    Start = DateTime.ParseExact(start, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                    End = DateTime.ParseExact(end, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                    Length = days
-                };
+                await _lock.WaitAsync();
+                File.Copy(_dbPaths[idx], _dbPaths[0], true);
             }
-            catch (Exception ex)
+            finally
             {
-                LogException(ex);
+                _lock.Release();
             }
-
-            return result;
         }
 
-        public MeteoData GetMeteoData(bool operational, GridCoordinates gc, string region, int skip, int take)
+        public async Task<MeteoData> GetMeteoData(int dbi, GridCoordinates gc, string region, int skip, int take)
+        {
+            int idx = DbiToIdx(dbi, true);
+
+            try
+            {
+                await _lock.WaitAsync();
+                using (var db = MeteoDB.OpenOrCreate(_dbPaths[idx], false))
+                {
+                    var data = GetMeteoData(db, gc, region, skip, take);
+                    data.Name = Path.GetFileName(_dbPaths[idx]);
+                    data.Dbi = dbi;
+                    return data;
+                }
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
+
+        public async Task<MeteoDbInfo[]> GetDatabases()
+        {
+            List<MeteoDbInfo> dbInfos = new List<MeteoDbInfo>();
+
+            try
+            {
+                await _lock.WaitAsync();
+                for (int i = 0; i < _dbPaths.Length; i++)
+                {
+                    using (var db = MeteoDB.OpenOrCreate(_dbPaths[i], false))
+                    {
+                        var range = GetCalendarRange(db, 0);
+                        MeteoDbInfo info = new MeteoDbInfo
+                        {
+                            CalendarRange = range,
+                            Dbi = i - 1,
+                            Name = Path.GetFileName(_dbPaths[i])
+                        };
+                        dbInfos.Add(info);
+                    }
+                }
+            }
+            finally
+            {
+                _lock.Release();
+            }
+
+            return dbInfos.ToArray();
+        }
+
+        private static int DbiToIdx(int dbi, bool includeOnlineDb)
+        {
+            int idx = dbi + 1;
+            int lowLimit = includeOnlineDb ? 0 : 1;
+            int highLimit = DbCount - 1;
+
+            if (lowLimit <= idx && idx <= highLimit)
+                return idx;
+
+            throw new ArgumentOutOfRangeException(nameof(dbi), $"Must be in range [{lowLimit - 1}..{highLimit - 1}]");
+        }
+
+        private MeteoData GetMeteoData(MeteoDB database, GridCoordinates gc, string region, int skip, int take)
         {
             MeteoData meteoData = new MeteoData { GridCoordinates = gc };
 
             try
             {
-                int dbIdx = operational ? 0 : 1;
-
-                CalendarRange range = GetCalendarRange(dbIdx, 0);
+                CalendarRange range = GetCalendarRange(database, 0);
 
                 meteoData.CalendarRange = new CalendarRange
                 {
@@ -169,7 +203,7 @@ namespace ocpa.ro.api.Helpers.Meteo
                 else
                     take = range.Length - skip;
 
-                var allData = GetData(dbIdx, region, gc, skip, take);
+                var allData = GetData(database, region, gc, skip, take);
                 if (allData?.Count > 0)
                 {
                     meteoData.Data = new Dictionary<string, MeteoDailyData>();
@@ -218,32 +252,51 @@ namespace ocpa.ro.api.Helpers.Meteo
             return meteoData;
         }
 
-
-        private List<Data> GetData(int dbIdx, string region, GridCoordinates gc, int skip, int take)
+        private CalendarRange GetCalendarRange(MeteoDB database, int days)
         {
-            var regionId = (from r in _databases[dbIdx].Regions
+            CalendarRange result = new CalendarRange();
+            try
+            {
+                var x = database.Data
+                    .Where(d => d.RegionId == 1 && d.R == 0 && d.C == 0)
+                    .OrderBy(d => d.Timestamp)
+                    .Distinct();
+
+                var xx = x.Select(d => d.Timestamp).ToList();
+
+                if (days == 0)
+                    days = xx.Count;
+
+                var start = xx[0];
+                var end = xx[days - 1];
+
+                result = new CalendarRange
+                {
+                    Start = DateTime.ParseExact(start, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    End = DateTime.ParseExact(end, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    Length = days
+                };
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return result;
+        }
+        private List<Data> GetData(MeteoDB database, string region, GridCoordinates gc, int skip, int take)
+        {
+            var regionId = (from r in database.Regions
                             where r.Name == region
                             select r.Id).FirstOrDefault();
 
-            var x = _databases[dbIdx].Data
+            var x = database.Data
                 .Where(d => d.RegionId == regionId && d.R == gc.R && d.C == gc.C)
                 .OrderBy(d => d.Timestamp)
                 .Skip(skip)
                 .Take(take);
 
             return x.ToList();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            foreach (var db in _databases)
-                db?.SaveAndClose();
         }
     }
 
