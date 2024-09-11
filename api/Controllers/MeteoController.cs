@@ -96,7 +96,7 @@ namespace ocpa.ro.api.Controllers
         [DisableFormValueModelBinding]
         [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
         [Consumes("multipart/form-data")]
-        [SwaggerOperation(OperationId = "UploadPreviewDatabase", Description = "Upload Preview Database (index 0)")]
+        [SwaggerOperation(OperationId = "UploadPreviewDatabase", Description = "Upload Preview Database - for Thorus")]
         public Task<IActionResult> UploadPreviewDatabase()
             // By convention, databases uploaded via Thorus are always uploaded as Preview3.db3,
             // ie. in the last position
