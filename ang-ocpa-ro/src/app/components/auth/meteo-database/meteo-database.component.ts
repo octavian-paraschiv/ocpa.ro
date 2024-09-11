@@ -2,15 +2,16 @@ import { Component, NgZone, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
-import { ContentApiService, MeteoApiService } from 'src/app/services/api-services';
+import { MeteoApiService } from 'src/app/services/api-services';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { take } from 'rxjs/operators';
-import { ContentUnit, ContentUnitType } from 'src/app/models/models-swagger';
+import { MeteoDbInfo } from 'src/app/models/models-swagger';
 import { faEye, faSquareMinus, faUpload, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
+import { formatDate } from '@angular/common';
 
 @UntilDestroy()
 @Component({
@@ -26,9 +27,12 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
     faRemove = faSquareMinus;
     size = "grow-4";
 
-    selectedDatabase: ContentUnit = {};
-    databases: ContentUnit[] = [];
-    displayedColumns: string[] = [ 'db-view', 'db-upload', 'db-promote', 'db-name', 'db-filler' ];
+    selectedDatabase: MeteoDbInfo = {};
+    databases: MeteoDbInfo[] = [];
+    displayedColumns: string[] = [ 
+        'db-view', 'db-upload', 'db-promote', 
+        'db-name', 'db-status', 'db-range', 'db-length', 
+        'db-filler' ];
 
     studioDownloadUrl: string = undefined;
 
@@ -37,7 +41,6 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         authenticationService: AuthenticationService,
         ngZone: NgZone,
         private readonly meteoApi: MeteoApiService,
-        private readonly contentApi: ContentApiService,
         private readonly snackBar: MatSnackBar,
         private readonly dialog: MatDialog
     ) { 
@@ -49,14 +52,12 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
             .pipe(take(1), untilDestroyed(this))
             .subscribe(url => this.studioDownloadUrl = url);
 
-        this.contentApi.getContent('Meteo', 1, '*.db3')
+        this.meteoApi.getDatabases()
             .pipe(take(1), untilDestroyed(this))
-            .subscribe(ct => 
-                this.databases = ct.children.filter(c => 
-                    c.name !== 'Preview.db3' && c.type === ContentUnitType.File));
+            .subscribe(res => this.databases = res);
     }
 
-    upload(db: ContentUnit) {
+    upload(db: MeteoDbInfo) {
         MessageBoxComponent.show(this.dialog, {
             title: 'Confirm',
             message: `Are you sure you want to upload a new file for <b>${db.name}</b>?<br><br>
@@ -67,7 +68,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         .subscribe(res => {
             if (res) {
                 this.fileOpen((data: ArrayBuffer) => {
-                    this.meteoApi.upload(this.dbi(db), data)
+                    this.meteoApi.upload(db.dbi, data)
                         .pipe(untilDestroyed(this))
                         .subscribe({
                             next: () => this.snackBar.open(`Succesfully uploaded selected file as \`${db.name}\'.`, 
@@ -80,7 +81,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         });
     }
 
-    view(db: ContentUnit) {
+    view(db: MeteoDbInfo) {
         MessageBoxComponent.show(this.dialog, {
             title: 'Confirm',
             message: `Are you sure you want to view <b>${db.name}</b>?`
@@ -89,12 +90,12 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         .subscribe(res => {
             if (res) {
                 this.selectedDatabase = db;
-                this.dataBrowser.initWithParams(this.dbi(db), false);
+                this.dataBrowser.initWithParams(db.dbi, false);
             }
         });
     }
 
-    promote(db: ContentUnit) {
+    promote(db: MeteoDbInfo) {
         MessageBoxComponent.show(this.dialog, {
             title: 'Confirm',
             message: `Are you sure you want to promote <b>${db.name}</b> as online?<br><br>
@@ -104,7 +105,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
-                this.meteoApi.promote(this.dbi(db))
+                this.meteoApi.promote(db.dbi)
                     .pipe(untilDestroyed(this))
                     .subscribe({
                         next: () => this.snackBar.open(`Database \`${db.name}\' succesfully promoted to online.`, 
@@ -116,9 +117,10 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         });
     }
 
-    dbi(db: ContentUnit): number {
-        return (db?.name === 'Snapshot.db3') ? -1 : 
-        parseInt(db.name.replace('Preview', '').replace('.db3', ''));
+    range(db: MeteoDbInfo): string {
+        const start = formatDate(db.calendarRange.start, 'yyyy-MM-dd', 'en-US');
+        const end = formatDate(db.calendarRange.end, 'yyyy-MM-dd', 'en-US');
+        return `${start} -> ${end}`;
     }
 
     private fileOpen(callback: (ArrayBuffer) => void) {

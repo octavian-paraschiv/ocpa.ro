@@ -97,10 +97,20 @@ export interface MeteoDailyData {
 
 export interface MeteoData {
     name?: string | undefined;
-    readonly dataCount?: number;
-    gridCoordinates?: GridCoordinates;
+    dbi?: number;
     calendarRange?: CalendarRange;
+    readonly dataCount?: number;
+    readonly online?: boolean;
+    gridCoordinates?: GridCoordinates;
     data?: { [key: string]: MeteoDailyData; } | undefined;
+}
+
+export interface MeteoDbInfo {
+    name?: string | undefined;
+    dbi?: number;
+    calendarRange?: CalendarRange;
+    readonly dataCount?: number;
+    readonly online?: boolean;
 }
 
 export interface Person {
@@ -108,11 +118,6 @@ export interface Person {
     cnp?: string | undefined;
     name?: string | undefined;
     comment?: string | undefined;
-}
-
-export interface PromoteDatabaseModel {
-    dbi?: number;
-    operational?: boolean;
 }
 
 export interface SensorData {

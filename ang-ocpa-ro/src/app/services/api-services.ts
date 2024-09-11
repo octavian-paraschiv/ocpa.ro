@@ -1,10 +1,10 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { environment } from "src/environments/environment";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { catchError, map } from "rxjs/operators";
-import { BuildInfo, City, GridCoordinates, CalendarRange, MeteoData, ContentUnit, PromoteDatabaseModel } from 'src/app/models/models-swagger';
+import { BuildInfo, City, GridCoordinates, MeteoData, ContentUnit, MeteoDbInfo } from 'src/app/models/models-swagger';
 import * as pako from 'pako';
 import * as CryptoJS from 'crypto-js';
 
@@ -142,12 +142,17 @@ export class MeteoApiService {
     }
 
     public getStudioDownloadUrl(): Observable<string> {
-        const uri = `${environment.apiUrl}/meteo/studio-download-url`;
+        const uri = `${environment.apiUrl}/Meteo/studio-download-url`;
         return this.httpClient.get<string>(uri);
     }
 
+    public getDatabases(): Observable<MeteoDbInfo[]> {
+        const uri = `${environment.apiUrl}/Meteo/database/all`;
+        return this.httpClient.get<MeteoDbInfo[]>(uri);
+    }
+
     public getData(dbi: number, region: string, subregion: string, city: string, skip: number = 0, take: number = 0): Observable<MeteoData> {
-        const endpointRoot = `${environment.apiUrl}/meteo/data`;
+        const endpointRoot = `${environment.apiUrl}/Meteo/data`;
         const queryString = `region=${region}&subregion=${subregion}&city=${city}&skip=${skip}&take=${take}`;
         const uri = (dbi >= 0) ? 
             `${endpointRoot}/preview/${dbi}?${queryString}` :
@@ -157,16 +162,12 @@ export class MeteoApiService {
     }
 
     public promote(dbi: number): Observable<any> {
-        const uri = `${environment.apiUrl}/meteo/database/preview/promote`;
-        const body: PromoteDatabaseModel = {
-            dbi,
-            operational: true
-        };
-        return this.httpClient.post(uri, body);
+        const uri = `${environment.apiUrl}/Meteo/database/preview/promote/${dbi}`;
+        return this.httpClient.post(uri, {});
     }
 
     public upload(dbi: number, data: ArrayBuffer): Observable<any> {
-        const uri = `${environment.apiUrl}/meteo/database/preview/${dbi}`;
+        const uri = `${environment.apiUrl}/Meteo/database/preview/${dbi}`;
         const formData = new FormData();
         const fileName = `Preview${dbi}.db3`;
         const compressed = pako.gzip(new Uint8Array(data));
@@ -176,7 +177,6 @@ export class MeteoApiService {
         formData.append("signature", signature.toString(CryptoJS.enc.Base64));
         formData.append("data", blob, fileName);
 
-        // const headers = new HttpHeaders({ 'Content-Type': 'multipart/form-data' });
         return this.httpClient.post(uri, formData);
     }
 }
@@ -202,11 +202,6 @@ export class ContentApiService {
             uri.searchParams.append('filter', filter);
 
         return this.httpClient.get<ContentUnit>(uri.toString());
-    }
-
-    public deleteContent(path: string): Observable<any> {
-        const uri = `${environment.apiUrl}/Content/delete/${path}`;
-        return this.httpClient.post(uri, {});
     }
 }
 

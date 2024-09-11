@@ -10,7 +10,7 @@
         <!-- Upload Column -->
         <ng-container matColumnDef="db-upload">
             <td mat-cell *matCellDef="let db">
-                <a *ngIf="db.name !== 'Snapshot.db3'"
+                <a *ngIf="!db.online"
                     class="table-link" (click)="upload(db)" title="Upload preview database">
                     <fa-icon [icon]="faUpload" [transform]="size"></fa-icon>
                 </a>
@@ -27,7 +27,7 @@
         <!-- Promote Column -->
         <ng-container matColumnDef="db-promote">
             <td mat-cell *matCellDef="let db">
-                <a *ngIf="db.name !== 'Snapshot.db3'"
+                <a *ngIf="!db.online"
                     class="table-link" (click)="promote(db)" title="Promote as ONLINE">
                     <fa-icon [icon]="faPromote" [transform]="size"></fa-icon>
                 </a>
@@ -35,8 +35,24 @@
         </ng-container>
         <!-- Name Column -->
         <ng-container matColumnDef="db-name">
-            <td mat-cell *matCellDef="let db">{{db.name}}&nbsp;&nbsp;&nbsp;&nbsp;[{{db.name === 'Snapshot.db3' ? 'ONLINE' : 'Offline (preview)'}}]</td>
+            <td mat-cell *matCellDef="let db">{{db.name}}</td>
         </ng-container>
+
+         <!-- Status Column -->
+         <ng-container matColumnDef="db-status">
+            <td mat-cell *matCellDef="let db">{{ db.online ? 'ONLINE' : 'Offline' }}</td>
+        </ng-container>
+
+         <!-- Range Column -->
+         <ng-container matColumnDef="db-range">
+            <td mat-cell *matCellDef="let db">{{range(db)}}</td>
+        </ng-container>
+
+         <!-- Data Count Column -->
+         <ng-container matColumnDef="db-length">
+            <td mat-cell *matCellDef="let db">{{db.dataCount}}</td>
+        </ng-container>
+
         <!-- Filler Column -->
         <ng-container matColumnDef="db-filler">
             <td mat-cell *matCellDef="let db"></td>
