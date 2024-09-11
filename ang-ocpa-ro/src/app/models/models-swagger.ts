@@ -101,6 +101,7 @@ export interface MeteoData {
     calendarRange?: CalendarRange;
     readonly dataCount?: number;
     readonly online?: boolean;
+    readonly modifyable?: boolean;
     gridCoordinates?: GridCoordinates;
     data?: { [key: string]: MeteoDailyData; } | undefined;
 }
@@ -111,6 +112,7 @@ export interface MeteoDbInfo {
     calendarRange?: CalendarRange;
     readonly dataCount?: number;
     readonly online?: boolean;
+    readonly modifyable?: boolean;
 }
 
 export interface Person {

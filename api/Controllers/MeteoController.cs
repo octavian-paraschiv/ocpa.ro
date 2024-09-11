@@ -98,7 +98,8 @@ namespace ocpa.ro.api.Controllers
         [Consumes("multipart/form-data")]
         [SwaggerOperation(OperationId = "UploadPreviewDatabase", Description = "Upload Preview Database (index 0)")]
         public Task<IActionResult> UploadPreviewDatabase()
-            // By convention, databases uploaded via Thorus are always uploaded in the last position
+            // By convention, databases uploaded via Thorus are always uploaded as Preview3.db3,
+            // ie. in the last position
             => UploadPreviewDatabaseByDbi(MeteoDataHelper.DbCount - 2);
 
 

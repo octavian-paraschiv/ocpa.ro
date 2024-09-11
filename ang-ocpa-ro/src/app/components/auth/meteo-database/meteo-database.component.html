@@ -10,7 +10,7 @@
         <!-- Upload Column -->
         <ng-container matColumnDef="db-upload">
             <td mat-cell *matCellDef="let db">
-                <a *ngIf="!db.online"
+                <a *ngIf="db.modifyable"
                     class="table-link" (click)="upload(db)" title="Upload preview database">
                     <fa-icon [icon]="faUpload" [transform]="size"></fa-icon>
                 </a>

@@ -46,6 +46,10 @@ namespace ocpa.ro.api.Models.Meteo
         public int Dbi { get; set; }
         public CalendarRange CalendarRange { get; set; }
         public int DataCount => CalendarRange?.Length ?? 0;
+
         public bool Online => string.Equals(Name, "Snapshot.db3", System.StringComparison.OrdinalIgnoreCase);
+
+        // By convention, databases uploaded via Thorus (which we can't override) are always uploaded as Preview3.db3
+        public bool Modifyable => !Online && !string.Equals(Name, "Preview3.db3", System.StringComparison.OrdinalIgnoreCase);
     }
 }
