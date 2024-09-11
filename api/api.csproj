@@ -18,8 +18,8 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
         <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.7.3" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
-        <PackageReference Include="ThorusCommon.IO" Version="1.1.9" />
-        <PackageReference Include="OPMFileUploader" Version="1.1.9" />
+        <PackageReference Include="ThorusCommon.IO" Version="1.1.10" />
+        <PackageReference Include="OPMFileUploader" Version="1.1.10" />
         <PackageReference Include="Serilog" Version="4.0.1" />
         <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
         <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
