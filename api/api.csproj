@@ -5,10 +5,9 @@
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <RootNamespace>ocpa.ro.api</RootNamespace>
     <AssemblyName>api</AssemblyName>
-    <StartupObject>ocpa.ro.api.Program</StartupObject>
     <WarningsAsErrors>true</WarningsAsErrors>
     <WarningLevel>5</WarningLevel>
-    <LangVersion>9</LangVersion>
+    <LangVersion>12</LangVersion>
   </PropertyGroup>
 
     <ItemGroup>

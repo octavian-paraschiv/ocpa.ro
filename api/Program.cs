@@ -1,39 +1,128 @@
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using ocpa.ro.api.Extensions;
-using System;
-using System.IO;
+using ocpa.ro.api.Helpers.Authentication;
+using ocpa.ro.api.Helpers.Content;
+using ocpa.ro.api.Helpers.Generic;
+using ocpa.ro.api.Helpers.Medical;
+using ocpa.ro.api.Helpers.Meteo;
+using ocpa.ro.api.Helpers.Wiki;
+using ocpa.ro.api.Middlewares;
+using ocpa.ro.api.Models.Configuration;
+using ocpa.ro.api.Policies;
+using System.Linq;
+using System.Text.Json.Serialization;
 
-namespace ocpa.ro.api
+var builder = WebApplication.CreateBuilder(args);
+var isDevelopment = builder.Environment.IsDevelopment();
+
+#region ConfigurationResolving
+builder.Configuration.ResolveConfiguration(builder.Services, JwtConfig.SectionName, out JwtConfig jwtConfig);
+builder.Configuration.ResolveConfiguration(builder.Services, AuthConfig.SectionName, out AuthConfig _);
+#endregion
+
+#region Services
+builder.Services.AddCors(options =>
 {
-    public static class Program
+    options.AddDefaultPolicy(policy => policy
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .SetIsOriginAllowed(url => true)
+        .AllowCredentials());
+});
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
+}).AddJwtBearer(o =>
+{
+    o.RequireHttpsMetadata = false;
+    o.SaveToken = true;
+
+    o.TokenValidationParameters = new TokenValidationParameters
     {
-        public static void Main(string[] args)
+        ValidIssuer = jwtConfig.Issuer,
+        ValidAudience = jwtConfig.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(JwtConfig.KeyBytes.ToArray()),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+    };
+});
+builder.Services.AddAuthorization();
+
+builder.Services.AddSingleton<IAuthHelper, AuthHelper>();
+builder.Services.AddSingleton<IMeteoDataHelper, MeteoDataHelper>();
+builder.Services.AddSingleton<IMedicalDataHelper, MedicalDataHelper>();
+builder.Services.AddSingleton<IAuthorizationHandler, AuthorizePolicy>();
+builder.Services.AddSingleton<IContentHelper, ContentHelper>();
+
+builder.Services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
+
+builder.Services.AddTransient<IMultipartRequestHelper, MultipartRequestHelper>();
+builder.Services.AddTransient<IWikiHelper, WikiHelper>();
+
+builder.Services.AddSerilog(builder.Configuration);
+
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+builder.Services.AddSwaggerGen(option =>
+{
+    option.EnableAnnotations();
+    option.DocumentFilter<IgnoreWhenNotInDevFilter>();
+
+    option.SwaggerDoc("v1",
+        new OpenApiInfo
         {
-            var isDev = string.Equals(
-                Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
-                "Development", StringComparison.OrdinalIgnoreCase);
+            Title = "Backend API for ocpa.ro",
+            Version = "v1"
+        });
+});
+#endregion
 
-            string logDir = "Logs";
+#region App
+var app = builder.Build();
 
-            if (!isDev)
-            {
-                var dllDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-                logDir = Path.Combine(dllDir, "../../../Logs").NormalizePath();
-            }
+app.UseMiddleware<GlobalExceptionHandler>();
 
-            Environment.SetEnvironmentVariable("LOGDIR", logDir);
+if (isDevelopment)
+    app.UseDeveloperExceptionPage();
 
-            Host.CreateDefaultBuilder(args)
-               .ConfigureWebHostDefaults(webBuilder =>
-               {
-                   webBuilder
-                       .UseIIS()
-                       .UseIISIntegration()
-                       .UseStartup<Startup>();
-               })
-               .Build()
-               .Run();
-        }
-    }
+app.UseRouting();
+
+if (isDevelopment)
+{
+    app.UseCors(x => x
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .SetIsOriginAllowed(url => true)
+        .AllowCredentials());
 }
+else
+    app.UseCors();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+await app.RunAsync();
+#endregion
