@@ -21,24 +21,26 @@ namespace ocpa.ro.api.Helpers.Meteo
         Task PromotePreviewDatabase(int dbi);
         Task<MeteoData> GetMeteoData(int dbi, GridCoordinates gc, string region, int skip, int take);
         Task<MeteoDbInfo[]> GetDatabases();
-
         MeteoScaleHelpers Scale { get; }
-
         string LatestStudioFile { get; }
     }
 
     public class MeteoDataHelper : BaseHelper, IMeteoDataHelper
     {
+        #region Constants
         public const int DbCount = 5;
+        #endregion
+
+        #region Private members
 
         private readonly MeteoScaleHelpers _scale;
         private readonly string _dataFolder;
-
         private readonly string[] _dbPaths = new string[DbCount];
-
-        public MeteoScaleHelpers Scale => _scale;
-
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
+
+        #endregion
+
+        #region Constructor (DI)
 
         public MeteoDataHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
             : base(hostingEnvironment, logger)
@@ -61,6 +63,12 @@ namespace ocpa.ro.api.Helpers.Meteo
             var iniFile = new IniFileHelper(hostingEnvironment, logger, iniPath);
             _scale = new MeteoScaleHelpers(iniFile);
         }
+
+        #endregion
+
+        #region IMeteoDataHelper implementation
+
+        public MeteoScaleHelpers Scale => _scale;
 
         public string LatestStudioFile
         {
@@ -171,6 +179,10 @@ namespace ocpa.ro.api.Helpers.Meteo
             return dbInfos.ToArray();
         }
 
+        #endregion
+
+        #region Private methods
+
         private static int DbiToIdx(int dbi, bool includeOnlineDb)
         {
             int idx = dbi + 1;
@@ -255,6 +267,7 @@ namespace ocpa.ro.api.Helpers.Meteo
         private CalendarRange GetCalendarRange(MeteoDB database, int days)
         {
             CalendarRange result = new CalendarRange();
+
             try
             {
                 var x = database.Data
@@ -284,7 +297,8 @@ namespace ocpa.ro.api.Helpers.Meteo
 
             return result;
         }
-        private List<Data> GetData(MeteoDB database, string region, GridCoordinates gc, int skip, int take)
+
+        private static List<Data> GetData(MeteoDB database, string region, GridCoordinates gc, int skip, int take)
         {
             var regionId = (from r in database.Regions
                             where r.Name == region
@@ -298,40 +312,7 @@ namespace ocpa.ro.api.Helpers.Meteo
 
             return x.ToList();
         }
-    }
 
-    public static class ExtensionMethods
-    {
-        public static int Round(this float input)
-        {
-            return (int)Math.Round(input);
-        }
-
-        public static T GetValue<T>(this Dictionary<string, float> data, string key, T defaultValue = default)
-            where T : IComparable, IConvertible, IFormattable
-        {
-            Type type = typeof(T);
-
-            T val;
-            try
-            {
-                double raw = data[key];
-
-                if (type != typeof(float) &&
-                    type != typeof(double) &&
-                    type != typeof(decimal))
-                {
-                    raw = Math.Round(raw, 0);
-                }
-
-                val = (T)Convert.ChangeType(raw, type);
-            }
-            catch
-            {
-                val = defaultValue;
-            }
-
-            return val;
-        }
+        #endregion
     }
 }

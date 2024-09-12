@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Generic;
@@ -11,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Helpers.Medical
@@ -28,20 +27,6 @@ namespace ocpa.ro.api.Helpers.Medical
     public class MedicalDataHelper : IMedicalDataHelper
     {
         private readonly MedicalDB _mdb = null;
-
-        static readonly JsonSerializerSettings _ss = new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            DefaultValueHandling = DefaultValueHandling.Ignore
-        };
-
-        static readonly JsonSerializer _ser = JsonSerializer.Create(_ss);
-
-        static readonly JsonMergeSettings _ms = new JsonMergeSettings
-        {
-            MergeArrayHandling = MergeArrayHandling.Union,
-            MergeNullValueHandling = MergeNullValueHandling.Ignore,
-        };
 
         public MedicalDataHelper(IWebHostEnvironment hostingEnvironment)
         {
@@ -121,13 +106,11 @@ namespace ocpa.ro.api.Helpers.Medical
                 T origRecord = _mdb.Database.Table<T>().FirstOrDefault(t => t.Id == record.Id);
                 if (origRecord != null)
                 {
-                    // TO DO: refactor this w/o Newtonsoft.Json
-                    var j1 = JObject.FromObject(origRecord, _ser);
-                    var j2 = JObject.FromObject(record, _ser);
-                    j1.Merge(j2, _ms);
+                    var j1 = JsonProcessing.AsJsonObject(origRecord);
+                    var j2 = JsonProcessing.AsJsonObject(record);
+                    j1.Merge(j2);
 
-                    var updateRecord = j1.ToObject<T>(_ser);
-
+                    var updateRecord = JsonSerializer.Deserialize<T>(j1.ToJsonString());
                     if (_mdb.Database.Update(updateRecord) > 0)
                         return (int)HttpStatusCode.OK;
 

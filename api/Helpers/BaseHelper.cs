@@ -9,7 +9,7 @@ namespace ocpa.ro.api.Helpers
         protected readonly IWebHostEnvironment _hostingEnvironment;
         protected readonly ILogger _logger;
 
-        public BaseHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
+        protected BaseHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
         {
             _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

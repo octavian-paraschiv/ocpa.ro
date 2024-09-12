@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Extensions;
-using ocpa.ro.api.Policies;
-using Swashbuckle.AspNetCore.Annotations;
+﻿using ocpa.ro.api.Extensions;
 using System.Collections.Generic;
 using System.Net;
 
@@ -14,10 +11,10 @@ namespace ocpa.ro.api.Models.Content
         File
     }
 
-    
+
     public class ContentUnit
     {
-        
+
         public ContentUnitType Type { get; set; }
 
         public string Name { get; set; }
@@ -28,6 +25,8 @@ namespace ocpa.ro.api.Models.Content
             get => _path?.NormalizePath();
             set => _path = value?.NormalizePath();
         }
+
+        public long Size { get; set; } = 0;
 
         public List<ContentUnit> Children { get; set; }
     }

@@ -45,7 +45,7 @@ namespace ocpa.ro.api.Helpers.Content
             {
                 if (await WriteContent(contentPath, contentBytes))
                 {
-                    ucu.StatusCode = unit.Type == ContentUnitType.None ?
+                    ucu.StatusCode = unitType == ContentUnitType.None ?
                         HttpStatusCode.Created : HttpStatusCode.OK;
                 }
                 else
@@ -105,25 +105,33 @@ namespace ocpa.ro.api.Helpers.Content
         {
             filter ??= "*";
 
-            if (File.Exists(path))
+            if (FileSystem.Get(path, out FileInfo fileInfo) && fileInfo != null)
             {
                 return new ContentUnit
                 {
                     Type = ContentUnitType.File,
-                    Name = Path.GetFileName(path),
-                    Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), Path.GetDirectoryName(path))
+                    Name = fileInfo.Name,
+                    Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), fileInfo.DirectoryName),
+                    Size = fileInfo.Length
                 };
             }
-            else if (Directory.Exists(path))
+            else if (FileSystem.Get(path, out DirectoryInfo dirInfo) && dirInfo != null)
             {
+                var cu = new ContentUnit
+                {
+                    Type = ContentUnitType.Folder,
+                    Name = dirInfo.Name,
+                    Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), dirInfo.Parent.FullName),
+                };
+
                 if (!level.HasValue || level > 0)
                 {
-                    var dirs = Directory.GetDirectories(path)?
-                        .Select(p => ExplorePath(p, level - 1, filter))
+                    var dirs = dirInfo.GetDirectories()?
+                        .Select(d => ExplorePath(d.FullName, level - 1, filter))
                         .Where(c => c?.Children?.Count > 0);
 
-                    var files = Directory.GetFiles(path, filter)?
-                        .Select(p => ExplorePath(p, level - 1, filter))
+                    var files = dirInfo.GetFiles(filter)?
+                        .Select(f => ExplorePath(f.FullName, level - 1, filter))
                         .Where(c => c != null);
 
                     var list = new List<ContentUnit>();
@@ -132,25 +140,11 @@ namespace ocpa.ro.api.Helpers.Content
                     {
                         list.AddRange(dirs);
                         list.AddRange(files);
-
-                        return new ContentUnit
-                        {
-                            Type = ContentUnitType.Folder,
-                            Name = Path.GetFileName(path),
-                            Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), Path.GetDirectoryName(path)),
-                            Children = list
-                        };
+                        cu.Children = list;
                     }
                 }
-                else
-                {
-                    return new ContentUnit
-                    {
-                        Type = ContentUnitType.Folder,
-                        Name = Path.GetFileName(path),
-                        Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), Path.GetDirectoryName(path))
-                    };
-                }
+
+                return cu;
             }
 
             return new ContentUnit
