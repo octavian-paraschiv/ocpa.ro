@@ -62,18 +62,18 @@ namespace ocpa.ro.api.Controllers
             return NotFound();
         }
 
-        [HttpGet("data/{region}/{subregion}/{city}")]
+        [HttpGet("data")]
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetMeteoData", Description = "Get Meteo Data")]
         public Task<IActionResult> GetMeteoData(
-            [FromRoute] string region, [FromRoute] string subregion, [FromRoute] string city,
+            [FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city,
             [FromQuery] int skip = 0, [FromQuery] int take = 10)
 
             => GetMeteoData(-1, region, subregion, city, skip, take);
 
 
-        [HttpGet("data/preview/{dbi}/{region}/{subregion}/{city}")]
+        [HttpGet("data/preview/{dbi}")]
         [Authorize(Roles = "ADM")]
         [IgnoreWhenNotInDev]
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
@@ -81,7 +81,7 @@ namespace ocpa.ro.api.Controllers
         [SwaggerOperation(OperationId = "GetPreviewMeteoData", Description = "Get Preview Meteo Data (by index)")]
         public async Task<IActionResult> GetMeteoData(
             [FromRoute] int dbi,
-            [FromRoute] string region, [FromRoute] string subregion, [FromRoute] string city,
+            [FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city,
             [FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
             try
