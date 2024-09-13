@@ -9,7 +9,7 @@ namespace ocpa.ro.api.Models.Generic
     {
         public const int DecimalPlaces = 2;
 
-        private readonly int _decimalPlaces = DecimalPlaces;
+        private readonly int _decimalPlaces;
 
         public NumberTruncateJsonConverter() : this(DecimalPlaces)
         {

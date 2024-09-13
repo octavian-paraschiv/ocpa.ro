@@ -1,5 +1,5 @@
 ﻿using ocpa.ro.api.Exceptions;
-using ocpa.ro.api.Models.Medical.Database;
+using ocpa.ro.api.Models.Medical;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +10,7 @@ namespace ocpa.ro.api.Models.Generic
 {
     public static class SirutaCodes
     {
-        public static readonly ReadOnlyDictionary<string, string> Counties = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
+        public static readonly ReadOnlyDictionary<string, string> Counties = new(new Dictionary<string, string>
         {
             { "01" , "Alba" },
             { "02" , "Arad" },

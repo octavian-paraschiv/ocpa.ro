@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Generic;
+using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Helpers.Meteo;
 using ocpa.ro.api.Models.Meteo;
 using ocpa.ro.api.Policies;
@@ -20,16 +21,25 @@ namespace ocpa.ro.api.Controllers
     [Consumes("application/json")]
     public class MeteoController : ApiControllerBase
     {
+        #region Private members
         private readonly IMeteoDataHelper _dataHelper = null;
+        private readonly IGeographyHelper _geographyHelper = null;
         private readonly IMultipartRequestHelper _multipartHelper = null;
+        #endregion
 
-        public MeteoController(IWebHostEnvironment hostingEnvironment, IMeteoDataHelper meteoDataHelper, IMultipartRequestHelper multipartHelper, ILogger logger)
+        #region Constructor (DI)
+        public MeteoController(IWebHostEnvironment hostingEnvironment,
+            IMeteoDataHelper meteoDataHelper, IGeographyHelper geographyHelper,
+            IMultipartRequestHelper multipartHelper, ILogger logger)
             : base(hostingEnvironment, logger, null)
         {
             _dataHelper = meteoDataHelper ?? throw new ArgumentNullException(nameof(meteoDataHelper));
+            _geographyHelper = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
             _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
         }
+        #endregion
 
+        #region Public controller methods
         [HttpGet("studio-download-url")]
         [Authorize(Roles = "ADM")]
         [IgnoreWhenNotInDev]
@@ -52,32 +62,31 @@ namespace ocpa.ro.api.Controllers
             return NotFound();
         }
 
-        [HttpGet("data")]
+        [HttpGet("data/{region}/{subregion}/{city}")]
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetMeteoData", Description = "Get Meteo Data")]
-        public Task<IActionResult> GetMeteoData([FromQuery] string region,
-            [FromQuery] string subregion, [FromQuery] string city,
+        public Task<IActionResult> GetMeteoData(
+            [FromRoute] string region, [FromRoute] string subregion, [FromRoute] string city,
             [FromQuery] int skip = 0, [FromQuery] int take = 10)
 
             => GetMeteoData(-1, region, subregion, city, skip, take);
 
 
-        [HttpGet("data/preview/{dbi}")]
+        [HttpGet("data/preview/{dbi}/{region}/{subregion}/{city}")]
         [Authorize(Roles = "ADM")]
         [IgnoreWhenNotInDev]
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetPreviewMeteoData", Description = "Get Preview Meteo Data (by index)")]
-        public async Task<IActionResult> GetMeteoData([FromRoute] int dbi, [FromQuery] string region,
-            [FromQuery] string subregion, [FromQuery] string city,
+        public async Task<IActionResult> GetMeteoData(
+            [FromRoute] int dbi,
+            [FromRoute] string region, [FromRoute] string subregion, [FromRoute] string city,
             [FromQuery] int skip = 0, [FromQuery] int take = 10)
         {
             try
             {
-                GridCoordinates gridCoordinates = new GeographyController(_hostingEnvironment, _logger)
-                    .InternalGetGridCoordinates(region, subregion, city);
-
+                GridCoordinates gridCoordinates = _geographyHelper.GetGridCoordinates(region, subregion, city);
                 var data = await _dataHelper.GetMeteoData(dbi, gridCoordinates, region, skip, take);
                 return Ok(data);
             }
@@ -148,7 +157,7 @@ namespace ocpa.ro.api.Controllers
         }
 
         [Authorize(Roles = "ADM")]
-        [HttpGet("database/all")]
+        [HttpGet("databases/all")]
         [ProducesResponseType(typeof(MeteoDbInfo[]), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
@@ -166,5 +175,6 @@ namespace ocpa.ro.api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
     }
 }

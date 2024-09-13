@@ -2,7 +2,7 @@
 using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Generic;
-using ocpa.ro.api.Models.Medical.Database;
+using ocpa.ro.api.Models.Medical;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,10 +16,10 @@ namespace ocpa.ro.api.Helpers.Medical
 {
     public interface IMedicalDataHelper
     {
-        List<T> AllOfType<T>() where T : class, IMedicalDbTable, new();
-        List<TestTypeDetail> TestTypes(string categoryCode);
+        IEnumerable<T> AllOfType<T>() where T : class, IMedicalDbTable, new();
+        IEnumerable<TestTypeDetail> TestTypes(string categoryCode);
         Person Person(string loginId);
-        List<TestDetail> Tests(int? id, int? pid, string cnp, string category, string type, DateTime? from, DateTime? to);
+        IEnumerable<TestDetail> SearchTests(TestSearchRequest request);
         int SaveMedicalRecord<T>(T record) where T : class, IMedicalDbTable, new();
         int DeleteMedicalRecord<T>(int id) where T : class, IMedicalDbTable, new();
     }
@@ -34,12 +34,12 @@ namespace ocpa.ro.api.Helpers.Medical
             _mdb = MedicalDB.Open(Path.Combine(dataFolder, "Medical.db3"), true);
         }
 
-        public List<T> AllOfType<T>() where T : class, IMedicalDbTable, new()
+        public IEnumerable<T> AllOfType<T>() where T : class, IMedicalDbTable, new()
         {
-            return _mdb.Database.Table<T>().ToList();
+            return _mdb.Database.Table<T>();
         }
 
-        public List<TestTypeDetail> TestTypes(string categoryCode)
+        public IEnumerable<TestTypeDetail> TestTypes(string categoryCode)
         {
             categoryCode = (categoryCode ?? string.Empty).ToUpper();
 
@@ -49,7 +49,7 @@ namespace ocpa.ro.api.Helpers.Medical
             if (!types.Any())
                 throw new ExtendedException("ERROR_TEST_TYPE_NOT_FOUND");
 
-            return types.ToList();
+            return types;
         }
 
         public Person Person(string loginId)
@@ -68,19 +68,21 @@ namespace ocpa.ro.api.Helpers.Medical
             throw new ExtendedException("ERROR_PERSON_NOT_FOUND");
         }
 
-        public List<TestDetail> Tests(int? id, int? pid, string cnp, string category, string type, DateTime? from, DateTime? to)
+        public IEnumerable<TestDetail> SearchTests(TestSearchRequest request)
         {
+            string cnp = request.Cnp;
+
             if (cnp?.Length > 0)
                 CnpValidator.Validate(cnp); // Will throw exception if CNP not valid
 
-            int testId = id.GetValueOrDefault(-1);
-            int personId = id.GetValueOrDefault();
+            int testId = request.Id.GetValueOrDefault(-1);
+            int personId = request.Id.GetValueOrDefault();
 
-            category = (category ?? string.Empty).ToUpper();
-            type = (type ?? string.Empty).ToUpper();
+            string category = (request.Category ?? string.Empty).ToUpper();
+            string type = (request.Type ?? string.Empty).ToUpper();
 
-            DateTime dtFrom = from.GetValueOrDefault(DateTime.Parse("1900-01-01", CultureInfo.InvariantCulture));
-            DateTime dtTo = to.GetValueOrDefault(DateTime.Now.AddDays(1));
+            DateTime dtFrom = request.From.GetValueOrDefault(DateTime.Parse("1900-01-01", CultureInfo.InvariantCulture));
+            DateTime dtTo = request.To.GetValueOrDefault(DateTime.Now.AddDays(1));
 
             var tests = _mdb.Database.Table<TestDetail>()
                 .Where
@@ -94,7 +96,7 @@ namespace ocpa.ro.api.Helpers.Medical
                 );
 
             if (tests?.Count() > 0)
-                return tests.ToList();
+                return tests;
 
             throw new ExtendedException("TESTS_NOT_FOUND");
         }

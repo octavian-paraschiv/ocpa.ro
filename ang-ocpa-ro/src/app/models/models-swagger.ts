@@ -52,6 +52,7 @@ export interface ContentUnit {
     type?: ContentUnitType;
     name?: string | undefined;
     path?: string | undefined;
+    size?: number;
     children?: ContentUnit[] | undefined;
 }
 
@@ -172,6 +173,16 @@ export interface TestDetail {
     value?: number | undefined;
     minRefOverride?: number | undefined;
     maxRefOverride?: number | undefined;
+}
+
+export interface TestSearchRequest {
+    id?: number | undefined;
+    pid?: number | undefined;
+    cnp?: string | undefined;
+    category?: string | undefined;
+    type?: string | undefined;
+    from?: Date | undefined;
+    to?: Date | undefined;
 }
 
 export interface TestType {

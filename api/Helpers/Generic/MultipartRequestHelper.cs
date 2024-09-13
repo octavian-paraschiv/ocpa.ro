@@ -42,29 +42,26 @@ namespace ocpa.ro.api.Helpers.Generic
                 if (hasContentDispositionHeader && contentDisposition.DispositionType == "form-data")
                 {
                     var name = contentDisposition.Name.Value;
-                    var fileName = contentDisposition.FileName.Value;
 
-                    using (var memoryStream = new MemoryStream())
+                    using var memoryStream = new MemoryStream();
+                    await section.Body.CopyToAsync(memoryStream);
+
+                    if (memoryStream.Length == 0)
+                        throw new ExtendedException($"The request couldn't be processed ({name} section has no data)");
+
+                    if (memoryStream.Length > MaxFileSize)
+                        throw new ExtendedException($"The request couldn't be processed ({name} section has too many data)");
+
+                    switch (name.ToLowerInvariant())
                     {
-                        await section.Body.CopyToAsync(memoryStream);
+                        case "signature":
+                            signature = Encoding.UTF8.GetString(memoryStream.ToArray());
+                            break;
 
-                        if (memoryStream.Length == 0)
-                            throw new ExtendedException($"The request couldn't be processed ({name} section has no data)");
-
-                        if (memoryStream.Length > MaxFileSize)
-                            throw new ExtendedException($"The request couldn't be processed ({name} section has too many data)");
-
-                        switch (name.ToLowerInvariant())
-                        {
-                            case "signature":
-                                signature = Encoding.UTF8.GetString(memoryStream.ToArray());
-                                break;
-
-                            case "data":
-                                data = memoryStream.ToArray();
-                                dataFileName = contentDisposition.FileName.Value;
-                                break;
-                        }
+                        case "data":
+                            data = memoryStream.ToArray();
+                            dataFileName = contentDisposition.FileName.Value;
+                            break;
                     }
                 }
 
@@ -92,12 +89,11 @@ namespace ocpa.ro.api.Helpers.Generic
         {
             byte[] keyBytes = Encoding.UTF8.GetBytes(key);
 
-            using (var ms = new MemoryStream(inputBytes))
-            using (var hmac = new HMACSHA1(keyBytes))
-            {
-                var hash = hmac.ComputeHash(ms);
-                return Convert.ToBase64String(hash);
-            }
+            using var ms = new MemoryStream(inputBytes);
+            using var hmac = new HMACSHA1(keyBytes);
+
+            var hash = hmac.ComputeHash(ms);
+            return Convert.ToBase64String(hash);
         }
 
         // Content-Type: multipart/form-data; boundary="----WebKitFormBoundarymx2fSWqWSd0OxQqq"

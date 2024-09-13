@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.ProTONE;
 using Serilog;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,17 +22,26 @@ namespace ocpa.ro.api.Controllers
     [Consumes("application/json")]
     public class ProToneController : ApiControllerBase
     {
-        static readonly BuildVersion transitionVersion = new BuildVersion("3.1.59");
+        #region Private members
+        private static readonly BuildVersion transitionVersion = new("3.1.59");
+        #endregion
+
+        #region Constructor (DI)
 
         public ProToneController(IWebHostEnvironment hostingEnvironment, ILogger logger)
             : base(hostingEnvironment, logger, null)
         {
         }
 
+        #endregion
+
+        #region Public controller methods
+
         [HttpGet("v1")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public IActionResult OldGetV1([FromQuery] string release = null, [FromQuery] string version = null)
+        [SwaggerOperation(OperationId = "LegacyGetBuilds")]
+        public IActionResult LegacyGetBuilds([FromQuery] string release = null, [FromQuery] string version = null)
         {
             try
             {
@@ -60,7 +70,8 @@ namespace ocpa.ro.api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<BuildInfo>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public IActionResult Get([FromQuery] string release = null, [FromQuery] string version = null)
+        [SwaggerOperation(OperationId = "GetBuilds")]
+        public IActionResult GetBuilds([FromQuery] string release = null, [FromQuery] string version = null)
         {
             try
             {
@@ -86,9 +97,13 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
+        #endregion
+
+        #region Private methods
+
         private List<BuildInfo> FetchBuilds(BuildVersion v, string release = "")
         {
-            List<BuildInfo> builds = new List<BuildInfo>();
+            List<BuildInfo> builds = [];
 
             if (string.IsNullOrEmpty(release))
                 release = "false";
@@ -116,9 +131,9 @@ namespace ocpa.ro.api.Controllers
             return builds;
         }
 
-        private List<BuildInfo> GetProtoneBuilds(BuildType buildType, BuildVersion minVersion)
+        private IEnumerable<BuildInfo> GetProtoneBuilds(BuildType buildType, BuildVersion minVersion)
         {
-            List<BuildInfo> list = new List<BuildInfo>();
+            List<BuildInfo> list = [];
             string folder = "legacy";
 
             switch (buildType)
@@ -157,7 +172,7 @@ namespace ocpa.ro.api.Controllers
                        orderby build.Version.ToString() ascending
                        select build);
 
-            return ret.ToList();
+            return ret;
         }
 
         private BuildInfo ReadBuildInfo(string path)
@@ -168,7 +183,7 @@ namespace ocpa.ro.api.Controllers
             {
                 if (System.IO.File.Exists(path))
                 {
-                    FileInfo fi = new FileInfo(path);
+                    FileInfo fi = new(path);
                     string folder = fi.Directory.Name;
                     string fileName = Path.GetFileName(path);
                     string fileTitle = Path.GetFileNameWithoutExtension(path);
@@ -190,12 +205,12 @@ namespace ocpa.ro.api.Controllers
                         string[] fields = dts.Split(',');
                         if (fields.Length > 0)
                         {
-                            DateTimeConverter dtc = new DateTimeConverter();
+                            DateTimeConverter dtc = new();
                             bi.BuildDate = (DateTime)dtc.ConvertFromInvariantString(fields[0]);
 
                             if (fields.Length > 1)
                             {
-                                BooleanConverter bc = new BooleanConverter();
+                                BooleanConverter bc = new();
                                 bi.IsRelease = (bool)bc.ConvertFromInvariantString(fields[1]);
 
                                 if (fields.Length > 2)
@@ -219,5 +234,7 @@ namespace ocpa.ro.api.Controllers
 
             return bi;
         }
+
+        #endregion
     }
 }

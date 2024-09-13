@@ -39,7 +39,7 @@ namespace ocpa.ro.api.Extensions
 
         public static string NormalizePath(this string path) => path.Replace("\\", "/");
 
-        private static readonly ConcurrentDictionary<HttpStatusCode, bool> IsSuccessStatusCode = new ConcurrentDictionary<HttpStatusCode, bool>();
+        private static readonly ConcurrentDictionary<HttpStatusCode, bool> IsSuccessStatusCode = new();
 
         public static bool IsSuccess(this HttpStatusCode statusCode) =>
             IsSuccessStatusCode.GetOrAdd(statusCode, c => new HttpResponseMessage(c).IsSuccessStatusCode);
@@ -113,9 +113,7 @@ namespace ocpa.ro.api.Extensions
     {
         public static JsonObject AsJsonObject<T>(T t) where T : class
         {
-            return (t == null) ?
-                new JsonObject() :
-                JsonNode.Parse(JsonSerializer.Serialize(t)) as JsonObject;
+            return (t == null) ? [] : JsonNode.Parse(JsonSerializer.Serialize(t)) as JsonObject;
         }
 
         public static void Merge(this JsonObject target, JsonObject source)

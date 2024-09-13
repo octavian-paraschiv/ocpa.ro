@@ -30,11 +30,11 @@ namespace ocpa.ro.api.Helpers.Authentication
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
+                Subject = new ClaimsIdentity(
+                [
                     new Claim("id", user?.LoginId),
                     new Claim(ClaimTypes.Role, user?.Type.ToString())
-                }),
+                ]),
 
                 Issuer = _jwtConfig.Issuer,
                 Audience = _jwtConfig.Audience,

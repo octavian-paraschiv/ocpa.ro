@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Wiki;
 using Serilog;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading.Tasks;
 
@@ -26,6 +27,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [Produces("text/html")]
+        [SwaggerOperation(OperationId = "GetWikiResource")]
         public async Task<IActionResult> GetWikiResource([FromRoute] string resourcePath)
         {
             try

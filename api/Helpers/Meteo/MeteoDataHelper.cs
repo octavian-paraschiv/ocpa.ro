@@ -20,7 +20,7 @@ namespace ocpa.ro.api.Helpers.Meteo
         Task SavePreviewDatabase(int dbi, byte[] data);
         Task PromotePreviewDatabase(int dbi);
         Task<MeteoData> GetMeteoData(int dbi, GridCoordinates gc, string region, int skip, int take);
-        Task<MeteoDbInfo[]> GetDatabases();
+        Task<IEnumerable<MeteoDbInfo>> GetDatabases();
         MeteoScaleHelpers Scale { get; }
         string LatestStudioFile { get; }
     }
@@ -36,7 +36,7 @@ namespace ocpa.ro.api.Helpers.Meteo
         private readonly MeteoScaleHelpers _scale;
         private readonly string _dataFolder;
         private readonly string[] _dbPaths = new string[DbCount];
-        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _lock = new(1, 1);
 
         #endregion
 
@@ -53,10 +53,8 @@ namespace ocpa.ro.api.Helpers.Meteo
                 _dbPaths[i] = Path.Combine(_dataFolder, dbName);
 
                 // "Touch" the databases to ensure they're created
-                using (var db = MeteoDB.OpenOrCreate(_dbPaths[i], false))
-                {
-                    _ = db.Regions.ToArray();
-                }
+                using var db = MeteoDB.OpenOrCreate(_dbPaths[i], false);
+                _ = db.Regions.ToArray();
             }
 
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
@@ -95,21 +93,20 @@ namespace ocpa.ro.api.Helpers.Meteo
         {
             int idx = DbiToIdx(dbi, false);
 
-            using (MemoryStream input = new MemoryStream(data))
-            using (GZipStream zipped = new GZipStream(input, CompressionMode.Decompress))
-            using (MemoryStream unzipped = new MemoryStream())
-            {
-                await zipped.CopyToAsync(unzipped);
+            using MemoryStream input = new(data);
+            using GZipStream zipped = new(input, CompressionMode.Decompress);
+            using MemoryStream unzipped = new();
 
-                try
-                {
-                    await _lock.WaitAsync();
-                    await File.WriteAllBytesAsync(_dbPaths[idx], unzipped.ToArray());
-                }
-                finally
-                {
-                    _lock.Release();
-                }
+            await zipped.CopyToAsync(unzipped);
+
+            try
+            {
+                await _lock.WaitAsync();
+                await File.WriteAllBytesAsync(_dbPaths[idx], unzipped.ToArray());
+            }
+            finally
+            {
+                _lock.Release();
             }
         }
 
@@ -135,13 +132,11 @@ namespace ocpa.ro.api.Helpers.Meteo
             try
             {
                 await _lock.WaitAsync();
-                using (var db = MeteoDB.OpenOrCreate(_dbPaths[idx], false))
-                {
-                    var data = GetMeteoData(db, gc, region, skip, take);
-                    data.Name = Path.GetFileName(_dbPaths[idx]);
-                    data.Dbi = dbi;
-                    return data;
-                }
+                using var db = MeteoDB.OpenOrCreate(_dbPaths[idx], false);
+                var data = GetMeteoData(db, gc, region, skip, take);
+                data.Name = Path.GetFileName(_dbPaths[idx]);
+                data.Dbi = dbi;
+                return data;
             }
             finally
             {
@@ -149,26 +144,24 @@ namespace ocpa.ro.api.Helpers.Meteo
             }
         }
 
-        public async Task<MeteoDbInfo[]> GetDatabases()
+        public async Task<IEnumerable<MeteoDbInfo>> GetDatabases()
         {
-            List<MeteoDbInfo> dbInfos = new List<MeteoDbInfo>();
+            List<MeteoDbInfo> dbInfos = [];
 
             try
             {
                 await _lock.WaitAsync();
                 for (int i = 0; i < _dbPaths.Length; i++)
                 {
-                    using (var db = MeteoDB.OpenOrCreate(_dbPaths[i], false))
+                    using var db = MeteoDB.OpenOrCreate(_dbPaths[i], false);
+                    var range = GetCalendarRange(db, 0);
+                    MeteoDbInfo info = new()
                     {
-                        var range = GetCalendarRange(db, 0);
-                        MeteoDbInfo info = new MeteoDbInfo
-                        {
-                            CalendarRange = range,
-                            Dbi = i - 1,
-                            Name = Path.GetFileName(_dbPaths[i])
-                        };
-                        dbInfos.Add(info);
-                    }
+                        CalendarRange = range,
+                        Dbi = i - 1,
+                        Name = Path.GetFileName(_dbPaths[i])
+                    };
+                    dbInfos.Add(info);
                 }
             }
             finally
@@ -176,7 +169,7 @@ namespace ocpa.ro.api.Helpers.Meteo
                 _lock.Release();
             }
 
-            return dbInfos.ToArray();
+            return dbInfos;
         }
 
         #endregion
@@ -197,7 +190,7 @@ namespace ocpa.ro.api.Helpers.Meteo
 
         private MeteoData GetMeteoData(MeteoDB database, GridCoordinates gc, string region, int skip, int take)
         {
-            MeteoData meteoData = new MeteoData { GridCoordinates = gc };
+            MeteoData meteoData = new() { GridCoordinates = gc };
 
             try
             {
@@ -216,19 +209,19 @@ namespace ocpa.ro.api.Helpers.Meteo
                     take = range.Length - skip;
 
                 var allData = GetData(database, region, gc, skip, take);
-                if (allData?.Count > 0)
+                if (allData?.Any() ?? false)
                 {
-                    meteoData.Data = new Dictionary<string, MeteoDailyData>();
-                    meteoData.CalendarRange.End = range.Start.AddDays(allData.Count - 1);
-                    meteoData.CalendarRange.Length = allData.Count;
+                    meteoData.Data = [];
+                    meteoData.CalendarRange.End = range.Start.AddDays(allData.Count() - 1);
+                    meteoData.CalendarRange.Length = allData.Count();
 
-                    allData.ForEach(d =>
+                    foreach (var d in allData)
                     {
-                        List<string> risks = new List<string>();
+                        List<string> risks = [];
                         var wind = WeatherTypeHelper.GetWind(d, out string windDirection);
                         var forecast = WeatherTypeHelper.GetWeatherType(Scale, d, wind, risks);
 
-                        MeteoDailyData value = new MeteoDailyData
+                        MeteoDailyData value = new()
                         {
                             TMaxActual = d.T_SH.Round(),
                             TMinActual = d.T_SL.Round(),
@@ -253,7 +246,7 @@ namespace ocpa.ro.api.Helpers.Meteo
                         };
 
                         meteoData.Data.Add(d.Timestamp, value);
-                    });
+                    }
                 }
             }
             catch (Exception ex)
@@ -266,7 +259,7 @@ namespace ocpa.ro.api.Helpers.Meteo
 
         private CalendarRange GetCalendarRange(MeteoDB database, int days)
         {
-            CalendarRange result = new CalendarRange();
+            CalendarRange result = new();
 
             try
             {
@@ -298,7 +291,7 @@ namespace ocpa.ro.api.Helpers.Meteo
             return result;
         }
 
-        private static List<Data> GetData(MeteoDB database, string region, GridCoordinates gc, int skip, int take)
+        private static TableQuery<Data> GetData(MeteoDB database, string region, GridCoordinates gc, int skip, int take)
         {
             var regionId = (from r in database.Regions
                             where r.Name == region
@@ -310,7 +303,7 @@ namespace ocpa.ro.api.Helpers.Meteo
                 .Skip(skip)
                 .Take(take);
 
-            return x.ToList();
+            return x;
         }
 
         #endregion

@@ -7,10 +7,10 @@ namespace ocpa.ro.api.Helpers.Meteo
 {
     public static class WeatherTypeHelper
     {
-        static readonly string[] wdirs = new string[]
-        {
+        static readonly string[] wdirs =
+        [
                 "W", "WSW", "SW", "SSW", "S", "SSE", "SE", "ESE", "E", "ENE", "NE", "NNE", "N", "NNW", "NW", "WNW"
-        };
+        ];
 
 
         public static string GetWeatherType(MeteoScaleHelpers scale, Data meteoData, int wind, List<string> risks)

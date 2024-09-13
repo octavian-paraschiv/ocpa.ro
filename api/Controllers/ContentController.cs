@@ -8,6 +8,7 @@ using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Models.Content;
 using ocpa.ro.api.Policies;
 using Serilog;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading.Tasks;
 
@@ -21,21 +22,29 @@ namespace ocpa.ro.api.Controllers
     [Authorize(Roles = "ADM")]
     public class ContentController : ApiControllerBase
     {
+        #region Private members
         private readonly IContentHelper _contentHelper;
-        private readonly IMultipartRequestHelper _multipartHelper = null;
+        private readonly IMultipartRequestHelper _multipartHelper;
+        #endregion
 
-        public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger, IContentHelper contentHelper, IMultipartRequestHelper multipartHelper)
+        #region Constructor (DI)
+        public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger,
+            IContentHelper contentHelper, IMultipartRequestHelper multipartHelper)
             : base(hostingEnvironment, logger, null)
         {
             _contentHelper = contentHelper ?? throw new ArgumentNullException(nameof(contentHelper));
             _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
         }
+        #endregion
 
+        #region Public controller methods
         [HttpGet("{*contentPath}")]
         [ProducesResponseType(typeof(ContentUnit), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public IActionResult GetContent([FromRoute] string contentPath, [FromQuery] int? level = null, [FromQuery] string filter = null)
+        [SwaggerOperation(OperationId = "GetContent")]
+        public IActionResult GetContent([FromRoute] string contentPath, [FromQuery] int? level = null,
+            [FromQuery] string filter = null)
         {
             IActionResult result = NotFound(contentPath);
 
@@ -45,8 +54,9 @@ namespace ocpa.ro.api.Controllers
                 if ((content?.Type ?? ContentUnitType.None) != ContentUnitType.None)
                     result = Ok(content);
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
                 result = NotFound(contentPath);
             }
 
@@ -62,6 +72,7 @@ namespace ocpa.ro.api.Controllers
         [DisableFormValueModelBinding]
         [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
         [Consumes("multipart/form-data")]
+        [SwaggerOperation(OperationId = "UploadContent")]
         public async Task<IActionResult> UploadContent([FromRoute] string contentPath)
         {
             try
@@ -72,10 +83,11 @@ namespace ocpa.ro.api.Controllers
                 if (ucu == null)
                     return NotFound(contentPath);
 
-                return StatusCode((int)ucu.StatusCode, ucu.StatusCode.IsSuccess() ? (object)ucu : contentPath);
+                return StatusCode((int)ucu.StatusCode, ucu.StatusCode.IsSuccess() ? ucu : contentPath);
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
                 return Conflict(contentPath);
             }
         }
@@ -85,6 +97,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+        [SwaggerOperation(OperationId = "DeleteContent")]
         public IActionResult DeleteContent([FromRoute] string contentPath)
         {
             try
@@ -92,10 +105,12 @@ namespace ocpa.ro.api.Controllers
                 var status = _contentHelper.DeleteContent(contentPath);
                 return StatusCode((int)status, contentPath);
             }
-            catch
+            catch (Exception ex)
             {
+                LogException(ex);
                 return Conflict(contentPath);
             }
         }
+        #endregion
     }
 }

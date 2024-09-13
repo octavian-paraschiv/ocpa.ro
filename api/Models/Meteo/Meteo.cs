@@ -17,7 +17,7 @@ namespace ocpa.ro.api.Models.Meteo
         public string Forecast { get; set; }
         public string TempFeel { get; set; }
 
-        public List<string> Hazards { get; set; } = new List<string>();
+        public List<string> Hazards { get; set; } = [];
         public int Wind { get; set; }
         public int Precip { get; set; }
         public int SnowCover { get; set; }

@@ -5,6 +5,7 @@ using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Policies;
 using Serilog;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 
 namespace ocpa.ro.api.Controllers
@@ -25,6 +26,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(UserType[]), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "GetAllUserTypes")]
         public IActionResult GetAllUserTypes()
         {
             try

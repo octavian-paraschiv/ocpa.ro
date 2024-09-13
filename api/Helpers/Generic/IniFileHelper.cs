@@ -74,12 +74,12 @@ namespace ocpa.ro.api.Helpers.Generic
                         }
                         else if (typeof(T) == typeof(TimeSpan))
                         {
-                            TimeSpan timeSpan = TimeSpan.Parse(text);
+                            TimeSpan timeSpan = TimeSpan.Parse(text, CultureInfo.InvariantCulture);
                             result = (T)Convert.ChangeType(timeSpan, typeof(T), CultureInfo.InvariantCulture);
                         }
                         else if (typeof(T) == typeof(DateTime))
                         {
-                            DateTime dateTime = DateTime.Parse(text);
+                            DateTime dateTime = DateTime.Parse(text, CultureInfo.InvariantCulture);
                             result = (T)Convert.ChangeType(dateTime, typeof(T), CultureInfo.InvariantCulture);
                         }
                         else

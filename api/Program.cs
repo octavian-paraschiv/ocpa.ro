@@ -9,17 +9,31 @@ using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Content;
 using ocpa.ro.api.Helpers.Generic;
+using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Helpers.Meteo;
 using ocpa.ro.api.Helpers.Wiki;
 using ocpa.ro.api.Middlewares;
 using ocpa.ro.api.Models.Configuration;
 using ocpa.ro.api.Policies;
+using System;
+using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
+
+string logDir = "Logs";
+
+if (!isDevelopment)
+{
+    var dllDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+    logDir = Path.Combine(dllDir, "../../../Logs").NormalizePath();
+}
+
+Environment.SetEnvironmentVariable("LOGDIR", logDir);
+
 
 #region ConfigurationResolving
 builder.Configuration.ResolveConfiguration(builder.Services, JwtConfig.SectionName, out JwtConfig jwtConfig);
@@ -61,6 +75,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddSingleton<IAuthHelper, AuthHelper>();
+builder.Services.AddSingleton<IGeographyHelper, GeographyHelper>();
 builder.Services.AddSingleton<IMeteoDataHelper, MeteoDataHelper>();
 builder.Services.AddSingleton<IMedicalDataHelper, MedicalDataHelper>();
 builder.Services.AddSingleton<IAuthorizationHandler, AuthorizePolicy>();
@@ -77,7 +92,7 @@ builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 

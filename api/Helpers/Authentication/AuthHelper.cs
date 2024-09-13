@@ -4,6 +4,7 @@ using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Authentication;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ThorusCommon.SQLite;
@@ -17,8 +18,8 @@ namespace ocpa.ro.api.Helpers.Authentication
         User SaveUser(User user, out bool inserted);
         User GetUser(string loginId);
         int DeleteUser(string loginId);
-        User[] AllUsers();
-        UserType[] AllUserTypes();
+        IEnumerable<User> AllUsers();
+        IEnumerable<UserType> AllUserTypes();
         UserType GetUserType(int id = -1, string code = null);
     }
 
@@ -133,7 +134,7 @@ namespace ocpa.ro.api.Helpers.Authentication
             return StatusCodes.Status400BadRequest;
         }
 
-        public User[] AllUsers()
+        public IEnumerable<User> AllUsers()
         {
             return _db.Table<User>().Select(u => new User
             {
@@ -141,12 +142,12 @@ namespace ocpa.ro.api.Helpers.Authentication
                 LoginId = u.LoginId,
                 Type = u.Type,
                 PasswordHash = null,
-            }).ToArray();
+            });
         }
 
-        public UserType[] AllUserTypes()
+        public IEnumerable<UserType> AllUserTypes()
         {
-            return _db.Table<UserType>().ToArray();
+            return _db.Table<UserType>();
         }
 
         public UserType GetUserType(int id = -1, string code = null)

@@ -6,6 +6,7 @@ using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Policies;
 using Serilog;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 
 namespace ocpa.ro.api.Controllers
@@ -31,6 +32,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(AuthenticateResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [AllowAnonymous]
+        [SwaggerOperation(OperationId = "Authenticate")]
         public IActionResult Authenticate([FromForm] AuthenticateRequest model)
         {
             var user = _authHelper.AuthorizeUser(model);
@@ -49,6 +51,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(User[]), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "GetAllUsers")]
         public IActionResult GetAllUsers()
         {
             try
@@ -66,6 +69,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "SaveUser")]
         public IActionResult SaveUser([FromBody] User user)
         {
             try
@@ -93,6 +97,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "DeleteUser")]
         public IActionResult DeleteUser([FromRoute] string loginId)
         {
             try

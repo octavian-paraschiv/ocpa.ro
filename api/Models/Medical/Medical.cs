@@ -3,7 +3,7 @@ using System;
 using System.Text.Json.Serialization;
 using ThorusCommon.SQLite;
 
-namespace ocpa.ro.api.Models.Medical.Database
+namespace ocpa.ro.api.Models.Medical
 {
     public interface IMedicalDbTable
     {

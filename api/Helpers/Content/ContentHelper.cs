@@ -29,9 +29,9 @@ namespace ocpa.ro.api.Helpers.Content
 
         public async Task<UpdatedContentUnit> CreateOrUpdateContent(string contentPath, byte[] contentBytes)
         {
-            var unit = ListContent(contentPath, 0);
+            var unit = ListContent(contentPath, 0, null);
 
-            UpdatedContentUnit ucu = new UpdatedContentUnit
+            UpdatedContentUnit ucu = new()
             {
                 Children = unit?.Children,
                 Path = contentPath,
@@ -65,7 +65,7 @@ namespace ocpa.ro.api.Helpers.Content
             if (contentOnly)
                 contentPath = contentPath.TrimEnd("/*".ToCharArray());
 
-            var unit = ListContent(contentPath, 0);
+            var unit = ListContent(contentPath, 0, null);
             var unitType = unit?.Type ?? ContentUnitType.None;
 
             string path = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
@@ -95,7 +95,7 @@ namespace ocpa.ro.api.Helpers.Content
             return HttpStatusCode.OK;
         }
 
-        public ContentUnit ListContent(string contentPath, int? level, string filter = null)
+        public ContentUnit ListContent(string contentPath, int? level, string filter)
         {
             string path = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
             return ExplorePath(path, level, filter);

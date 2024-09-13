@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace ocpa.ro.api.Models
+namespace ocpa.ro.api.Models.Sensors
 {
     public class SensorDataCollection
     {

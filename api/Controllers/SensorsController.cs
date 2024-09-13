@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Models;
+using ocpa.ro.api.Models.Sensors;
 using Serilog;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
-using System.Collections.Generic;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -16,7 +16,7 @@ namespace ocpa.ro.api.Controllers
     public class SensorsController : ApiControllerBase
     {
         private const int count = 5;
-        private static readonly Random rnd = new Random();
+        private static readonly Random rnd = new();
 
         public SensorsController(IWebHostEnvironment hostingEnvironment, ILogger logger)
             : base(hostingEnvironment, logger, null)
@@ -25,11 +25,12 @@ namespace ocpa.ro.api.Controllers
 
         [HttpGet("data")]
         [ProducesResponseType(typeof(SensorDataCollection), StatusCodes.Status200OK)]
+        [SwaggerOperation(OperationId = "ReadSensors")]
         public IActionResult ReadSensors()
         {
-            SensorDataCollection sensorDataCollection = new SensorDataCollection
+            SensorDataCollection sensorDataCollection = new()
             {
-                SensorData = new List<SensorData>()
+                SensorData = []
             };
             for (int i = 0; i < count; i++)
             {
