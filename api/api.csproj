@@ -8,6 +8,7 @@
     <WarningsAsErrors>true</WarningsAsErrors>
     <WarningLevel>5</WarningLevel>
     <LangVersion>12</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
     <ItemGroup>
