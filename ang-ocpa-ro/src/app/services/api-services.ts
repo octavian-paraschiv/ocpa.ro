@@ -147,7 +147,7 @@ export class MeteoApiService {
     }
 
     public getDatabases(): Observable<MeteoDbInfo[]> {
-        const uri = `${environment.apiUrl}/Meteo/database/all`;
+        const uri = `${environment.apiUrl}/Meteo/databases/all`;
         return this.httpClient.get<MeteoDbInfo[]>(uri);
     }
 
