@@ -7,8 +7,10 @@
 <div style="text-align: justify; margin-top: 1rem;">
     <label mat-small style="margin-bottom: 0.2rem;">Database list:</label>
     <table mat-table [dataSource]="databases">
+
         <!-- Upload Column -->
         <ng-container matColumnDef="db-upload">
+            <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db">
                 <a *ngIf="db.modifyable"
                     class="table-link" (click)="upload(db)" title="Upload preview database">
@@ -16,48 +18,65 @@
                 </a>
             </td>
         </ng-container>
+
         <!-- View Column -->
         <ng-container matColumnDef="db-view">
+            <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db">
-                <a class="table-link" (click)="view(db)" title="View database">
+                <a *ngIf="db.dataCount > 0"
+                    class="table-link" (click)="view(db)" title="View database">
                     <fa-icon [icon]="faEye" [transform]="size"></fa-icon>
                 </a>
             </td>
         </ng-container>
+
         <!-- Promote Column -->
         <ng-container matColumnDef="db-promote">
+            <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db">
-                <a *ngIf="!db.online"
+                <a *ngIf="!db.online && db.dataCount > 0"
                     class="table-link" (click)="promote(db)" title="Promote as ONLINE">
                     <fa-icon [icon]="faPromote" [transform]="size"></fa-icon>
                 </a>
             </td>
         </ng-container>
+
         <!-- Name Column -->
         <ng-container matColumnDef="db-name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
             <td mat-cell *matCellDef="let db">{{db.name}}</td>
         </ng-container>
 
          <!-- Status Column -->
          <ng-container matColumnDef="db-status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
             <td mat-cell *matCellDef="let db">{{ db.online ? 'ONLINE' : 'Offline' }}</td>
         </ng-container>
 
          <!-- Range Column -->
          <ng-container matColumnDef="db-range">
+            <th mat-header-cell *matHeaderCellDef>Data range</th>
             <td mat-cell *matCellDef="let db">{{range(db)}}</td>
         </ng-container>
 
          <!-- Data Count Column -->
          <ng-container matColumnDef="db-length">
-            <td mat-cell *matCellDef="let db">{{db.dataCount}}</td>
+            <th mat-header-cell *matHeaderCellDef>Data count</th>
+            <td mat-cell *matCellDef="let db">{{db.dataCount ?? 'n/a'}}</td>
         </ng-container>
 
         <!-- Filler Column -->
         <ng-container matColumnDef="db-filler">
+            <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db"></td>
         </ng-container>
-        <tr mat-row class="meteo-db-row" *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr mat-header-row class="meteo-db-header-row" *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr mat-row class="meteo-db-row" 
+            *matRowDef="let row; columns: displayedColumns;"
+            [ngClass]="{ 'hot': row === selectedDatabase }">
+        </tr>
     </table>
 </div>
 

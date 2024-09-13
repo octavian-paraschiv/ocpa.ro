@@ -9,7 +9,7 @@
 .normal { background-color: $meteo-normal-color; }
 .warmer { background-color: $meteo-warmer-color; }
 .much_warmer { background-color: $meteo-much-warmer-color; }
-.hot { background-color: $meteo-hot-color; }
+.hot { background-color: $meteo-hot-color !important; }
 .colder { background-color: $meteo-colder-color; }
 .much_colder { background-color: $meteo-much-colder-color; }
 .frost { background-color: $meteo-frost-color; }

@@ -71,10 +71,16 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
                     this.meteoApi.upload(db.dbi, data)
                         .pipe(untilDestroyed(this))
                         .subscribe({
-                            next: () => this.snackBar.open(`Succesfully uploaded selected file as \`${db.name}\'.`, 
-                                undefined, { duration: 5000 }),
-                            error: err => this.snackBar.open(`Error while uploading selected file as \`${db.name}\': ${err.toString()}`, 
-                                undefined, { duration: 5000 })
+                            next: () => {
+                                this.snackBar.open(`Succesfully uploaded selected file as \`${db.name}\'.`, 
+                                    undefined, { duration: 5000 });
+                                this.onInit();
+                            },
+                            error: err => {
+                                this.snackBar.open(`Error while uploading selected file as \`${db.name}\': ${err.toString()}`, 
+                                    undefined, { duration: 5000 });
+                                    this.onInit();
+                            }
                         });
                 });
             }
@@ -118,9 +124,17 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
     }
 
     range(db: MeteoDbInfo): string {
-        const start = formatDate(db.calendarRange.start, 'yyyy-MM-dd', 'en-US');
-        const end = formatDate(db.calendarRange.end, 'yyyy-MM-dd', 'en-US');
-        return `${start} -> ${end}`;
+        
+        const start = db?.calendarRange?.start ? 
+            formatDate(db.calendarRange.start, 'yyyy-MM-dd', 'en-US') : 'n/a';
+
+        const end = db?.calendarRange?.end ? 
+            formatDate(db.calendarRange.end, 'yyyy-MM-dd', 'en-US') : 'n/a';
+
+        if (end !== 'n/a' && start !== 'n/a')
+            return `${start} -> ${end}`;
+
+        return 'n/a';
     }
 
     private fileOpen(callback: (ArrayBuffer) => void) {
