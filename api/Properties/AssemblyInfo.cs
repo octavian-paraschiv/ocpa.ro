@@ -9,5 +9,6 @@ using Constants = ocpa.ro.api.Constants;
 [assembly: AssemblyCompany(Constants.CompanyName)]
 [assembly: AssemblyProduct(Constants.AppName)]
 [assembly: AssemblyCopyright(Constants.CopyrightNotice)]
-[assembly: AssemblyVersion(Constants.Version)]
-[assembly: AssemblyFileVersion(Constants.Version)]
+
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
