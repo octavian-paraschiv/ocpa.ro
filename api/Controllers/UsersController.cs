@@ -140,6 +140,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(IEnumerable<AppMenu>), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetApplicationMenus")]
+        [AllowAnonymous]
         public IActionResult GetApplicationMenus()
         {
             try
