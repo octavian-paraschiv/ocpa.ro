@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Authentication;
+using ocpa.ro.api.Models.Menus;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,10 @@ namespace ocpa.ro.api.Helpers.Authentication
         IEnumerable<User> AllUsers();
         IEnumerable<UserType> AllUserTypes();
         UserType GetUserType(int id = -1, string code = null);
+
+        // ----
+        IEnumerable<PublicMenu> PublicMenus();
+        IEnumerable<AppMenu> ApplicationMenus(int userId);
     }
 
     public class AuthHelper : BaseHelper, IAuthHelper
@@ -40,7 +45,7 @@ namespace ocpa.ro.api.Helpers.Authentication
             {
                 var loginId = (req.LoginId ?? "").ToLowerInvariant();
                 var user = _db.Get<User>(u => u.LoginId.ToLower() == loginId);
-                if (user?.PasswordHash?.Length > 0 && req?.Password?.Length > 0)
+                if (user?.PasswordHash?.Length > 0 && req.Password?.Length > 0)
                 {
                     var seed = Auth.getSeed(req.Password);
                     var calc = Auth.calcHash(user.PasswordHash, seed);
@@ -167,5 +172,18 @@ namespace ocpa.ro.api.Helpers.Authentication
             return null;
         }
 
+        public IEnumerable<PublicMenu> PublicMenus()
+        {
+            return _db.Table<PublicMenu>();
+        }
+
+        public IEnumerable<AppMenu> ApplicationMenus(int userId)
+        {
+            var user = _db.Table<User>().Where(u => u.Id == userId).First();
+            var userType = _db.Table<UserType>().Where(ut => ut.Id == user.Type).First();
+
+            return _db.Table<AppMenu>()
+                .Where(am => am.UserId == user.Id || am.UserId == null && userType.Code == "ADM");
+        }
     }
 }
