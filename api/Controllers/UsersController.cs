@@ -4,10 +4,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Models.Authentication;
+using ocpa.ro.api.Models.Menus;
 using ocpa.ro.api.Policies;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -108,6 +112,53 @@ namespace ocpa.ro.api.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+
+        [HttpGet("menus")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<Menu>), StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(OperationId = "GetMenus")]
+        [AllowAnonymous]
+        public IActionResult GetMenus()
+        {
+            try
+            {
+                return Ok(_authHelper.PublicMenus());
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return NotFound(ex.Message);
+            }
+        }
+
+
+        [HttpGet("app-menus")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(IEnumerable<AppMenu>), StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(OperationId = "GetApplicationMenus")]
+        public IActionResult GetApplicationMenus()
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var uid = identity.Claims
+                    .Where(c => c.Type == "uid")
+                    .Select(c => int.TryParse(c.Value, out int v) ? v : 0)
+                    .FirstOrDefault();
+
+                return Ok(_authHelper.ApplicationMenus(uid));
+
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return Ok(Array.Empty<AppMenu>());
         }
     }
 }

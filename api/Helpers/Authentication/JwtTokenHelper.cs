@@ -32,8 +32,9 @@ namespace ocpa.ro.api.Helpers.Authentication
             {
                 Subject = new ClaimsIdentity(
                 [
-                    new Claim("id", user?.LoginId),
-                    new Claim(ClaimTypes.Role, user?.Type.ToString())
+                    new Claim("id", user?.LoginId ?? ""),
+                    new Claim("uid", (user?.Id ?? 0).ToString()),
+                    new Claim(ClaimTypes.Role, (user?.Type ?? 0).ToString())
                 ]),
 
                 Issuer = _jwtConfig.Issuer,
