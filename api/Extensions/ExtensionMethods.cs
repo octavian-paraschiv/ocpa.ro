@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -88,6 +89,9 @@ namespace ocpa.ro.api.Extensions
 
             return val;
         }
+
+        public static string ToBase64(this string str)
+            => (str?.Length > 0) ? Convert.ToBase64String(Encoding.UTF8.GetBytes(str)) : null;
     }
 
     public static class FileSystem
