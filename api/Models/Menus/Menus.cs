@@ -4,6 +4,14 @@ using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Models.Menus
 {
+    public enum MenuDisplayMode
+    {
+        AlwaysHide = 0,
+        AlwaysShow,
+        HideOnMobile,
+        ShowOnMobile,
+    }
+
     public class Menu
     {
         [PrimaryKey]
@@ -17,6 +25,9 @@ namespace ocpa.ro.api.Models.Menus
 
         [NotNull]
         public string Code { get; set; }
+
+        [NotNull]
+        public MenuDisplayMode DisplayMode { get; set; }
 
         [JsonConverter(typeof(StringAsBase64Converter))]
         public string LargeIcon { get; set; }
