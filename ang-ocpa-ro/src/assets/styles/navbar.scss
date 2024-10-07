@@ -89,3 +89,14 @@
 .navbar-alt-image-color {
     color: $nav-forecolor;
 }
+
+/* MOBILE
+----------------------------------------------------------*/
+@media screen and (max-width: 1080px) and (orientation: portrait) {
+    #navbarMenu {
+        display: none;
+    }
+    .navbar-brand {
+        border-bottom: unset;
+    }
+}

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { Unit } from 'src/app/models/models-local';
-import { City } from 'src/app/models/models-swagger';
+import { City, MeteoDailyData } from 'src/app/models/models-swagger';
 import { Iso3166HelperService } from "./iso3166-helper.service";
 
 @Pipe({ name: 'temp' })
@@ -64,5 +64,12 @@ export class CountryCodePipe implements PipeTransform {
             country = this.isoService.getByCountryName(city.region);
         
         return country?.IsoAlpha2?.toUpperCase() ?? 'XX';
+    }
+}
+
+@Pipe({ name: 'calendar' })
+export class CalendarPipe implements PipeTransform {
+    transform(value: MeteoDailyData) {
+        return `${value.date}`;
     }
 }

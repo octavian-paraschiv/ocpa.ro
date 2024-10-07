@@ -80,10 +80,15 @@ input::-ms-clear {
     app-root {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: auto 10px 1fr;
+        grid-template-rows: auto 1fr;
         grid-template-areas: 
         "anm"
-        "."
         "ro";
+    }
+
+    #router-outlet {
+        border-radius: unset;
+        height: 91vh;
+        max-height: 91vh;
     }
 }

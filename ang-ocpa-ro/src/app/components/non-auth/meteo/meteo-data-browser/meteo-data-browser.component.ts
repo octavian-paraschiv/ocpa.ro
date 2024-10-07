@@ -6,6 +6,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { City, GridCoordinates, MeteoDailyData, MeteoData } from 'src/app/models/models-swagger';
 import { GeographyApiService, MeteoApiService } from 'src/app/services/api-services';
 import { Helper } from 'src/app/services/helper';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 
 @UntilDestroy()
 @Component({
@@ -13,9 +14,10 @@ import { Helper } from 'src/app/services/helper';
   templateUrl: './meteo-data-browser.component.html'
 })
 export class MeteoDataBrowserComponent {
+  icons = fas;
   dbi = -1;
   defaultHint = true;
-  hint = 'To search your city, click/tap in the drop list below, then type the city name.';
+  hint = 'To search a city, click/tap in the drop list below, then type the city name.';
 
   initialized = false;
   isFetching = false;
@@ -48,6 +50,8 @@ export class MeteoDataBrowserComponent {
   bufferSize = 15;
 
   selectedDate: string = undefined;
+
+  displayColumns = [ 'date', 'symbol', 'summary', 'temp', 'precip', 'risks' ];
  
   constructor(private readonly geoApi: GeographyApiService,
     private readonly meteoApi: MeteoApiService,
@@ -384,4 +388,22 @@ export class MeteoDataBrowserComponent {
         this.selectedDate = this.helper.today;
     }
   }
+
+  dateCellClass(md: MeteoDailyData): string {
+    const isWeekend = new Date(md?.date).getDay() % 6 === 0;
+    return isWeekend ? 'date-cell-weekend' : 'date-cell';
+  }
+
+  summary(md: MeteoDailyData): string {
+    return '';
+  }
+
+  precip(md: MeteoDailyData): string {
+    return '';
+  }
+
+  risks(md: MeteoDailyData): string {
+    return '';
+  }
+
 }

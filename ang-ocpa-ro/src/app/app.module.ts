@@ -16,7 +16,7 @@ import { MeteoComponent } from './components/non-auth/meteo/meteo.component';
 import { DayDetailsComponent } from './components/non-auth/meteo/day-details/day-details.component';
 import { DayRisksComponent } from './components/non-auth/meteo/day-risks/day-risks.component';
 import { Helper } from './services/helper';
-import { CountryCodePipe, DistancePipe, PressurePipe, SpeedPipe, TempPipe, VolumePipe } from './services/unit-transform-pipe';
+import { CalendarPipe, CountryCodePipe, DistancePipe, PressurePipe, SpeedPipe, TempPipe, VolumePipe } from './services/unit-transform-pipe';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { UserService } from './services/user.service';
@@ -65,8 +65,8 @@ import { LogoutComponent } from 'src/app/components/auth/logout/logout.component
         DistancePipe,
         VolumePipe,
         PressurePipe,
-
         CountryCodePipe,
+        CalendarPipe,
     ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

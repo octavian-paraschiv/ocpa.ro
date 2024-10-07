@@ -1,0 +1,168 @@
+.meteo-mat-small {
+    font-size: 0.73rem;
+}
+
+.normal { background-color: $meteo-normal-color !important; }
+.warmer { background-color: $meteo-warmer-color !important; }
+.much_warmer { background-color: $meteo-much-warmer-color !important; }
+.hot { background-color: $meteo-hot-color !important; }
+.colder { background-color: $meteo-colder-color !important; }
+.much_colder { background-color: $meteo-much-colder-color !important; }
+.frost { background-color: $meteo-frost-color !important; }
+
+app-meteo {
+    display: grid;
+    padding: 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: 
+    "h"
+    "c"
+    "odg";
+}
+
+.meteo-hint {
+    grid-area: h;
+}
+
+.smart-meteo-controls {
+    grid-area: c;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.meteo-data-hint {
+    @extend .meteo-hint;
+    margin-left: 1vw;
+    margin-top: 0;
+    margin-bottom: 5px;
+    grid-area: dh;
+    text-align: justify;
+}
+
+.meteo-data-hint-label {
+    @extend .meteo-mat-small;
+    margin: 0;
+}
+
+.meteo-data-browser {
+    grid-area: odg;
+}
+
+.outer-meteo-data-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 4rem) 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 
+    "minus7 minus1 zero plus1 plus7 ."
+    "dg dg dg dg dg dg";
+}
+
+.gridButton {
+    color: $forecolor;
+    margin-bottom: 10px;
+    margin-right: 3px;
+    background-color: $backcolor;
+    border: 1px solid $forecolor;
+    border-radius: 3px;
+    font-size: 0.75rem;
+}
+.minus7 {
+    @extend .gridButton;
+    grid-area: minus7;
+}
+.minus1 {
+    @extend .gridButton;
+    grid-area: minus1;
+}
+.zero {
+    @extend .gridButton;
+    grid-area: zero;
+}
+.plus1 {
+    @extend .gridButton;
+    grid-area: plus1;
+}
+.plus7 {
+    @extend .gridButton;
+    grid-area: plus7;
+}
+
+.meteo-data-grid {
+    grid-area: dg;
+    display: grid;
+}
+.meteo-data-grid-empty {
+    @extend .meteo-data-grid;
+    border: unset;
+}
+//----
+.img-day-summary-forecast {
+    margin: 0;
+    padding: 0;
+    align-self: center;
+    height: 3rem;
+}
+.temp-low-cell {
+    display: grid;
+    color: blue;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1rem 1fr 1rem 1fr;
+    grid-template-areas: "sl tla tln";
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+.temp-high-cell {
+    display: grid;
+    color: red;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1rem 1fr 1rem 1fr;
+    grid-template-areas: "sl tla tln";
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+.temp-symbol {
+    grid-area: sl;
+}
+.temp-actual {
+    grid-area: tla;
+    font-weight: bold;
+    margin-right: 5px;
+}
+.temp-normal {
+    grid-area: tln;
+    font-size: 0.8rem;
+}
+
+
+
+.mat-column-date {
+    margin: 0 !important;
+    margin-left: 3px !important;
+    padding: 0 !important;
+}
+.date-cell {
+    display: grid;
+    text-align: center;
+    padding: 2px;
+    background-color: gray;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: 
+    "dow"
+    "dom";
+}
+.dow-row {
+    grid-area: dow;
+    text-transform: uppercase;
+    color: white;
+}
+.dom-row{
+    grid-area: dom;
+    color: white;
+}
+.date-cell-weekend {
+    @extend .date-cell;
+    background-color: $meteo-weekend-header-color;
+}
