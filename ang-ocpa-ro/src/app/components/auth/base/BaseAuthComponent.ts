@@ -4,6 +4,7 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 import { interval } from 'rxjs';
 import { BaseLifecycleComponent } from 'src/app/components/BaseLifecycleComponent';
 import { AuthenticationService } from 'src/app/services/authentication.services';
+import { Helper } from 'src/app/services/helper';
 
 @Component({ template: '' })
 export abstract class BaseAuthComponent extends BaseLifecycleComponent {
@@ -15,10 +16,10 @@ export abstract class BaseAuthComponent extends BaseLifecycleComponent {
     ) { 
         super();
 
-        const ua = navigator.userAgent;
-        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua))
-            this.router.navigate(['/']); // Forbid Admin mode when using a mobile device
-        else if (!this.authenticationService.validAdminUser)
+        if (Helper.isMobile())
+            this.router.navigate(['/meteo']); // Forbid Admin mode when using a mobile device
+
+        else if (!this.authenticationService.isUserLoggedIn())
             this.router.navigate(['/login']);
     }
 

@@ -9,41 +9,41 @@
 @import './users-page.scss';
 @import './meteo-database.scss';
 
+body, :root {
+    color: $forecolor;
+    background-color: $backcolor;
+}
+
+.mat-typography {
+    margin: 0;
+    padding: 0;
+}
+
 app-root {
-    height: 95vh;
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "anm ro";
+    height: $site-height;
+    max-height: $site-height;
+    margin: 0;
+    padding: 0;
 }
 
-body {
-    color: $forecolor;
-    background-color: $backcolor;
+#app-nav-menu {
+    grid-area: anm;
+    color: $nav-forecolor;
+    background-color: $nav-backcolor;
 }
 
-:root {
-    color: $forecolor;
-    background-color: $backcolor;
-}
-
-.main {
-    font-family: $font-family;
-    color: $forecolor;
-    overflow-x: hidden;
-}
-
-p, td {
-    padding-bottom: 0;
-}
-
-td {
-    text-align: justify;
-    vertical-align: middle;
-    margin-bottom: 0;
-    margin-top: 0;
-}
-
-h1, h2, h3, h4, h5, h6, div, label {
-    color: $forecolor;
-    text-transform: none;
-    align-content: start;
+#router-outlet {
+    grid-area: ro;
+    height: $site-height;
+    max-height: $site-height;
+    border: 2px solid $nav-backcolor;
+    border-radius: 0 10px 10px 0;
+    padding-left: 10px;
+    overflow-y: auto;
 }
 
 .container {
@@ -56,32 +56,6 @@ h1, h2, h3, h4, h5, h6, div, label {
     overflow-x: hidden;
 }
 
-#mainContainer {
-    margin-left: 0.5em;
-    min-width: 99vw;
-    max-width: 99vw;
-}
-
-.mat-column-crud {
-    width: 16px;
-    min-width: 16px;
-    max-width: 16px;
-    margin: 0;
-}
-
-@media screen and (max-width: 1080px) and (orientation: portrait) {
-    :root {
-        font-size: 3vw;
-    }
-    .container {
-        max-width: unset;
-    }
-    #mainContainer {
-        min-width: unset;
-        max-width: unset;
-    }
-}
-
 input::-ms-reveal,
 input::-ms-clear {
   display: none;
@@ -92,3 +66,24 @@ input::-ms-clear {
     visibility: hidden;
 }
 
+.mat-column-crud {
+    width: 16px;
+    min-width: 16px;
+    max-width: 16px;
+    margin: 0;
+}
+
+
+/* MOBILE
+----------------------------------------------------------*/
+@media screen and (max-width: 1080px) and (orientation: portrait) {
+    app-root {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 10px 1fr;
+        grid-template-areas: 
+        "anm"
+        "."
+        "ro";
+    }
+}

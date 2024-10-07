@@ -1,11 +1,10 @@
 $font-family: Roboto, 'Helvetica Neue', sans-serif;
-$site-height: 99vh;
 
 $forecolor: #053064;
 $backcolor: white;
 
 $nav-forecolor: $backcolor;
-$nav-backcolor: #3f51b5;
+$nav-backcolor: $forecolor;
 $nav-alt-backcolor: #0A60C8;
 
 $home-image-color: lighten($forecolor, 10%);

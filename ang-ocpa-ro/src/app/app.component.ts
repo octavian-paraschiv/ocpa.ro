@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivationStart, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { AuthenticationService } from 'src/app/services/authentication.services';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +8,9 @@ import { AuthenticationService } from 'src/app/services/authentication.services'
 })
 export class AppComponent {
   title = 'app';
-  path: string = '/admin';
+  path: string = '/meteo';
 
-  constructor(private readonly authService: AuthenticationService,
-    private readonly router: Router) {
+  constructor(private readonly router: Router) {
       this.router.events
             .pipe(filter(e => e instanceof ActivationStart))
             .subscribe(e => {
@@ -27,13 +25,5 @@ export class AppComponent {
                 }
                 catch { }
             });
-  }
-
-  get isAdminMode(): boolean {
-    return this.isAdminPath && this.authService.validAdminUser;
-  }
-
-  get isAdminPath() {
-    return this.path?.startsWith('/admin');
   }
 }

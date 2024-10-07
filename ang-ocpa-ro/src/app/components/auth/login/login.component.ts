@@ -5,7 +5,7 @@ import { first } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { UserTypeService } from 'src/app/services/user-type.service';
-import { UserType } from 'src/app/models/models-swagger';
+import { MenuService } from 'src/app/services/menu.service';
 
 @UntilDestroy()
 @Component({
@@ -13,7 +13,6 @@ import { UserType } from 'src/app/models/models-swagger';
     templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
-    private readonly adminUserType: UserType = undefined;
     loginForm: UntypedFormGroup;
     loading = false;
     submitted = false;
@@ -24,14 +23,11 @@ export class LoginComponent implements OnInit {
         private readonly userTypeService: UserTypeService,
         private formBuilder: UntypedFormBuilder,
         private router: Router,
-        private authenticationService: AuthenticationService
-    ) { 
-        this.adminUserType = this.userTypeService.userType("ADM");
-
-        // redirect to admin if already logged in
-        if (this.authenticationService.validAdminUser) { 
-            this.router.navigate(['/admin']);
-        }
+        private authenticationService: AuthenticationService,
+        private menuService: MenuService) { 
+        
+        if (this.authenticationService.isUserLoggedIn())
+            this.redirectToDefaultPage();
     }
 
     ngOnInit() {
@@ -53,10 +49,10 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.authenticationService.authenticate(this.f.username.value, this.f.password.value, this.adminUserType)
+        this.authenticationService.authenticate(this.f.username.value, this.f.password.value)
             .pipe(first())
             .subscribe({
-                next: msg => (msg?.length > 0) ? this.handleError(msg) : this.router.navigate(['/admin']),
+                next: msg => (msg?.length > 0) ? this.handleError(msg) : this.redirectToDefaultPage(),
                 error: () => this.handleError('Incorrect user name or password.')
             });
     }
@@ -65,5 +61,17 @@ export class LoginComponent implements OnInit {
         this.error = err;
         this.loading = false;
         // this.f.password.reset();
+    }
+
+    redirectToDefaultPage() {
+        setTimeout(() => {
+            const defaultPage = 
+            (this.menuService?.menus?.appMenus?.length > 0) ? 
+                this.menuService.menus.appMenus[0].url :
+                (this.menuService?.menus?.publicMenus?.length > 0) ? 
+                    this.menuService.menus.publicMenus[0].url : '/';
+
+            this.router.navigate([ defaultPage ]);
+        }, 300);
     }
 }

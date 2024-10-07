@@ -84,6 +84,7 @@ export class UsersComponent extends BaseAuthComponent {
     }
 
     get currentLoginId() {
-        return this.authenticationService.currentUser?.loginId;
+        const loggedInUser = this.authenticationService.authUserChanged$.getValue();
+        return loggedInUser?.loginId;
     }
 }

@@ -55,7 +55,9 @@ export class UserDialogComponent implements OnInit {
             });
         }
 
-        if (this.user.loginId === this.authenticationService.currentUser?.loginId)
+        const loggedInUser = this.authenticationService.authUserChanged$.getValue();
+
+        if (this.user.loginId === loggedInUser?.loginId)
             this.f.t1.disable();
     }
 
@@ -63,8 +65,9 @@ export class UserDialogComponent implements OnInit {
     get f() { return this.userForm?.controls; }
 
     get title(): string {
+        const loggedInUser = this.authenticationService.authUserChanged$.getValue();
         return (this.editMode) ? 
-            (this.user.loginId === this.authenticationService.currentUser?.loginId) ? 
+            (this.user.loginId === loggedInUser?.loginId) ? 
                 `Edit <b>${this.user?.loginId}</b> user account (Logged In)` :
                 `Edit <b>${this.user?.loginId}</b> user account` :
             'Create new user account'

@@ -1,29 +1,29 @@
 import { Component } from '@angular/core';
 import { Router, ActivationStart } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { faCloudSunRain, faSquare, faMicrochip, faPhotoFilm, faPlay,
-  faAngleRight, faEarth } from '@fortawesome/free-solid-svg-icons';
+import { filter, switchMap } from 'rxjs/operators';
+import { fas, faEarth } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/services/authentication.services';
+import { MenuService } from 'src/app/services/menu.service';
+import { Menu } from 'src/app/models/models-swagger';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
-
+@UntilDestroy()
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html'
 })
 export class NavMenuComponent {
-  faWeather = faCloudSunRain;
-  faElectronics = faMicrochip;
-  faSquare = faSquare;
-  faPhoto = faPhotoFilm;
-  faPlay = faPlay;
-  faAngle = faAngleRight;
-  faEarth = faEarth;
+    icons = fas;
+    faEarth = faEarth;
 
     title = 'OcPa\'s Web Site';
     path: string = 'ocpa';
+    menus: Menu[] = [];
 
     constructor(private readonly router: Router,
-      private readonly authService: AuthenticationService) {
+      private readonly authService: AuthenticationService,
+      private readonly menuService: MenuService
+    ) {
         this.router.events
             .pipe(filter(e => e instanceof ActivationStart))
             .subscribe(e => {
@@ -38,31 +38,19 @@ export class NavMenuComponent {
                 }
                 catch { }
             });
+
+        this.authService.authUserChanged$.pipe(
+          untilDestroyed(this),
+          switchMap(_ => this.menuService.init())
+        ).subscribe(_ => {
+          this.menus = this.authService.isUserLoggedIn() ?
+            this.menuService.menus.appMenus ?? [] :
+            this.menuService.menus.publicMenus ?? [];
+        });
     }
-
-  get isAdminMode(): boolean {
-    return this.isAdminPath && this.authService.validAdminUser;
-  }
-
-  get isAdminPath() {
-    return this.path?.startsWith('/admin') ||
-      this.path?.startsWith('admin');
-  }
-
-  get isLoginPath() {
-    return this.path?.startsWith('/login') ||
-      this.path?.startsWith('login');
-  }
-
-  get isNonAdminPath() {
-    return !this.isAdminMode && !this.isLoginPath;
-  }
 
   logout() {
     this.authService.logout(true);
   }
 
-  enterAdminMode() {
-    this.router.navigate(['/admin']);
-  }
 }

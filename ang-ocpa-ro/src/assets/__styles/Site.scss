@@ -1,0 +1,94 @@
+﻿@import './variables.scss';
+@import './navbar.scss';
+@import './homepage.scss';
+@import './smart-city-search.scss';
+@import './meteopage.scss';
+@import './meteo-photos.scss';
+@import './protone.scss';
+@import './login-form.scss';
+@import './users-page.scss';
+@import './meteo-database.scss';
+
+app-root {
+    height: 95vh;
+}
+
+body {
+    color: $forecolor;
+    background-color: $backcolor;
+}
+
+:root {
+    color: $forecolor;
+    background-color: $backcolor;
+}
+
+.main {
+    font-family: $font-family;
+    color: $forecolor;
+    overflow-x: hidden;
+}
+
+p, td {
+    padding-bottom: 0;
+}
+
+td {
+    text-align: justify;
+    vertical-align: middle;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+h1, h2, h3, h4, h5, h6, div, label {
+    color: $forecolor;
+    text-transform: none;
+    align-content: start;
+}
+
+.container {
+    position: relative;
+    text-align: center;
+    color: $backcolor;
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+#mainContainer {
+    margin-left: 0.5em;
+    min-width: 99vw;
+    max-width: 99vw;
+}
+
+.mat-column-crud {
+    width: 16px;
+    min-width: 16px;
+    max-width: 16px;
+    margin: 0;
+}
+
+@media screen and (max-width: 1080px) and (orientation: portrait) {
+    :root {
+        font-size: 3vw;
+    }
+    .container {
+        max-width: unset;
+    }
+    #mainContainer {
+        min-width: unset;
+        max-width: unset;
+    }
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+.domHide[domHide=true]  {
+    display: none;
+    visibility: hidden;
+}
+

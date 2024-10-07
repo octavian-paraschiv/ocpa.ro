@@ -1,0 +1,62 @@
+.mat-user-card {
+    margin: 0;
+}
+
+.mat-user-card-content {
+    margin: 0;
+    padding: 0;
+}
+
+.mat-user-card-header {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.table-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.user-table {
+    width: 50%;
+    height: 50%;
+}
+
+.mat-column-user-add {
+    @extend .mat-column-crud;
+    color: green;
+}
+
+.mat-column-user-edit {
+    @extend .mat-column-crud;
+    color: navy;
+}
+
+.mat-column-user-delete {
+    @extend .mat-column-crud;
+    color: red;
+}
+
+.mat-column-user-loginId {
+    width: auto;
+    max-width: 200px;
+}
+
+.mat-column-user-type {
+    width: auto;
+    max-width: 200px;
+}
+
+.user-form-control {
+    margin: 0;
+    padding: 0;
+    width: 15rem;
+}
+
+.user-row {
+    height: 2rem !important;
+}
+.user-header-row {
+    height: 2.5rem !important;
+}

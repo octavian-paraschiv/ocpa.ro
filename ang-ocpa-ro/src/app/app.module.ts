@@ -5,7 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
-import { HomeComponent } from './components/non-auth/home/home.component';
+
 import { ProTONEComponent } from './components/non-auth/protone/protone.component';
 import { PhotographyComponent } from './components/non-auth/photography/photography.component';
 import { ElectronicsComponent } from './components/non-auth/electronics/electronics.component';
@@ -33,12 +33,14 @@ import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/u
 import { UserTypeService } from 'src/app/services/user-type.service';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
+import { MenuService } from 'src/app/services/menu.service';
+import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         NavMenuComponent,
-        HomeComponent,
+        
         ProTONEComponent,
         MeteoComponent,
         MeteoPhotosComponent,
@@ -51,9 +53,10 @@ import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/met
 
         MeteoDatabaseComponent,
         LoginComponent,
+        LogoutComponent,
 
         DaySummaryComponent,
-        DayDetailsComponent,
+        DayDetailsComponent, 
         DayRisksComponent,
         MeteoDataBrowserComponent,
 
@@ -71,16 +74,17 @@ import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/met
     ReactiveFormsModule,
     FormsModule,
     RouterModule.forRoot([
-          { path: '', component: HomeComponent, pathMatch: 'full', data: { title: 'OcPa\'s Web Site' } },
-          { path: 'protone', component: ProTONEComponent, data: { title: 'ProTONE Player Web Site' } },
+          { path: '', component: MeteoComponent, data: { title: 'OcPa\'s Weather Forecast' } },
           { path: 'meteo', component: MeteoComponent, data: { title: 'OcPa\'s Weather Forecast' } },
+
+          { path: 'protone', component: ProTONEComponent, data: { title: 'ProTONE Player Web Site' } },
           { path: 'meteo-photos', component: MeteoPhotosComponent, data: { title: 'OcPa\'s Animated Forecast' } },
           { path: 'photography', component: PhotographyComponent, data: { title: 'OcPa\'s Photo Album' } },
           { path: 'electronics', component: ElectronicsComponent, data: { title: 'OcPa\'s Electronic Blog' } },
 
-          { path: 'login', component: LoginComponent, data: { title: 'Login Module' } },
-          
-          { path: 'admin', component: UsersComponent, data: { title: 'Manage Users' } },
+          { path: 'login', component: LoginComponent, data: { title: 'Login' } },
+          { path: 'logout', component: LogoutComponent, data: { title: 'Logout' } },
+         
           { path: 'admin/users', component: UsersComponent, data: { title: 'Manage Users' } },
           { path: 'admin/meteo-database', component: MeteoDatabaseComponent, data: { title: 'Manage Meteo Database' } },
     ]),
@@ -116,6 +120,14 @@ import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/met
       provide: APP_INITIALIZER,
       useFactory: (svc: UserTypeService) => () => svc.init().toPromise(),
       deps: [UserTypeService],
+      multi: true
+    },
+
+    MenuService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (svc: MenuService) => () => svc.init().toPromise(),
+      deps: [MenuService],
       multi: true
     },
 

@@ -62,14 +62,20 @@ export class Helper {
         return this.isoDate(new Date());
     }
 
-    public isoDate(date: string | Date) {
-        // return new Date(date).toISOString().slice(0, 10);
-        return formatDate(date, 'yyyy-MM-dd', 'en-US');
+    public isoDate(date: string | Date, includeTime: boolean = false) {
+        return includeTime ?
+            formatDate(date, 'yyyy-MM-dd HH:mm:ss', 'en-US') :
+            formatDate(date, 'yyyy-MM-dd', 'en-US');
     }
 
     public addDays(date: string | Date, days: number): Date {
         const result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
+    }
+
+    public static isMobile(): boolean {
+        const ua = navigator.userAgent;
+        return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i).test(ua);
     }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
@@ -9,29 +9,27 @@ import { AuthenticateResponse, UserType } from 'src/app/models/models-swagger';
 
 @Injectable()
 export class AuthenticationService {
-    private currentAuthUser: AuthenticateResponse;
+    private readonly apiUserType: UserType;
     private readonly userKey = 'ocpa_ro_admin_user';
     private readonly timeKey = 'ocpa_ro_admin_time';
+
+    authUserChanged$ = new BehaviorSubject<AuthenticateResponse>(undefined);
 
     constructor(
         private readonly userTypeService: UserTypeService,
         private readonly http: HttpClient,
         private readonly router: Router) {
-        this.currentAuthUser = JSON.parse(localStorage.getItem(this.userKey));
-    }
 
-    get currentUser() {
-        return this.currentAuthUser;
-    }
+        this.apiUserType == this.userTypeService.userType('API');
+        let authUser = JSON.parse(localStorage.getItem(this.userKey)) as AuthenticateResponse;
 
-    get userToken() {
-        return this.currentAuthUser?.token;
-    }
-    
-    get validAdminUser() {
-        const adminUserType = this.userTypeService.userType("ADM");
-        return this.currentAuthUser?.token?.length > 0 &&
-            this.currentAuthUser?.type === adminUserType?.id;
+        if (this.isSessionExpired()) {
+            authUser = undefined;
+            localStorage.removeItem(this.userKey);
+            localStorage.removeItem(this.timeKey);
+        }
+
+        this.authUserChanged$.next(authUser);
     }
 
     logout(navigateHome: boolean) {
@@ -42,13 +40,13 @@ export class AuthenticationService {
         } catch {
         }
 
-        this.currentAuthUser = undefined;
+        this.authUserChanged$.next(undefined);
 
         if (navigateHome) 
-            this.router.navigate(['/']);
+            this.router.navigate(['/meteo']);
     }
 
-    authenticate(username: string, password: string, reqUserType: UserType): Observable<string> {
+    authenticate(username: string, password: string): Observable<string> {
         const hash = environment.ext.calc(username, password, environment.ext.seed())
         const formParams = new HttpParams()
             .set('loginId', username)
@@ -58,16 +56,18 @@ export class AuthenticationService {
         return this.http.post<AuthenticateResponse>(
             `${environment.apiUrl}/users/authenticate`, 
             formParams, { headers, withCredentials: true } )
-            .pipe(map(rsp => this.validateAuthenticationResponse(rsp, username, reqUserType)));
+            .pipe(map(rsp => this.validateAuthenticationResponse(rsp, username)));
     }
 
-    validateAuthenticationResponse(rsp: AuthenticateResponse, username: string, reqUserType: UserType): string  {
+    validateAuthenticationResponse(rsp: AuthenticateResponse, username: string): string  {
         if (rsp?.loginId?.toUpperCase() !== username?.toUpperCase())
-            return `<b>${username}</b> does not have access to this page.`;
-        if (rsp?.type !== reqUserType?.id)
-            return `This page requires <b>${reqUserType?.description}</b> user role and <b>${username}</b> does not have this role.`;
+            return `<b>${username}</b> failed to log in [bad user name].`;
+        
+        if (rsp?.type === this.apiUserType?.id)
+            return `<b>${username}</b> failed to log in [no application role]`;
+        
         if (!(rsp?.validity > 0))
-            return `<b>${username}</b> was not granted access to this page`;
+            return `<b>${username}</b> failed to log in [token expired]`;
 
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem(this.userKey, JSON.stringify(rsp));
@@ -76,7 +76,7 @@ export class AuthenticationService {
         loggedInTime.setSeconds(loggedInTime.getSeconds() + rsp.validity);
         localStorage.setItem(this.timeKey, JSON.stringify(loggedInTime.getTime()));
 
-        this.currentAuthUser = rsp;
+        this.authUserChanged$.next(rsp);
 
         return undefined;
     }
@@ -88,5 +88,10 @@ export class AuthenticationService {
         }
     
         return Number(loggedInTime) < new Date(new Date().toUTCString()).getTime();
-      }
+    }
+
+    isUserLoggedIn(): boolean {
+        const loggedInUser = this.authUserChanged$.getValue();
+        return (loggedInUser?.token?.length > 0 && !this.isSessionExpired())
+    }
 }

@@ -1,35 +1,59 @@
-//////////////////////////////
-/// navigation menu styles ///
-//////////////////////////////
+.navbar-nav {
+    padding: 0;
+    margin: 0;
+    padding-top: 1rem;
+    margin-left: 0.5rem;
+    margin-right: 1rem;
+    list-style-type: none;
+    text-align: start;
+}
 
-#navbarContainer {
-    max-width: unset;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    grid-template-rows: 1fr;
-    grid-template-areas: "b . m";
+.nav-item {
+    cursor: pointer;
 }
 
 .nav-link {
     color: $nav-forecolor;
-    margin-left: 0.5em;
-    margin-right: 1em;
     text-decoration: none;
     display: contents;
+    cursor: pointer;
 }
 
 .nav-link:hover, .nav-link:focus, .link-active {
     color: $nav-forecolor;
     background-color: $nav-alt-backcolor;
-    border-radius: 1em;
+    border-radius: 5px;
 }
 
-body > app-root > div > app-nav-menu > nav, body > app-root > div > app-admin-nav-menu > nav {
-    background-color: $nav-backcolor;
-    border-radius: 0.2em;
-    width: calc(99vw - 10px);
-    margin-left: 0.2vw;
-    margin-top: 0.2vw;
+.nav-link-div {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 2rem 1fr;
+    grid-template-areas: "img txt";
+    padding: 6px;
+}
+.nav-link-img {
+    grid-area: img;
+    margin: 0;
+    cursor: pointer;
+    align-content: center;
+}
+.nav-link-txt {
+    grid-area: txt;
+    margin: 0;
+    align-content: center;
+    cursor: pointer;
+}
+
+
+#navbarContainer {
+    display: grid;
+    grid-template-rows: 3rem 1fr auto;
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+    "b"
+    "."
+    "m";
 }
 
 #navbarMenu {
@@ -42,14 +66,18 @@ body > app-root > div > app-nav-menu > nav, body > app-root > div > app-admin-na
     grid-template-columns: 2em 1fr;
     grid-template-rows: 1fr;
     grid-template-areas: "i t";
+    border-bottom: 1px solid $backcolor;
 }
 
 .navbar-title {
     grid-area: t;
-    margin-left: 1.5em;
+    margin: 0;
+    margin-left: 1rem;
+    margin-right: 1rem;
     color: $nav-forecolor;
     align-content: center;
-    font-size: 1.5em;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 
 .navbar-image {
@@ -60,16 +88,4 @@ body > app-root > div > app-nav-menu > nav, body > app-root > div > app-admin-na
 
 .navbar-alt-image-color {
     color: $nav-forecolor;
-}
-
-.navbar-nav {
-    display: flex;
-    flex-flow: row;
-    list-style-type: none;
-}
-
-.nav-item {
-    text-decoration: none;
-    margin: 0;
-    padding: 0.5em;
 }

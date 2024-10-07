@@ -10,6 +10,18 @@
 
 
 
+export interface AppMenu {
+    id?: number;
+    name?: string | undefined;
+    url?: string | undefined;
+    code?: string | undefined;
+    displayMode?: MenuDisplayMode;
+    largeIcon?: string | undefined;
+    smallIcon?: string | undefined;
+    userId?: number | undefined;
+    appName?: string | undefined;
+}
+
 export interface AuthenticateResponse {
     loginId: string;
     token: string;
@@ -72,6 +84,23 @@ export interface Lab {
     code?: string | undefined;
     description?: string | undefined;
     comment?: string | undefined;
+}
+
+export interface Menu {
+    id?: number;
+    name?: string | undefined;
+    url?: string | undefined;
+    code?: string | undefined;
+    displayMode?: MenuDisplayMode;
+    largeIcon?: string | undefined;
+    smallIcon?: string | undefined;
+}
+
+export enum MenuDisplayMode {
+    AlwaysHide = "AlwaysHide",
+    AlwaysShow = "AlwaysShow",
+    HideOnMobile = "HideOnMobile",
+    ShowOnMobile = "ShowOnMobile",
 }
 
 export interface MeteoDailyData {
