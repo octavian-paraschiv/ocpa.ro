@@ -1,9 +1,15 @@
-﻿using ocpa.ro.api.Models.Generic;
-using System.Text.Json.Serialization;
-using ThorusCommon.SQLite;
+﻿using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Models.Menus
 {
+    public enum MenuDisplayMode
+    {
+        AlwaysHide = 0,
+        AlwaysShow,
+        HideOnMobile,
+        ShowOnMobile,
+    };
+
     public class Menu
     {
         [PrimaryKey]
@@ -18,11 +24,10 @@ namespace ocpa.ro.api.Models.Menus
         [NotNull]
         public string Code { get; set; }
 
-        [JsonConverter(typeof(StringAsBase64Converter))]
-        public string LargeIcon { get; set; }
+        [NotNull]
+        public MenuDisplayMode DisplayMode { get; set; }
 
-        [JsonConverter(typeof(StringAsBase64Converter))]
-        public string SmallIcon { get; set; }
+        public string MenuIcon { get; set; }
     }
 
 #pragma warning disable S2094 // Classes should not be empty

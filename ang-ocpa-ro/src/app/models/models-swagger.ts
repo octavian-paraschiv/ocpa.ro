@@ -16,8 +16,7 @@ export interface AppMenu {
     url?: string | undefined;
     code?: string | undefined;
     displayMode?: MenuDisplayMode;
-    largeIcon?: string | undefined;
-    smallIcon?: string | undefined;
+    menuIcon?: string | undefined;
     userId?: number | undefined;
     appName?: string | undefined;
 }
