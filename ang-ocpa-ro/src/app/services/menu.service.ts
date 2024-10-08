@@ -30,13 +30,13 @@ export class MenuService {
             untilDestroyed(this),
             map(menus => {
                 this._menus.appMenus = menus
-                    .filter(m => MenuService.showMenu(m))
-                    .map(m => MenuService.DecodeIcons(m))
                     .concat(({
                         url: '/logout',
                         name: 'Logout',
-                        smallIcon: 'faRightFromBracket'
-                    }) as Menu);                    
+                        smallIcon: 'faRightFromBracket',
+                        displayMode: MenuDisplayMode.HideOnMobile
+                    }) as Menu)
+                    .filter(m => MenuService.showMenu(m));
 
                 return (this._menus?.appMenus?.length > 1);
             })
@@ -46,13 +46,13 @@ export class MenuService {
             untilDestroyed(this),
             map(menus => {
                 this._menus.publicMenus = menus
-                    .filter(m => MenuService.showMenu(m))
-                    .map(m => MenuService.DecodeIcons(m))
                     .concat(({
                         url: '/login',
                         name: 'Login',
-                        smallIcon: 'faRightToBracket'
-                    }) as Menu);
+                        smallIcon: 'faRightToBracket',
+                        displayMode: MenuDisplayMode.HideOnMobile
+                    }) as Menu)
+                    .filter(m => MenuService.showMenu(m));
 
                 return (this._menus?.publicMenus?.length > 1);
             })
@@ -67,17 +67,6 @@ export class MenuService {
     private getMenus(appMenus: boolean): Observable<Menu[]> {
         const url = `${environment.apiUrl}/users/${ appMenus ? 'app-menus' : 'menus' }`
         return this.http.get<Menu[]>(url);
-    }
-
-    private static DecodeIcons(m: Menu): Menu {
-        return ({
-            code: m.code,
-            id: m.id,
-            name: m.name,
-            url: m.url,
-            largeIcon: m.largeIcon?.length > 0 ? window.atob(m.largeIcon) : null,
-            smallIcon: m.smallIcon?.length > 0 ? window.atob(m.smallIcon) : null,
-        } as Menu);
     }
 
     private static showMenu(m: Menu): boolean {

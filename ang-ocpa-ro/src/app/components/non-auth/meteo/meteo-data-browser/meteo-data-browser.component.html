@@ -50,71 +50,87 @@
     <label class="meteo-data-hint-label" [innerHtml]="dataHint"></label>
 </div>
 
-
 <div class="outer-meteo-data-grid">
     <ng-container *ngIf="meteoData?.length > 0" >
-        <table mat-table [dataSource]="meteoData" class="meteo-data-grid">
-            <!-- Date Column -->
-            <ng-container matColumnDef="date">
-                <td mat-cell *matCellDef="let md">
-                    <div class="{{dateCellClass(md)}}">
-                        <label class="dow-row">{{md.date | date: 'EEE'}}</label>
-                        <label class="dom-row">{{md.date}}</label>
-                    </div>
-                </td>
-            </ng-container>
-
-            <!-- Weather Symbol Column -->
-            <ng-container matColumnDef="symbol">
-                <td mat-cell *matCellDef="let md">
-                    <img class="meteo-mat-small img-day-summary-forecast" 
-                        src="assets/icons/meteo/precip_{{md.forecast}}.png" />
-                </td>
-            </ng-container>
-            
-            <!-- Weather Summary Column -->
-            <ng-container matColumnDef="summary">
-                <td mat-cell *matCellDef="let md" [innerHtml]="summary(md)">
-                </td>
-            </ng-container>
-            
-            <!-- Temperatures Column -->
-            <ng-container matColumnDef="temp">
-                <td mat-cell *matCellDef="let md">
-                    <div class="temp-low-cell">
-                        <fa-icon class="temp-symbol" [icon]="icons['faTemperatureQuarter']" transform="grow-10"></fa-icon>
-                        <label class="temp-actual">{{md.tMinActual | temp}}</label>
-                        <label class="temp-normal">[{{md.tMinNormal | temp}}]</label>
-                    </div>
-                    <div class="temp-high-cell">
-                        <fa-icon class="temp-symbol" [icon]="icons['faTemperatureThreeQuarters']" transform="grow-10"></fa-icon>
-                        <label class="temp-actual">{{md.tMaxActual | temp}}</label>
-                        <label class="temp-normal">[{{md.tMaxNormal | temp}}]</label>
-                    </div>
-                </td>
-            </ng-container>
-            
-            <!-- Precip / Wind / Pres Column -->
-            <ng-container matColumnDef="precip">
-                <td mat-cell *matCellDef="let md" [innerHtml]="precip(md)">
-                </td>
-            </ng-container>
-            
-            <!-- Risks Column -->
-            <ng-container matColumnDef="risks">
-                <td mat-cell *matCellDef="let md" [innerHtml]="risks(md)">
-                </td>
-            </ng-container>
-
-            <tr mat-row *matRowDef="let md; columns: displayColumns;" class="{{md.tempFeel}}"></tr>
-        </table>
-        <!--
-        <div class="meteo-data-grid" [ngStyle]="dataGridStyle">
-            <div id="day_{{md.date}}" *ngFor="let md of meteoData" class="{{ meteoCellClass(md.date) }} {{md.tempFeel ?? 'no-data'}}">
-                <app-day-summary *ngIf="md" [data]="md" class="{{md.tempFeel}}"></app-day-summary>
+        <div class="inner-meteo-data-grid">
+            <div class="meteo-data-grid" [ngStyle]="dataGridStyle">
+                <table id="meteo-calendar" mat-table [dataSource]="meteoData">
+                    <!-- Date Column -->
+                    <ng-container matColumnDef="date">
+                        <td mat-cell *matCellDef="let md" class="{{leftCellClass(md)}}">
+                            <div class="{{dateCellClass(md)}}">
+                                <label class="dow-row">{{md.date | date: 'EEE'}}</label>
+                                <label class="dom-row">{{md.date}}</label>
+                            </div>
+                        </td>
+                    </ng-container>
+        
+                    <!-- Weather Symbol Column -->
+                    <ng-container matColumnDef="symbol">
+                        <td mat-cell *matCellDef="let md" class="{{centerCellClass(md)}}">
+                            <img class="meteo-mat-small img-day-summary-forecast" 
+                                src="assets/icons/meteo/precip_{{md.forecast}}.png" />
+                        </td>
+                    </ng-container>
+                    
+                    <!-- Weather Summary Column -->
+                    <ng-container matColumnDef="summary">
+                        <td mat-cell *matCellDef="let md" [innerHtml]="summary(md)" class="{{centerCellClass(md)}}">
+                        </td>
+                    </ng-container>
+                    
+                    <!-- Temperatures Column -->
+                    <ng-container matColumnDef="temp">
+                        <td mat-cell *matCellDef="let md" class="{{centerCellClass(md)}}">
+                            <div class="temp-low-cell">
+                                <fa-icon class="temp-symbol" [icon]="icons['faTemperatureQuarter']" transform="grow-10"></fa-icon>
+                                <label class="temp-actual">{{md.tMinActual | temp}}</label>
+                                <label class="temp-normal">[{{md.tMinNormal | temp}}]</label>
+                            </div>
+                            <div class="temp-high-cell">
+                                <fa-icon class="temp-symbol" [icon]="icons['faTemperatureThreeQuarters']" transform="grow-10"></fa-icon>
+                                <label class="temp-actual">{{md.tMaxActual | temp}}</label>
+                                <label class="temp-normal">[{{md.tMaxNormal | temp}}]</label>
+                            </div>
+                        </td>
+                    </ng-container>
+                    
+                    <!-- Precip / Wind / Pres Column -->
+                    <ng-container matColumnDef="precip">
+                        <td mat-cell *matCellDef="let md" class="{{centerCellClass(md)}}">
+                            <div class="detail-info">
+                                <div *ngIf="md?.wind > 0" class="detail-wind">
+                                    <label class="meteo-mat-small detail">Wind: <b>{{ md.windDirection }} / {{ md.wind | speed: unit }}</b></label>
+                                </div>
+                                <div *ngIf="md?.p00 > 0" class="detail-pres">
+                                    <label class="meteo-mat-small detail">Pressure: <b>{{ md.p00 | pressure: unit }}</b></label>
+                                </div>
+                                <div *ngIf="md?.snow > 0 || md?.snowCover > 0" class="detail-snow">
+                                    <label class="meteo-mat-small detail">Snow:&nbsp;</label>
+                                    <label *ngIf="md.snow > 0" class="meteo-mat-small detail">Day: <b>{{ md.snow | distance: unit }},&nbsp;</b></label>
+                                    <label *ngIf="md.snowCover > 0" class="meteo-mat-small detail">Cover: <b>{{ md.snowCover | distance: unit }}</b></label>
+                                </div>
+                                <div *ngIf="md?.rain > 0" class="detail-rain">
+                                    <label class="meteo-mat-small detail">Rain: <b>{{ md.rain | volume: unit }}</b></label>
+                                </div>
+                            </div>
+                        </td>
+                    </ng-container>
+                    
+                    <!-- Risks Column -->
+                    <ng-container matColumnDef="risks">
+                        <td mat-cell *matCellDef="let md" class="{{rightCellClass(md)}}">
+                            <app-day-risks *ngIf="md?.hazards?.length > 0" [risks]="md.hazards"></app-day-risks>
+                        </td>
+                    </ng-container>
+        
+                    <tr id="day_{{md.date}}" mat-row *matRowDef="let md; columns: displayColumns;" class="{{md.tempFeel}}"></tr>
+                </table>
+            </div>
+            <div class="meteo-data-other" [ngStyle]="dataGridStyle">
             </div>
         </div>
-        -->
+       
     </ng-container>
     <ng-container *ngIf="!isFetching && meteoData?.length === 0" >
         <label mat-small class="meteo-data-grid-empty">The database has no data</label>

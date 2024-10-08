@@ -300,46 +300,19 @@ export class MeteoDataBrowserComponent {
 
   dataGridHeight = 200;
   calculateDataGridHeight() {
-    const isMobile = (window.innerWidth <= 1080);
     let height = window.innerHeight;
-    
-    height -= this.getAbsoluteHeight(document.getElementById('navbar'));
+
+    if (Helper.isMobile())
+      height -= this.getAbsoluteHeight(document.getElementById('navbar'));
+
     height -= this.getAbsoluteHeight(document.getElementById('dHint'));
     height -= this.getAbsoluteHeight(document.getElementById('dControls'));
-    
-    if (isMobile)
-      height -= this.getAbsoluteHeight(document.getElementById('dSmartControls'));
+    height -= this.getAbsoluteHeight(document.getElementById('dSmartControls'));
 
     height -= this.getAbsoluteHeight(document.getElementById('dDataHint'));
     height -= this.getAbsoluteHeight(document.getElementById('btnDate'));
-    height -= 5;
-
-    let actualheight = 0;
-    let dt = this.selectedDate;
-    const lastDate = this.meteoData[this.meteoData.length - 1].date;
-
-    for(; dt < lastDate ;) {
-      const id = `day_${dt}`;
-      const elem = document.getElementById(id);
-      const elemHeight = this.getAbsoluteHeight(elem);
-      
-      if (actualheight + elemHeight < height) {
-        actualheight += elemHeight;
-        const dd = new Date(lastDate).getTime() - new Date(dt).getTime();
-        const diffDays = Math.floor(dd / (1000 * 60 * 60 * 24)); 
-        if (diffDays > 0) {
-          console.debug(`${id} -> VISIBLE`);
-          const daysDelta = isMobile ? 1 : Math.min(7, diffDays);
-          dt = this.helper.isoDate(this.helper.addDays(dt, daysDelta));
-          continue;
-        }
-      }
-
-      console.debug(`${id} -> NOT VISIBLE`);
-      break;
-    }
-
-    this.dataGridHeight = actualheight - 1;
+    height -= 10;
+    this.dataGridHeight = height;
   }
 
   private getAbsoluteHeight(el: HTMLElement) {
@@ -389,21 +362,63 @@ export class MeteoDataBrowserComponent {
     }
   }
 
+
   dateCellClass(md: MeteoDailyData): string {
     const isWeekend = new Date(md?.date).getDay() % 6 === 0;
     return isWeekend ? 'date-cell-weekend' : 'date-cell';
   }
 
+  leftCellClass(md: MeteoDailyData): string {
+    if (this.helper.today.localeCompare(md?.date) === 0)
+      return 'left-cell-today';
+    if (this.selectedDate.localeCompare(md?.date) === 0)
+      return 'left-cell-selected';
+    return '';
+  }
+  centerCellClass(md: MeteoDailyData): string {
+    if (this.helper.today.localeCompare(md?.date) === 0)
+      return 'center-cell-today';
+    if (this.selectedDate.localeCompare(md?.date) === 0)
+      return 'center-cell-selected';
+    return '';
+  }
+  rightCellClass(md: MeteoDailyData): string {
+    if (this.helper.today.localeCompare(md?.date) === 0)
+      return 'right-cell-today';
+    if (this.selectedDate.localeCompare(md?.date) === 0)
+      return 'right-cell-selected';
+    return '';
+  }
+
   summary(md: MeteoDailyData): string {
-    return '';
-  }
+    let desc = '';
+    const isValid = md?.forecast?.length > 0;
+  
+    if (isValid) {
+      const feelsLike = this.helper.feelsLikeTip(md?.tempFeel);
+      const weatherType = this.helper.weatherType(md?.forecast);
+      
+      if (weatherType?.length > 0) {
+        if (desc.length > 0) {
+          desc += '; ';
+        }
+        desc += weatherType;
+      }
 
-  precip(md: MeteoDailyData): string {
-    return '';
-  }
+      if (feelsLike?.length > 0) {
+        if (desc.length > 0) {
+          desc += '<br>';
+        }
+        desc += feelsLike;
+      }
+    }
 
-  risks(md: MeteoDailyData): string {
-    return '';
-  }
+    desc = desc.trim();
+    if (desc.length > 0)
+      desc = `${desc}`;
+    else
+      desc = '';
 
+    return desc;
+  }
 }

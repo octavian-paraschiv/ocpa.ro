@@ -58,6 +58,13 @@ app-meteo {
     "minus7 minus1 zero plus1 plus7 ."
     "dg dg dg dg dg dg";
 }
+.inner-meteo-data-grid {
+    display: grid;
+    grid-area: dg;
+    grid-template-rows: 1fr;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "mdg ot";
+}
 
 .gridButton {
     color: $forecolor;
@@ -90,8 +97,9 @@ app-meteo {
 }
 
 .meteo-data-grid {
-    grid-area: dg;
-    display: grid;
+    grid-area: mdg;
+    display: flex;
+    overflow-y: auto;
 }
 .meteo-data-grid-empty {
     @extend .meteo-data-grid;
@@ -104,6 +112,8 @@ app-meteo {
     align-self: center;
     height: 3rem;
 }
+
+// --- Temp cell ---
 .temp-low-cell {
     display: grid;
     color: blue;
@@ -134,13 +144,19 @@ app-meteo {
     grid-area: tln;
     font-size: 0.8rem;
 }
+// -------------------- 
 
-
-
-.mat-column-date {
+.mat-meteo-column {
     margin: 0 !important;
-    margin-left: 3px !important;
     padding: 0 !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+// --- Date cell ---
+.mat-column-date {
+    @extend .mat-meteo-column;
+    padding: 3px !important;
 }
 .date-cell {
     display: grid;
@@ -158,11 +174,112 @@ app-meteo {
     text-transform: uppercase;
     color: white;
 }
-.dom-row{
+.dom-row {
     grid-area: dom;
     color: white;
 }
 .date-cell-weekend {
     @extend .date-cell;
     background-color: $meteo-weekend-header-color;
+}
+// -------------------- 
+
+// --- Cell borders ---
+#meteo-calendar {
+    grid-area: mc;
+    .mat-mdc-cell {
+        // border-bottom: 1px solid transparent;
+        border-top: 1px solid transparent;
+    }
+}
+.raw-cell-today {
+    border: $meteo-border-today;
+}
+.raw-cell-selected {
+    border: $meteo-border-selected;
+}
+.left-cell-today {
+    @extend .raw-cell-today;
+    border-right: unset !important;
+}
+.center-cell-today {
+    @extend .raw-cell-today;
+    border-left: unset !important;
+    border-right: unset !important;
+}
+.right-cell-today {
+    @extend .raw-cell-today;
+    border-left: unset !important;
+}
+.left-cell-selected {
+    @extend .raw-cell-selected;
+    border-right: unset !important;
+}
+.center-cell-selected {
+    @extend .raw-cell-selected;
+    border-left: unset !important;
+    border-right: unset !important;
+}
+.right-cell-selected {
+    @extend .raw-cell-selected;
+    border-left: unset !important;
+}
+// -------------------- 
+
+// --- other cells ---
+.mat-mdc-header-cell {
+    background-color: aquamarine !important;
+    height: 3rem !important;
+}
+
+.mat-column-symbol,
+.mat-column-summary,
+.mat-column-temp,
+.mat-column-precip {
+    @extend .mat-meteo-column;
+}
+.mat-column-risks {
+    @extend .mat-meteo-column;
+    padding-right: 15px !important
+}
+
+// --------------------
+
+// --- to add other UI elements, put them in this area
+.meteo-data-other {
+    grid-area: ot;
+    display: flex;
+    overflow-y: auto;
+}
+// -------------------- 
+
+// ----------------------------------------------------------------
+app-day-risks {
+    grid-area: risk;
+    display: block;
+    text-align: justify;
+    margin-bottom: 0;
+}
+
+.hazard {
+    text-align: justify;
+    vertical-align: top;
+    color: $meteo-temp-max;
+}
+
+.img-hazard {
+    margin-top: 2px;
+    margin-right: 2px;
+    padding: 0;
+    align-self: center;
+    height: 2vh;
+}
+
+
+/* MOBILE
+----------------------------------------------------------*/
+@media screen and (max-width: 1080px) and (orientation: portrait) {
+    .meteo-data-other {
+        display: none;
+    }
 }

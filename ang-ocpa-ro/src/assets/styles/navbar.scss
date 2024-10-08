@@ -93,9 +93,25 @@
 /* MOBILE
 ----------------------------------------------------------*/
 @media screen and (max-width: 1080px) and (orientation: portrait) {
+    /*
     #navbarMenu {
         display: none;
     }
+    */
+    .navbar-nav {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        display: table;
+        table-layout: fixed;
+    }
+    .nav-item {
+        display: table-cell;
+        width: auto;
+        text-align: center;
+    }
+
+
     .navbar-brand {
         border-bottom: unset;
     }

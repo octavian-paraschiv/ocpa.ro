@@ -75,7 +75,8 @@ export class Helper {
     }
 
     public static isMobile(): boolean {
-        const ua = navigator.userAgent;
-        return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i).test(ua);
+        return ((window?.innerWidth ?? 0) < 1080) ||
+            (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i)
+                .test(navigator?.userAgent);
     }
 }
