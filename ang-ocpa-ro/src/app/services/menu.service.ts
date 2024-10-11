@@ -24,20 +24,24 @@ export class MenuService {
             untilDestroyed(this),
             map(menus => {
                 const isUserLoggedIn = this.authService.isUserLoggedIn();
-                
-                this._menus.publicMenus = (menus?.publicMenus ?? []).concat(({
+
+                this._menus.publicMenus = (menus?.publicMenus ?? [])
+                .concat({
                     url: '/login',
                     name: 'Login',
                     smallIcon: 'faRightToBracket',
                     displayMode: MenuDisplayMode.HideOnMobile
-                }) as Menu);
+                } as Menu)
+                .filter(m => MenuService.showMenu(m));
 
-                this._menus.appMenus = (menus?.appMenus ?? []).concat(({
+                this._menus.appMenus = (menus?.appMenus ?? [])
+                .concat({
                     url: '/logout',
                     name: 'Logout',
                     smallIcon: 'faRightFromBracket',
                     displayMode: MenuDisplayMode.HideOnMobile
-                }) as Menu);
+                } as Menu)
+                .filter(m => MenuService.showMenu(m));
 
                 return isUserLoggedIn ? 
                     (this._menus?.appMenus?.length > 1) : 
