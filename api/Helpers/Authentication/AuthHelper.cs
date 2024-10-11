@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using ThorusCommon.SQLite;
 using Auth = OPMFileUploader.Authentication;
 
@@ -25,7 +27,7 @@ namespace ocpa.ro.api.Helpers.Authentication
 
         // ----
         IEnumerable<PublicMenu> PublicMenus();
-        IEnumerable<AppMenu> ApplicationMenus(int userId);
+        IEnumerable<AppMenu> ApplicationMenus(IIdentity identity);
     }
 
     public class AuthHelper : BaseHelper, IAuthHelper
@@ -174,16 +176,42 @@ namespace ocpa.ro.api.Helpers.Authentication
 
         public IEnumerable<PublicMenu> PublicMenus()
         {
-            return _db.Table<PublicMenu>();
+            try
+            {
+                return _db.Table<PublicMenu>();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return Array.Empty<PublicMenu>();
         }
 
-        public IEnumerable<AppMenu> ApplicationMenus(int userId)
+        public IEnumerable<AppMenu> ApplicationMenus(IIdentity identity)
         {
-            var user = _db.Table<User>().Where(u => u.Id == userId).First();
-            var userType = _db.Table<UserType>().Where(ut => ut.Id == user.Type).First();
+            try
+            {
+                if (identity is ClaimsIdentity claimsIdentity)
+                {
+                    var uid = claimsIdentity.Claims
+                       .Where(c => c.Type == "uid")
+                       .Select(c => int.TryParse(c.Value, out int v) ? v : 0)
+                       .FirstOrDefault();
 
-            return _db.Table<AppMenu>()
-                .Where(am => (am.UserId == user.Id) || (am.UserId == null && userType.Code == "ADM"));
+                    var user = _db.Table<User>().Where(u => u.Id == uid).First();
+                    var userType = _db.Table<UserType>().Where(ut => ut.Id == user.Type).First();
+
+                    return _db.Table<AppMenu>()
+                        .Where(am => (am.UserId == user.Id) || (am.UserId == null && userType.Code == "ADM"));
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return Array.Empty<AppMenu>();
         }
     }
 }

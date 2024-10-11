@@ -4,8 +4,8 @@ import { filter, switchMap } from 'rxjs/operators';
 import { fas, faEarth } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { MenuService } from 'src/app/services/menu.service';
-import { Menu } from 'src/app/models/models-swagger';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Menu } from 'src/app/models/models-swagger';
 
 @UntilDestroy()
 @Component({

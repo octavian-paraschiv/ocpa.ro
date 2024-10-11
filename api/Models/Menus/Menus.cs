@@ -1,4 +1,5 @@
-﻿using ThorusCommon.SQLite;
+﻿using System.Collections.Generic;
+using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Models.Menus
 {
@@ -9,6 +10,12 @@ namespace ocpa.ro.api.Models.Menus
         HideOnMobile,
         ShowOnMobile,
     };
+
+    public class Menus
+    {
+        public IEnumerable<Menu> PublicMenus { get; set; }
+        public IEnumerable<AppMenu> AppMenus { get; set; }
+    }
 
     public class Menu
     {

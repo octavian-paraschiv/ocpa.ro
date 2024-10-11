@@ -2,71 +2,53 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { combineLatest, Observable } from 'rxjs';
-import { Menu, MenuDisplayMode } from 'src/app/models/models-swagger';
+import { Menu, MenuDisplayMode, Menus } from 'src/app/models/models-swagger';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map } from 'rxjs/operators';
 import { Helper } from 'src/app/services/helper';
-
-export interface MenuSpec {
-    publicMenus: Menu[];
-    appMenus: Menu[];
-}
+import { AuthenticationService } from 'src/app/services/authentication.services';
 
 @UntilDestroy()
 @Injectable()
 export class MenuService {
-    private _menus: MenuSpec = {
-        appMenus: [],
-        publicMenus: []
-    }
+    private _menus: Menus = {};
 
-    constructor(private http: HttpClient) { 
+    constructor(private http: HttpClient,
+        private authService: AuthenticationService) { 
     }
 
     get menus () { return this._menus; }
 
     init(): Observable<boolean> {
-        const oa = this.getMenus(true).pipe(
+        return this.getMenus().pipe(
             untilDestroyed(this),
             map(menus => {
-                this._menus.appMenus = menus
-                    .concat(({
-                        url: '/logout',
-                        name: 'Logout',
-                        smallIcon: 'faRightFromBracket',
-                        displayMode: MenuDisplayMode.HideOnMobile
-                    }) as Menu)
-                    .filter(m => MenuService.showMenu(m));
+                const isUserLoggedIn = this.authService.isUserLoggedIn();
+                
+                this._menus.publicMenus = (menus?.publicMenus ?? []).concat(({
+                    url: '/login',
+                    name: 'Login',
+                    smallIcon: 'faRightToBracket',
+                    displayMode: MenuDisplayMode.HideOnMobile
+                }) as Menu);
 
-                return (this._menus?.appMenus?.length > 1);
+                this._menus.appMenus = (menus?.appMenus ?? []).concat(({
+                    url: '/logout',
+                    name: 'Logout',
+                    smallIcon: 'faRightFromBracket',
+                    displayMode: MenuDisplayMode.HideOnMobile
+                }) as Menu);
+
+                return isUserLoggedIn ? 
+                    (this._menus?.appMenus?.length > 1) : 
+                    (this._menus?.publicMenus?.length > 1);
             })
         );
-
-        const op = this.getMenus(false).pipe(
-            untilDestroyed(this),
-            map(menus => {
-                this._menus.publicMenus = menus
-                    .concat(({
-                        url: '/login',
-                        name: 'Login',
-                        smallIcon: 'faRightToBracket',
-                        displayMode: MenuDisplayMode.HideOnMobile
-                    }) as Menu)
-                    .filter(m => MenuService.showMenu(m));
-
-                return (this._menus?.publicMenus?.length > 1);
-            })
-        );
-
-        return combineLatest([oa, op]).pipe(
-            untilDestroyed(this),
-            map(([value1, value2]) => value1 && value2)
-          );
     }
 
-    private getMenus(appMenus: boolean): Observable<Menu[]> {
-        const url = `${environment.apiUrl}/users/${ appMenus ? 'app-menus' : 'menus' }`
-        return this.http.get<Menu[]>(url);
+    private getMenus(): Observable<Menus> {
+        const url = `${environment.apiUrl}/users/menus`;
+        return this.http.get<Menus>(url);
     }
 
     private static showMenu(m: Menu): boolean {

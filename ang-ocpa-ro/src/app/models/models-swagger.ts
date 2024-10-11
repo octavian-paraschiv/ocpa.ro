@@ -101,6 +101,11 @@ export enum MenuDisplayMode {
     ShowOnMobile = "ShowOnMobile",
 }
 
+export interface Menus {
+    publicMenus?: Menu[] | undefined;
+    appMenus?: AppMenu[] | undefined;
+}
+
 export interface MeteoDailyData {
     date?: string | undefined;
     tMinActual?: number;
