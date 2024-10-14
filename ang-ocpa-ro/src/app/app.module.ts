@@ -5,15 +5,12 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
-
 import { ProTONEComponent } from './components/non-auth/protone/protone.component';
 import { PhotographyComponent } from './components/non-auth/photography/photography.component';
 import { ElectronicsComponent } from './components/non-auth/electronics/electronics.component';
 import { ContentApiService, GeographyApiService, MeteoApiService, ProtoneApiService } from './services/api-services';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { DaySummaryComponent } from './components/non-auth/meteo/day-summary/day-summary.component';
 import { MeteoComponent } from './components/non-auth/meteo/meteo.component';
-import { DayDetailsComponent } from './components/non-auth/meteo/day-details/day-details.component';
 import { DayRisksComponent } from './components/non-auth/meteo/day-risks/day-risks.component';
 import { Helper } from './services/helper';
 import { CalendarPipe, CountryCodePipe, DistancePipe, PressurePipe, SpeedPipe, TempPipe, VolumePipe } from './services/unit-transform-pipe';
@@ -55,8 +52,6 @@ import { LogoutComponent } from 'src/app/components/auth/logout/logout.component
         LoginComponent,
         LogoutComponent,
 
-        DaySummaryComponent,
-        DayDetailsComponent, 
         DayRisksComponent,
         MeteoDataBrowserComponent,
 
@@ -97,8 +92,6 @@ import { LogoutComponent } from 'src/app/components/auth/logout/logout.component
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     
-    AuthenticationService,
-
     GeographyApiService,
     {
       provide: APP_INITIALIZER,
@@ -123,6 +116,10 @@ import { LogoutComponent } from 'src/app/components/auth/logout/logout.component
       multi: true
     },
 
+    UserService,
+
+    AuthenticationService,
+
     MenuService,
     {
       provide: APP_INITIALIZER,
@@ -133,7 +130,6 @@ import { LogoutComponent } from 'src/app/components/auth/logout/logout.component
 
     ProtoneApiService,
     MeteoApiService,
-    UserService,
 
     ContentApiService,
 

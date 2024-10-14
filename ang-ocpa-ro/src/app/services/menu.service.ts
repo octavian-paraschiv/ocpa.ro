@@ -29,7 +29,7 @@ export class MenuService {
                 .concat({
                     url: '/login',
                     name: 'Login',
-                    smallIcon: 'faRightToBracket',
+                    menuIcon: 'faRightToBracket',
                     displayMode: MenuDisplayMode.HideOnMobile
                 } as Menu)
                 .filter(m => MenuService.showMenu(m));
@@ -38,7 +38,7 @@ export class MenuService {
                 .concat({
                     url: '/logout',
                     name: 'Logout',
-                    smallIcon: 'faRightFromBracket',
+                    menuIcon: 'faRightFromBracket',
                     displayMode: MenuDisplayMode.HideOnMobile
                 } as Menu)
                 .filter(m => MenuService.showMenu(m));

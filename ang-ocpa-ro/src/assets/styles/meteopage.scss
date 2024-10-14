@@ -1,3 +1,6 @@
+@import "weather-icons.css";
+@import "weather-icons-wind.css";
+
 .meteo-mat-small {
     font-size: 0.73rem;
 }
@@ -109,8 +112,9 @@ app-meteo {
 .img-day-summary-forecast {
     margin: 0;
     padding: 0;
-    align-self: center;
-    height: 3rem;
+    align-self: center !important;
+    vertical-align: middle !important;
+    height: 2.5rem;
 }
 
 // --- Temp cell ---
@@ -156,6 +160,7 @@ app-meteo {
 // --- Date cell ---
 .mat-column-date {
     @extend .mat-meteo-column;
+    min-width: 6rem;
     padding: 3px !important;
 }
 .date-cell {
@@ -227,11 +232,6 @@ app-meteo {
 // -------------------- 
 
 // --- other cells ---
-.mat-mdc-header-cell {
-    background-color: aquamarine !important;
-    height: 3rem !important;
-}
-
 .mat-column-symbol,
 .mat-column-summary,
 .mat-column-temp,
@@ -275,11 +275,65 @@ app-day-risks {
     height: 2vh;
 }
 
+.detail-generic {
+    vertical-align: middle;
+}
+.detail-rain {
+    @extend .detail-generic;
+}
+.detail-pres {
+    @extend .detail-generic;
+}
+.detail-snow {
+    @extend .detail-generic;
+}
+.detail-wind {
+    @extend .detail-generic;
+}
+
+.wi {
+    font-weight: bold !important;
+    font-size: 1.6rem !important;
+    vertical-align: middle;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.wi-wind {
+    font-weight: normal !important;
+    font-size: 1.2rem !important;
+    vertical-align: middle;
+}
 
 /* MOBILE
 ----------------------------------------------------------*/
 @media screen and (max-width: 1080px) and (orientation: portrait) {
     .meteo-data-other {
+        display: none !important;
+    }
+    
+    .mat-column-risks {
+        min-width: 0 !important;
+        max-width: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    app-day-risks {
         display: none;
+    }
+
+    .mat-column-symbol {
+        min-width: 2.9rem;
+        max-width: 2.9rem;
+    }
+    
+    .mat-column-summary,
+    .mat-column-temp {
+        min-width: 6.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .mat-column-precip {
+        min-width: 10rem;
+        max-width: 10rem;
     }
 }

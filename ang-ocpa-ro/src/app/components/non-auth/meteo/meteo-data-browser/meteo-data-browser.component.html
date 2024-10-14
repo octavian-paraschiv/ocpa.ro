@@ -82,15 +82,15 @@
                     <!-- Temperatures Column -->
                     <ng-container matColumnDef="temp">
                         <td mat-cell *matCellDef="let md" class="{{centerCellClass(md)}}">
-                            <div class="temp-low-cell">
-                                <fa-icon class="temp-symbol" [icon]="icons['faTemperatureQuarter']" transform="grow-10"></fa-icon>
-                                <label class="temp-actual">{{md.tMinActual | temp}}</label>
-                                <label class="temp-normal">[{{md.tMinNormal | temp}}]</label>
-                            </div>
                             <div class="temp-high-cell">
                                 <fa-icon class="temp-symbol" [icon]="icons['faTemperatureThreeQuarters']" transform="grow-10"></fa-icon>
                                 <label class="temp-actual">{{md.tMaxActual | temp}}</label>
                                 <label class="temp-normal">[{{md.tMaxNormal | temp}}]</label>
+                            </div>
+                            <div class="temp-low-cell">
+                                <fa-icon class="temp-symbol" [icon]="icons['faTemperatureQuarter']" transform="grow-10"></fa-icon>
+                                <label class="temp-actual">{{md.tMinActual | temp}}</label>
+                                <label class="temp-normal">[{{md.tMinNormal | temp}}]</label>
                             </div>
                         </td>
                     </ng-container>
@@ -100,18 +100,24 @@
                         <td mat-cell *matCellDef="let md" class="{{centerCellClass(md)}}">
                             <div class="detail-info">
                                 <div *ngIf="md?.wind > 0" class="detail-wind">
-                                    <label class="meteo-mat-small detail">Wind: <b>{{ md.windDirection }} / {{ md.wind | speed: unit }}</b></label>
+                                    <fa-icon [icon]="icons['faWind']"></fa-icon>
+                                    <label class="meteo-mat-small detail">&nbsp;{{ md.wind | speed: unit}}, {{md.windDirection }}&nbsp;</label>
+                                    <i class="wi wi-wind wi-from-{{md.windDirection.toLowerCase()}}"></i>
                                 </div>
                                 <div *ngIf="md?.p00 > 0" class="detail-pres">
-                                    <label class="meteo-mat-small detail">Pressure: <b>{{ md.p00 | pressure: unit }}</b></label>
+                                    <fa-icon [icon]="icons['faGauge']"></fa-icon>
+                                    <label class="meteo-mat-small detail">&nbsp;{{ md.p00 | pressure: unit }}</label>
                                 </div>
                                 <div *ngIf="md?.snow > 0 || md?.snowCover > 0" class="detail-snow">
-                                    <label class="meteo-mat-small detail">Snow:&nbsp;</label>
-                                    <label *ngIf="md.snow > 0" class="meteo-mat-small detail">Day: <b>{{ md.snow | distance: unit }},&nbsp;</b></label>
-                                    <label *ngIf="md.snowCover > 0" class="meteo-mat-small detail">Cover: <b>{{ md.snowCover | distance: unit }}</b></label>
+                                    <fa-icon [icon]="icons['faSnowflake']"></fa-icon>
+                                    <label *ngIf="md.snow > 0" class="meteo-mat-small detail">&nbsp;{{ md.snow | distance: unit }}</label>
+                                    <label *ngIf="md.snowCover > 0" class="meteo-mat-small detail">
+                                        <b><i>&nbsp;(Cover: {{ md.snowCover | distance: unit }})</i></b>
+                                    </label>
                                 </div>
                                 <div *ngIf="md?.rain > 0" class="detail-rain">
-                                    <label class="meteo-mat-small detail">Rain: <b>{{ md.rain | volume: unit }}</b></label>
+                                    <i class="wi wi-raindrops"></i>
+                                    <label class="meteo-mat-small detail">&nbsp;{{ md.rain | volume: unit }}</label>
                                 </div>
                             </div>
                         </td>
