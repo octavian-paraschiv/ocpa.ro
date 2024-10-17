@@ -15,6 +15,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 })
 export class MeteoDataBrowserComponent {
   icons = fas;
+
   dbi = -1;
   defaultHint = true;
   hint = 'To search a city, click/tap in the drop list below, then type the city name.';
@@ -67,10 +68,9 @@ export class MeteoDataBrowserComponent {
   }
 
   get dataHint(): string {
-    const location = `${this.lookupRegion} / ${this.lookupSubregion} / ${this.lookupCity}`;
     return (this.meteoData?.length > 0) ?
-      `Forecast for: <b>${location}</b><br>Period: <b>${this.meteoData[0].date}...${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the +/- buttons to go the desired date.` : 
-      `Please wait while fetching data for: <b>${location}</b>`;
+      `<b>${this.lookupCity}</b> between <b>${this.meteoData[0].date} and ${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the +/- buttons to go the desired date.` : 
+      `Fetching data for: <b>${location}</b>`;
   }
 
   onDropDownFocused(focused: boolean) {
@@ -234,40 +234,13 @@ export class MeteoDataBrowserComponent {
   }
 
   private processApiData(meteoApiData: MeteoData) {
-    let mdEx: MeteoDailyData[] = [];
-    let md: MeteoDailyData = undefined;
+    this.meteoData = [];
 
     if (meteoApiData?.data) {
       for(const date of Object.keys(meteoApiData.data)) {
         const data = meteoApiData.data[date];
         data.date = date;
-        mdEx.push(data);
-      }
-    }
-
-    this.meteoData = mdEx;
-
-    if (mdEx.length > 0) {
-      
-      for(;;) {
-        const dt = new Date(this.meteoData[0].date);
-        if (dt.getDay() == 0)
-          break;
-        
-        dt.setDate(dt.getDate() - 1);
-        const date = this.helper.isoDate(dt);
-        this.meteoData = [ { date } as MeteoDailyData, ...this.meteoData];
-      }
-
-      for(;;) {
-        const dt = new Date(this.meteoData[this.meteoData.length - 1].date);
-        if (dt.getDay() == 6)
-          break;
-        
-        dt.setDate(dt.getDate() + 1);
-        const date = this.helper.isoDate(dt);
-
-        this.meteoData = [ ...this.meteoData, { date } as MeteoDailyData];
+        this.meteoData.push(data);
       }
     }
 
@@ -294,7 +267,7 @@ export class MeteoDataBrowserComponent {
   }
 
   @HostListener('window:resize', ['$event'])
-  onWindowResized(event) {
+  onWindowResized(_event: any) {
     this.calculateDataGridHeight();
   }
 
@@ -312,6 +285,7 @@ export class MeteoDataBrowserComponent {
     height -= this.getAbsoluteHeight(document.getElementById('dDataHint'));
     height -= this.getAbsoluteHeight(document.getElementById('btnDate'));
     height -= 10;
+
     this.dataGridHeight = height;
   }
 

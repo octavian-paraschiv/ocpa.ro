@@ -72,7 +72,11 @@ input::-ms-clear {
     max-width: 16px;
     margin: 0;
 }
-
+.mat-mdc-header-cell {
+    background-color: $forecolor !important;
+    color: $backcolor !important;
+    height: 3rem !important;
+}
 
 /* MOBILE
 ----------------------------------------------------------*/
@@ -88,7 +92,7 @@ input::-ms-clear {
 
     #router-outlet {
         border-radius: unset;
-        height: 91vh;
-        max-height: 91vh;
+        height: 90vh;
+        max-height: 90vh;
     }
 }

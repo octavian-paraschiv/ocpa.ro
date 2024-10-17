@@ -68,7 +68,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         .subscribe(res => {
             if (res) {
                 this.fileOpen((data: ArrayBuffer) => {
-                    this.meteoApi.upload(db.dbi, data)
+                    this.meteoApi.upload(db.dbi ?? 0, data)
                         .pipe(untilDestroyed(this))
                         .subscribe({
                             next: () => {
@@ -96,7 +96,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         .subscribe(res => {
             if (res) {
                 this.selectedDatabase = db;
-                this.dataBrowser.initWithParams(db.dbi, false);
+                this.dataBrowser.initWithParams(db.dbi ?? 0, false);
             }
         });
     }
@@ -111,7 +111,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
-                this.meteoApi.promote(db.dbi)
+                this.meteoApi.promote(db.dbi ?? 0)
                     .pipe(untilDestroyed(this))
                     .subscribe({
                         next: () => this.snackBar.open(`Database \`${db.name}\' succesfully promoted to online.`, 

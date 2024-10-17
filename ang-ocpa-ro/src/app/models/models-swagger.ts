@@ -16,8 +16,7 @@ export interface AppMenu {
     url?: string | undefined;
     code?: string | undefined;
     displayMode?: MenuDisplayMode;
-    largeIcon?: string | undefined;
-    smallIcon?: string | undefined;
+    menuIcon?: string | undefined;
     userId?: number | undefined;
     appName?: string | undefined;
 }
@@ -100,6 +99,11 @@ export enum MenuDisplayMode {
     AlwaysShow = "AlwaysShow",
     HideOnMobile = "HideOnMobile",
     ShowOnMobile = "ShowOnMobile",
+}
+
+export interface Menus {
+    publicMenus?: Menu[] | undefined;
+    appMenus?: AppMenu[] | undefined;
 }
 
 export interface MeteoDailyData {

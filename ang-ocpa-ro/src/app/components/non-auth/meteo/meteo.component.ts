@@ -1,5 +1,4 @@
 import { Component, ViewChild } from '@angular/core';
-import { UntilDestroy } from '@ngneat/until-destroy';
 import { BaseLifecycleComponent } from 'src/app/components/BaseLifecycleComponent';
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
 

@@ -9,7 +9,7 @@ import { AuthenticateResponse, UserType } from 'src/app/models/models-swagger';
 
 @Injectable()
 export class AuthenticationService {
-    private readonly apiUserType: UserType;
+    private apiUserType: UserType;
     private readonly userKey = 'ocpa_ro_admin_user';
     private readonly timeKey = 'ocpa_ro_admin_time';
 
@@ -20,7 +20,6 @@ export class AuthenticationService {
         private readonly http: HttpClient,
         private readonly router: Router) {
 
-        this.apiUserType == this.userTypeService.userType('API');
         let authUser = JSON.parse(localStorage.getItem(this.userKey)) as AuthenticateResponse;
 
         if (this.isSessionExpired()) {
@@ -61,13 +60,16 @@ export class AuthenticationService {
 
     validateAuthenticationResponse(rsp: AuthenticateResponse, username: string): string  {
         if (rsp?.loginId?.toUpperCase() !== username?.toUpperCase())
-            return `<b>${username}</b> failed to log in [bad user name].`;
+            return `User <b>${username}</b> cannot log in [1].`;
         
+        if (!this.apiUserType)
+            this.apiUserType = this.userTypeService.userType('API');
+
         if (rsp?.type === this.apiUserType?.id)
-            return `<b>${username}</b> failed to log in [no application role]`;
+            return `User: <b>${username}</b> does not have any application roles.`;
         
         if (!(rsp?.validity > 0))
-            return `<b>${username}</b> failed to log in [token expired]`;
+            return `User: <b>${username}</b> cannot log in [2]`;
 
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem(this.userKey, JSON.stringify(rsp));

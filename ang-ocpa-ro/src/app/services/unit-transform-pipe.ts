@@ -6,30 +6,33 @@ import { Iso3166HelperService } from "./iso3166-helper.service";
 @Pipe({ name: 'temp' })
 export class TempPipe implements PipeTransform {
     transform(value: number, unit: Unit) {
+        const tval = value ?? 0;
         if (unit === Unit.Imperial) {
-            return `${Math.round(9 * value / 5 + 32)}ºF`
+            return `${Math.round(9 * tval / 5 + 32)}ºF`
         }
-        return `${Math.round(value)}ºC`;
+        return `${Math.round(tval)}ºC`;
     }
 }
 
 @Pipe({ name: 'speed' })
 export class SpeedPipe implements PipeTransform {
     transform(value: number, unit: Unit) {
+        const tval = value ?? 0;
         if (unit === Unit.Imperial) {
-            return `${Math.round(value / 1.609)} mph`;
+            return `${Math.round(tval / 1.609)} mph`;
         }
-        return `${Math.round(value)} kmh`;
+        return `${Math.round(tval)} kmh`;
     }
 }
 
 @Pipe({ name: 'distance' })
 export class DistancePipe implements PipeTransform {
     transform(value: number, unit: Unit) {
+        const tval = value ?? 0;
         if (unit === Unit.Imperial) {
-            return `${Math.round(value / 2.54)} in`;
+            return `${Math.round(tval / 2.54)} in`;
         }
-        return `${Math.round(value)} cm`;
+        return `${Math.round(tval)} cm`;
     }
 }
 
