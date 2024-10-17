@@ -56,11 +56,12 @@ app-meteo {
 
 .outer-meteo-data-grid {
     display: grid;
-    grid-template-columns: repeat(5, 4rem) 1fr;
+    white-space: nowrap;
+    grid-template-columns: repeat(7, auto) 1fr;
     grid-template-rows: auto 1fr;
     grid-template-areas: 
-    "minus7 minus1 zero plus1 plus7 ."
-    "dg dg dg dg dg dg";
+    "start minus7 minus1 zero plus1 plus7 end ."
+    "dg dg dg dg dg dg dg dg";
 }
 .inner-meteo-data-grid {
     display: grid;
@@ -78,6 +79,11 @@ app-meteo {
     border: 1px solid $forecolor;
     border-radius: 3px;
     font-size: 0.75rem;
+    font-weight: bold;
+}
+.gotoStart {
+    @extend .gridButton;
+    grid-area: start;
 }
 .minus7 {
     @extend .gridButton;
@@ -99,6 +105,11 @@ app-meteo {
     @extend .gridButton;
     grid-area: plus7;
 }
+.gotoEnd {
+    @extend .gridButton;
+    grid-area: end;
+}
+
 
 .meteo-data-grid {
     grid-area: mdg;
@@ -197,6 +208,8 @@ app-meteo {
         // border-bottom: 1px solid transparent;
         border-top: 1px solid transparent;
     }
+    border: 1px solid lightgray;
+    margin-bottom: 5px;
 }
 .raw-cell-today {
     border: $meteo-border-today;

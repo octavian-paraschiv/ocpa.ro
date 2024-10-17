@@ -54,7 +54,7 @@
     <ng-container *ngIf="meteoData?.length > 0" >
         <div class="inner-meteo-data-grid">
             <div class="meteo-data-grid" [ngStyle]="dataGridStyle">
-                <table id="meteo-calendar" mat-table [dataSource]="meteoData">
+                <table id="meteo-calendar" mat-table [dataSource]="selMeteoData">
                     <!-- Date Column -->
                     <ng-container matColumnDef="date">
                         <td mat-cell *matCellDef="let md" class="{{leftCellClass(md)}}">
@@ -145,11 +145,13 @@
         <img class="meteo-data-grid-empty" src="assets/images/spinner.gif" style="height: 10rem; color: transparent;" />
     </ng-container>
 
-    <button id="btnDate" class="minus7" (click)="selectDate(-7)">-7 days</button>
-    <button class="minus1" (click)="selectDate(-1)">-1 day</button>
+    <button id="btnDate" class="gotoStart" (click)="selectDate(-1000)">|&lt;</button>
+    <button class="minus7" (click)="selectDate(-7)">&lt;&nbsp;7d</button>
+    <button class="minus1" (click)="selectDate(-1)">&lt;&nbsp;1d</button>
     <button class="zero" (click)="selectDate(0)">Today</button>
-    <button class="plus1" (click)="selectDate(1)">+1 day</button>
-    <button class="plus7" (click)="selectDate(7)">+7 days</button>
+    <button class="plus1" (click)="selectDate(1)">1d&nbsp;&gt;</button>
+    <button class="plus7" (click)="selectDate(7)">7d&nbsp;&gt;</button>
+    <button class="gotoEnd" (click)="selectDate(1000)">&gt;|</button>
 </div>
 
 

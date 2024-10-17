@@ -33,7 +33,7 @@ export class MeteoDataBrowserComponent {
   grid: GridCoordinates;
 
   meteoData: MeteoDailyData[] = [];
-  todayData: MeteoDailyData;
+  selMeteoData: MeteoDailyData[] = [];
 
   queryRegion: string = undefined;
   querySubregion: string = undefined;
@@ -235,6 +235,7 @@ export class MeteoDataBrowserComponent {
 
   private processApiData(meteoApiData: MeteoData) {
     this.meteoData = [];
+    this.selMeteoData = [];
 
     if (meteoApiData?.data) {
       for(const date of Object.keys(meteoApiData.data)) {
@@ -251,10 +252,32 @@ export class MeteoDataBrowserComponent {
         this.selectedDate = this.helper.today;
     }
 
+    this.refreshSelMeteoData();
+  }
+
+  private refreshSelMeteoData() {
     setTimeout(() => {
+      const height = this.calculateDataGridHeight();
+      let delta = 4;
+      if (Helper.isMobile())
+        delta = Math.max(Math.floor(height / 120) - 1, 3);
+      
+      let start = this.helper.isoDate(this.helper.addDays(this.selectedDate, -delta));
+      let end = this.helper.isoDate(this.helper.addDays(this.selectedDate, delta));
+
+      if (start.localeCompare(this.meteoData[0].date) < 0)
+        start = this.meteoData[0].date;
+
+      if (end.localeCompare(this.meteoData[this.meteoData.length - 1].date) > 0)
+        end = this.meteoData[this.meteoData.length - 1].date;
+
+      this.selMeteoData = this.meteoData.filter(md => 
+        md.date.localeCompare(start) >= 0 && md.date.localeCompare(end) <= 0);
+
+      /*
       const todayInfo = document.getElementById(`day_${this.selectedDate}`);
       todayInfo?.scrollIntoView();
-      this.calculateDataGridHeight();
+      */
     }, 100);
   }
 
@@ -268,11 +291,11 @@ export class MeteoDataBrowserComponent {
 
   @HostListener('window:resize', ['$event'])
   onWindowResized(_event: any) {
-    this.calculateDataGridHeight();
+    this.refreshSelMeteoData();
   }
 
   dataGridHeight = 200;
-  calculateDataGridHeight() {
+  calculateDataGridHeight(): number{
     let height = window.innerHeight;
 
     if (Helper.isMobile())
@@ -284,9 +307,10 @@ export class MeteoDataBrowserComponent {
 
     height -= this.getAbsoluteHeight(document.getElementById('dDataHint'));
     height -= this.getAbsoluteHeight(document.getElementById('btnDate'));
-    height -= 10;
+    height -= 15;
 
     this.dataGridHeight = height;
+    return height;
   }
 
   private getAbsoluteHeight(el: HTMLElement) {
@@ -319,11 +343,7 @@ export class MeteoDataBrowserComponent {
         this.selectedDate = newDate;
       }
 
-      setTimeout(() => {
-        const todayInfo = document.getElementById(`day_${this.selectedDate}`);
-        todayInfo?.scrollIntoView();
-        this.calculateDataGridHeight();
-      }, 100);
+      this.refreshSelMeteoData();
     }
   }
 
