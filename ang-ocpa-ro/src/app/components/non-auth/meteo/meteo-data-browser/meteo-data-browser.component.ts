@@ -234,40 +234,13 @@ export class MeteoDataBrowserComponent {
   }
 
   private processApiData(meteoApiData: MeteoData) {
-    let mdEx: MeteoDailyData[] = [];
-    let md: MeteoDailyData = undefined;
+    this.meteoData = [];
 
     if (meteoApiData?.data) {
       for(const date of Object.keys(meteoApiData.data)) {
         const data = meteoApiData.data[date];
         data.date = date;
-        mdEx.push(data);
-      }
-    }
-
-    this.meteoData = mdEx;
-
-    if (mdEx.length > 0) {
-      
-      for(;;) {
-        const dt = new Date(this.meteoData[0].date);
-        if (dt.getDay() == 0)
-          break;
-        
-        dt.setDate(dt.getDate() - 1);
-        const date = this.helper.isoDate(dt);
-        this.meteoData = [ { date } as MeteoDailyData, ...this.meteoData];
-      }
-
-      for(;;) {
-        const dt = new Date(this.meteoData[this.meteoData.length - 1].date);
-        if (dt.getDay() == 6)
-          break;
-        
-        dt.setDate(dt.getDate() + 1);
-        const date = this.helper.isoDate(dt);
-
-        this.meteoData = [ ...this.meteoData, { date } as MeteoDailyData];
+        this.meteoData.push(data);
       }
     }
 
@@ -294,7 +267,7 @@ export class MeteoDataBrowserComponent {
   }
 
   @HostListener('window:resize', ['$event'])
-  onWindowResized(event) {
+  onWindowResized(_event: any) {
     this.calculateDataGridHeight();
   }
 
