@@ -43,6 +43,7 @@ app-root {
     border: 2px solid $nav-backcolor;
     border-radius: 0 10px 10px 0;
     padding-left: 10px;
+    padding-right: 10px;
     overflow-y: auto;
 }
 
@@ -88,6 +89,8 @@ input::-ms-clear {
         grid-template-areas: 
         "anm"
         "ro";
+        width: 99.5vw;
+        max-width: 99.5vw;
     }
 
     #router-outlet {

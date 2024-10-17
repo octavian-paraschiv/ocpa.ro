@@ -16,6 +16,7 @@
 app-meteo {
     display: grid;
     padding: 0;
+    margin: 0;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto 1fr;
     grid-template-areas: 
@@ -307,8 +308,14 @@ app-day-risks {
 /* MOBILE
 ----------------------------------------------------------*/
 @media screen and (max-width: 1080px) and (orientation: portrait) {
+   
+
     .meteo-data-other {
         display: none !important;
+    }
+
+    .mat-column-precip {
+        display: none;
     }
     
     .mat-column-risks {
