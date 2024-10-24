@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
 import { formatDate } from '@angular/common';
+import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 
 @UntilDestroy()
 @Component({
@@ -19,8 +20,6 @@ import { formatDate } from '@angular/common';
     templateUrl: './meteo-database.component.html'
 })
 export class MeteoDatabaseComponent extends BaseAuthComponent {
-    @ViewChild('meteoDataBrowser', { static: true }) dataBrowser: MeteoDataBrowserComponent;
-
     faEye = faEye;
     faPromote = faUpRightFromSquare;
     faUpload = faUpload;
@@ -88,18 +87,11 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
     }
 
     view(db: MeteoDbInfo) {
-        MessageBoxComponent.show(this.dialog, {
-            title: 'Confirm',
-            message: `Are you sure you want to view <b>${db.name}</b>?`
-        } as MessageBoxOptions)
-        .pipe(untilDestroyed(this))
-        .subscribe(res => {
-            if (res) {
-                this.selectedDatabase = db;
-                this.dataBrowser.initWithParams(db.dbi ?? 0, false);
-            }
-        });
-    }
+        this.selectedDatabase = db;
+        MeteoDatabaseDialogComponent.showDialog(this.dialog, db.dbi)
+            .pipe(untilDestroyed(this))
+            .subscribe();
+}
 
     promote(db: MeteoDbInfo) {
         MessageBoxComponent.show(this.dialog, {

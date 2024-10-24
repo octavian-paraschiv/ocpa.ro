@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
@@ -7,14 +7,24 @@ import { City, GridCoordinates, MeteoDailyData, MeteoData } from 'src/app/models
 import { GeographyApiService, MeteoApiService } from 'src/app/services/api-services';
 import { Helper } from 'src/app/services/helper';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import { Chart, ChartConfiguration, ChartOptions, TooltipItem } from "chart.js";
+import { Unit } from 'src/app/models/models-local';
+import { DistancePipe, TempPipe, VolumePipe } from 'src/app/services/unit-transform-pipe';
+import annotationPlugin, { AnnotationOptions } from 'chartjs-plugin-annotation';
+import { BaseChartDirective } from 'ng2-charts';
+
+Chart.register(annotationPlugin);
 
 @UntilDestroy()
 @Component({
   selector: 'app-meteo-data-browser',
   templateUrl: './meteo-data-browser.component.html'
 })
-export class MeteoDataBrowserComponent {
+export class MeteoDataBrowserComponent implements AfterViewInit {
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+
   icons = fas;
+  plugins = [annotationPlugin];
 
   dbi = -1;
   defaultHint = true;
@@ -54,10 +64,64 @@ export class MeteoDataBrowserComponent {
 
   displayColumns = [ 'date', 'symbol', 'summary', 'temp', 'precip', 'risks' ];
  
+  lineChartData: ChartConfiguration<'line'>['data'] = {
+    labels: [],
+    datasets: [],
+  };
+
+  lineChartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    animation: false,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: this.buildTooltip
+        }
+      },
+      annotation: {
+        annotations: {
+          line1: {
+            type: 'line',
+            xMin: this.helper.today,
+            xMax: this.helper.today,
+            display: true,
+            borderColor: 'rgb(0, 179, 179)',
+            borderWidth: 2,
+            label: {
+              content: `${this.helper.today}`,
+              backgroundColor: 'rgb(0, 179, 179)',
+              display: true,
+              position: 'end'
+            }
+          },
+          line2: {
+            type: 'line',
+            xMin: 0,
+            xMax: 0,
+            display: false,
+            borderColor: 'rgb(252, 172, 163)',
+            borderWidth: 2,
+            label: {
+              display: true,
+              position: 'end',
+              backgroundColor: 'rgb(252, 172, 163)'
+            }
+          }
+        }
+      }
+    },
+  };
+
+  
+
   constructor(private readonly geoApi: GeographyApiService,
     private readonly meteoApi: MeteoApiService,
     private readonly helper: Helper,
     private readonly route: ActivatedRoute) {
+  }
+
+  ngAfterViewInit(): void {
+    console.debug(this.chart);
   }
 
   get dataGridStyle() {
@@ -68,9 +132,11 @@ export class MeteoDataBrowserComponent {
   }
 
   get dataHint(): string {
-    return (this.meteoData?.length > 0) ?
-      `<b>${this.lookupCity}</b> between <b>${this.meteoData[0].date} and ${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the +/- buttons to go the desired date.` : 
-      `Fetching data for: <b>${location}</b>`;
+    return this.isFetching ? 
+      `Fetching data for: <b>${location}</b>` :
+      (this.meteoData?.length > 0) ?
+        `<b>${this.lookupCity}</b> between <b>${this.meteoData[0].date} and ${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the +/- buttons to go the desired date.` : 
+        '';
   }
 
   onDropDownFocused(focused: boolean) {
@@ -184,7 +250,8 @@ export class MeteoDataBrowserComponent {
       .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
       .subscribe(meteoApiData => {
         if (!this.defaultHint)
-          this.hint = `Contents of ${meteoApiData.name} / Data length: ${meteoApiData?.dataCount ?? 0}`
+          this.hint = `Contents of ${meteoApiData.name} / Data length: ${meteoApiData?.dataCount ?? 0}. 
+        (Press Escape to close the window)`
         this.processApiData(meteoApiData);
         this.isFetching = false;
       });
@@ -237,6 +304,11 @@ export class MeteoDataBrowserComponent {
     this.meteoData = [];
     this.selMeteoData = [];
 
+    this.lineChartData = {
+      labels: [],
+      datasets: []
+    };
+
     if (meteoApiData?.data) {
       for(const date of Object.keys(meteoApiData.data)) {
         const data = meteoApiData.data[date];
@@ -246,6 +318,7 @@ export class MeteoDataBrowserComponent {
     }
 
     if (this.meteoData?.length > 0) {
+      this.refreshGrid();
       if (this.helper.today.localeCompare(this.meteoData[0].date) < 0)
         this.selectedDate = this.meteoData[0].date;
       else
@@ -255,12 +328,119 @@ export class MeteoDataBrowserComponent {
     this.refreshSelMeteoData();
   }
 
+  private refreshGrid() {
+    if (!Helper.isMobile()) {
+      this.lineChartData = {
+        labels: this.meteoData.map(md => md.date),
+        datasets: [
+          {
+            data: this.meteoData.map(md => md.tMaxActual ?? 0),
+            label: 'TMax',
+            tension: 0.5,
+            borderColor: 'red',
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 5,
+          },
+          {
+            data: this.meteoData.map(md => md.tMinActual ?? 0),
+            label: 'TMin',
+            tension: 0.5,
+            borderColor: 'blue',
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 5,
+          }
+        ]};
+
+      if (this.meteoData.filter(md => this.inst(md) > 0)?.length > 0) {
+        this.lineChartData.datasets = [ ...this.lineChartData.datasets,
+          {
+            data: this.meteoData.map(md => this.inst(md)),
+            label: 'TStorm odds',
+            tension: 0.5,
+            borderColor: 'lime',
+            backgroundColor: 'lime',
+            fill: true,
+            borderWidth: 1,
+            pointRadius: 0,
+            pointHitRadius: 5,
+          }
+        ];
+      }              
+
+      if (this.meteoData.filter(md => md.snow > 0)?.length > 0) {
+        this.lineChartData.datasets = [ ...this.lineChartData.datasets,
+          {
+            data: this.meteoData.map(md => md.snow ?? 0),
+            label: 'Snow (new)',
+            tension: 0.5,
+            borderColor: 'lightblue',
+            backgroundColor: 'lightblue',
+            fill: true,
+            borderWidth: 1,
+            pointRadius: 0,
+            pointHitRadius: 5,
+          }
+        ];
+    }
+
+      if (this.meteoData.filter(md => md.snowCover > 0)?.length > 0) {
+        this.lineChartData.datasets = [ ...this.lineChartData.datasets,
+          {
+            data: this.meteoData.map(md => md.snowCover ?? 0),
+            label: 'Snow (total)',
+            tension: 0.5,
+            borderColor: 'cadetblue',
+            backgroundColor: 'cadetblue',
+            fill: true,
+            borderWidth: 1,
+            pointRadius: 0,
+            pointHitRadius: 5,
+          }
+        ];
+      }
+
+      if (this.meteoData.filter(md => md.rain > 0)?.length > 0) {
+        this.lineChartData.datasets = [ ...this.lineChartData.datasets,
+          {
+            data: this.meteoData.map(md => md.rain ?? 0),
+            label: 'Rain',
+            tension: 0.5,
+            borderColor: 'lightgray',
+            backgroundColor: 'lightgray',
+            fill: true,
+            borderWidth: 1,
+            pointRadius: 0,
+            pointHitRadius: 5,
+          }
+        ];
+      }
+    }
+  }
+
   private refreshSelMeteoData() {
+
     setTimeout(() => {
       const height = this.calculateDataGridHeight();
-      let delta = 4;
+
+      let delta = 3;
+
+      const chartInstance = this.chart?.chart;
+
       if (Helper.isMobile())
         delta = Math.max(Math.floor(height / 120) - 1, 3);
+
+      else if (chartInstance) {
+        const line2 = chartInstance.options.plugins.annotation.annotations['line2'] as AnnotationOptions<'line'>;
+        if (line2) {
+          line2.xMin = this.selectedDate ?? '';
+          line2.xMax = this.selectedDate ?? '';
+          line2.display = (this.selectedDate && this.selectedDate !== this.helper.today);
+          line2.label.content = this.selectedDate;
+          chartInstance.update();
+        }
+      }
       
       let start = this.helper.isoDate(this.helper.addDays(this.selectedDate, -delta));
       let end = this.helper.isoDate(this.helper.addDays(this.selectedDate, delta));
@@ -273,11 +453,6 @@ export class MeteoDataBrowserComponent {
 
       this.selMeteoData = this.meteoData.filter(md => 
         md.date.localeCompare(start) >= 0 && md.date.localeCompare(end) <= 0);
-
-      /*
-      const todayInfo = document.getElementById(`day_${this.selectedDate}`);
-      todayInfo?.scrollIntoView();
-      */
     }, 100);
   }
 
@@ -294,7 +469,7 @@ export class MeteoDataBrowserComponent {
     this.refreshSelMeteoData();
   }
 
-  dataGridHeight = 200;
+  dataGridHeight = 0;
   calculateDataGridHeight(): number{
     let height = window.innerHeight;
 
@@ -414,5 +589,36 @@ export class MeteoDataBrowserComponent {
       desc = '';
 
     return desc;
+  }
+
+  inst(md: MeteoDailyData): number {
+    let val = Math.max(0, 6 - md?.instability ?? 0);
+    return val;
+  }
+
+  public chartClicked(e: any): void {
+    if (e.active.length > 0) {
+      const idx = e.active[0].index;
+      this.selectedDate = this.meteoData[idx].date;
+      this.refreshSelMeteoData();
+    }
+  }
+
+  public buildTooltip(item: TooltipItem<"line">): string {
+    const unit = Unit.Metric;
+
+    switch(item?.dataset?.label) {
+      case 'TMax':
+      case 'TMin':
+        return `${item?.dataset?.label}: ${TempPipe._transform(item?.raw as number, unit)}`;;
+
+      case 'Rain':
+        return `${item?.dataset?.label}: ${VolumePipe._transform(item?.raw as number, unit)}`;;
+
+      case 'Snow':
+        return `${item?.dataset?.label}: ${DistancePipe._transform(item?.raw as number, unit)}`;
+    }
+
+    return `${item?.dataset?.label}: ${item?.raw}`;
   }
 }

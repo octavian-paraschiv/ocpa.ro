@@ -32,6 +32,8 @@ import { MessageBoxComponent } from 'src/app/components/shared/message-box/messa
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
 import { MenuService } from 'src/app/services/menu.service';
 import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
+import { NgChartsModule } from 'ng2-charts';
+import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 
 @NgModule({
     declarations: [
@@ -49,6 +51,8 @@ import { LogoutComponent } from 'src/app/components/auth/logout/logout.component
         MessageBoxComponent,
 
         MeteoDatabaseComponent,
+        MeteoDatabaseDialogComponent,
+
         LoginComponent,
         LogoutComponent,
 
@@ -86,12 +90,13 @@ import { LogoutComponent } from 'src/app/components/auth/logout/logout.component
     NoopAnimationsModule,
     FontAwesomeModule,
     NgSelectModule,
-    MaterialModule
+    MaterialModule,
+    NgChartsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    
+
     GeographyApiService,
     {
       provide: APP_INITIALIZER,

@@ -50,6 +50,8 @@ app-meteo {
     margin: 0;
 }
 
+
+
 .meteo-data-browser {
     grid-area: odg;
 }
@@ -172,29 +174,38 @@ app-meteo {
 // --- Date cell ---
 .mat-column-date {
     @extend .mat-meteo-column;
-    min-width: 6rem;
-    padding: 3px !important;
+    min-width: 3rem;
+    padding: 2px !important;
 }
 .date-cell {
     display: grid;
+    font-size: 0.8rem;
     text-align: center;
-    padding: 2px;
     background-color: gray;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto auto 1fr;
     grid-template-areas: 
     "dow"
-    "dom";
+    "dom"
+    "year";
 }
 .dow-row {
+    font-weight: 500;
     grid-area: dow;
     text-transform: uppercase;
     color: white;
 }
 .dom-row {
     grid-area: dom;
+    text-transform: uppercase;
     color: white;
 }
+.year-row {
+    grid-area: year;
+    text-transform: uppercase;
+    color: white;
+}
+
 .date-cell-weekend {
     @extend .date-cell;
     background-color: $meteo-weekend-header-color;
@@ -258,12 +269,21 @@ app-meteo {
 }
 
 // --------------------
-
-// --- to add other UI elements, put them in this area
 .meteo-data-other {
     grid-area: ot;
-    display: flex;
-    overflow-y: auto;
+    display: grid;
+    overflow-y: hidden;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: 1fr auto 1fr;
+    grid-template-areas: 
+    ". gr1 ."
+    ". gr1 ."
+    ". gr1 .";
+}
+
+#meteoDataGraph {
+    grid-area: gr1;
+    margin: 2rem;
 }
 // -------------------- 
 

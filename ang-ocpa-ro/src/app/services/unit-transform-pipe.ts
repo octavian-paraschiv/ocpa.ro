@@ -5,7 +5,9 @@ import { Iso3166HelperService } from "./iso3166-helper.service";
 
 @Pipe({ name: 'temp' })
 export class TempPipe implements PipeTransform {
-    transform(value: number, unit: Unit) {
+    transform(value: number, unit: Unit) { return TempPipe._transform(value, unit); }
+
+    static _transform(value: number, unit: Unit) {
         const tval = value ?? 0;
         if (unit === Unit.Imperial) {
             return `${Math.round(9 * tval / 5 + 32)}ºF`
@@ -16,7 +18,9 @@ export class TempPipe implements PipeTransform {
 
 @Pipe({ name: 'speed' })
 export class SpeedPipe implements PipeTransform {
-    transform(value: number, unit: Unit) {
+    transform(value: number, unit: Unit) { return SpeedPipe._transform(value, unit); }
+
+    static _transform(value: number, unit: Unit) {
         const tval = value ?? 0;
         if (unit === Unit.Imperial) {
             return `${Math.round(tval / 1.609)} mph`;
@@ -27,7 +31,9 @@ export class SpeedPipe implements PipeTransform {
 
 @Pipe({ name: 'distance' })
 export class DistancePipe implements PipeTransform {
-    transform(value: number, unit: Unit) {
+    transform(value: number, unit: Unit) { return DistancePipe._transform(value, unit); }
+
+    static _transform(value: number, unit: Unit) {
         const tval = value ?? 0;
         if (unit === Unit.Imperial) {
             return `${Math.round(tval / 2.54)} in`;
@@ -38,7 +44,9 @@ export class DistancePipe implements PipeTransform {
 
 @Pipe({ name: 'volume' })
 export class VolumePipe implements PipeTransform {
-    transform(value: number, unit: Unit) {
+    transform(value: number, unit: Unit) { return VolumePipe._transform(value, unit); }
+
+    static _transform(value: number, unit: Unit) {
         if (unit === Unit.Imperial) {
             return `${Math.round(value / 2.54)} in`;
         }
@@ -48,7 +56,9 @@ export class VolumePipe implements PipeTransform {
 
 @Pipe({ name: 'pressure' })
 export class PressurePipe implements PipeTransform {
-    transform(value: number, unit: Unit) {
+    transform(value: number, unit: Unit) { return PressurePipe._transform(value, unit); }
+
+    static _transform(value: number, unit: Unit) {
         if (unit === Unit.Imperial) {
             return `${Math.round(value / 33.863)} in`;
         }

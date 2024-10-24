@@ -79,6 +79,13 @@ input::-ms-clear {
     height: 3rem !important;
 }
 
+.full-screen-dialog {
+    min-width: 98vw;
+    min-height: 98vh;
+    max-width: 99vw;
+    max-height: 99vh;
+  }
+
 /* MOBILE
 ----------------------------------------------------------*/
 @media screen and (max-width: 1080px) and (orientation: portrait) {
