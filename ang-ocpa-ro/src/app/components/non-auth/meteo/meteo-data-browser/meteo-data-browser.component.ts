@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import { City, GridCoordinates, MeteoDailyData, MeteoData } from 'src/app/models/models-swagger';
+import { CityDetail, GridCoordinates, MeteoDailyData, MeteoData } from 'src/app/models/models-swagger';
 import { GeographyApiService, MeteoApiService } from 'src/app/services/api-services';
 import { Helper } from 'src/app/services/helper';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -39,7 +39,7 @@ export class MeteoDataBrowserComponent implements AfterViewInit {
   selSubregion: string;
   selCity: string;
 
-  city: City;
+  city: CityDetail;
   grid: GridCoordinates;
 
   meteoData: MeteoDailyData[] = [];
@@ -50,13 +50,13 @@ export class MeteoDataBrowserComponent implements AfterViewInit {
   queryCity: string = undefined;
   queryUnit: string = undefined;
 
-  selectedCity: City =  {};
+  selectedCity: CityDetail =  {};
   dropDownFocused = false;
 
-  citiesBuffer: City[] = [];
+  citiesBuffer: CityDetail[] = [];
   searchTerm = '';
-  allCities: City[] = [];
-  filteredCities: City[] = [];
+  allCities: CityDetail[] = [];
+  filteredCities: CityDetail[] = [];
   loadingCities = false;
   bufferSize = 15;
 
@@ -212,9 +212,9 @@ export class MeteoDataBrowserComponent implements AfterViewInit {
         this.queryUnit = params['unit'];
 
         if (this.allCities?.length > 0) {
-          const defCity = this.allCities.find(c => c.name.indexOf('Bucuresti') > 0 && c.region === 'Romania');
+          const defCity = this.allCities.find(c => c.name.indexOf('Bucuresti') > 0 && c.regionName === 'Romania');
           this.selectedCity.name = this.queryCity ?? defCity.name;
-          this.selectedCity.region = this.queryRegion ?? defCity.region;
+          this.selectedCity.regionName = this.queryRegion ?? defCity.regionName;
           this.selectedCity.subregion = this.querySubregion ?? defCity.subregion;
           this.onSmartCityChanged();
 
@@ -258,7 +258,7 @@ export class MeteoDataBrowserComponent implements AfterViewInit {
   }
 
   private get lookupRegion(): string {
-    return this.selectedCity?.region ?? this.selRegion;
+    return this.selectedCity?.regionName ?? this.selRegion;
   }
   private get lookupSubregion(): string {
     return this.selectedCity?.subregion ?? this.selSubregion;
@@ -279,7 +279,7 @@ export class MeteoDataBrowserComponent implements AfterViewInit {
             let termMatch = false;
             termMatch ||= (city?.name ?? '').toLocaleUpperCase().includes(tt);
             termMatch ||= (city?.subregion ?? '').toLocaleUpperCase().startsWith(tt);
-            termMatch ||= (city?.region ?? '').toLocaleUpperCase().startsWith(tt);
+            termMatch ||= (city?.regionName ?? '').toLocaleUpperCase().startsWith(tt);
             match &&= termMatch;
             if (!match) break;
           }

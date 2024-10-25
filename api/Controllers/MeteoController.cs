@@ -11,6 +11,7 @@ using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading.Tasks;
+using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Controllers
 {

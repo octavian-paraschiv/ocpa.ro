@@ -50,13 +50,16 @@ export interface CalendarRange {
     length?: number;
 }
 
-export interface City {
+export interface CityDetail {
+    id?: number;
     name?: string | undefined;
-    region?: string | undefined;
+    regionId?: number;
     subregion?: string | undefined;
-    latitude?: number;
-    longitude?: number;
+    lat?: number;
+    lon?: number;
     default?: boolean;
+    regionName?: string | undefined;
+    regionCode?: string | undefined;
 }
 
 export interface ContentUnit {

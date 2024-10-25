@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { Unit } from 'src/app/models/models-local';
-import { City, MeteoDailyData } from 'src/app/models/models-swagger';
+import { CityDetail, MeteoDailyData } from 'src/app/models/models-swagger';
 import { Iso3166HelperService } from "./iso3166-helper.service";
 
 @Pipe({ name: 'temp' })
@@ -71,10 +71,10 @@ export class CountryCodePipe implements PipeTransform {
     constructor(private readonly isoService: Iso3166HelperService) {
     }
 
-    transform(city: City) {
+    transform(city: CityDetail) {
         let country = this.isoService.getByCountryName(city.subregion);
         if (!country)
-            country = this.isoService.getByCountryName(city.region);
+            country = this.isoService.getByCountryName(city.regionName);
         
         return country?.IsoAlpha2?.toUpperCase() ?? 'XX';
     }

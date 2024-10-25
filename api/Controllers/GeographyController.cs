@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Geography;
-using ocpa.ro.api.Models.Meteo;
+using ocpa.ro.api.Models.Geography;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -85,7 +86,7 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("cities/all")]
-        [ProducesResponseType(typeof(List<City>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<CityDetail>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetAllCities")]
         public IActionResult GetAllCities()
@@ -102,7 +103,7 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("city")]
-        [ProducesResponseType(typeof(City), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CityDetail), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetCity")]
         public IActionResult GetCity([FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city)
@@ -135,6 +136,25 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
+#if GEO_DB_INIT
+        [HttpPost("init")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(OperationId = "Init")]
+        [IgnoreWhenNotInDev]
+        public IActionResult Init()
+        {
+            try
+            {
+                return Ok(_geographyHelper.Init());
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+#endif
         #endregion
     }
 }

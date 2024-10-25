@@ -4,7 +4,7 @@ import { Observable, of } from "rxjs";
 import { environment } from "src/environments/environment";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { catchError, map } from "rxjs/operators";
-import { BuildInfo, City, GridCoordinates, MeteoData, ContentUnit, MeteoDbInfo } from 'src/app/models/models-swagger';
+import { BuildInfo, CityDetail, GridCoordinates, MeteoData, ContentUnit, MeteoDbInfo } from 'src/app/models/models-swagger';
 import * as pako from 'pako';
 import * as CryptoJS from 'crypto-js';
 
@@ -24,7 +24,7 @@ export class ProtoneApiService {
 @Injectable()
 export class GeographyApiService {
 
-    private _cities: City[] = [];
+    private _cities: CityDetail[] = [];
 
     constructor(private readonly httpClient: HttpClient) {
     }
@@ -62,9 +62,9 @@ export class GeographyApiService {
         return this.httpClient.get<string[]>(uri);
     }
 
-    public getCityInfo(region: string, subregion: string, city: string): Observable<City> {
+    public getCityInfo(region: string, subregion: string, city: string): Observable<CityDetail> {
         const uri = `${environment.apiUrl}/geography/city?region=${region}&subregion=${subregion}&city=${city}`;
-        return this.httpClient.get<City>(uri);
+        return this.httpClient.get<CityDetail>(uri);
     }
 
     public getGridCoordinates(region: string, subregion: string, city: string): Observable<GridCoordinates> {
@@ -72,14 +72,14 @@ export class GeographyApiService {
         return this.httpClient.get<GridCoordinates>(uri);
     }
 
-    public get cities(): City[] {
+    public get cities(): CityDetail[] {
         return GeographyApiService.SortCities([], this._cities);
     }
 
-    public static SortCities(terms: string[], cities: City[]): City[] {
+    public static SortCities(terms: string[], cities: CityDetail[]): CityDetail[] {
         return (cities ?? []).sort((c1, c2) => {
-            const r1 = (c1?.region ?? '').toLocaleUpperCase();
-            const r2 = (c2?.region ?? '').toLocaleUpperCase();
+            const r1 = (c1?.regionName ?? '').toLocaleUpperCase();
+            const r2 = (c2?.regionName ?? '').toLocaleUpperCase();
             const s1 = (c1?.subregion ?? '').toLocaleUpperCase();
             const s2 = (c2?.subregion ?? '').toLocaleUpperCase();
             const n1 = (c1?.name ?? '').toLocaleUpperCase();
@@ -129,9 +129,9 @@ export class GeographyApiService {
         return false;
     }
 
-    private getAllCities(): Observable<City[]> {
+    private getAllCities(): Observable<CityDetail[]> {
         const uri = `${environment.apiUrl}/geography/cities/all`;
-        return this.httpClient.get<City[]>(uri);
+        return this.httpClient.get<CityDetail[]>(uri);
     }
 }
 

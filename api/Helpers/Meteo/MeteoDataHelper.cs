@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Generic;
+using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Models.Meteo;
 using Serilog;
 using System;
@@ -37,14 +38,17 @@ namespace ocpa.ro.api.Helpers.Meteo
         private readonly string _dataFolder;
         private readonly string[] _dbPaths = new string[DbCount];
         private readonly SemaphoreSlim _lock = new(1, 1);
+        private readonly IGeographyHelper _geographyHelper;
 
         #endregion
 
         #region Constructor (DI)
 
-        public MeteoDataHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
+        public MeteoDataHelper(IWebHostEnvironment hostingEnvironment, ILogger logger, IGeographyHelper geographyHelper)
             : base(hostingEnvironment, logger)
         {
+            _geographyHelper = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
+
             _dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Meteo");
 
             for (int i = 0; i < _dbPaths.Length; i++)
@@ -54,7 +58,7 @@ namespace ocpa.ro.api.Helpers.Meteo
 
                 // "Touch" the databases to ensure they're created
                 using var db = MeteoDB.OpenOrCreate(_dbPaths[i], false);
-                _ = db.Regions.ToArray();
+                _ = db.Data.FirstOrDefault();
             }
 
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
@@ -264,7 +268,7 @@ namespace ocpa.ro.api.Helpers.Meteo
             try
             {
                 var x = database.Data
-                    .Where(d => d.RegionId == 1 && d.R == 0 && d.C == 0)
+                    .Where(d => d.RegionCode == _geographyHelper.FirstRegionCode && d.R == 0 && d.C == 0)
                     .OrderBy(d => d.Timestamp)
                     .Distinct();
 
@@ -291,14 +295,12 @@ namespace ocpa.ro.api.Helpers.Meteo
             return result;
         }
 
-        private static TableQuery<Data> GetData(MeteoDB database, string region, GridCoordinates gc, int skip, int take)
+        private TableQuery<Data> GetData(MeteoDB database, string regionName, GridCoordinates gc, int skip, int take)
         {
-            var regionId = (from r in database.Regions
-                            where r.Name == region
-                            select r.Id).FirstOrDefault();
+            var rgn = _geographyHelper.GetRegion(regionName);
 
             var x = database.Data
-                .Where(d => d.RegionId == regionId && d.R == gc.R && d.C == gc.C)
+                .Where(d => d.RegionCode == rgn.Code.ToUpper() && d.R == gc.R && d.C == gc.C)
                 .OrderBy(d => d.Timestamp)
                 .Skip(skip)
                 .Take(take);

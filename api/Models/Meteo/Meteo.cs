@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Models.Meteo
 {

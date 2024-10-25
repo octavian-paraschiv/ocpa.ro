@@ -1,6 +1,6 @@
-﻿using ocpa.ro.api.Models.Generic;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using ThorusCommon.IO.Converters;
 
 namespace ocpa.ro.api.Models.Sensors
 {

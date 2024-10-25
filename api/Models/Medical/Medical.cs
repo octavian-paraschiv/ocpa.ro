@@ -1,6 +1,6 @@
-﻿using ocpa.ro.api.Models.Generic;
-using System;
+﻿using System;
 using System.Text.Json.Serialization;
+using ThorusCommon.IO.Converters;
 using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Models.Medical
