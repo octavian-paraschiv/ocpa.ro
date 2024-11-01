@@ -23,20 +23,12 @@ public interface IGeographyHelper
     void ValidateSubregion(string regionName, string subregionName);
     CityDetail GetCity(string regionName, string subregionName, string cityName);
     GridCoordinates GetGridCoordinates(string regionName, string subregionName, string cityName);
-
-#if GEO_DB_INIT
-    bool Init();
-#endif
 }
 
 public class GeographyHelper : BaseHelper, IGeographyHelper
 {
     #region Private members
     private readonly GeographyDB _db;
-#if GEO_DB_INIT
-    private readonly string _dbPath;
-    private readonly string _configFilePath;
-#endif
     #endregion
 
     #region Constructor (DI)
@@ -44,16 +36,8 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
        : base(hostingEnvironment, logger)
     {
         var dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Geography");
-
-#if GEO_DB_INIT
-        _configFilePath = Path.Combine(dataFolder, "GeographicData.json");
-        _dbPath = Path.Combine(dataFolder, "Geography.db3");
-        _db = new GeographyDB(_dbPath, true);
-#else
         var dbPath = Path.Combine(dataFolder, "Geography.db3");
         _db = new GeographyDB(dbPath, false);
-#endif
-
     }
     #endregion
 
@@ -62,7 +46,6 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
 
     public IEnumerable<string> GetRegionCodes()
         => _db.Regions.AsEnumerable().Select(r => r.Code);
-
 
     public IEnumerable<string> GetRegionNames()
         => _db.Regions.AsEnumerable().Select(r => r.Name);
@@ -110,7 +93,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
                 Subregion = c.Subregion,
                 RegionId = c.RegionId,
             });
-            
+
     }
 
     public CityDetail GetCity(string regionName, string subregionName, string cityName)
@@ -179,73 +162,4 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
 
     private Region GetRegion(int regionId)
         => _db.Regions.Where(r => r.Id == regionId).FirstOrDefault();
-
-#if DB_INIT
-    public bool Init()
-    {
-        try
-        {
-            _db.PurgeAll<City>();
-            _db.PurgeAll<Region>();
-
-            string value = System.IO.File.ReadAllText(_configFilePath);
-            var regions = JsonSerializer.Deserialize<List<Models.Internal.Region>>(value);
-
-            List<Region> regionsToInsert = new List<Region>();
-            List<CityDetails> citiesToInsert = new List<CityDetails>();
-
-            foreach (var rgn in regions)
-            {
-                var r = new Region
-                {
-                    Code = rgn.Name.Substring(0, 2).ToUpper(),
-                    GridResolution = rgn.GridResolution,
-                    MaxLat = rgn.MaxLat,
-                    MinLat = rgn.MinLat,
-                    MaxLon = rgn.MaxLon,
-                    MinLon = rgn.MinLon,
-                    Name = rgn.Name,
-                };
-
-                regionsToInsert.Add(r);
-
-                foreach (var city in rgn.Cities)
-                {
-                    citiesToInsert.Add(new CityDetails
-                    {
-                        Default = city.Default,
-                        Lat = city.Latitude,
-                        Lon = city.Longitude,
-                        Name = city.Name,
-                        RegionName = r.Name,
-                        RegionCode = r.Code,
-                        Subregion = city.Subregion
-                    });
-                }
-            }
-
-            using (var db = new GeographyDB(_dbPath, true))
-            {
-                db.InsertAll(regionsToInsert);
-
-                citiesToInsert.ForEach(c => c.RegionId = GetRegion(c.RegionCode).Id);
-                _db.InsertAll(citiesToInsert.Select(c => new City
-                {
-                    Default = c.Default,
-                    RegionId = c.RegionId,
-                    Lat = c.Lat,
-                    Lon = c.Lon,
-                    Name = c.Name,
-                    Subregion = c.Subregion
-                }));
-            }
-
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-#endif
 }

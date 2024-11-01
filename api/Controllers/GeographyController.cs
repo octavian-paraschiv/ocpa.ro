@@ -135,26 +135,6 @@ namespace ocpa.ro.api.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-#if GEO_DB_INIT
-        [HttpPost("init")]
-        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        [SwaggerOperation(OperationId = "Init")]
-        [IgnoreWhenNotInDev]
-        public IActionResult Init()
-        {
-            try
-            {
-                return Ok(_geographyHelper.Init());
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return BadRequest(ex.Message);
-            }
-        }
-#endif
         #endregion
     }
 }
