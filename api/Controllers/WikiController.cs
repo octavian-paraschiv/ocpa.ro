@@ -26,7 +26,7 @@ namespace ocpa.ro.api.Controllers
         [HttpGet("{*resourcePath}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [Produces("text/html")]
+        [Produces("text/html", "text/plain")]
         [SwaggerOperation(OperationId = "GetWikiResource")]
         public async Task<IActionResult> GetWikiResource([FromRoute] string resourcePath)
         {

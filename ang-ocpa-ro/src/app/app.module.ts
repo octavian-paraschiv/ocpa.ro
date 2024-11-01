@@ -8,7 +8,7 @@ import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { ProTONEComponent } from './components/non-auth/protone/protone.component';
 import { PhotographyComponent } from './components/non-auth/photography/photography.component';
 import { ElectronicsComponent } from './components/non-auth/electronics/electronics.component';
-import { ContentApiService, GeographyApiService, MeteoApiService, ProtoneApiService } from './services/api-services';
+import { ContentApiService, GeographyApiService, MeteoApiService, ProtoneApiService, WikiService } from './services/api-services';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MeteoComponent } from './components/non-auth/meteo/meteo.component';
 import { DayRisksComponent } from './components/non-auth/meteo/day-risks/day-risks.component';
@@ -34,6 +34,7 @@ import { MenuService } from 'src/app/services/menu.service';
 import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { NgChartsModule } from 'ng2-charts';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
+import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 
 @NgModule({
     declarations: [
@@ -58,6 +59,8 @@ import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-data
 
         DayRisksComponent,
         MeteoDataBrowserComponent,
+
+        WikiViewerComponent,
 
         TempPipe,
         SpeedPipe,
@@ -135,8 +138,8 @@ import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-data
 
     ProtoneApiService,
     MeteoApiService,
-
     ContentApiService,
+    WikiService,
 
     Helper
   ],

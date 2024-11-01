@@ -4,9 +4,24 @@ import { Observable, of } from "rxjs";
 import { environment } from "src/environments/environment";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { catchError, map } from "rxjs/operators";
+import { DomSanitizer } from '@angular/platform-browser';
 import { BuildInfo, CityDetail, GridCoordinates, MeteoData, ContentUnit, MeteoDbInfo } from 'src/app/models/models-swagger';
 import * as pako from 'pako';
 import * as CryptoJS from 'crypto-js';
+
+@UntilDestroy()
+@Injectable()
+export class WikiService {
+    constructor(private readonly httpClient: HttpClient,
+        private sanitizer: DomSanitizer
+    ) {
+    }
+
+    public getWiki(location: string): Observable<string> {
+        const uri = `${environment.apiUrl}/wiki/${location}`;
+        return this.httpClient.get(uri, { responseType: 'text' });
+    }
+}
 
 @UntilDestroy()
 @Injectable()
