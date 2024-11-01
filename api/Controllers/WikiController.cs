@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Wiki;
 using Serilog;
@@ -24,24 +25,23 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("{*resourcePath}")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK, "application/octet-stream")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [Produces("text/html", "text/plain")]
         [SwaggerOperation(OperationId = "GetWikiResource")]
         public async Task<IActionResult> GetWikiResource([FromRoute] string resourcePath)
         {
             try
             {
+                string reqUrl = Request.GetDisplayUrl();
+                string reqPath = Request.Path;
+                string reqRoot = reqUrl.Replace(reqPath, string.Empty);
+
                 var ext = System.IO.Path.GetExtension(resourcePath);
                 if (ext?.Length > 0)
                 {
-                    var data = await _wikiHelper.ProcessWikiResource(resourcePath).ConfigureAwait(false);
+                    var data = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot).ConfigureAwait(false);
                     if (data?.Length > 0)
-                    {
-                        var buffer = new System.ReadOnlyMemory<byte>(data);
-                        await Response.BodyWriter.WriteAsync(buffer);
-                        return Ok();
-                    }
+                        return File(data, "application/octet-stream");
                 }
             }
             catch (Exception ex)

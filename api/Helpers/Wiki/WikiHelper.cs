@@ -11,7 +11,7 @@ namespace ocpa.ro.api.Helpers.Wiki
 {
     public interface IWikiHelper
     {
-        Task<byte[]> ProcessWikiResource(string wikiResourcePath);
+        Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot);
     }
 
     public class WikiHelper : BaseHelper, IWikiHelper
@@ -21,7 +21,7 @@ namespace ocpa.ro.api.Helpers.Wiki
         {
         }
 
-        public async Task<byte[]> ProcessWikiResource(string wikiResourcePath)
+        public async Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot)
         {
             byte[] data = null;
             try
@@ -43,7 +43,10 @@ namespace ocpa.ro.api.Helpers.Wiki
                                 .UseAdvancedExtensions()
                                 .Build();
 
-                            var body = Markdown.ToHtml(markdown, pipeline);
+                            var body = Markdown
+                                .ToHtml(markdown, pipeline)
+                                .Replace("%root%", $"{reqRoot.TrimEnd('/')}/wiki");
+
                             var html = $"<html>" +
                                 $"<head>" +
                                 $"<meta charset=\"utf-8\">" +
