@@ -226,18 +226,6 @@ namespace ocpa.ro.api.Helpers.Authentication
             return Array.Empty<AppMenu>();
         }
 
-        public RegisteredDevice GetRegisteredDevice(string deviceId)
-        {
-            try
-            {
-                return _db.Table<RegisteredDevice>().Where(d => d.DeviceId == deviceId).SingleOrDefault();
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return null;
-            }
-        }
 
         public async Task RegisterDevice(string deviceId, string ipAddress, string loginId)
         {
@@ -252,17 +240,21 @@ namespace ocpa.ro.api.Helpers.Authentication
                         DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
                     }) : "n/a";
 
-                var device = new RegisteredDevice
-                {
-                    DeviceId = deviceId,
-                    LastLoginId = loginId,
-                    LastLoginIpAddress = ipAddress,
-                    LastLoginGeoLocation = geoLocationStr,
-                    LastLoginTimestamp = DateTime.UtcNow,
-                };
+                var device =
+                    GetRegisteredDevice(deviceId, out bool found) ??
+                    new RegisteredDevice { DeviceId = deviceId };
 
-                _db.Insert(device);
+                device.LastLoginId = loginId;
+                device.LastLoginIpAddress = ipAddress;
+                device.LastLoginGeoLocation = geoLocationStr;
+                device.LastLoginTimestamp = DateTime.UtcNow;
+
+                if (found)
+                    _db.Update(device);
+                else
+                    _db.Insert(device);
             }
+
             catch (Exception ex)
             {
                 LogException(ex);
@@ -300,6 +292,28 @@ namespace ocpa.ro.api.Helpers.Authentication
             }
 
             return StatusCodes.Status400BadRequest;
+        }
+
+        public RegisteredDevice GetRegisteredDevice(string deviceId)
+            => GetRegisteredDevice(deviceId, out _);
+
+        private RegisteredDevice GetRegisteredDevice(string deviceId, out bool found)
+        {
+            RegisteredDevice device = null;
+
+            try
+            {
+                device = _db.Table<RegisteredDevice>().Where(d => d.DeviceId == deviceId).SingleOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                device = null;
+            }
+
+            found = (device != null);
+            return device;
         }
     }
 }
