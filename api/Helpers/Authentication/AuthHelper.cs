@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using ocpa.ro.api.Extensions;
+using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Models.Menus;
 using Serilog;
@@ -10,6 +11,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Text.Json;
+using System.Threading.Tasks;
 using ThorusCommon.SQLite;
 using Auth = OPMFileUploader.Authentication;
 
@@ -26,17 +29,26 @@ namespace ocpa.ro.api.Helpers.Authentication
         UserType GetUserType(int id = -1, string code = null);
 
         // ----
-        IEnumerable<PublicMenu> PublicMenus();
-        IEnumerable<AppMenu> ApplicationMenus(IIdentity identity);
+        IEnumerable<PublicMenu> PublicMenus(string deviceId);
+        IEnumerable<AppMenu> ApplicationMenus(string deviceId, IIdentity identity);
+
+        // ----
+        IEnumerable<RegisteredDevice> GetRegisteredDevices();
+        RegisteredDevice GetRegisteredDevice(string deviceId);
+        Task RegisterDevice(string deviceId, string ipAddress, string loginId);
+        int DeleteRegisteredDevice(string deviceId);
     }
 
     public class AuthHelper : BaseHelper, IAuthHelper
     {
         private readonly SQLiteConnection _db = null;
+        private readonly IGeographyHelper _geographyHelper = null;
 
-        public AuthHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
+        public AuthHelper(IWebHostEnvironment hostingEnvironment, ILogger logger, IGeographyHelper geographyHelper)
             : base(hostingEnvironment, logger)
         {
+            _geographyHelper = geographyHelper;
+
             string authDbFile = Path.Combine(_hostingEnvironment.ContentPath(), "auth.db");
             _db = new SQLiteConnection(authDbFile, SQLiteOpenFlags.ReadWrite);
         }
@@ -174,7 +186,7 @@ namespace ocpa.ro.api.Helpers.Authentication
             return null;
         }
 
-        public IEnumerable<PublicMenu> PublicMenus()
+        public IEnumerable<PublicMenu> PublicMenus(string deviceId)
         {
             try
             {
@@ -188,7 +200,7 @@ namespace ocpa.ro.api.Helpers.Authentication
             return Array.Empty<PublicMenu>();
         }
 
-        public IEnumerable<AppMenu> ApplicationMenus(IIdentity identity)
+        public IEnumerable<AppMenu> ApplicationMenus(string deviceId, IIdentity identity)
         {
             try
             {
@@ -212,6 +224,82 @@ namespace ocpa.ro.api.Helpers.Authentication
             }
 
             return Array.Empty<AppMenu>();
+        }
+
+        public RegisteredDevice GetRegisteredDevice(string deviceId)
+        {
+            try
+            {
+                return _db.Table<RegisteredDevice>().Where(d => d.DeviceId == deviceId).SingleOrDefault();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return null;
+            }
+        }
+
+        public async Task RegisterDevice(string deviceId, string ipAddress, string loginId)
+        {
+            try
+            {
+                var geoLocation = _geographyHelper != null ?
+                    await _geographyHelper.GetGeoLocation(ipAddress) : null;
+
+                var geoLocationStr = string.Equals(geoLocation?.Status, "success", StringComparison.OrdinalIgnoreCase) ?
+                    JsonSerializer.Serialize(geoLocation, new JsonSerializerOptions
+                    {
+                        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                    }) : "n/a";
+
+                var device = new RegisteredDevice
+                {
+                    DeviceId = deviceId,
+                    LastLoginId = loginId,
+                    LastLoginIpAddress = ipAddress,
+                    LastLoginGeoLocation = geoLocationStr,
+                    LastLoginTimestamp = DateTime.UtcNow,
+                };
+
+                _db.Insert(device);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+        }
+
+        public IEnumerable<RegisteredDevice> GetRegisteredDevices()
+        {
+            try
+            {
+                return _db.Table<RegisteredDevice>();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return Array.Empty<RegisteredDevice>();
+        }
+
+        public int DeleteRegisteredDevice(string deviceId)
+        {
+            try
+            {
+                var device = _db.Get<RegisteredDevice>(rd => rd.DeviceId == deviceId);
+                if (device == null)
+                    return StatusCodes.Status404NotFound;
+
+                if (_db.Delete(device) > 0)
+                    return StatusCodes.Status200OK;
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return StatusCodes.Status400BadRequest;
         }
     }
 }

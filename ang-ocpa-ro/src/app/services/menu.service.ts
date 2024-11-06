@@ -1,38 +1,42 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { combineLatest, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Menu, MenuDisplayMode, Menus } from 'src/app/models/models-swagger';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map } from 'rxjs/operators';
 import { Helper } from 'src/app/services/helper';
 import { AuthenticationService } from 'src/app/services/authentication.services';
+import { FingerprintService } from 'src/app/services/fingerprint.service';
 
 @UntilDestroy()
 @Injectable()
 export class MenuService {
     private _menus: Menus = {};
 
-    constructor(private http: HttpClient,
-        private authService: AuthenticationService) { 
+    constructor(private readonly http: HttpClient,
+        private readonly fingerprintService: FingerprintService,
+        private readonly authService: AuthenticationService) { 
     }
 
     get menus () { return this._menus; }
 
     init(): Observable<boolean> {
+        const fingerprint = this.fingerprintService.Fingerprint;
         return this.getMenus().pipe(
             untilDestroyed(this),
             map(menus => {
                 const isUserLoggedIn = this.authService.isUserLoggedIn();
-
-                this._menus.publicMenus = (menus?.publicMenus ?? [])
-                .concat({
-                    url: '/login',
-                    name: 'Login',
-                    menuIcon: 'faRightToBracket',
-                    displayMode: MenuDisplayMode.HideOnMobile
-                } as Menu)
-                .filter(m => MenuService.showMenu(m));
+                let publicMenus = (menus?.publicMenus ?? []);
+                if (fingerprint === menus?.deviceId) {
+                    publicMenus = publicMenus .concat({
+                        url: '/login',
+                        name: 'Login',
+                        menuIcon: 'faRightToBracket',
+                        displayMode: MenuDisplayMode.HideOnMobile
+                    } as Menu);
+                }
+                this._menus.publicMenus = publicMenus.filter(m => MenuService.showMenu(m));
 
                 this._menus.appMenus = (menus?.appMenus ?? [])
                 .concat({
@@ -52,6 +56,14 @@ export class MenuService {
 
     private getMenus(): Observable<Menus> {
         const url = `${environment.apiUrl}/users/menus`;
+        const fingerprint = this.fingerprintService.Fingerprint;
+        
+        if (fingerprint?.length > 0) {
+            const headers = new HttpHeaders({ 'X-Device-Id': fingerprint });
+            return this.http.get<Menus>(url, { headers });
+
+        }
+
         return this.http.get<Menus>(url);
     }
 

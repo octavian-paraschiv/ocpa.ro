@@ -15,6 +15,7 @@ namespace ocpa.ro.api.Models.Menus
     {
         public IEnumerable<Menu> PublicMenus { get; set; }
         public IEnumerable<AppMenu> AppMenus { get; set; }
+        public string DeviceId { get; set; }
     }
 
     public class Menu

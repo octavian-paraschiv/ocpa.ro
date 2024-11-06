@@ -35,6 +35,7 @@ import { LogoutComponent } from 'src/app/components/auth/logout/logout.component
 import { NgChartsModule } from 'ng2-charts';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
+import { FingerprintService } from 'src/app/services/fingerprint.service';
 
 @NgModule({
     declarations: [
@@ -128,11 +129,19 @@ import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-
 
     AuthenticationService,
 
+    FingerprintService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (svc: FingerprintService) => () => svc.init().toPromise(),
+      deps: [FingerprintService],
+      multi: true
+    },
+
     MenuService,
     {
       provide: APP_INITIALIZER,
       useFactory: (svc: MenuService) => () => svc.init().toPromise(),
-      deps: [MenuService],
+      deps: [FingerprintService, MenuService],
       multi: true
     },
 

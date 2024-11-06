@@ -38,6 +38,7 @@ Environment.SetEnvironmentVariable("LOGDIR", logDir);
 #region ConfigurationResolving
 builder.Configuration.ResolveConfiguration(builder.Services, JwtConfig.SectionName, out JwtConfig jwtConfig);
 builder.Configuration.ResolveConfiguration(builder.Services, AuthConfig.SectionName, out AuthConfig _);
+builder.Configuration.ResolveConfiguration(builder.Services, GeoLocationConfig.SectionName, out GeoLocationConfig _);
 #endregion
 
 #region Services
@@ -73,6 +74,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
+
+builder.Services.AddHttpClients();
 
 builder.Services.AddSingleton<IAuthHelper, AuthHelper>();
 builder.Services.AddSingleton<IGeographyHelper, GeographyHelper>();

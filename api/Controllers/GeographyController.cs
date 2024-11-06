@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Models.Geography;
+using ocpa.ro.api.Policies;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Controllers
@@ -128,6 +131,25 @@ namespace ocpa.ro.api.Controllers
             try
             {
                 return Ok(_geographyHelper.GetGridCoordinates(region, subregion, city));
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("geolocation/{ipAddress}")]
+        [ProducesResponseType(typeof(GeoLocation), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(OperationId = "GetGeoLocation")]
+        [Authorize(Roles = "ADM")]
+        [IgnoreWhenNotInDev]
+        public async Task<IActionResult> GetGeoLocation([FromRoute] string ipAddress)
+        {
+            try
+            {
+                return Ok(await _geographyHelper.GetGeoLocation(ipAddress));
             }
             catch (Exception ex)
             {

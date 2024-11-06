@@ -34,7 +34,8 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [AllowAnonymous]
         [SwaggerOperation(OperationId = "Authenticate")]
-        public IActionResult Authenticate([FromForm] AuthenticateRequest model)
+        public IActionResult Authenticate([FromForm] AuthenticateRequest model,
+            [FromHeader(Name = "X-Device-Id")] string deviceId)
         {
             var user = _authHelper.AuthorizeUser(model);
             if (user == null)
@@ -43,6 +44,10 @@ namespace ocpa.ro.api.Controllers
             var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
             if (string.IsNullOrEmpty(rsp?.Token))
                 return Unauthorized();
+
+            // If succesfully logged in, register the device used to log in
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            _authHelper.RegisterDevice(deviceId, ipAddress, user.LoginId);
 
             return Ok(rsp);
         }
@@ -118,14 +123,20 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(Menus), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetMenus")]
         [AllowAnonymous]
-        public IActionResult GetMenus()
+        public IActionResult GetMenus([FromHeader(Name = "X-Device-Id")] string deviceId)
         {
             try
             {
+                string registeredDeviceId =
+                    _authHelper.GetRegisteredDevice(deviceId) == null ?
+                        Guid.NewGuid().ToString().Replace("-", "").ToLowerInvariant() :
+                        deviceId;
+
                 return Ok(new Menus
                 {
-                    PublicMenus = _authHelper.PublicMenus(),
-                    AppMenus = _authHelper.ApplicationMenus(HttpContext.User.Identity)
+                    PublicMenus = _authHelper.PublicMenus(deviceId),
+                    AppMenus = _authHelper.ApplicationMenus(deviceId, HttpContext.User.Identity),
+                    DeviceId = registeredDeviceId
                 });
             }
             catch (Exception ex)

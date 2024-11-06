@@ -76,6 +76,32 @@ export enum ContentUnitType {
     File = "File",
 }
 
+export interface GeoLocation {
+    status?: string | undefined;
+    continent?: string | undefined;
+    continentCode?: string | undefined;
+    country?: string | undefined;
+    countryCode?: string | undefined;
+    region?: string | undefined;
+    regionName?: string | undefined;
+    city?: string | undefined;
+    district?: string | undefined;
+    zip?: string | undefined;
+    lat?: number;
+    lon?: number;
+    timezone?: string | undefined;
+    offset?: number;
+    currency?: string | undefined;
+    isp?: string | undefined;
+    org?: string | undefined;
+    as?: string | undefined;
+    asname?: string | undefined;
+    reverse?: string | undefined;
+    mobile?: boolean;
+    proxy?: boolean;
+    hosting?: boolean;
+}
+
 export interface GridCoordinates {
     r?: number;
     c?: number;
@@ -107,6 +133,7 @@ export enum MenuDisplayMode {
 export interface Menus {
     publicMenus?: Menu[] | undefined;
     appMenus?: AppMenu[] | undefined;
+    deviceId?: string | undefined;
 }
 
 export interface MeteoDailyData {

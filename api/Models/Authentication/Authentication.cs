@@ -58,4 +58,24 @@ namespace ocpa.ro.api.Models.Authentication
         public int Validity { get; set; }
     }
 
+    public class RegisteredDevice
+    {
+        [PrimaryKey]
+        public int Id { get; set; }
+
+        [NotNull]
+        public string DeviceId { get; set; }
+
+        [NotNull]
+        public string LastLoginId { get; set; }
+
+        [NotNull]
+        public DateTime LastLoginTimestamp { get; set; }
+
+        [NotNull]
+        public string LastLoginIpAddress { get; set; }
+
+        [NotNull]
+        public string LastLoginGeoLocation { get; set; }
+    }
 }

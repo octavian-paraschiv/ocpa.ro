@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Helpers.Geography;
@@ -23,21 +26,25 @@ public interface IGeographyHelper
     void ValidateSubregion(string regionName, string subregionName);
     CityDetail GetCity(string regionName, string subregionName, string cityName);
     GridCoordinates GetGridCoordinates(string regionName, string subregionName, string cityName);
+    Task<GeoLocation> GetGeoLocation(string ipAddress);
 }
 
 public class GeographyHelper : BaseHelper, IGeographyHelper
 {
     #region Private members
     private readonly GeographyDB _db;
+    private readonly HttpClient _client;
     #endregion
 
     #region Constructor (DI)
-    public GeographyHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
+    public GeographyHelper(IWebHostEnvironment hostingEnvironment, ILogger logger, IHttpClientFactory factory)
        : base(hostingEnvironment, logger)
     {
         var dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Geography");
         var dbPath = Path.Combine(dataFolder, "Geography.db3");
         _db = new GeographyDB(dbPath, false);
+
+        _client = factory.CreateClient("geolocation");
     }
     #endregion
 
@@ -158,6 +165,20 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
         if (!found)
             throw new ExtendedException($"Could not find any subregion named '{subregionName}' in region '{regionName}'");
     }
+
+    public async Task<GeoLocation> GetGeoLocation(string ipAddress)
+    {
+        try
+        {
+            return await _client.GetFromJsonAsync<GeoLocation>($"{ipAddress}?fields=66846719");
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
+            return null;
+        }
+    }
+
     #endregion
 
     private Region GetRegion(int regionId)
