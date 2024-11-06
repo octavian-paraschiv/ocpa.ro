@@ -26,7 +26,7 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("all")]
-        [ProducesResponseType(typeof(User[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RegisteredDevice[]), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [IgnoreWhenNotInDev]
         [SwaggerOperation(OperationId = "GetAllRegisteredDevices")]
