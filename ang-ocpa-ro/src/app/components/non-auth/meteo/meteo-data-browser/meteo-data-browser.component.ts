@@ -20,7 +20,7 @@ Chart.register(annotationPlugin);
   selector: 'app-meteo-data-browser',
   templateUrl: './meteo-data-browser.component.html'
 })
-export class MeteoDataBrowserComponent implements AfterViewInit {
+export class MeteoDataBrowserComponent {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
   icons = fas;
@@ -118,10 +118,6 @@ export class MeteoDataBrowserComponent implements AfterViewInit {
     private readonly meteoApi: MeteoApiService,
     private readonly helper: Helper,
     private readonly route: ActivatedRoute) {
-  }
-
-  ngAfterViewInit(): void {
-    console.debug(this.chart);
   }
 
   get dataGridStyle() {

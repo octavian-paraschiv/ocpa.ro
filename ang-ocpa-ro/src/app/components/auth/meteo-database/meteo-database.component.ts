@@ -41,9 +41,9 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         ngZone: NgZone,
         private readonly meteoApi: MeteoApiService,
         private readonly snackBar: MatSnackBar,
-        private readonly dialog: MatDialog
+        dialog: MatDialog
     ) { 
-        super(router, authenticationService, ngZone);
+        super(router, authenticationService, ngZone, dialog);
     }
 
     protected onInit(): void {

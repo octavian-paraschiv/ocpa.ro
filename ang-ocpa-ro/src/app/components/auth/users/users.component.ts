@@ -35,9 +35,9 @@ export class UsersComponent extends BaseAuthComponent {
         private readonly snackBar: MatSnackBar,
         private readonly userService: UserService,
         private readonly userTypeService: UserTypeService,
-        private readonly dialog: MatDialog
+        dialog: MatDialog
     ) { 
-        super(router, authenticationService, ngZone);
+        super(router, authenticationService, ngZone, dialog);
     }
 
     protected onInit() {
@@ -73,8 +73,7 @@ export class UsersComponent extends BaseAuthComponent {
                     this.snackBar.open(`User \`${user.loginId}\' succesfully saved.`, 
                         undefined, { duration: 5000 });
                 } else {
-                    this.snackBar.open(`Failed to save user ${user.loginId ?? ''}`.trimEnd(), 
-                        undefined, { duration: 5000 });
+                    this.snackBar.open('Failed to save user', undefined, { duration: 5000 });
                 }
             });
     }

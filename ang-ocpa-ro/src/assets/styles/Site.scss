@@ -84,7 +84,11 @@ input::-ms-clear {
     min-height: 98vh;
     max-width: 99vw;
     max-height: 99vh;
-  }
+}
+
+.session-expired-message .mat-dialog-container {
+    z-index: 2000;
+}
 
 /* MOBILE
 ----------------------------------------------------------*/

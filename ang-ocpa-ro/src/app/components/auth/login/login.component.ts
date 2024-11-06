@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.services';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { UserTypeService } from 'src/app/services/user-type.service';
 import { MenuService } from 'src/app/services/menu.service';
 
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
 
         this.loading = true;
         this.authenticationService.authenticate(this.f.username.value, this.f.password.value)
-            .pipe(first())
+            .pipe(first(), untilDestroyed(this))
             .subscribe({
                 next: msg => (msg?.length > 0) ? this.handleError(msg) : this.redirectToDefaultPage(),
                 error: () => this.handleError('Incorrect user name or password.')

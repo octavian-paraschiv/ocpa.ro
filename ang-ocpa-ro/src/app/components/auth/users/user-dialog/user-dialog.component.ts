@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserType, User } from 'src/app/models/models-swagger';
@@ -8,6 +9,7 @@ import { AuthenticationService } from 'src/app/services/authentication.services'
 import { UserTypeService } from 'src/app/services/user-type.service';
 import { environment } from 'src/environments/environment';
 
+@UntilDestroy()
 @Component({
     selector: 'user-dialog.component',
     templateUrl: './user-dialog.component.html'
@@ -19,7 +21,7 @@ export class UserDialogComponent implements OnInit {
     userTypes: UserType[] = undefined
 
     constructor(
-        private authenticationService: AuthenticationService,
+        private authService: AuthenticationService,
         private userTypeService: UserTypeService,
         private formBuilder: UntypedFormBuilder,
         public dialogRef: MatDialogRef<UserDialogComponent>,
@@ -29,6 +31,13 @@ export class UserDialogComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.authService.authUserChanged$
+            .pipe(untilDestroyed(this))
+            .subscribe(() => {
+                if(!this.authService.isUserLoggedIn())
+                    this.onCancel();
+            });
+
         this.editMode = this.user?.loginId?.length > 0;
 
         if (!this.user)
@@ -55,7 +64,7 @@ export class UserDialogComponent implements OnInit {
             });
         }
 
-        const loggedInUser = this.authenticationService.authUserChanged$.getValue();
+        const loggedInUser = this.authService.authUserChanged$.getValue();
 
         if (this.user.loginId === loggedInUser?.loginId)
             this.f.t1.disable();
@@ -65,7 +74,7 @@ export class UserDialogComponent implements OnInit {
     get f() { return this.userForm?.controls; }
 
     get title(): string {
-        const loggedInUser = this.authenticationService.authUserChanged$.getValue();
+        const loggedInUser = this.authService.authUserChanged$.getValue();
         return (this.editMode) ? 
             (this.user.loginId === loggedInUser?.loginId) ? 
                 `Edit <b>${this.user?.loginId}</b> user account (Logged In)` :
