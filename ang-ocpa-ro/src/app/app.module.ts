@@ -36,6 +36,8 @@ import { NgChartsModule } from 'ng2-charts';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 import { FingerprintService } from 'src/app/services/fingerprint.service';
+import { RegisteredDeviceService } from 'src/app/services/registered-device.service';
+import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
 
 @NgModule({
     declarations: [
@@ -50,6 +52,7 @@ import { FingerprintService } from 'src/app/services/fingerprint.service';
 
         UsersComponent,
         UserDialogComponent,
+        DevicesDialogComponent,
         MessageBoxComponent,
 
         MeteoDatabaseComponent,
@@ -126,7 +129,7 @@ import { FingerprintService } from 'src/app/services/fingerprint.service';
     },
 
     UserService,
-
+    RegisteredDeviceService,
     AuthenticationService,
 
     FingerprintService,

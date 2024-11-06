@@ -185,6 +185,15 @@ export interface Person {
     comment?: string | undefined;
 }
 
+export interface RegisteredDevice {
+    id?: number;
+    deviceId?: string | undefined;
+    lastLoginId?: string | undefined;
+    lastLoginTimestamp?: Date;
+    lastLoginIpAddress?: string | undefined;
+    lastLoginGeoLocation?: string | undefined;
+}
+
 export interface SensorData {
     temperature?: number;
     pressure?: number;

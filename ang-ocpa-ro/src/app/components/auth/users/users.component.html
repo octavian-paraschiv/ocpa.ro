@@ -1,4 +1,4 @@
-<div style="text-align: justify; margin-top: 1rem; margin-right: 0.5rem;">
+<div class="users-list">
     <label mat-small style="margin-bottom: 0.2rem;">Users list:</label>
     <table mat-table [dataSource]="users" >
         <!-- Add Column -->
@@ -46,7 +46,67 @@
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let user"></td>
         </ng-container>
-        <tr mat-header-row class="user-header-row" *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row class="user-row" *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-header-row class="user-header-row" *matHeaderRowDef="usersColumns"></tr>
+        <tr mat-row class="user-row" *matRowDef="let row; columns: usersColumns;"></tr>
+    </table>
+</div>
+
+<div class="devices-list">
+    <label mat-small style="margin-bottom: 0.2rem;">Registered devices:</label>
+    <table mat-table [dataSource]="devices">
+        <!-- View Column -->
+        <ng-container matColumnDef="device-view">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let device">
+                <a class="table-link" (click)="onViewDevice(device)" title="View device '{{device.deviceId}}'">
+                    <fa-icon [icon]="faEye" [transform]="size"></fa-icon>
+                </a>
+            </td>
+        </ng-container>
+        <!-- Delete Column -->
+        <ng-container matColumnDef="device-delete">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let device">
+                <a class="table-link" (click)="onDeleteDevice(device.loginId)" title="Delete '{{device.deviceId}}'">
+                    <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
+                </a>
+            </td>
+        </ng-container>
+         <!-- DeviceId Column -->
+         <ng-container matColumnDef="device-deviceId">
+            <th mat-header-cell *matHeaderCellDef>Device ID</th>
+            <td mat-cell *matCellDef="let device">
+                <span>{{device.deviceId}}</span>
+            </td>
+        </ng-container>
+        <!-- LoginId Column -->
+        <ng-container matColumnDef="device-loginId">
+            <th mat-header-cell *matHeaderCellDef>Last Login ID</th>
+            <td mat-cell *matCellDef="let device">
+                <span>{{device.lastLoginId}}</span>
+            </td>
+        </ng-container>
+        <!-- Timestamp Column -->
+        <ng-container matColumnDef="device-timestamp">
+            <th mat-header-cell *matHeaderCellDef>Last Login Timestamp</th>
+            <td mat-cell *matCellDef="let device">
+                <span>{{device.lastLoginTimestamp}}</span>
+            </td>
+        </ng-container>
+        <!-- IP Address Column -->
+        <ng-container matColumnDef="device-ipaddress">
+            <th mat-header-cell *matHeaderCellDef>Last Login IP Address</th>
+            <td mat-cell *matCellDef="let device">
+                <span>{{device.lastLoginIpAddress}}</span>
+            </td>
+        </ng-container>
+       
+        <!-- Filler Column -->
+        <ng-container matColumnDef="filler">
+           <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let device"></td>
+        </ng-container>
+        <tr mat-header-row class="user-header-row" *matHeaderRowDef="devicesColumns"></tr>
+        <tr mat-row class="user-row" *matRowDef="let row; columns: devicesColumns;"></tr>
     </table>
 </div>
