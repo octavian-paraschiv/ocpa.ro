@@ -252,7 +252,10 @@ namespace ocpa.ro.api.Helpers.Authentication
                 if (found)
                     _db.Update(device);
                 else
+                {
+                    device.Id = (_db.Table<RegisteredDevice>().OrderByDescending(u => u.Id).FirstOrDefault()?.Id ?? 0) + 1;
                     _db.Insert(device);
+                }
             }
 
             catch (Exception ex)
