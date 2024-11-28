@@ -19,7 +19,10 @@ export class WikiService {
 
     public getWiki(location: string): Observable<string> {
         const uri = `${environment.apiUrl}/wiki/${location}`;
-        return this.httpClient.get(uri, { responseType: 'text' });
+        return this.httpClient.get(uri, { 
+            responseType: 'text',
+            headers: { 'Cache-Control': 'no-cache' }
+        });
     }
 }
 

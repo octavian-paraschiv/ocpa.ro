@@ -15,6 +15,7 @@ namespace ocpa.ro.api.Helpers.Wiki
         private byte[] _data;
         private readonly HttpClient _client;
         private readonly ManualResetEventSlim _fetchCompleted;
+        private readonly object _dataLock = new object();
 
         public CaasHelper(IWebHostEnvironment hostingEnvironment, ILogger logger, IHttpClientFactory factory)
             : base(hostingEnvironment, logger)
@@ -25,20 +26,23 @@ namespace ocpa.ro.api.Helpers.Wiki
 
         public byte[] GetNewCat(string resourcePath, string queryString)
         {
-            var dataToReturn = _data;
+            byte[] dataToReturn = null;
+
+            lock (_dataLock) { dataToReturn = _data; }
 
             _fetchCompleted.Reset();
 
             ThreadPool.QueueUserWorkItem(async _ =>
             {
-                _data = await _client.GetByteArrayAsync($"{resourcePath}{queryString}");
+                var data = await _client.GetByteArrayAsync($"{resourcePath}{queryString}");
+                lock (_dataLock) { _data = data; }
                 _fetchCompleted.Set();
             });
 
             if (dataToReturn == null)
             {
                 _fetchCompleted.Wait();
-                dataToReturn = _data;
+                lock (_dataLock) { _data = dataToReturn; }
             }
 
             return dataToReturn;

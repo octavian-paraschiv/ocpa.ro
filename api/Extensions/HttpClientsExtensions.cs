@@ -26,6 +26,7 @@ namespace ocpa.ro.api.Extensions
                 var settings = serviceProvider.GetRequiredService<IOptions<CaasConfig>>().Value;
                 var uriBuilder = new UriBuilder(settings.BaseUrl);
                 client.BaseAddress = uriBuilder.Uri;
+                client.DefaultRequestHeaders.TryAddWithoutValidation("Cache-Control", "no-cache");
 
             }).HandleCertificateErrors();
 
