@@ -5,6 +5,7 @@ using ocpa.ro.api.Helpers.Wiki;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -27,11 +28,11 @@ namespace ocpa.ro.api.Controllers
         [HttpGet("{*resourcePath}")]
         [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK, "image/gif")]
         [SwaggerOperation(OperationId = "GetNewCat")]
-        public IActionResult GetNewCat([FromRoute] string resourcePath)
+        public async Task<IActionResult> GetNewCat([FromRoute] string resourcePath)
         {
             try
             {
-                var data = _helper.GetNewCat(resourcePath, Request.QueryString.Value);
+                var data = await _helper.GetNewCat(resourcePath, Request.QueryString.Value);
                 if (data?.Length > 0)
                     return File(data, "image/gif");
             }

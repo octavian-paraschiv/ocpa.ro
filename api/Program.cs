@@ -91,6 +91,8 @@ builder.Services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
 builder.Services.AddTransient<IMultipartRequestHelper, MultipartRequestHelper>();
 builder.Services.AddTransient<IWikiHelper, WikiHelper>();
 
+builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSerilog(builder.Configuration);
 
 builder.Services

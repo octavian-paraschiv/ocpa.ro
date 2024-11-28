@@ -1,51 +1,77 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Distributed;
 using Serilog;
+using System;
 using System.Net.Http;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Helpers.Wiki
 {
     public interface ICaasHelper
     {
-        byte[] GetNewCat(string resourcePath, string queryString);
+        Task<byte[]> GetNewCat(string resourcePath, string queryString);
     }
 
     public class CaasHelper : BaseHelper, ICaasHelper
     {
-        private byte[] _data;
+        private const string CacheKey = "cat";
         private readonly HttpClient _client;
-        private readonly ManualResetEventSlim _fetchCompleted;
-        private readonly object _dataLock = new object();
+        private readonly IDistributedCache _cache;
 
-        public CaasHelper(IWebHostEnvironment hostingEnvironment, ILogger logger, IHttpClientFactory factory)
+        public CaasHelper(IWebHostEnvironment hostingEnvironment, ILogger logger,
+            IHttpClientFactory factory, IDistributedCache cache)
             : base(hostingEnvironment, logger)
         {
             _client = factory.CreateClient("caas");
-            _fetchCompleted = new ManualResetEventSlim(false);
+            _cache = cache;
         }
 
-        public byte[] GetNewCat(string resourcePath, string queryString)
+        public async Task<byte[]> GetNewCat(string resourcePath, string queryString)
         {
-            byte[] dataToReturn = null;
+            byte[] data = null;
 
-            lock (_dataLock) { dataToReturn = _data; }
-
-            _fetchCompleted.Reset();
-
-            ThreadPool.QueueUserWorkItem(async _ =>
+            try
             {
-                var data = await _client.GetByteArrayAsync($"{resourcePath}{queryString}");
-                lock (_dataLock) { _data = data; }
-                _fetchCompleted.Set();
-            });
+                data = await _cache.GetAsync(CacheKey);
 
-            if (dataToReturn == null)
+                if (data?.Length > 0)
+                {
+                    // Fetch new cat in advance
+                    _ = FetchNewCatAsync(resourcePath, queryString).ContinueWith(task =>
+                    {
+                        if (task.IsFaulted)
+                            LogException(task.Exception);
+                    });
+
+                    return data;
+                }
+
+                data = await FetchNewCatAsync(resourcePath, queryString);
+            }
+            catch (Exception ex)
             {
-                _fetchCompleted.Wait();
-                lock (_dataLock) { _data = dataToReturn; }
+                LogException(ex);
             }
 
-            return dataToReturn;
+            return data;
+        }
+
+        private async Task<byte[]> FetchNewCatAsync(string resourcePath, string queryString)
+        {
+            byte[] data = null;
+
+            try
+            {
+                data = await _client.GetByteArrayAsync($"{resourcePath}{queryString}");
+                if (data?.Length > 0)
+                    await _cache.SetAsync(CacheKey, data);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return data;
         }
     }
 }
