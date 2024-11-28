@@ -21,6 +21,14 @@ namespace ocpa.ro.api.Extensions
 
             }).HandleCertificateErrors();
 
+            services.AddHttpClient("caas", (serviceProvider, client) =>
+            {
+                var settings = serviceProvider.GetRequiredService<IOptions<CaasConfig>>().Value;
+                var uriBuilder = new UriBuilder(settings.BaseUrl);
+                client.BaseAddress = uriBuilder.Uri;
+
+            }).HandleCertificateErrors();
+
             return services;
         }
 

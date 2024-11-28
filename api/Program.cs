@@ -39,6 +39,7 @@ Environment.SetEnvironmentVariable("LOGDIR", logDir);
 builder.Configuration.ResolveConfiguration(builder.Services, JwtConfig.SectionName, out JwtConfig jwtConfig);
 builder.Configuration.ResolveConfiguration(builder.Services, AuthConfig.SectionName, out AuthConfig _);
 builder.Configuration.ResolveConfiguration(builder.Services, GeoLocationConfig.SectionName, out GeoLocationConfig _);
+builder.Configuration.ResolveConfiguration(builder.Services, CaasConfig.SectionName, out CaasConfig _);
 #endregion
 
 #region Services
@@ -83,6 +84,7 @@ builder.Services.AddSingleton<IMeteoDataHelper, MeteoDataHelper>();
 builder.Services.AddSingleton<IMedicalDataHelper, MedicalDataHelper>();
 builder.Services.AddSingleton<IAuthorizationHandler, AuthorizePolicy>();
 builder.Services.AddSingleton<IContentHelper, ContentHelper>();
+builder.Services.AddSingleton<ICaasHelper, CaasHelper>();
 
 builder.Services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
 
