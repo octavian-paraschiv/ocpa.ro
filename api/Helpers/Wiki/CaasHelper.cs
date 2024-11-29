@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
+using ocpa.ro.api.Models.Configuration;
 using Serilog;
 using System;
 using System.IO;
@@ -19,6 +21,7 @@ namespace ocpa.ro.api.Helpers.Wiki
         private const string CatCacheKey = "cat";
         private const string DefaultCatImagePath = "Helpers/Wiki/loadcat.gif";
 
+        private readonly CaasConfig _config;
         private readonly HttpClient _client;
         private readonly IDistributedCache _cache;
         private readonly ManualResetEventSlim _terminateBackgroundProcess = new ManualResetEventSlim(false);
@@ -30,11 +33,12 @@ namespace ocpa.ro.api.Helpers.Wiki
         private readonly SemaphoreSlim _paramsSemaphore = new SemaphoreSlim(1);
 
         public CaasHelper(IWebHostEnvironment hostingEnvironment, ILogger logger,
-            IHttpClientFactory factory, IDistributedCache cache)
+            IHttpClientFactory factory, IDistributedCache cache, IOptions<CaasConfig> config)
             : base(hostingEnvironment, logger)
         {
+            _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _client = factory.CreateClient("caas");
-            _cache = cache;
         }
 
         public async Task<byte[]> GetNewCat(string resourcePath, string queryString)
@@ -95,7 +99,7 @@ namespace ocpa.ro.api.Helpers.Wiki
                         LogException(ex);
                     }
 
-                    Thread.Sleep(30000);
+                    Thread.Sleep(Math.Max(1, _config.RefreshPeriod) * 1000);
                 }
             });
         }
