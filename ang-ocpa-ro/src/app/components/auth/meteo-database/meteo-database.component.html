@@ -1,19 +1,19 @@
 <div style="text-align: justify;">
-    <label mat-small *ngIf="studioDownloadUrl?.length > 0">
-        Click <a href="{{studioDownloadUrl}}">here</a> to download the latest Thorus Weather Studio.  <!-- TRANSLATE -->
+    <label mat-small *ngIf="studioDownloadUrl?.length > 0" 
+        [innerHtml]="'meteo-db.download-studio-link' | translate: { url: studioDownloadUrl }">
     </label>
 </div>
 
 <div style="text-align: justify; margin-top: 1rem; margin-right: 0.5rem;">
-    <label mat-small style="margin-bottom: 0.2rem;">Database list:</label>  <!-- TRANSLATE -->
+    <label mat-small style="margin-bottom: 0.2rem;">{{'meteo-db.db-list' | translate}}</label>
     <table mat-table [dataSource]="databases">
 
-        <!-- Upload Column -->
+        <!-- Upload Column -->s
         <ng-container matColumnDef="db-upload">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db">
                 <a *ngIf="db.modifyable"
-                    class="table-link" (click)="upload(db)" title="Upload preview database">  <!-- TRANSLATE -->
+                    class="table-link" (click)="upload(db)" title="{{'meteo-db.db-upload' | translate}}">
                     <fa-icon [icon]="faUpload" [transform]="size"></fa-icon>
                 </a>
             </td>
@@ -24,7 +24,7 @@
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db">
                 <a *ngIf="db.dataCount > 0"
-                    class="table-link" (click)="view(db)" title="View database">  <!-- TRANSLATE -->
+                    class="table-link" (click)="view(db)" title="{{'meteo-db.db-view' | translate}}">
                     <fa-icon [icon]="faEye" [transform]="size"></fa-icon>
                 </a>
             </td>
@@ -35,7 +35,7 @@
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db">
                 <a *ngIf="!db.online && db.dataCount > 0"
-                    class="table-link" (click)="promote(db)" title="Promote as ONLINE">  <!-- TRANSLATE -->
+                    class="table-link" (click)="promote(db)" title="{{'meteo-db.db-promote' | translate}}">
                     <fa-icon [icon]="faPromote" [transform]="size"></fa-icon>
                 </a>
             </td>
@@ -43,25 +43,25 @@
 
         <!-- Name Column -->
         <ng-container matColumnDef="db-name">
-            <th mat-header-cell *matHeaderCellDef>Name</th>  <!-- TRANSLATE -->
+            <th mat-header-cell *matHeaderCellDef>{{'meteo-db.name' | translate}}</th>
             <td mat-cell *matCellDef="let db">{{db.name}}</td>
         </ng-container>
 
          <!-- Status Column -->
          <ng-container matColumnDef="db-status">
-            <th mat-header-cell *matHeaderCellDef>Status</th>  <!-- TRANSLATE -->
-            <td mat-cell *matCellDef="let db">{{ db.online ? 'ONLINE' : 'Offline' }}</td>  <!-- TRANSLATE -->
+            <th mat-header-cell *matHeaderCellDef>{{'meteo-db.status' | translate}}</th>
+            <td mat-cell *matCellDef="let db">{{ (db.online ? 'meteo-db.online' : 'meteo-db.offline') | translate }}</td>
         </ng-container>
 
          <!-- Range Column -->
          <ng-container matColumnDef="db-range">
-            <th mat-header-cell *matHeaderCellDef>Data range</th>  <!-- TRANSLATE -->
+            <th mat-header-cell *matHeaderCellDef>{{'meteo-db.range' | translate}}</th>
             <td mat-cell *matCellDef="let db">{{range(db)}}</td>
         </ng-container>
 
          <!-- Data Count Column -->
          <ng-container matColumnDef="db-length">
-            <th mat-header-cell *matHeaderCellDef>Data count</th>  <!-- TRANSLATE -->
+            <th mat-header-cell *matHeaderCellDef>{{'meteo-db.count' | translate}}</th>
             <td mat-cell *matCellDef="let db">{{db.dataCount ?? 'n/a'}}</td>
         </ng-container>
 

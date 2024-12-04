@@ -4,7 +4,6 @@ import { Observable, of } from "rxjs";
 import { environment } from "src/environments/environment";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { catchError, map } from "rxjs/operators";
-import { DomSanitizer } from '@angular/platform-browser';
 import { BuildInfo, CityDetail, GridCoordinates, MeteoData, ContentUnit, MeteoDbInfo } from 'src/app/models/models-swagger';
 import * as pako from 'pako';
 import * as CryptoJS from 'crypto-js';
@@ -13,8 +12,9 @@ import { TranslateService } from '@ngx-translate/core';
 @UntilDestroy()
 @Injectable()
 export class WikiService {
-    constructor(private readonly httpClient: HttpClient,
-        private sanitizer: DomSanitizer
+    constructor(
+        private readonly translate: TranslateService,
+        private readonly httpClient: HttpClient
     ) {
     }
 
@@ -22,7 +22,10 @@ export class WikiService {
         const uri = `${environment.apiUrl}/wiki/${location}`;
         return this.httpClient.get(uri, { 
             responseType: 'text',
-            headers: { 'Cache-Control': 'no-cache' }
+            headers: { 
+                'Cache-Control': 'no-cache',
+                'X-Language': this.translate.getBrowserLang() ?? 'en'
+            }
         });
     }
 }

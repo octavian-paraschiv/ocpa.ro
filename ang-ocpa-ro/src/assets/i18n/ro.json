@@ -1,31 +1,191 @@
 {
     "Yes": "Da",
     "No": "Nu",
+    "Close": "Inchide",
+    "OK": "OK",
+    "Cancel": "Anulare",
+    "Today": "Astazi",
+    "day-short": "z",
 
     "title": {
-        "meteo": "Prognoza Meteo by OcPa",
-        "protone": "ProTONE Player Web Site",
-        "meteo-photos": "Prognoza Meteo Animata by OcPa",
+        "meteo": "Prognoza Meteo a lui OcPa",
+        "protone": "ProTONE Player",
+        "meteo-photos": "Prognoza Animata",
         "photography": "Album Foto",
         "electronics": "Blog Electronica",
         "login": "Autentificare",
         "logout": "Deconectare",
+        "confirm": "Confirmare",
         "admin": {
             "users": "Gestionare Utilizatori",
-            "meteo-db": "Gestionare Baza De Date Meteo"
+            "meteo-db": "Gestionare Baze de Date Meteo"
         }
     },
 
     "menu": {
-        "WFOR": "Progonoza Meteo",
+        "WFOR": "Prognoza Meteo",
         "PLAY": "ProTONE Player",
         "AFOR": "Prognoza Animata",
         "ELBL": "Blog Electronica",
         "PHOT": "Album Foto",
         "MUSR": "Utilizatori",
-        "MMDB": "Baze Date Meteo",
+        "MMDB": "Baze de Date Meteo",
         "LIN": "Autentificare",
         "LOUT": "Deconectare",
         "MCNT": "Continut Site"
+    },
+
+    "wiki": {
+        "default-content": "<h5 style=\"text-align: justify;\">Nimic de vazut aici, pentru moment. Poate mai tarziu...</h5>"
+    },
+
+    "auth": {
+        "username": "Nume utilizator",
+        "username-required": "Numele de utilizator este obligatoriu.",
+        "password": "Parola",
+        "password-required": "Parola este obligatorie",
+        "enter-credentials": "Introduceti Numele de utilizator si Parola:",
+        "invalid-credentials": "Nume de utilizator sau Parola incorecta.",
+        "login-failed-1": "Utilizatorul <b>{{username}}</b> nu se poate conecta [1]",
+        "login-failed-2": "Utilizatorul <b>{{username}}</b> nu se poate conecta [2]",
+        "login-failed-3": "Utilizatorul <b>{{username}}</b> nu e asociat cu nicio aplicatie",
+        "session-expired": "Sesiunea dvs. a expirat.<br>Apasati Da pt. a ramane conectat, si Nu pt a va deconecta.",
+        "logout-desc": "Apasati butonul Deconectare daca asta intentionati. Daca vreti sa ramaneti conectat, pur si simplu selectati alt meniu."
+    },
+    
+    "meteo": {
+        "feels-like": {
+            "normal": "Temp. normala",
+            "warmer": "Mai cald",
+            "much_warmer": "Foarte cald",
+            "hot": "Canicula",
+            "colder": "Mai rece",
+            "much_colder": "Foarte rece",
+            "frost": "Ger"
+        },
+        "weather-type": {
+            "00": "Insorit",
+            "01_wind": "Vant slab",
+            "01_rain": "Ploaie slaba",
+            "01_inst": "Ploaie cu tunete",
+            "01_snow": "Ninsoare usoara",
+            "01_mix":  "Lapovita usoara",
+            "01_fog":  "Ceata matinala",
+            "01_ice":  "Burnita inghetata",
+            "02_rain": "Ploaie",
+            "02_inst": "Furtuna",
+            "02_snow": "Ninsoare",
+            "02_mix":  "Lapovita",
+            "02_fog":  "Ceata",
+            "02_ice":  "Ploaie inghetata",
+            "02_wind": "Vant",
+            "03_rain": "Ploaie intensa",
+            "03_inst": "Furtuna intensa",
+            "03_snow": "Ninsoare intensa",
+            "03_mix":  "Lapovita intensa",
+            "03_fog":  "Ceata densa",
+            "03_ice":  "Ploaie inghetata intensa",
+            "03_wind": "Vant puternic",
+            "04_rain": "Ploaie puternica",
+            "04_inst": "Furtuna severa",
+            "04_snow": "Ninsoare puternica",
+            "04_mix":  "Lapovita puternica",
+            "04_fog":  "Ceata foarte densa",
+            "04_ice":  "Ploaie inghetata puternica",
+            "04_wind": "Vant foarte puternic"
+        },
+        "risk": {
+            "intense_rain": "Ploaie intensa",
+            "intense_snow": "Ninsoare intensa",
+            "intense_mix":  "Lapovita intensa",
+            "heavy_rain": "Ploaie puternica",
+            "heavy_snow": "Ninsoare puternica",
+            "heavy_mix":  "Lapovita puternica",
+            "very_thick_fog": "Ceata foarte densa",
+            "thick_fog": "Ceata densa",
+            "heavy_wind": "Vant foarte puternic",
+            "strong_wind": "Vand puternic",
+            "squalls_hail": "Grindina / Vijelie",
+            "freezing_rain": "Ploaie inghetata"
+        },
+        "t-min": "TMin",
+        "t-max": "TMax",
+        "rain": "Ploaie",
+        "t-storm": "Sanse desc. electrice",
+        "snow-new": "Ninsoare nou depusa",
+        "snow-total": "Strat de zapada",
+        "snow-cover": "Strat:",
+        "default-hint": "Pt. a cauta o localitate, dati clic in lista de mai jos, apoi tastati numele localitatii",
+        "alt-hint": "Conitnutul {{name}} / Lungime date: {{length}}.<br>(Apasati Escape pt. a inchide fereastra)",
+        "data-hint": "<b>{{name}}</b> intre <b>{{startDate}} si {{endDate}}</b><br />Folositi butoanele +/- buttons pt. a ajunge la data dorita",
+        "data-hint-fetching": "Incarcare date pentru: <b>{{name}}</b>",
+        "empty-db": "Baza de date este goala"
+    },
+
+    "protone": {
+        "desc": "Modul de instalare recomandat pentru ProTONE este sa descarcati si sa rulati utilitarul de instalare. Va rugam, alegeti versiunea dorita de mai jos.",
+        "latest-release": "Ultima versiune ProTONE este:",
+        "earlier-releases": "Versiuni mai vechi:",
+        "dev-builds": "Versiuni de testare:",
+        "built-on": "Compilat pe:",
+        "other-info": "Alte informatii utile:",
+        "link-report-bugs": "<span><label>&nbsp;*&nbsp;Adresa&nbsp;</label><a target=\"new\" href=\"https://github.com/octavian-paraschiv/protone-suite/issues/new\">Raportare buguri</a></span>",
+        "link-source-code": "<span><label>&nbsp;*&nbsp;Adresa&nbsp;</label><a target=\"new\" href=\"https://github.com/octavian-paraschiv/protone-suite\">Cod sursa (repo Github)</a></span>",
+        "dev-requirements": "<span><label>&nbsp;*&nbsp;Cerinte pt. a compila/depana codul:&nbsp;</label><ul><li><a target=\"new\" href=\"https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&passive=false&cid=2030\">Visual Studio 2022</a></li><li><label>.NET Development workload</label></li><li><label>.NET 4.7.2 targeting pack.</label></li></ul></span>"
+    },
+
+    "users": {
+        "list": "Lista utilizatori:",
+        "add-user": "Adauga utilizator",
+        "edit-user": "Editeaza '{{loginId}}'",
+        "del-user": "Sterge '{{loginId}}'",
+        "login-id": "ID utilizator",
+        "logged-in": "[Conectat]",
+        "type": "Tip",
+        "device-list": "Dispozitiv inregistrat:",
+        "view-device": "Vizualizare dispozitiv '{{deviceId}}'",
+        "del-device": "Sterge '{{deviceId}}'",
+        "device-id": "ID dispozitiv",
+        "device-login-id": "Ultimul ID de utilizator",
+        "device-login-time": "Ultima conectare",
+        "device-login-ipaddr": "Ultima adresa IP de conectare",
+        "delete-user": "Sunteti sigur ca doriti sa stergeti utilizatorul: <b>{{loginId}}</b>?",
+        "delete-device": "Sunteti sigur ca doriti sa stergeti dispozitivul: <b>{{deviceId}}</b>?",
+        "success-save": "Utilizatorul \"{{loginId}}\" a fost sters.",
+        "error-save": "Stergerea utilziatorului a esuat"
+    },
+
+    "meteo-db": {
+        "download-studio-link": "Apasati <a href=\"{{url}}\">aici</a> pentru a descarca ultima versiune de Thorus Weather Studio.",
+        "db-list": "Lista baze date:",
+        "db-upload": "Incarcare baza date",
+        "db-view": "Vizualizare baza date",
+        "db-promote": "Promoveaza ca ACTIVA",
+        "name": "Nume",
+        "status": "Stare",
+        "online": "ACTIVA",
+        "offline": "inactiva",
+        "range": "Interval date",
+        "count": "Numar de zile",
+        "upload": "Sunteti sigur ca doriti sa incarcati un nou fisier pentru <b>{{name}}</b>?<br><br>Continuand, baza de date <b>{{name}}</b> existenta va fi suprascrisa,<br>fara posibilitate de recuperare.",
+        "success-upload": "Fisierul a fost incarcat cu succes ca '{{name}}'",
+        "error-upload": "Eroare la incarcarea fisierului selectat ca '{{name}}': {{err}}",
+        "promote": "Sunteti sigur ca vreti sa promomovati <b>{{name}}</b> ca ACTIVA?<br><br>Continuand, baza de date curent ACTIVA va fi suprascrisa,<br>fara posibilitate de recuperare",
+        "success-promote": "Baza de date '{{name}}' promovata cu succes ca ACTIVA.",
+        "error-promote": "Eroare la promovarea '{{name}}': {{err}}"
+    },
+
+    "devices-dialog": {
+        "info": "Informatii pt. dispozitivul <b>{{device}}</b>"
+    },
+
+    "user-dialog": {
+        "user-type": "Tip utilizator",
+        "password-hint": "Pentru a pastra parola existenta,<br>lasati ambele campuri Parola goale.",
+        "password-lenght-hint": "Parola trebuie sa aiba cel putin 8 caractere",
+        "password-match-hint": "Cele doua parole trebuie sa fie identice",
+        "edit-logged-in": "Editeaza utilizatorul <b>{{loginId}}</b> (Conectat)",
+        "edit": "Editeaza utilizatorul <b>{{loginId}}</b>",
+        "create": "Creeaza utilizator nou"
     }
 }

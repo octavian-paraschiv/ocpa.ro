@@ -1,14 +1,10 @@
 import { formatDate } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { UserType, User, RegisteredDevice } from 'src/app/models/models-swagger';
+import { RegisteredDevice } from 'src/app/models/models-swagger';
 import { AuthenticationService } from 'src/app/services/authentication.services';
-import { UserTypeService } from 'src/app/services/user-type.service';
-import { environment } from 'src/environments/environment';
 
 @UntilDestroy()
 @Component({
@@ -51,10 +47,6 @@ export class DevicesDialogComponent implements OnInit {
 
     onClose() {
         this.dialogRef.close();
-    }
-
-    get title(): string {
-        return `Information for device <b>${this.device?.deviceId}</b>`; // TRANSLATE
     }
 
     static showDialog(dialog: MatDialog, device: RegisteredDevice = undefined): Observable<any> {

@@ -59,8 +59,8 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
 
     upload(db: MeteoDbInfo) {
         MessageBoxComponent.show(this.dialog, {
-            title: this.translate.instant('confirmation.title'),
-            message: this.translate.instant('confirmation.upload-meteo-db', { name: db.name })
+            title: this.translate.instant('title.confirm'),
+            message: this.translate.instant('meteo-db.upload', { name: db.name })
         } as MessageBoxOptions)
         .pipe(untilDestroyed(this))
         .subscribe(res => {
@@ -71,13 +71,13 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
                         .subscribe({
                             next: () => {
                                 this.snackBar.open(
-                                    this.translate.instant('message.success-upload', { name: db.name }), 
+                                    this.translate.instant('meteo-db.success-upload', { name: db.name }), 
                                     undefined, { duration: 5000 });
                                 this.onInit();
                             },
                             error: err => {
                                 this.snackBar.open(
-                                    this.translate.instant('message.error-upload', {name: db.name, err}), 
+                                    this.translate.instant('meteo-db.error-upload', {name: db.name, err}), 
                                     undefined, { duration: 5000 });
                                     this.onInit();
                             }
@@ -96,8 +96,8 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
 
     promote(db: MeteoDbInfo) {
         MessageBoxComponent.show(this.dialog, {
-            title: this.translate.instant('confirmation.title'),
-            message: this.translate.instant('confirmation.promote-meteo-db', { name: db.name })
+            title: this.translate.instant('title.confirm'),
+            message: this.translate.instant('meteo-db.promote', { name: db.name })
         } as MessageBoxOptions)
         .pipe(untilDestroyed(this))
         .subscribe(res => {
@@ -107,13 +107,13 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
                     .subscribe({
                         next: () => {
                             this.snackBar.open(
-                                this.translate.instant('message.success-promote', {name: db.name}), 
+                                this.translate.instant('meteo-db.success-promote', {name: db.name}), 
                                 undefined, { duration: 5000 });
                             this.onInit();
                         },
                         error: err => {
                             this.snackBar.open(
-                                this.translate.instant('message.error-promote', {name: db.name, err}), 
+                                this.translate.instant('meteo-db.error-promote', {name: db.name, err}), 
                                 undefined, { duration: 5000 });
                                 this.onInit();
                         }

@@ -3,6 +3,12 @@ export enum Unit {
     Imperial 
 }
 
+export enum UnitType { 
+    Temperature,
+    Pressure,
+    Distance
+}
+
 export interface IsoCountry {
     IsoNumeric?: string;
     IsoAlpha2?: string;

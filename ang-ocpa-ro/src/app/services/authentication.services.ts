@@ -72,7 +72,7 @@ export class AuthenticationService {
             formParams, { headers, withCredentials: true } )
             .pipe(map(rsp => {
                 const authResult = this.validateAuthenticationResponse(rsp, username, password);
-                return (authResult?.length > 0) ? `message.${authResult}` : undefined
+                return (authResult?.length > 0) ? `auth.${authResult}` : undefined
             }));
     }
 

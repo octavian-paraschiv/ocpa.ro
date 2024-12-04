@@ -1,6 +1,11 @@
 {
     "Yes": "Yes",
     "No": "No",
+    "Close": "Close",
+    "OK": "OK",
+    "Cancel": "Cancel",
+    "Today": "Today",
+    "day-short": "d",
 
     "title": {
         "meteo": "OcPa's Weather Forecast",
@@ -10,6 +15,7 @@
         "electronics": "Electronics Blog",
         "login": "Login",
         "logout": "Logout",
+        "confirm": "Confirm",
         "admin": {
             "users": "Manage Users",
             "meteo-db": "Manage Meteo Database"
@@ -29,35 +35,22 @@
         "MCNT": "Site Content"
     },
 
-    "confirmation": {
-        "title": "Confirm",
-        "session-expired": "Your session has expired.<br>Press Yes if you want to stay logged in, and No otherwise.",
-        "upload-meteo-db": "Are you sure you want to upload a new file for <b>{{name}}</b>?<br><br>If you proceed, the existing <b>{{name}}</b> database will be overwritten,<br>without any possibility to recover its current contents.",
-        "promote-meteo-db": "Are you sure you want to promote <b>{{name}}</b> as online?<br><br>If you proceed, the current ONLINE database will be overwritten,<br>without any possibility to recover its current contents."
-    },
-
-    "message": {
-        "invalid-credentials": "Incorrect user name or password.",
-        "success-upload": "Succesfully uploaded selected file as '{{name}}'",
-        "success-promote": "Database '{{name}}' succesfully promoted to online.",
-        "error-upload": "Error while uploading selected file as '{{name}}': {{err}}",
-        "error-promote": "Error while promoting '{{name}}': {{err}}",
-        "login-failed-1": "User <b>{{username}}</b> cannot log in [1]",
-        "login-failed-2": "User <b>{{username}}</b> cannot log in [2]",
-        "login-failed-3": "User <b>{{username}}</b> does not have any application roles"
-    },
-
     "wiki": {
         "default-content": "<h5 style=\"text-align: justify;\">Nothing here for now. Please stay tuned.</h5>"
     },
 
-    "label": {
+    "auth": {
         "username": "User name",
         "username-required": "User name is required",
         "password": "Password",
         "password-required": "Password is required",
         "enter-credentials": "Please enter your username and password:",
-        "logout-desc": "If you really intend to log out, please press the Logout button below. Otherwise, just navigate away from this page."
+        "invalid-credentials": "Incorrect user name or password.",
+        "login-failed-1": "User <b>{{username}}</b> cannot log in [1]",
+        "login-failed-2": "User <b>{{username}}</b> cannot log in [2]",
+        "login-failed-3": "User <b>{{username}}</b> is not associated with any application",
+        "session-expired": "Your session has expired.<br>Press Yes if you want to stay logged in, and No to log out.",
+        "logout-desc": "Press Logout if this is your intention. If you want to stay logged in, simply select other menu."
     },
     
     "meteo": {
@@ -100,6 +93,99 @@
             "04_fog":  "Very thick fog",
             "04_ice":  "Heavy icy rain",
             "04_wind": "Heavy Wind"
-        }
+        },
+        "risk": {
+            "intense_rain": "Intense rain",
+            "intense_snow": "Intense snow",
+            "intense_mix":  "Intense sleet",
+            "heavy_rain": "Heavy rain",
+            "heavy_snow": "Heavy snow",
+            "heavy_mix":  "Heavy sleet",
+            "very_thick_fog": "Very thick fog",
+            "thick_fog": "Thick fog",
+            "heavy_wind": "Heavy Wind",
+            "strong_wind": "Strong Wind",
+            "squalls_hail": "Squalls / Hail",
+            "freezing_rain": "Freezing Rain"
+        },
+        "t-min": "TMin",
+        "t-max": "TMax",
+        "rain": "Rain",
+        "t-storm": "TStorm Odds",
+        "snow-new": "New Snow",
+        "snow-total": "Snow Cover",
+        "snow-cover": "Cover:",
+        "default-hint": "To search a city, click/tap in the drop list below, then type the city name.",
+        "alt-hint": "Contents of {{name}} / Data length: {{length}}.<br>(Press Escape to close the window)",
+        "data-hint": "<b>{{name}}</b> between <b>{{startDate}} and {{endDate}}</b><br />Use the +/- buttons to go the desired date.",
+        "data-hint-fetching": "Fetching data for: <b>{{name}}</b>",
+        "empty-db": "The database is empty"
+    },
+
+    "protone": {
+        "desc": "The recommended way to install ProTONE is to download and run the Installer. Please choose the desired version from below.",
+        "latest-release": "The latest ProTONE release is:",
+        "earlier-releases": "Earlier releases:",
+        "dev-builds": "Dev/Tester builds:",
+        "built-on": "Built on:",
+        "other-info": "Other Useful information:",
+        "link-report-bugs": "<span><label>&nbsp;*&nbsp;Link to&nbsp;</label><a target=\"new\" href=\"https://github.com/octavian-paraschiv/protone-suite/issues/new\">Report ProTONE Bugs</a></span>",
+        "link-source-code": "<span><label>&nbsp;*&nbsp;Link to&nbsp;</label><a target=\"new\" href=\"https://github.com/octavian-paraschiv/protone-suite\">Source Code (Github repo)</a></span>",
+        "dev-requirements": "<span><label>&nbsp;*&nbsp;Required for building/debugging the code:&nbsp;</label><ul><li><a target=\"new\" href=\"https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&passive=false&cid=2030\">Visual Studio 2022</a></li><li><label>.NET Development workload</label></li><li><label>.NET 4.7.2 targeting pack.</label></li></ul></span>"
+    },
+
+    "users": {
+        "list": "Users list:",
+        "add-user": "Add new user",
+        "edit-user": "Edit '{{loginId}}'",
+        "del-user": "Delete '{{loginId}}'",
+        "login-id": "Login ID",
+        "logged-in": "[Logged in]",
+        "type": "Type",
+        "device-list": "Registered devices:",
+        "view-device": "View device '{{deviceId}}'",
+        "del-device": "Delete '{{deviceId}}'",
+        "device-id": "Device ID",
+        "device-login-id": "Last Login ID",
+        "device-login-time": "Last Login Timestamp",
+        "device-login-ipaddr": "Last Login IP Address",
+        "delete-user": "Are you sure you want to delete user: <b>{{loginId}}</b>?",
+        "delete-device": "Are you sure you want to forget device: <b>{{deviceId}}</b>?",
+        "success-save": "User \"{{loginId}}\" succesfully saved.",
+        "error-save": "Failed to save user"
+    },
+
+    "meteo-db": {
+        "download-studio-link": "Click <a href=\"{{url}}\">here</a> to download the latest Thorus Weather Studio.",
+        "db-list": "Database list:",
+        "db-upload": "Upload preview database",
+        "db-view": "View database",
+        "db-promote": "Promote as ONLINE",
+        "name": "Name",
+        "status": "Status",
+        "online": "ONLINE",
+        "offline": "Offline",
+        "range": "Data range",
+        "count": "Days count",
+        "upload": "Are you sure you want to upload a new file for <b>{{name}}</b>?<br><br>If you proceed, the existing <b>{{name}}</b> database will be overwritten,<br>without any possibility to recover its current contents.",
+        "success-upload": "Succesfully uploaded selected file as '{{name}}'",
+        "error-upload": "Error while uploading selected file as '{{name}}': {{err}}",
+        "promote": "Are you sure you want to promote <b>{{name}}</b> as online?<br><br>If you proceed, the current ONLINE database will be overwritten,<br>without any possibility to recover its current contents.",
+        "success-promote": "Database '{{name}}' succesfully promoted to online.",
+        "error-promote": "Error while promoting '{{name}}': {{err}}"
+    },
+
+    "devices-dialog": {
+        "info": "Information for device <b>{{device}}</b>"
+    },
+
+    "user-dialog": {
+        "user-type": "User Type",
+        "password-hint": "To keep the password as-is,<br>leave both password fields empty.",
+        "password-lenght-hint": "The password must have at least 8 characters",
+        "password-match-hint": "The two passwords must match.",
+        "edit-logged-in": "Edit <b>{{loginId}}</b> user account (Logged In)",
+        "edit": "Edit <b>{{loginId}}</b> user account",
+        "create": "Create new user account"
     }
 }

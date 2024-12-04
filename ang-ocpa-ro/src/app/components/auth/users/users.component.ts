@@ -61,8 +61,8 @@ export class UsersComponent extends BaseAuthComponent {
 
     onDelete(loginId: string) {
         MessageBoxComponent.show(this.dialog, {
-            title: 'Confirm', // TRANSLATE
-            message: `Are you sure you want to delete user: <b>${loginId}</b>?` // TRANSLATE
+            title: this.translate.instant('title.confirm'),
+            message: this.translate.instant('users.delete-user', { loginId: loginId })
         } as MessageBoxOptions)
         .pipe(untilDestroyed(this))
         .subscribe(res => {
@@ -83,10 +83,11 @@ export class UsersComponent extends BaseAuthComponent {
             ).subscribe(user => {
                 if (user) {
                     this.onInit();
-                    this.snackBar.open(`User \`${user.loginId}\' succesfully saved.`, // TRANSLATE
+                    this.snackBar.open(this.translate.instant('users.success-save', { loginId: user.loginId }),
                         undefined, { duration: 5000 });
                 } else {
-                    this.snackBar.open('Failed to save user', undefined, { duration: 5000 }); // TRANSLATE
+                    this.snackBar.open(this.translate.instant('users.error-save'), 
+                        undefined, { duration: 5000 });
                 }
             });
     }
@@ -102,8 +103,8 @@ export class UsersComponent extends BaseAuthComponent {
 
     onDeleteDevice(deviceId: string) {
         MessageBoxComponent.show(this.dialog, {
-            title: 'Confirm', // TRANSLATE
-            message: `Are you sure you want to forget device: <b>${deviceId}</b>?` // TRANSLATE
+            title: this.translate.instant('title.confirm'),
+            message: this.translate.instant('users.delete-device', { deviceId : deviceId })
         } as MessageBoxOptions)
         .pipe(untilDestroyed(this))
         .subscribe(res => {

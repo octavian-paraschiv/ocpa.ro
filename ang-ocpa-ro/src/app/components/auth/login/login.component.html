@@ -1,17 +1,17 @@
 ﻿<mat-card class="mat-card-login">
     <mat-card-header>
-        <mat-card-subtitle>{{'label.enter-credentials' | translate}}</mat-card-subtitle>
+        <mat-card-subtitle>{{'auth.enter-credentials' | translate}}</mat-card-subtitle>
     </mat-card-header>
     <mat-divider style="margin-bottom: 20px;"></mat-divider>
     <mat-card-content>
         <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">            
             <mat-form-field appearance="outline" class="login-form-control">
-                <mat-label>{{'label.username' | translate}}</mat-label>
+                <mat-label>{{'auth.username' | translate}}</mat-label>
                 <input matInput formControlName="username">
-                <mat-error *ngIf="f?.username?.errors?.required">{{'label.username-required' | translate}}</mat-error>
+                <mat-error *ngIf="f?.username?.errors?.required">{{'auth.username-required' | translate}}</mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline" class="login-form-control">
-                <mat-label>{{'label.password' | translate}}</mat-label>
+                <mat-label>{{'auth.password' | translate}}</mat-label>
                 <input input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
                 <div class="password-hide-icon"
                     matSuffix
@@ -21,7 +21,7 @@
                     [attr.aria-pressed]="hide">
                         <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                   </div>
-                <mat-error *ngIf="f?.password?.errors?.required">{{'label.password-required' | translate}}</mat-error>
+                <mat-error *ngIf="f?.password?.errors?.required">{{'auth.password-required' | translate}}</mat-error>
             </mat-form-field>
             <button mat-raised-button color="primary" [disabled]="loading" class="login-form-control" style="margin-bottom: 10px;">
                 {{'title.login' | translate}}

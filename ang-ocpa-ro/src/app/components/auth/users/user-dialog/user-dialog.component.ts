@@ -77,9 +77,9 @@ export class UserDialogComponent implements OnInit {
         const loggedInUser = this.authService.authUserChanged$.getValue();
         return (this.editMode) ? 
             (this.user.loginId === loggedInUser?.loginId) ? 
-                `Edit <b>${this.user?.loginId}</b> user account (Logged In)` : // TRANSLATE
-                `Edit <b>${this.user?.loginId}</b> user account` :
-            'Create new user account'
+                'user-dialog.edit-logged-in' : 
+                'user-dialog.edit' :
+            'user-dialog.create';
     }
 
     passwordMatch(): ValidatorFn {

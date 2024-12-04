@@ -85,13 +85,13 @@
                         <td mat-cell *matCellDef="let md" class="{{centerCellClass(md)}}">
                             <div class="temp-high-cell">
                                 <fa-icon class="temp-symbol" [icon]="icons['faTemperatureThreeQuarters']" transform="grow-10"></fa-icon>
-                                <label class="temp-actual">{{md.tMaxActual | temp}}</label>
-                                <label class="temp-normal">[{{md.tMaxNormal | temp}}]</label>
+                                <label class="temp-actual">{{md.tMaxActual | temp: unit}}</label>
+                                <label class="temp-normal">[{{md.tMaxNormal | temp: unit}}]</label>
                             </div>
                             <div class="temp-low-cell">
                                 <fa-icon class="temp-symbol" [icon]="icons['faTemperatureQuarter']" transform="grow-10"></fa-icon>
-                                <label class="temp-actual">{{md.tMinActual | temp}}</label>
-                                <label class="temp-normal">[{{md.tMinNormal | temp}}]</label>
+                                <label class="temp-actual">{{md.tMinActual | temp: unit}}</label>
+                                <label class="temp-normal">[{{md.tMinNormal | temp: unit}}]</label>
                             </div>
                         </td>
                     </ng-container>
@@ -113,7 +113,9 @@
                                     <fa-icon [icon]="icons['faSnowflake']"></fa-icon>
                                     <label *ngIf="md.snow > 0" class="meteo-mat-small detail">&nbsp;{{ md.snow | distance: unit }}</label>
                                     <label *ngIf="md.snowCover > 0" class="meteo-mat-small detail">
-                                        <b><i>&nbsp;(Cover: {{ md.snowCover | distance: unit }})</i></b>  <!-- TRANSLATE -->
+                                        <b><i>
+                                            &nbsp;({{'meteo.snow-cover' | translate}} {{ md.snowCover | distance: unit }})
+                                        </i></b>
                                     </label>
                                 </div>
                                 <div *ngIf="md?.rain > 0" class="detail-rain">
@@ -147,17 +149,17 @@
         </div>
 
         <button id="btnDate" class="gotoStart" (click)="selectDate(-1000)">|&lt;</button>
-        <button class="minus7" (click)="selectDate(-7)">&lt;&nbsp;7d</button>  <!-- TRANSLATE -->
-        <button class="minus1" (click)="selectDate(-1)">&lt;&nbsp;1d</button>  <!-- TRANSLATE -->
-        <button class="zero" (click)="selectDate(0)">Today</button>  <!-- TRANSLATE -->
-        <button class="plus1" (click)="selectDate(1)">1d&nbsp;&gt;</button>  <!-- TRANSLATE -->
-        <button class="plus7" (click)="selectDate(7)">7d&nbsp;&gt;</button>  <!-- TRANSLATE -->
+        <button class="minus7" (click)="selectDate(-7)">&lt;&nbsp;7{{'day-short' | translate}}</button>
+        <button class="minus1" (click)="selectDate(-1)">&lt;&nbsp;1{{'day-short' | translate}}</button>
+        <button class="zero" (click)="selectDate(0)">{{'Today' | translate}}</button>
+        <button class="plus1" (click)="selectDate(1)">1{{'day-short' | translate}}&nbsp;&gt;</button>
+        <button class="plus7" (click)="selectDate(7)">7{{'day-short' | translate}}&nbsp;&gt;</button>
         <button class="gotoEnd" (click)="selectDate(1000)">&gt;|</button> 
 
     </ng-container>
 
     <ng-container *ngIf="!isFetching && meteoData?.length === 0" >
-        <label mat-small class="meteo-data-grid-empty">The database has no data</label>  <!-- TRANSLATE -->
+        <label mat-small class="meteo-data-grid-empty">{{'meteo.empty-db' | translate }}</label>
     </ng-container>
 
     <ng-container *ngIf="isFetching" >

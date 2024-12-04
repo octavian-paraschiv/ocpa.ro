@@ -52,8 +52,8 @@ export abstract class BaseAuthComponent extends BaseLifecycleComponent {
                     data: {
                         isSessionTimeoutMessage: true,
                         noTimeout: 15000,
-                        title: this.translate.instant('confirmation.title'),
-                        message: this.translate.instant('confirmation.session-expired'),
+                        title: this.translate.instant('title.confirm'),
+                        message: this.translate.instant('auth.session-expired'),
                         
                     } as MessageBoxOptions,
                     panelClass: 'session-expired-message'

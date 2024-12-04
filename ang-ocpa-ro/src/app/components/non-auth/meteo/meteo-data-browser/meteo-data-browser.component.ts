@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { OnInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
@@ -21,7 +21,7 @@ Chart.register(annotationPlugin);
   selector: 'app-meteo-data-browser',
   templateUrl: './meteo-data-browser.component.html'
 })
-export class MeteoDataBrowserComponent {
+export class MeteoDataBrowserComponent implements OnInit  {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
   icons = fas;
@@ -30,8 +30,10 @@ export class MeteoDataBrowserComponent {
   dbi = -1;
   defaultHint = true;
 
-  // TRANSLATE
-  hint = 'To search a city, click/tap in the drop list below, then type the city name.';
+  // CONVERT UNITS
+  unit = Unit.Metric;
+
+  hint = '';
 
   initialized = false;
   isFetching = false;
@@ -124,6 +126,10 @@ export class MeteoDataBrowserComponent {
     private readonly route: ActivatedRoute) {
   }
 
+  ngOnInit() {
+    this.hint = this.translate.instant('meteo.default-hint');
+  }
+
   get dataGridStyle() {
     if (Helper.today)
       return { 'height': `${this.dataGridHeight}px` };
@@ -132,12 +138,14 @@ export class MeteoDataBrowserComponent {
   }
 
   get dataHint(): string {
-    return this.isFetching ? 
-    // TRANSLATE
-      `Fetching data for: <b>${location}</b>` :
-      (this.meteoData?.length > 0) ?
-        `<b>${this.lookupCity}</b> between <b>${this.meteoData[0].date} and ${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the +/- buttons to go the desired date.` : 
-        '';
+    const key = this.isFetching ? 'meteo.data-hint-fetching' :
+      (this.meteoData?.length > 0) ? 'meteo.data-hint' : '';
+
+    return this.translate.instant(key, { 
+      name: location, 
+      startDate: this.meteoData[0].date,
+      endDate: this.meteoData[this.meteoData.length - 1].date
+    });
   }
 
   onDropDownFocused(focused: boolean) {
@@ -250,10 +258,11 @@ export class MeteoDataBrowserComponent {
     this.meteoApi.getData(this.dbi, this.lookupRegion, this.lookupSubregion, this.lookupCity, 0, 0)
       .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
       .subscribe(meteoApiData => {
-        if (!this.defaultHint)
-          // TRANSLATE
-          this.hint = `Contents of ${meteoApiData.name} / Data length: ${meteoApiData?.dataCount ?? 0}. 
-        (Press Escape to close the window)`
+          this.hint = this.defaultHint ?
+            this.translate.instant('meteo.default-hint') : 
+            this.translate.instant('meteo.alt-hint', 
+              { name: meteoApiData?.name, length: meteoApiData?.dataCount ?? 0 });
+
         this.processApiData(meteoApiData);
         this.isFetching = false;
       });
@@ -337,7 +346,7 @@ export class MeteoDataBrowserComponent {
         datasets: [
           {
             data: this.meteoData.map(md => md.tMaxActual ?? 0),
-            label: 'TMax',// TRANSLATE
+            label: this.translate.instant('meteo.t-max'),
             tension: 0.5,
             borderColor: 'red',
             borderWidth: 2,
@@ -346,7 +355,7 @@ export class MeteoDataBrowserComponent {
           },
           {
             data: this.meteoData.map(md => md.tMinActual ?? 0),
-            label: 'TMin',// TRANSLATE
+            label: this.translate.instant('meteo.t-min'),
             tension: 0.5,
             borderColor: 'blue',
             borderWidth: 2,
@@ -359,7 +368,7 @@ export class MeteoDataBrowserComponent {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
             data: this.meteoData.map(md => this.inst(md)),
-            label: 'TStorm odds',// TRANSLATE
+            label: this.translate.instant('meteo.t-storm'),
             tension: 0.5,
             borderColor: 'lime',
             backgroundColor: 'lime',
@@ -375,7 +384,7 @@ export class MeteoDataBrowserComponent {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
             data: this.meteoData.map(md => md.snow ?? 0),
-            label: 'Snow (new)',// TRANSLATE
+            label: this.translate.instant('meteo.snow-new'),
             tension: 0.5,
             borderColor: 'lightblue',
             backgroundColor: 'lightblue',
@@ -391,7 +400,7 @@ export class MeteoDataBrowserComponent {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
             data: this.meteoData.map(md => md.snowCover ?? 0),
-            label: 'Snow (total)',// TRANSLATE
+            label: this.translate.instant('meteo.snow-total'),
             tension: 0.5,
             borderColor: 'cadetblue',
             backgroundColor: 'cadetblue',
@@ -407,7 +416,7 @@ export class MeteoDataBrowserComponent {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
             data: this.meteoData.map(md => md.rain ?? 0),
-            label: 'Rain',// TRANSLATE
+            label: this.translate.instant('meteo.rain'),
             tension: 0.5,
             borderColor: 'lightgray',
             backgroundColor: 'lightgray',
@@ -607,19 +616,17 @@ export class MeteoDataBrowserComponent {
   }
 
   public buildTooltip(item: TooltipItem<"line">): string {
-    const unit = Unit.Metric;
-
     switch(item?.dataset?.label) {
-      // TRANSLATE
-      case 'TMax':
-      case 'TMin':
-        return `${item?.dataset?.label}: ${TempPipe._transform(item?.raw as number, unit)}`;;
+      case this.translate.instant('meteo.t-min'):
+      case this.translate.instant('meteo.t-max'):
+        return `${item?.dataset?.label}: ${TempPipe._transform(item?.raw as number, this.unit)}`;;
 
-      case 'Rain':
-        return `${item?.dataset?.label}: ${VolumePipe._transform(item?.raw as number, unit)}`;;
+      case this.translate.instant('meteo.rain'):
+        return `${item?.dataset?.label}: ${VolumePipe._transform(item?.raw as number, this.unit)}`;;
 
-      case 'Snow':
-        return `${item?.dataset?.label}: ${DistancePipe._transform(item?.raw as number, unit)}`;
+      case this.translate.instant('meteo.snow-new'):
+      case this.translate.instant('meteo.snow-total'):
+        return `${item?.dataset?.label}: ${DistancePipe._transform(item?.raw as number, this.unit)}`;
     }
 
     return `${item?.dataset?.label}: ${item?.raw}`;
