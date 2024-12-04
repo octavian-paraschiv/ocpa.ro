@@ -11,7 +11,7 @@ namespace ocpa.ro.api.Helpers.Wiki
 {
     public interface IWikiHelper
     {
-        Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot);
+        Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language);
     }
 
     public class WikiHelper : BaseHelper, IWikiHelper
@@ -21,16 +21,30 @@ namespace ocpa.ro.api.Helpers.Wiki
         {
         }
 
-        public async Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot)
+        public async Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language)
         {
             byte[] data = null;
             try
             {
-                wikiResourcePath = Path.Combine(_hostingEnvironment.ContentPath(), $"wiki/{wikiResourcePath}");
+                bool resourceExists = false;
+                var localizedResourcePath = Path.Combine(_hostingEnvironment.ContentPath(), $"wiki/{language}.{wikiResourcePath}");
 
-                if (File.Exists(wikiResourcePath))
+                if (File.Exists(localizedResourcePath))
                 {
-                    if (wikiResourcePath.EndsWith(".md", System.StringComparison.OrdinalIgnoreCase))
+                    // Localized Wiki resource exists, use it
+                    wikiResourcePath = localizedResourcePath;
+                    resourceExists = true;
+                }
+                else
+                {
+                    // Localized Wiki resource does not exist, check whether the default one exists
+                    wikiResourcePath = Path.Combine(_hostingEnvironment.ContentPath(), $"wiki/{wikiResourcePath}");
+                    resourceExists = File.Exists(wikiResourcePath);
+                }
+
+                if (resourceExists)
+                {
+                    if (wikiResourcePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
                     {
                         // Markdown file
                         var markdown = await File.ReadAllTextAsync(wikiResourcePath).ConfigureAwait(false);

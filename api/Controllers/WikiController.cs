@@ -6,6 +6,7 @@ using ocpa.ro.api.Helpers.Wiki;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Controllers
@@ -28,7 +29,8 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK, "application/octet-stream")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "GetWikiResource")]
-        public async Task<IActionResult> GetWikiResource([FromRoute] string resourcePath)
+        public async Task<IActionResult> GetWikiResource([FromRoute] string resourcePath,
+            [FromHeader(Name = "X-Language")] string language)
         {
             try
             {
@@ -36,10 +38,23 @@ namespace ocpa.ro.api.Controllers
                 string reqPath = Request.Path;
                 string reqRoot = reqUrl.Replace(reqPath, string.Empty);
 
+                try
+                {
+                    var ci = new CultureInfo(language);
+                    if (string.Equals(ci.TwoLetterISOLanguageName, "en", StringComparison.OrdinalIgnoreCase))
+                        language = null;
+                    else
+                        language = ci.TwoLetterISOLanguageName.ToLowerInvariant();
+                }
+                catch
+                {
+                    language = null;
+                }
+
                 var ext = System.IO.Path.GetExtension(resourcePath);
                 if (ext?.Length > 0)
                 {
-                    var data = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot).ConfigureAwait(false);
+                    var data = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot, language).ConfigureAwait(false);
                     if (data?.Length > 0)
                         return File(data, "application/octet-stream");
                 }

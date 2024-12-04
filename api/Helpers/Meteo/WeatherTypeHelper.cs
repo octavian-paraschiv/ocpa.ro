@@ -46,17 +46,17 @@ namespace ocpa.ro.api.Helpers.Meteo
             if (type == "inst" || type == "ice")
                 actualPrecipType = "rain";
             if (type == "mix")
-                actualPrecipType = "rain/snow";
+                actualPrecipType = "sleet";
 
             if (precip >= precip_extreme)
             {
                 intensity = "04";
-                risks.Add($"Heavy {actualPrecipType}");
+                risks.Add($"heavy_{actualPrecipType}");
             }
             else if (precip >= precip_heavy)
             {
                 intensity = "03";
-                risks.Add($"Intense {actualPrecipType}");
+                risks.Add($"intense_{actualPrecipType}");
             }
             else if (precip >= precip_moderate)
                 intensity = "02";
@@ -64,22 +64,22 @@ namespace ocpa.ro.api.Helpers.Meteo
                 intensity = "01";
 
             if (fog <= fog_extreme)
-                risks.Add("Very dense fog");
+                risks.Add("very_thick_fog");
             else if (fog <= fog_heavy)
-                risks.Add("Persistent fog");
+                risks.Add("thick_fog");
 
             if (wind >= wind_extreme)
-                risks.Add("Heavy wind");
+                risks.Add("heavy_wind");
             else if (wind >= wind_heavy)
-                risks.Add("Strong wind");
+                risks.Add("strong_wind");
 
             if (intensity != "00")
             {
                 if (inst >= inst_heavy)
-                    risks.Add("Squalls and hail");
+                    risks.Add("squalls_hail");
 
                 if (type == "ice")
-                    risks.Add("Freezing rain");
+                    risks.Add("freezing_rain");
 
                 return $"{intensity}_{type}";
             }
