@@ -1,0 +1,105 @@
+{
+    "Yes": "Yes",
+    "No": "No",
+
+    "title": {
+        "meteo": "OcPa's Weather Forecast",
+        "protone": "ProTONE Player Web Site",
+        "meteo-photos": "OcPa's Animated Forecast",
+        "photography": "Photo Album",
+        "electronics": "Electronics Blog",
+        "login": "Login",
+        "logout": "Logout",
+        "admin": {
+            "users": "Manage Users",
+            "meteo-db": "Manage Meteo Database"
+        }
+    },
+
+    "menu": {
+        "WFOR": "Weather Forecast",
+        "PLAY": "ProTONE Player",
+        "AFOR": "Animated Forecast",
+        "ELBL": "Electronics Blog",
+        "PHOT": "Photo Album",
+        "MUSR": "Users & Devices",
+        "MMDB": "Meteo Databases",
+        "LIN": "Login",
+        "LOUT": "Logout",
+        "MCNT": "Site Content"
+    },
+
+    "confirmation": {
+        "title": "Confirm",
+        "session-expired": "Your session has expired.<br>Press Yes if you want to stay logged in, and No otherwise.",
+        "upload-meteo-db": "Are you sure you want to upload a new file for <b>{{name}}</b>?<br><br>If you proceed, the existing <b>{{name}}</b> database will be overwritten,<br>without any possibility to recover its current contents.",
+        "promote-meteo-db": "Are you sure you want to promote <b>{{name}}</b> as online?<br><br>If you proceed, the current ONLINE database will be overwritten,<br>without any possibility to recover its current contents."
+    },
+
+    "message": {
+        "invalid-credentials": "Incorrect user name or password.",
+        "success-upload": "Succesfully uploaded selected file as '{{name}}'",
+        "success-promote": "Database '{{name}}' succesfully promoted to online.",
+        "error-upload": "Error while uploading selected file as '{{name}}': {{err}}",
+        "error-promote": "Error while promoting '{{name}}': {{err}}",
+        "login-failed-1": "User <b>{{username}}</b> cannot log in [1]",
+        "login-failed-2": "User <b>{{username}}</b> cannot log in [2]",
+        "login-failed-3": "User <b>{{username}}</b> does not have any application roles"
+    },
+
+    "wiki": {
+        "default-content": "<h5 style=\"text-align: justify;\">Nothing here for now. Please stay tuned.</h5>"
+    },
+
+    "label": {
+        "username": "User name",
+        "username-required": "User name is required",
+        "password": "Password",
+        "password-required": "Password is required",
+        "enter-credentials": "Please enter your username and password:",
+        "logout-desc": "If you really intend to log out, please press the Logout button below. Otherwise, just navigate away from this page."
+    },
+    
+    "meteo": {
+        "feels-like": {
+            "normal": "Seasonable",
+            "warmer": "Warmer",
+            "much_warmer": "Very warm",
+            "hot": "Hot",
+            "colder": "Colder",
+            "much_colder": "Very cold",
+            "frost": "Frost"
+        },
+        "weather-type": {
+            "00": "Sunny",
+            "01_wind": "Gentle wind",
+            "01_rain": "Light rain",
+            "01_inst": "Light rain & thunder",
+            "01_snow": "Light snow",
+            "01_mix":  "Light sleet",
+            "01_fog":  "Morning Fog",
+            "01_ice":  "Icy drizzle",
+            "02_rain": "Rain",
+            "02_inst": "T-Storm",
+            "02_snow": "Snow",
+            "02_mix":  "Sleet",
+            "02_fog":  "Fog",
+            "02_ice":  "Icy rain",
+            "02_wind": "Windy",
+            "03_rain": "Intense rain",
+            "03_inst": "Intense T-Storm",
+            "03_snow": "Intense snow",
+            "03_mix":  "Intense sleet",
+            "03_fog":  "Thick fog",
+            "03_ice":  "Strong icy rain",
+            "03_wind": "Strong wind",
+            "04_rain": "Heavy rain",
+            "04_inst": "Severe T-Storm",
+            "04_snow": "Heavy snow",
+            "04_mix":  "Heavy sleet",
+            "04_fog":  "Very thick fog",
+            "04_ice":  "Heavy icy rain",
+            "04_wind": "Heavy Wind"
+        }
+    }
+}

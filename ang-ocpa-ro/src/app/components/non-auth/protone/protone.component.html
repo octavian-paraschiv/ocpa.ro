@@ -1,17 +1,17 @@
 <div style="text-align: start;">
     <br>
-    <label class="mat-body">
+    <label class="mat-body">   <!-- TRANSLATE -->
         The recommended way to install ProTONE is to download and run the Installer. Please choose the desired version from below.
     </label>
     <br><br>
     <ng-container *ngIf="latestBuild">
         <ul class="no-bullets">
-            <li><label class="mat-body-strong">The latest ProTONE release is:</label></li>
+            <li><label class="mat-body-strong">The latest ProTONE release is:</label></li> v
             <li>
                 <span>
                     <label>&nbsp;*&nbsp;</label>
                     <a href="{{latestBuild.url}}">{{latestBuild.title}}</a>
-                    <label>&nbsp;[Built on: {{latestBuild.buildDate | date: 'yyyy-MM-dd' }}{{comment(latestBuild)}}]</label>
+                    <label>&nbsp;[Built on: {{latestBuild.buildDate | date: 'yyyy-MM-dd' }}{{comment(latestBuild)}}]</label>  <!-- TRANSLATE -->
                 </span>
             </li>
         </ul>
@@ -19,12 +19,12 @@
     <br>
     <ng-container *ngIf="legacyBuilds?.length> 0">
         <ul class="no-bullets">
-            <li><label class="mat-body-strong">Earlier releases:</label></li>
+            <li><label class="mat-body-strong">Earlier releases:</label></li>  <!-- TRANSLATE -->
             <li *ngFor="let bi of legacyBuilds">
                 <span>
                     <label>&nbsp;*&nbsp;</label>
                     <a href="{{bi.url}}">{{bi.title}}</a>
-                    <label>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}{{comment(bi)}}]</label>
+                    <label>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}{{comment(bi)}}]</label>  <!-- TRANSLATE -->
                 </span>
             </li>
         </ul>
@@ -32,45 +32,47 @@
     <br>
     <ng-container *ngIf="developmentBuilds?.length> 0">
         <ul class="no-bullets">
-            <li><label class="mat-body-strong">Dev/Tester builds:</label></li>
+            <li><label class="mat-body-strong">Dev/Tester builds:</label></li>   <!-- TRANSLATE -->
             <li *ngFor="let bi of developmentBuilds">
                 <span>
                     <label>&nbsp;*&nbsp;</label>
                     <a href="{{bi.url}}">{{bi.title}}</a>
-                    <label>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}{{comment(bi)}}]</label>
+                    <label>&nbsp;[Built on: {{bi.buildDate | date: 'yyyy-MM-dd' }}{{comment(bi)}}]</label>  <!-- TRANSLATE -->
                 </span>
             </li>
         </ul>
     </ng-container>
     <br>
     <ul class="no-bullets">
-        <li><label class="mat-body-strong">Other Useful information:</label></li>
+        <li><label class="mat-body-strong">Other Useful information:</label></li>  <!-- TRANSLATE -->
         <li>
             <span>
                 <label>&nbsp;*&nbsp;Link to&nbsp;</label>
+                 <!-- TRANSLATE -->
                 <a target="new" href="https://github.com/octavian-paraschiv/protone-suite/issues/new">Report ProTONE Bugs</a>
             </span>
         </li>
         <li>
             <span>
-                <label>&nbsp;*&nbsp;Link to&nbsp;</label>
+                <label>&nbsp;*&nbsp;Link to&nbsp;</label>  <!-- TRANSLATE -->
+                 <!-- TRANSLATE -->
                 <a target="new" href="https://github.com/octavian-paraschiv/protone-suite">Source Code (Github repo)</a>
             </span>
         </li>
         <li>
             <span>
-                <label>&nbsp;*&nbsp;Required for building/debugging the code:&nbsp;</label>
+                <label>&nbsp;*&nbsp;Required for building/debugging the code:&nbsp;</label>  <!-- TRANSLATE -->
                 <ul>
                     <li>
                         <a target="new" href="https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&passive=false&cid=2030">
-                            Visual Studio 2022
+                            Visual Studio 2022  <!-- TRANSLATE -->
                         </a>         
                     </li>
                     <li>
-                        <label>.NET Development workload</label>         
+                        <label>.NET Development workload</label>       <!-- TRANSLATE -->    
                     </li>
                     <li>
-                        <label>.NET 4.7.2 targeting pack.</label>         
+                        <label>.NET 4.7.2 targeting pack.</label>          <!-- TRANSLATE --> 
                     </li>
                 </ul>
             </span>

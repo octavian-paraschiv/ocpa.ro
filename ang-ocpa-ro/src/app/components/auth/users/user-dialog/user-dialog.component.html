@@ -7,12 +7,12 @@
         <form mat-dialog-content class="user-dialog-form" [formGroup]="userForm" (ngSubmit)="onOk()" style="padding: 1rem;">
             <div style="display: grid;">
                 <mat-form-field appearance="outline" class="user-form-control">
-                    <mat-label>Username</mat-label>
+                    <mat-label>Username</mat-label>  <!-- TRANSLATE -->
                     <input formControlName="u1" matInput>
-                    <mat-error *ngIf="f?.u1?.errors?.required">Username is required</mat-error>
+                    <mat-error *ngIf="f?.u1?.errors?.required">Username is required</mat-error>  <!-- TRANSLATE -->
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="user-form-control" >
-                    <mat-label>User type</mat-label>
+                    <mat-label>User type</mat-label>  <!-- TRANSLATE -->
                     <mat-select formControlName="t1">
                         <mat-option *ngFor="let userType of userTypes;" [value]="userType.id">
                           {{userType.description}}
@@ -20,7 +20,7 @@
                     </mat-select>
                 </mat-form-field>
                 <label class="mat-small domHide" [attr.domHide]="!editMode">
-                    To keep the password as-is,<br>leave both password fields empty.
+                    To keep the password as-is,<br>leave both password fields empty.  <!-- TRANSLATE -->
                 </label>
                 <mat-form-field appearance="outline" class="user-form-control">
                     <mat-label>Password</mat-label>
@@ -33,8 +33,8 @@
                         [attr.aria-pressed]="hide">
                             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                     </div>
-                    <mat-error *ngIf="f?.p1?.errors?.required">The password is required</mat-error>
-                    <mat-error *ngIf="f?.p1?.errors?.minlength">The password must have at least 8 characters</mat-error>
+                    <mat-error *ngIf="f?.p1?.errors?.required">The password is required</mat-error>  <!-- TRANSLATE -->
+                    <mat-error *ngIf="f?.p1?.errors?.minlength">The password must have at least 8 characters</mat-error>   <!-- TRANSLATE -->
                 </mat-form-field>    
                 <mat-form-field appearance="outline" class="user-form-control" >
                     <mat-label>Repeat password</mat-label>
@@ -47,13 +47,13 @@
                         [attr.aria-pressed]="hide">
                             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                     </div>
-                    <mat-error *ngIf="f?.p2?.errors?.required">The password is required</mat-error>
-                    <mat-error *ngIf="f?.p2?.errors?.minlength">The password must have at least 8 characters</mat-error>
-                    <mat-error *ngIf="f?.p2?.errors?.unmatched">The two passwords must match.</mat-error>
+                    <mat-error *ngIf="f?.p2?.errors?.required">The password is required</mat-error>  <!-- TRANSLATE -->
+                    <mat-error *ngIf="f?.p2?.errors?.minlength">The password must have at least 8 characters</mat-error>  <!-- TRANSLATE -->
+                    <mat-error *ngIf="f?.p2?.errors?.unmatched">The two passwords must match.</mat-error>  <!-- TRANSLATE -->
                 </mat-form-field>   
                 <div mat-dialog-actions class="user-form-control">
-                    <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>OK</button>
-                    <button style="margin: 0; padding: 0; " mat-raised-button (click)="onCancel()">Cancel</button>
+                    <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>OK</button>  <!-- TRANSLATE -->
+                    <button style="margin: 0; padding: 0; " mat-raised-button (click)="onCancel()">Cancel</button>  <!-- TRANSLATE -->
                 </div>
             </div>
         </form>

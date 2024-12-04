@@ -1,15 +1,12 @@
 ﻿<mat-card class="mat-card-login">
     <mat-card-header>
-        <mat-card-subtitle>
-            If you really intend to log out, please press the Logout button below. 
-            Otherwise, just navigate away from this page.
-        </mat-card-subtitle>
+        <mat-card-subtitle>{{'label.logout-desc' | translate}}</mat-card-subtitle>
     </mat-card-header>
     <mat-divider style="margin-bottom: 20px;"></mat-divider>
     <mat-card-content>
         <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">            
             <button mat-raised-button color="primary" [disabled]="loading" class="login-form-control" style="margin-bottom: 10px;">
-                Logout
+                {{'title.logout' | translate}}
             </button>
           </form>
     </mat-card-content>

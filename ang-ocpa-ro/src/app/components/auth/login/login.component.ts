@@ -4,8 +4,8 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { first } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { UserTypeService } from 'src/app/services/user-type.service';
 import { MenuService } from 'src/app/services/menu.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @UntilDestroy()
 @Component({
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     hide = true;
 
     constructor(
-        private readonly userTypeService: UserTypeService,
+        private translate: TranslateService,
         private formBuilder: UntypedFormBuilder,
         private router: Router,
         private authenticationService: AuthenticationService,
@@ -53,14 +53,13 @@ export class LoginComponent implements OnInit {
             .pipe(first(), untilDestroyed(this))
             .subscribe({
                 next: msg => (msg?.length > 0) ? this.handleError(msg) : this.redirectToDefaultPage(),
-                error: () => this.handleError('Incorrect user name or password.')
+                error: () => this.handleError('message.invalid-credentials')
             });
     }
 
     handleError(err: any) {
-        this.error = err;
+        this.error = this.translate.instant(err, { username: this.f.username.value });
         this.loading = false;
-        // this.f.password.reset();
     }
 
     redirectToDefaultPage() {

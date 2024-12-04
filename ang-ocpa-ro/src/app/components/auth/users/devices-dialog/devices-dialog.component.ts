@@ -54,7 +54,7 @@ export class DevicesDialogComponent implements OnInit {
     }
 
     get title(): string {
-        return `Information for device <b>${this.device?.deviceId}</b>`;
+        return `Information for device <b>${this.device?.deviceId}</b>`; // TRANSLATE
     }
 
     static showDialog(dialog: MatDialog, device: RegisteredDevice = undefined): Observable<any> {

@@ -1,4 +1,4 @@
-import { Component, NgZone, ViewChild } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
@@ -10,9 +10,9 @@ import { faEye, faSquareMinus, faUpload, faUpRightFromSquare } from '@fortawesom
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
-import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
 import { formatDate } from '@angular/common';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @UntilDestroy()
 @Component({
@@ -36,14 +36,15 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
     studioDownloadUrl: string = undefined;
 
     constructor(
+        translate: TranslateService,
         router: Router,
-        authenticationService: AuthenticationService,
         ngZone: NgZone,
+        authenticationService: AuthenticationService,
+        dialog: MatDialog,
         private readonly meteoApi: MeteoApiService,
-        private readonly snackBar: MatSnackBar,
-        dialog: MatDialog
+        private readonly snackBar: MatSnackBar
     ) { 
-        super(router, authenticationService, ngZone, dialog);
+        super(translate, router, authenticationService, ngZone, dialog);
     }
 
     protected onInit(): void {
@@ -58,10 +59,8 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
 
     upload(db: MeteoDbInfo) {
         MessageBoxComponent.show(this.dialog, {
-            title: 'Confirm',
-            message: `Are you sure you want to upload a new file for <b>${db.name}</b>?<br><br>
-            If you proceed, the existing <b>${db.name}</b> database will be overwritten,<br>
-            without any possibility to recover its current contents.`
+            title: this.translate.instant('confirmation.title'),
+            message: this.translate.instant('confirmation.upload-meteo-db', { name: db.name })
         } as MessageBoxOptions)
         .pipe(untilDestroyed(this))
         .subscribe(res => {
@@ -71,12 +70,14 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
                         .pipe(untilDestroyed(this))
                         .subscribe({
                             next: () => {
-                                this.snackBar.open(`Succesfully uploaded selected file as \`${db.name}\'.`, 
+                                this.snackBar.open(
+                                    this.translate.instant('message.success-upload', { name: db.name }), 
                                     undefined, { duration: 5000 });
                                 this.onInit();
                             },
                             error: err => {
-                                this.snackBar.open(`Error while uploading selected file as \`${db.name}\': ${err.toString()}`, 
+                                this.snackBar.open(
+                                    this.translate.instant('message.error-upload', {name: db.name, err}), 
                                     undefined, { duration: 5000 });
                                     this.onInit();
                             }
@@ -95,10 +96,8 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
 
     promote(db: MeteoDbInfo) {
         MessageBoxComponent.show(this.dialog, {
-            title: 'Confirm',
-            message: `Are you sure you want to promote <b>${db.name}</b> as online?<br><br>
-            If you proceed, the current ONLINE database will be overwritten,<br>
-            without any possibility to recover its current contents.`
+            title: this.translate.instant('confirmation.title'),
+            message: this.translate.instant('confirmation.promote-meteo-db', { name: db.name })
         } as MessageBoxOptions)
         .pipe(untilDestroyed(this))
         .subscribe(res => {
@@ -106,10 +105,18 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
                 this.meteoApi.promote(db.dbi ?? 0)
                     .pipe(untilDestroyed(this))
                     .subscribe({
-                        next: () => this.snackBar.open(`Database \`${db.name}\' succesfully promoted to online.`, 
-                            undefined, { duration: 5000 }),
-                        error: err => this.snackBar.open(`Error while promoting \`${db.name}\': ${err.toString()}`, 
-                            undefined, { duration: 5000 })
+                        next: () => {
+                            this.snackBar.open(
+                                this.translate.instant('message.success-promote', {name: db.name}), 
+                                undefined, { duration: 5000 });
+                            this.onInit();
+                        },
+                        error: err => {
+                            this.snackBar.open(
+                                this.translate.instant('message.error-promote', {name: db.name, err}), 
+                                undefined, { duration: 5000 });
+                                this.onInit();
+                        }
                     });
             }
         });

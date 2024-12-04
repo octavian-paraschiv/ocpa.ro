@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RegisteredDevice, User } from 'src/app/models/models-swagger';
 import { RegisteredDeviceService } from 'src/app/services/registered-device.service';
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @UntilDestroy()
 @Component({
@@ -35,16 +36,17 @@ export class UsersComponent extends BaseAuthComponent {
     devicesColumns: string[] = [ 'device-view', 'device-delete', 'device-deviceId', 'device-loginId', 'device-timestamp', 'device-ipaddress', 'filler' ];
 
     constructor(
+        translate: TranslateService,
         router: Router,
         ngZone: NgZone,
+        dialog: MatDialog,
         authenticationService: AuthenticationService,
         private readonly snackBar: MatSnackBar,
         private readonly userService: UserService,
         private readonly regDeviceService: RegisteredDeviceService,
-        private readonly userTypeService: UserTypeService,
-        dialog: MatDialog
+        private readonly userTypeService: UserTypeService
     ) { 
-        super(router, authenticationService, ngZone, dialog);
+        super(translate, router, authenticationService, ngZone, dialog);
     }
 
     protected onInit() {
@@ -59,8 +61,8 @@ export class UsersComponent extends BaseAuthComponent {
 
     onDelete(loginId: string) {
         MessageBoxComponent.show(this.dialog, {
-            title: 'Confirm',
-            message: `Are you sure you want to delete user: <b>${loginId}</b>?`
+            title: 'Confirm', // TRANSLATE
+            message: `Are you sure you want to delete user: <b>${loginId}</b>?` // TRANSLATE
         } as MessageBoxOptions)
         .pipe(untilDestroyed(this))
         .subscribe(res => {
@@ -81,10 +83,10 @@ export class UsersComponent extends BaseAuthComponent {
             ).subscribe(user => {
                 if (user) {
                     this.onInit();
-                    this.snackBar.open(`User \`${user.loginId}\' succesfully saved.`, 
+                    this.snackBar.open(`User \`${user.loginId}\' succesfully saved.`, // TRANSLATE
                         undefined, { duration: 5000 });
                 } else {
-                    this.snackBar.open('Failed to save user', undefined, { duration: 5000 });
+                    this.snackBar.open('Failed to save user', undefined, { duration: 5000 }); // TRANSLATE
                 }
             });
     }
@@ -100,8 +102,8 @@ export class UsersComponent extends BaseAuthComponent {
 
     onDeleteDevice(deviceId: string) {
         MessageBoxComponent.show(this.dialog, {
-            title: 'Confirm',
-            message: `Are you sure you want to forget device: <b>${deviceId}</b>?`
+            title: 'Confirm', // TRANSLATE
+            message: `Are you sure you want to forget device: <b>${deviceId}</b>?` // TRANSLATE
         } as MessageBoxOptions)
         .pipe(untilDestroyed(this))
         .subscribe(res => {

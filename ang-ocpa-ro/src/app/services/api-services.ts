@@ -8,6 +8,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { BuildInfo, CityDetail, GridCoordinates, MeteoData, ContentUnit, MeteoDbInfo } from 'src/app/models/models-swagger';
 import * as pako from 'pako';
 import * as CryptoJS from 'crypto-js';
+import { TranslateService } from '@ngx-translate/core';
 
 @UntilDestroy()
 @Injectable()
@@ -223,3 +224,16 @@ export class ContentApiService {
     }
 }
 
+@UntilDestroy()
+@Injectable()
+export class TranslationInitService {
+    constructor(private readonly translate: TranslateService) {
+    }
+
+    public init(): Observable<any> {
+        const lang = this.translate.getBrowserLang() ?? 'en';
+        this.translate.addLangs(['en', 'ro']);
+        this.translate.setDefaultLang('en');
+        return this.translate.use(lang);
+    }
+}

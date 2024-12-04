@@ -1,18 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { ProTONEComponent } from './components/non-auth/protone/protone.component';
 import { PhotographyComponent } from './components/non-auth/photography/photography.component';
 import { ElectronicsComponent } from './components/non-auth/electronics/electronics.component';
-import { ContentApiService, GeographyApiService, MeteoApiService, ProtoneApiService, WikiService } from './services/api-services';
+import { ContentApiService, GeographyApiService, MeteoApiService, ProtoneApiService, TranslationInitService, WikiService } from './services/api-services';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MeteoComponent } from './components/non-auth/meteo/meteo.component';
 import { DayRisksComponent } from './components/non-auth/meteo/day-risks/day-risks.component';
-import { Helper } from './services/helper';
 import { CalendarPipe, CountryCodePipe, DistancePipe, PressurePipe, SpeedPipe, TempPipe, VolumePipe } from './services/unit-transform-pipe';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
@@ -38,6 +37,17 @@ import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-
 import { FingerprintService } from 'src/app/services/fingerprint.service';
 import { RegisteredDeviceService } from 'src/app/services/registered-device.service';
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+const I18N_CONFIG = {
+  defaultLanguage: 'en',
+  loader: {
+    provide: TranslateLoader,
+    useFactory: (httpClient: HttpClient) => new TranslateHttpLoader(httpClient, './assets/i18n/', '.json'),
+    deps: [HttpClient]
+  }
+}
 
 @NgModule({
     declarations: [
@@ -75,24 +85,22 @@ import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-di
         CalendarPipe,
     ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    BrowserModule,
+    TranslateModule.forRoot(I18N_CONFIG),
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
     RouterModule.forRoot([
-          { path: '', component: MeteoComponent, data: { title: 'OcPa\'s Weather Forecast' } },
-          { path: 'meteo', component: MeteoComponent, data: { title: 'OcPa\'s Weather Forecast' } },
-
-          { path: 'protone', component: ProTONEComponent, data: { title: 'ProTONE Player Web Site' } },
-          { path: 'meteo-photos', component: MeteoPhotosComponent, data: { title: 'OcPa\'s Animated Forecast' } },
-          { path: 'photography', component: PhotographyComponent, data: { title: 'OcPa\'s Photo Album' } },
-          { path: 'electronics', component: ElectronicsComponent, data: { title: 'OcPa\'s Electronic Blog' } },
-
-          { path: 'login', component: LoginComponent, data: { title: 'Login' } },
-          { path: 'logout', component: LogoutComponent, data: { title: 'Logout' } },
-         
-          { path: 'admin/users', component: UsersComponent, data: { title: 'Manage Users' } },
-          { path: 'admin/meteo-database', component: MeteoDatabaseComponent, data: { title: 'Manage Meteo Database' } },
+          { path: '', component: MeteoComponent, data: { title: 'title.meteo' } },
+          { path: 'meteo', component: MeteoComponent, data: { title: 'title.meteo' } },
+          { path: 'protone', component: ProTONEComponent, data: { title: 'title.protone' } },
+          { path: 'meteo-photos', component: MeteoPhotosComponent, data: { title: 'title.meteo-photos' } },
+          { path: 'photography', component: PhotographyComponent, data: { title: 'title.photography' } },
+          { path: 'electronics', component: ElectronicsComponent, data: { title: 'title.electronics' } },
+          { path: 'login', component: LoginComponent, data: { title: 'title.login' } },
+          { path: 'logout', component: LogoutComponent, data: { title: 'title.logout' } },
+          { path: 'admin/users', component: UsersComponent, data: { title: 'title.admin.users' } },
+          { path: 'admin/meteo-database', component: MeteoDatabaseComponent, data: { title: 'title.admin.meteo-db' } },
     ]),
     NoopAnimationsModule,
     FontAwesomeModule,
@@ -103,6 +111,14 @@ import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-di
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+
+    TranslationInitService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (svc: TranslationInitService) => () => svc.init().toPromise(),
+      deps: [TranslationInitService],
+      multi: true
+    },
 
     GeographyApiService,
     {
@@ -151,9 +167,7 @@ import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-di
     ProtoneApiService,
     MeteoApiService,
     ContentApiService,
-    WikiService,
-
-    Helper
+    WikiService
   ],
   bootstrap: [AppComponent]
 })

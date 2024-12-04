@@ -27,6 +27,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@ng-select/ng-select": "^11.1.1",
     "@ngneat/until-destroy": "^8.1.4",
+    "@ngx-translate/core": "^16.0.3",
+    "@ngx-translate/http-loader": "^16.0.0",
     "@popperjs/core": "^2.11.6",
     "chartjs-plugin-annotation": "^3.1.0",
     "crypto-js": "^4.2.0",

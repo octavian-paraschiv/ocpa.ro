@@ -1,0 +1,31 @@
+{
+    "Yes": "Da",
+    "No": "Nu",
+
+    "title": {
+        "meteo": "Prognoza Meteo by OcPa",
+        "protone": "ProTONE Player Web Site",
+        "meteo-photos": "Prognoza Meteo Animata by OcPa",
+        "photography": "Album Foto",
+        "electronics": "Blog Electronica",
+        "login": "Autentificare",
+        "logout": "Deconectare",
+        "admin": {
+            "users": "Gestionare Utilizatori",
+            "meteo-db": "Gestionare Baza De Date Meteo"
+        }
+    },
+
+    "menu": {
+        "WFOR": "Progonoza Meteo",
+        "PLAY": "ProTONE Player",
+        "AFOR": "Prognoza Animata",
+        "ELBL": "Blog Electronica",
+        "PHOT": "Album Foto",
+        "MUSR": "Utilizatori",
+        "MMDB": "Baze Date Meteo",
+        "LIN": "Autentificare",
+        "LOUT": "Deconectare",
+        "MCNT": "Continut Site"
+    }
+}

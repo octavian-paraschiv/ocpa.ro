@@ -1,5 +1,4 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UntilDestroy } from '@ngneat/until-destroy';
@@ -18,7 +17,6 @@ export class LogoutComponent implements OnInit {
 
     constructor(
         private formBuilder: UntypedFormBuilder,
-        private router: Router,
         private authenticationService: AuthenticationService) { 
     }
 

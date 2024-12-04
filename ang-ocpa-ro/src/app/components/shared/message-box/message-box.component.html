@@ -8,10 +8,10 @@
             *ngIf="options?.message?.length > 0" [innerHtml]="options?.message"></mat-card-subtitle>
         <div mat-dialog-actions class="user-form-control">
             <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onYes()"cdkFocusInitial>
-                {{options?.yesButtonText?.length > 0 ? options?.yesButtonText : "Yes"}}
+                {{(options?.yesButtonText?.length > 0 ? options?.yesButtonText : "Yes") | translate}}
             </button>
             <button style="margin: 0; padding: 0;" mat-raised-button (click)="onNo()">
-                {{options?.noButtonText?.length > 0 ? options?.noButtonText : "No"}}
+                {{(options?.noButtonText?.length > 0 ? options?.noButtonText : "No") | translate}}
             </button>
         </div>
     </mat-card-content>

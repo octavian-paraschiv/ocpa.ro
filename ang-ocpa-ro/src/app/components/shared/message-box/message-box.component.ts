@@ -22,7 +22,6 @@ export interface MessageBoxOptions {
     templateUrl: './message-box.component.html'
 })
 export class MessageBoxComponent implements OnInit {
-
     constructor(
         private authService: AuthenticationService,
         public dialogRef: MatDialogRef<MessageBoxComponent>,

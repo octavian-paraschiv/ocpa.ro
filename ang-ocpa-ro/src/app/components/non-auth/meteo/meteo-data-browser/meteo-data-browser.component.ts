@@ -12,6 +12,7 @@ import { Unit } from 'src/app/models/models-local';
 import { DistancePipe, TempPipe, VolumePipe } from 'src/app/services/unit-transform-pipe';
 import annotationPlugin, { AnnotationOptions } from 'chartjs-plugin-annotation';
 import { BaseChartDirective } from 'ng2-charts';
+import { TranslateService } from '@ngx-translate/core';
 
 Chart.register(annotationPlugin);
 
@@ -28,6 +29,8 @@ export class MeteoDataBrowserComponent {
 
   dbi = -1;
   defaultHint = true;
+
+  // TRANSLATE
   hint = 'To search a city, click/tap in the drop list below, then type the city name.';
 
   initialized = false;
@@ -82,13 +85,13 @@ export class MeteoDataBrowserComponent {
         annotations: {
           line1: {
             type: 'line',
-            xMin: this.helper.today,
-            xMax: this.helper.today,
+            xMin: Helper.today,
+            xMax: Helper.today,
             display: true,
             borderColor: 'rgb(0, 179, 179)',
             borderWidth: 2,
             label: {
-              content: `${this.helper.today}`,
+              content: `${Helper.today}`,
               backgroundColor: 'rgb(0, 179, 179)',
               display: true,
               position: 'end'
@@ -114,14 +117,15 @@ export class MeteoDataBrowserComponent {
 
   
 
-  constructor(private readonly geoApi: GeographyApiService,
+  constructor(
+    private readonly translate: TranslateService,
+    private readonly geoApi: GeographyApiService,
     private readonly meteoApi: MeteoApiService,
-    private readonly helper: Helper,
     private readonly route: ActivatedRoute) {
   }
 
   get dataGridStyle() {
-    if (this.helper.today)
+    if (Helper.today)
       return { 'height': `${this.dataGridHeight}px` };
 
     return undefined;
@@ -129,6 +133,7 @@ export class MeteoDataBrowserComponent {
 
   get dataHint(): string {
     return this.isFetching ? 
+    // TRANSLATE
       `Fetching data for: <b>${location}</b>` :
       (this.meteoData?.length > 0) ?
         `<b>${this.lookupCity}</b> between <b>${this.meteoData[0].date} and ${this.meteoData[this.meteoData.length - 1].date}</b><br />Use the +/- buttons to go the desired date.` : 
@@ -246,6 +251,7 @@ export class MeteoDataBrowserComponent {
       .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
       .subscribe(meteoApiData => {
         if (!this.defaultHint)
+          // TRANSLATE
           this.hint = `Contents of ${meteoApiData.name} / Data length: ${meteoApiData?.dataCount ?? 0}. 
         (Press Escape to close the window)`
         this.processApiData(meteoApiData);
@@ -315,10 +321,10 @@ export class MeteoDataBrowserComponent {
 
     if (this.meteoData?.length > 0) {
       this.refreshGrid();
-      if (this.helper.today.localeCompare(this.meteoData[0].date) < 0)
+      if (Helper.today.localeCompare(this.meteoData[0].date) < 0)
         this.selectedDate = this.meteoData[0].date;
       else
-        this.selectedDate = this.helper.today;
+        this.selectedDate = Helper.today;
     }
 
     this.refreshSelMeteoData();
@@ -331,7 +337,7 @@ export class MeteoDataBrowserComponent {
         datasets: [
           {
             data: this.meteoData.map(md => md.tMaxActual ?? 0),
-            label: 'TMax',
+            label: 'TMax',// TRANSLATE
             tension: 0.5,
             borderColor: 'red',
             borderWidth: 2,
@@ -340,7 +346,7 @@ export class MeteoDataBrowserComponent {
           },
           {
             data: this.meteoData.map(md => md.tMinActual ?? 0),
-            label: 'TMin',
+            label: 'TMin',// TRANSLATE
             tension: 0.5,
             borderColor: 'blue',
             borderWidth: 2,
@@ -353,7 +359,7 @@ export class MeteoDataBrowserComponent {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
             data: this.meteoData.map(md => this.inst(md)),
-            label: 'TStorm odds',
+            label: 'TStorm odds',// TRANSLATE
             tension: 0.5,
             borderColor: 'lime',
             backgroundColor: 'lime',
@@ -369,7 +375,7 @@ export class MeteoDataBrowserComponent {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
             data: this.meteoData.map(md => md.snow ?? 0),
-            label: 'Snow (new)',
+            label: 'Snow (new)',// TRANSLATE
             tension: 0.5,
             borderColor: 'lightblue',
             backgroundColor: 'lightblue',
@@ -385,7 +391,7 @@ export class MeteoDataBrowserComponent {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
             data: this.meteoData.map(md => md.snowCover ?? 0),
-            label: 'Snow (total)',
+            label: 'Snow (total)',// TRANSLATE
             tension: 0.5,
             borderColor: 'cadetblue',
             backgroundColor: 'cadetblue',
@@ -401,7 +407,7 @@ export class MeteoDataBrowserComponent {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
             data: this.meteoData.map(md => md.rain ?? 0),
-            label: 'Rain',
+            label: 'Rain',// TRANSLATE
             tension: 0.5,
             borderColor: 'lightgray',
             backgroundColor: 'lightgray',
@@ -432,14 +438,14 @@ export class MeteoDataBrowserComponent {
         if (line2) {
           line2.xMin = this.selectedDate ?? '';
           line2.xMax = this.selectedDate ?? '';
-          line2.display = (this.selectedDate && this.selectedDate !== this.helper.today);
+          line2.display = (this.selectedDate && this.selectedDate !== Helper.today);
           line2.label.content = this.selectedDate;
           chartInstance.update();
         }
       }
       
-      let start = this.helper.isoDate(this.helper.addDays(this.selectedDate, -delta));
-      let end = this.helper.isoDate(this.helper.addDays(this.selectedDate, delta));
+      let start = Helper.isoDate(Helper.addDays(this.selectedDate, -delta));
+      let end = Helper.isoDate(Helper.addDays(this.selectedDate, delta));
 
       if (start.localeCompare(this.meteoData[0].date) < 0)
         start = this.meteoData[0].date;
@@ -454,7 +460,7 @@ export class MeteoDataBrowserComponent {
 
   meteoCellClass(date: string): string {
     return (
-      (date === this.helper.today) ? 'meteo-td-today' : 
+      (date === Helper.today) ? 'meteo-td-today' : 
       (date === this.selectedDate) ? 'meteo-td-selected' : 
       'meteo-td'
     );
@@ -502,7 +508,7 @@ export class MeteoDataBrowserComponent {
         this.resetDate();
 
       } else {
-        let newDate = this.helper.isoDate(this.helper.addDays(this.selectedDate, daysDelta));
+        let newDate = Helper.isoDate(Helper.addDays(this.selectedDate, daysDelta));
         const startDate = this.meteoData[0].date;
         const endDate = this.meteoData[this.meteoData.length - 1].date;
 
@@ -520,10 +526,10 @@ export class MeteoDataBrowserComponent {
 
   private resetDate() {
     if (this.meteoData?.length > 0) {
-      if (this.helper.today.localeCompare(this.meteoData[0].date) < 0)
+      if (Helper.today.localeCompare(this.meteoData[0].date) < 0)
         this.selectedDate = this.meteoData[0].date;
       else
-        this.selectedDate = this.helper.today;
+        this.selectedDate = Helper.today;
     }
   }
 
@@ -534,21 +540,21 @@ export class MeteoDataBrowserComponent {
   }
 
   leftCellClass(md: MeteoDailyData): string {
-    if (this.helper.today.localeCompare(md?.date) === 0)
+    if (Helper.today.localeCompare(md?.date) === 0)
       return 'left-cell-today';
     if (this.selectedDate.localeCompare(md?.date) === 0)
       return 'left-cell-selected';
     return '';
   }
   centerCellClass(md: MeteoDailyData): string {
-    if (this.helper.today.localeCompare(md?.date) === 0)
+    if (Helper.today.localeCompare(md?.date) === 0)
       return 'center-cell-today';
     if (this.selectedDate.localeCompare(md?.date) === 0)
       return 'center-cell-selected';
     return '';
   }
   rightCellClass(md: MeteoDailyData): string {
-    if (this.helper.today.localeCompare(md?.date) === 0)
+    if (Helper.today.localeCompare(md?.date) === 0)
       return 'right-cell-today';
     if (this.selectedDate.localeCompare(md?.date) === 0)
       return 'right-cell-selected';
@@ -560,8 +566,8 @@ export class MeteoDataBrowserComponent {
     const isValid = md?.forecast?.length > 0;
   
     if (isValid) {
-      const feelsLike = this.helper.feelsLikeTip(md?.tempFeel);
-      const weatherType = this.helper.weatherType(md?.forecast);
+      const feelsLike = this.translate.instant(`meteo.feels-like.${md?.tempFeel ?? 'normal'}`);
+      const weatherType = this.translate.instant(`meteo.weather-type.${md?.forecast ?? '00'}`);
       
       if (weatherType?.length > 0) {
         if (desc.length > 0) {
@@ -604,6 +610,7 @@ export class MeteoDataBrowserComponent {
     const unit = Unit.Metric;
 
     switch(item?.dataset?.label) {
+      // TRANSLATE
       case 'TMax':
       case 'TMin':
         return `${item?.dataset?.label}: ${TempPipe._transform(item?.raw as number, unit)}`;;

@@ -70,22 +70,25 @@ export class AuthenticationService {
         return this.http.post<AuthenticateResponse>(
             `${environment.apiUrl}/users/authenticate`, 
             formParams, { headers, withCredentials: true } )
-            .pipe(map(rsp => this.validateAuthenticationResponse(rsp, username, password)));
+            .pipe(map(rsp => {
+                const authResult = this.validateAuthenticationResponse(rsp, username, password);
+                return (authResult?.length > 0) ? `message.${authResult}` : undefined
+            }));
     }
 
-    validateAuthenticationResponse(rsp: AuthenticateResponse, username: string, password: string): string  {
+    private validateAuthenticationResponse(rsp: AuthenticateResponse, username: string, password: string): string  {
         if (rsp?.loginId?.toUpperCase() !== username?.toUpperCase())
-            return `User <b>${username}</b> cannot log in [1].`;
+            return 'login-failed-1';
         
+        if (!(rsp?.validity > 0))
+            return 'login-failed-2'
+
         if (!this.apiUserType)
             this.apiUserType = this.userTypeService.userType('API');
 
         if (rsp?.type === this.apiUserType?.id)
-            return `User: <b>${username}</b> does not have any application roles.`;
+            return 'login-failed-3';
         
-        if (!(rsp?.validity > 0))
-            return `User: <b>${username}</b> cannot log in [2]`;
-
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem(this.userKey, JSON.stringify(rsp));
         localStorage.setItem(this.passKey, password);

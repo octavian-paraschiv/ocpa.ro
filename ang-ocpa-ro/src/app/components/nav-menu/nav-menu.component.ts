@@ -6,6 +6,7 @@ import { AuthenticationService } from 'src/app/services/authentication.services'
 import { MenuService } from 'src/app/services/menu.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Menu } from 'src/app/models/models-swagger';
+import { TranslateService } from '@ngx-translate/core';
 
 @UntilDestroy()
 @Component({
@@ -15,12 +16,13 @@ import { Menu } from 'src/app/models/models-swagger';
 export class NavMenuComponent {
     icons = fas;
     faEarth = faEarth;
-
     title = 'OcPa\'s Web Site';
     path: string = 'ocpa';
     menus: Menu[] = [];
 
-    constructor(private readonly router: Router,
+    constructor(
+      private readonly translate: TranslateService,
+      private readonly router: Router,
       private readonly authService: AuthenticationService,
       private readonly menuService: MenuService
     ) {
@@ -28,7 +30,9 @@ export class NavMenuComponent {
             .pipe(filter(e => e instanceof ActivationStart))
             .subscribe(e => {
                 try { 
-                  this.title = (e as ActivationStart).snapshot.data['title']; 
+                  const rawTitle = (e as ActivationStart)?.snapshot?.data['title'] as string;
+                  this.title = this.translate.instant(rawTitle);
+        
                   const path = (e as ActivationStart).snapshot.routeConfig.path;
                   if (path && path.length > 0) {
                     this.path = path;
@@ -43,9 +47,15 @@ export class NavMenuComponent {
           untilDestroyed(this),
           switchMap(_ => this.menuService.init())
         ).subscribe(_ => {
-          this.menus = this.authService.isUserLoggedIn() ?
+          const menus = this.authService.isUserLoggedIn() ?
             this.menuService.menus.appMenus ?? [] :
             this.menuService.menus.publicMenus ?? [];
+
+          for(const m of menus) {
+            m.name = this.translate.instant(`menu.${m.code}`);
+          }
+
+          this.menus = menus;
         });
     }
 

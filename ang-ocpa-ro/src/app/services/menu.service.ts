@@ -32,6 +32,7 @@ export class MenuService {
                     publicMenus = publicMenus .concat({
                         url: '/login',
                         name: 'Login',
+                        code: 'LIN',
                         menuIcon: 'faRightToBracket',
                         displayMode: MenuDisplayMode.HideOnMobile
                     } as Menu);
@@ -42,6 +43,7 @@ export class MenuService {
                 .concat({
                     url: '/logout',
                     name: 'Logout',
+                    code: 'LOUT',
                     menuIcon: 'faRightFromBracket',
                     displayMode: MenuDisplayMode.HideOnMobile
                 } as Menu)

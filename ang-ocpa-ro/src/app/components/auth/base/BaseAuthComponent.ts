@@ -2,6 +2,7 @@ import { Component, NgZone } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
 import { first, map } from 'rxjs/operators';
 import { BaseLifecycleComponent } from 'src/app/components/BaseLifecycleComponent';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
@@ -15,12 +16,13 @@ export abstract class BaseAuthComponent extends BaseLifecycleComponent {
     dialogTimeout: any = undefined;
 
     constructor(
+        translate: TranslateService,
         private router: Router,
         protected authenticationService: AuthenticationService,
         private ngZone: NgZone,
         protected dialog: MatDialog
     ) { 
-        super();
+        super(translate);
 
         if (Helper.isMobile())
             this.router.navigate(['/meteo']); // Forbid Admin mode when using a mobile device
@@ -50,8 +52,9 @@ export abstract class BaseAuthComponent extends BaseLifecycleComponent {
                     data: {
                         isSessionTimeoutMessage: true,
                         noTimeout: 15000,
-                        title: 'Confirm',
-                        message: 'Your session has expired.<br>Press Yes if you want to stay logged in, and No otherwise.'
+                        title: this.translate.instant('confirmation.title'),
+                        message: this.translate.instant('confirmation.session-expired'),
+                        
                     } as MessageBoxOptions,
                     panelClass: 'session-expired-message'
                 });
@@ -65,17 +68,10 @@ export abstract class BaseAuthComponent extends BaseLifecycleComponent {
                         BaseAuthComponent.dialogRef = undefined;
                         if (res) {
                             this.authenticationService.refreshAuthentication()
-                                .pipe(
-                                    first(), 
-                                    untilDestroyed(this)
-                                )
+                                .pipe(first(), untilDestroyed(this))
                                 .subscribe({
-                                    next: msg => {
-                                        (msg?.length > 0) ? this.doLogout() : this.stayLoggedIn();
-                                    },
-                                    error: (err) => {
-                                        this.doLogout();
-                                    }
+                                    next: msg => (msg?.length > 0) ? this.doLogout() : this.stayLoggedIn(),
+                                    error: () => this.doLogout()
                                 });
                         } else {
                             this.doLogout();
