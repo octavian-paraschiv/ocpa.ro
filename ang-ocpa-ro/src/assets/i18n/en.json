@@ -97,10 +97,10 @@
         "risk": {
             "intense_rain": "Intense rain",
             "intense_snow": "Intense snow",
-            "intense_mix":  "Intense sleet",
+            "intense_sleet":  "Intense sleet",
             "heavy_rain": "Heavy rain",
             "heavy_snow": "Heavy snow",
-            "heavy_mix":  "Heavy sleet",
+            "heavy_sleet":  "Heavy sleet",
             "very_thick_fog": "Very thick fog",
             "thick_fog": "Thick fog",
             "heavy_wind": "Heavy Wind",

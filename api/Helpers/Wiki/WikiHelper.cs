@@ -27,7 +27,9 @@ namespace ocpa.ro.api.Helpers.Wiki
             try
             {
                 bool resourceExists = false;
-                var localizedResourcePath = Path.Combine(_hostingEnvironment.ContentPath(), $"wiki/{language}.{wikiResourcePath}");
+                var origPath = Path.Combine(_hostingEnvironment.ContentPath(), $"wiki/{wikiResourcePath}");
+                var origExt = Path.GetExtension(origPath);
+                var localizedResourcePath = Path.ChangeExtension(origPath, $".{language}{origExt}");
 
                 if (File.Exists(localizedResourcePath))
                 {

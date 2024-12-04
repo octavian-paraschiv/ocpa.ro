@@ -80,7 +80,7 @@ export class MeteoDataBrowserComponent implements OnInit  {
     plugins: {
       tooltip: {
         callbacks: {
-          label: this.buildTooltip
+          label: this.buildTooltip.bind(this)
         }
       },
       annotation: {
@@ -142,7 +142,7 @@ export class MeteoDataBrowserComponent implements OnInit  {
       (this.meteoData?.length > 0) ? 'meteo.data-hint' : '';
 
     return this.translate.instant(key, { 
-      name: location, 
+      name: this.selectedCity?.name ?? location, 
       startDate: this.meteoData[0].date,
       endDate: this.meteoData[this.meteoData.length - 1].date
     });

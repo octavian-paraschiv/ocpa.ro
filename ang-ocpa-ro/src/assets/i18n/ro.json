@@ -97,14 +97,14 @@
         "risk": {
             "intense_rain": "Ploaie intensa",
             "intense_snow": "Ninsoare intensa",
-            "intense_mix":  "Lapovita intensa",
+            "intense_sleet":  "Lapovita intensa",
             "heavy_rain": "Ploaie puternica",
             "heavy_snow": "Ninsoare puternica",
-            "heavy_mix":  "Lapovita puternica",
+            "heavy_sleet":  "Lapovita puternica",
             "very_thick_fog": "Ceata foarte densa",
             "thick_fog": "Ceata densa",
             "heavy_wind": "Vant foarte puternic",
-            "strong_wind": "Vand puternic",
+            "strong_wind": "Vant puternic",
             "squalls_hail": "Grindina / Vijelie",
             "freezing_rain": "Ploaie inghetata"
         },
