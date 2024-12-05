@@ -65,11 +65,11 @@
         },
         "weather-type": {
             "00": "Sunny",
-            "01_wind": "Gentle wind",
-            "01_rain": "Light rain",
-            "01_inst": "Light rain & thunder",
-            "01_snow": "Light snow",
-            "01_mix":  "Light sleet",
+            "01_wind": "Light wind",
+            "01_rain": "Showers",
+            "01_inst": "T-Showers",
+            "01_snow": "Snow showers",
+            "01_mix":  "Sleet showers",
             "01_fog":  "Morning Fog",
             "01_ice":  "Icy drizzle",
             "02_rain": "Rain",
@@ -80,19 +80,19 @@
             "02_ice":  "Icy rain",
             "02_wind": "Windy",
             "03_rain": "Intense rain",
-            "03_inst": "Intense T-Storm",
+            "03_inst": "Intense T-storm",
             "03_snow": "Intense snow",
             "03_mix":  "Intense sleet",
             "03_fog":  "Thick fog",
             "03_ice":  "Strong icy rain",
             "03_wind": "Strong wind",
             "04_rain": "Heavy rain",
-            "04_inst": "Severe T-Storm",
+            "04_inst": "Severe T-storm",
             "04_snow": "Heavy snow",
             "04_mix":  "Heavy sleet",
             "04_fog":  "Very thick fog",
             "04_ice":  "Heavy icy rain",
-            "04_wind": "Heavy Wind"
+            "04_wind": "Heavy wind"
         },
         "risk": {
             "intense_rain": "Intense rain",
@@ -118,8 +118,8 @@
         "default-hint": "To search a city, click/tap in the drop list below, then type the city name.",
         "alt-hint": "Contents of {{name}} / Data length: {{length}}.<br>(Press Escape to close the window)",
         "data-hint": "<b>{{name}}</b> between <b>{{startDate}} and {{endDate}}</b><br />Use the +/- buttons to go the desired date.",
-        "data-hint-fetching": "Fetching data for: <b>{{name}}</b>",
-        "empty-db": "The database is empty"
+        "data-hint-fetching": "Fetching data for: <b>{{name}}</b>...",
+        "empty-db": "The database is empty!"
     },
 
     "protone": {
@@ -137,20 +137,20 @@
     "users": {
         "list": "Users list:",
         "add-user": "Add new user",
-        "edit-user": "Edit '{{loginId}}'",
-        "del-user": "Delete '{{loginId}}'",
+        "edit-user": "Edit user '{{loginId}}'",
+        "del-user": "Delete user '{{loginId}}'",
         "login-id": "Login ID",
-        "logged-in": "[Logged in]",
+        "logged-in": "[CONNECTED]",
         "type": "Type",
         "device-list": "Registered devices:",
         "view-device": "View device '{{deviceId}}'",
         "del-device": "Delete '{{deviceId}}'",
         "device-id": "Device ID",
-        "device-login-id": "Last Login ID",
-        "device-login-time": "Last Login Timestamp",
-        "device-login-ipaddr": "Last Login IP Address",
+        "device-login-id": "Last connected user",
+        "device-login-time": "Last connection Timestamp",
+        "device-login-ipaddr": "Last connection IP address",
         "delete-user": "Are you sure you want to delete user: <b>{{loginId}}</b>?",
-        "delete-device": "Are you sure you want to forget device: <b>{{deviceId}}</b>?",
+        "delete-device": "Are you sure you want to delete device: <b>{{deviceId}}</b>?",
         "success-save": "User \"{{loginId}}\" succesfully saved.",
         "error-save": "Failed to save user"
     },
@@ -167,12 +167,12 @@
         "offline": "Offline",
         "range": "Data range",
         "count": "Days count",
-        "upload": "Are you sure you want to upload a new file for <b>{{name}}</b>?<br><br>If you proceed, the existing <b>{{name}}</b> database will be overwritten,<br>without any possibility to recover its current contents.",
-        "success-upload": "Succesfully uploaded selected file as '{{name}}'",
-        "error-upload": "Error while uploading selected file as '{{name}}': {{err}}",
-        "promote": "Are you sure you want to promote <b>{{name}}</b> as online?<br><br>If you proceed, the current ONLINE database will be overwritten,<br>without any possibility to recover its current contents.",
+        "upload": "Are you sure you want to upload database <b>{{name}}</b>?<br><br>If you proceed, the existing <b>{{name}}</b> database will be overwritten,<br>without any possibility to recover its current contents.",
+        "success-upload": "Succesfully uploaded database '{{name}}'",
+        "error-upload": "Error while uploading database '{{name}}': {{err}}",
+        "promote": "Are you sure you want to promote database <b>{{name}}</b> as online?<br><br>If you proceed, the current ONLINE database will be overwritten,<br>without any possibility to recover its current contents.",
         "success-promote": "Database '{{name}}' succesfully promoted to online.",
-        "error-promote": "Error while promoting '{{name}}': {{err}}"
+        "error-promote": "Error while promoting database '{{name}}': {{err}}"
     },
 
     "devices-dialog": {
