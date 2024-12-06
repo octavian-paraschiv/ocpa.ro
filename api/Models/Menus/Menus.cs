@@ -30,9 +30,6 @@ namespace ocpa.ro.api.Models.Menus
         public string Url { get; set; }
 
         [NotNull]
-        public string Code { get; set; }
-
-        [NotNull]
         public MenuDisplayMode DisplayMode { get; set; }
 
         public string MenuIcon { get; set; }
