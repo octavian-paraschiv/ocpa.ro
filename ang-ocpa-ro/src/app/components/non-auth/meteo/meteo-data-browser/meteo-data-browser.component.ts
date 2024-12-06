@@ -143,8 +143,8 @@ export class MeteoDataBrowserComponent implements OnInit  {
 
     return this.translate.instant(key, { 
       name: this.selectedCity?.name ?? location, 
-      startDate: this.meteoData[0].date,
-      endDate: this.meteoData[this.meteoData.length - 1].date
+      startDate: this.meteoData[0]?.date,
+      endDate: this.meteoData[this.meteoData.length - 1]?.date
     });
   }
 

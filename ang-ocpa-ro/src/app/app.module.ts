@@ -6,8 +6,6 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { ProTONEComponent } from './components/non-auth/protone/protone.component';
-import { PhotographyComponent } from './components/non-auth/photography/photography.component';
-import { ElectronicsComponent } from './components/non-auth/electronics/electronics.component';
 import { ContentApiService, GeographyApiService, MeteoApiService, ProtoneApiService, TranslationInitService, WikiService } from './services/api-services';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MeteoComponent } from './components/non-auth/meteo/meteo.component';
@@ -21,7 +19,6 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Iso3166HelperService } from './services/iso3166-helper.service';
-import { MeteoPhotosComponent } from 'src/app/components/non-auth/meteo-photos/meteo-photos.component';
 import { UsersComponent } from 'src/app/components/auth/users/users.component';
 import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
 import { MaterialModule } from 'src/app/material.module';
@@ -39,6 +36,7 @@ import { RegisteredDeviceService } from 'src/app/services/registered-device.serv
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { WikiContainerComponent } from 'src/app/components/non-auth/wiki-container/wiki-container.component';
 
 const I18N_CONFIG = {
   defaultLanguage: 'en',
@@ -56,10 +54,6 @@ const I18N_CONFIG = {
         
         ProTONEComponent,
         MeteoComponent,
-        MeteoPhotosComponent,
-        ElectronicsComponent,
-        PhotographyComponent,
-
         UsersComponent,
         UserDialogComponent,
         DevicesDialogComponent,
@@ -75,6 +69,7 @@ const I18N_CONFIG = {
         MeteoDataBrowserComponent,
 
         WikiViewerComponent,
+        WikiContainerComponent,
 
         TempPipe,
         SpeedPipe,
@@ -91,16 +86,22 @@ const I18N_CONFIG = {
     ReactiveFormsModule,
     FormsModule,
     RouterModule.forRoot([
-          { path: '', component: MeteoComponent, data: { title: 'title.meteo' } },
-          { path: 'meteo', component: MeteoComponent, data: { title: 'title.meteo' } },
-          { path: 'protone', component: ProTONEComponent, data: { title: 'title.protone' } },
-          { path: 'meteo-photos', component: MeteoPhotosComponent, data: { title: 'title.meteo-photos' } },
-          { path: 'photography', component: PhotographyComponent, data: { title: 'title.photography' } },
-          { path: 'electronics', component: ElectronicsComponent, data: { title: 'title.electronics' } },
-          { path: 'login', component: LoginComponent, data: { title: 'title.login' } },
-          { path: 'logout', component: LogoutComponent, data: { title: 'title.logout' } },
-          { path: 'admin/users', component: UsersComponent, data: { title: 'title.admin.users' } },
-          { path: 'admin/meteo-database', component: MeteoDatabaseComponent, data: { title: 'title.admin.meteo-db' } },
+          { path: 'protone', component: ProTONEComponent },
+          { path: 'login', component: LoginComponent },
+          { path: 'logout', component: LogoutComponent },
+
+          { path: 'admin/users', component: UsersComponent },
+          { path: 'admin/meteo-database', component: MeteoDatabaseComponent },
+
+          { path: 'wiki-container/:a', component: WikiContainerComponent },
+          { path: 'wiki-container/:a/:b', component: WikiContainerComponent },
+          { path: 'wiki-container/:a/:b/:c', component: WikiContainerComponent },
+          { path: 'wiki-container/:a/:b/:c/:d', component: WikiContainerComponent },
+          { path: 'wiki-container/:a/:b/:c/:d/:e', component: WikiContainerComponent },
+          { path: 'wiki-container/:a/:b/:c/:d/:e/:f', component: WikiContainerComponent },
+
+          { path: 'meteo', component: MeteoComponent },
+          { path: '**', component: MeteoComponent },
     ]),
     NoopAnimationsModule,
     FontAwesomeModule,

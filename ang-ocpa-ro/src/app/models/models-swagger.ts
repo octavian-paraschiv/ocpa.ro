@@ -14,7 +14,6 @@ export interface AppMenu {
     id?: number;
     name?: string | undefined;
     url?: string | undefined;
-    code?: string | undefined;
     displayMode?: MenuDisplayMode;
     menuIcon?: string | undefined;
     userId?: number | undefined;
@@ -118,7 +117,6 @@ export interface Menu {
     id?: number;
     name?: string | undefined;
     url?: string | undefined;
-    code?: string | undefined;
     displayMode?: MenuDisplayMode;
     menuIcon?: string | undefined;
 }

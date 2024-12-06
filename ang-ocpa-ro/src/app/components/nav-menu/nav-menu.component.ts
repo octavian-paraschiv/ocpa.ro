@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, ActivationStart } from '@angular/router';
-import { filter, switchMap } from 'rxjs/operators';
+import { filter, switchMap, map } from 'rxjs/operators';
 import { fas, faEarth } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { MenuService } from 'src/app/services/menu.service';
@@ -17,7 +17,6 @@ export class NavMenuComponent {
     icons = fas;
     faEarth = faEarth;
     title = 'OcPa\'s Web Site';
-    path: string = 'ocpa';
     menus: Menu[] = [];
 
     constructor(
@@ -27,18 +26,19 @@ export class NavMenuComponent {
       private readonly menuService: MenuService
     ) {
         this.router.events
-            .pipe(filter(e => e instanceof ActivationStart))
-            .subscribe(e => {
+            .pipe(
+              filter(e => e instanceof ActivationStart),
+              map(e => e as ActivationStart)
+            )
+            .subscribe(activation => {
                 try { 
-                  const rawTitle = (e as ActivationStart)?.snapshot?.data['title'] as string;
-                  this.title = this.translate.instant(rawTitle);
-        
-                  const path = (e as ActivationStart).snapshot.routeConfig.path;
-                  if (path && path.length > 0) {
-                    this.path = path;
-                  } else {
-                    this.path = 'ocpa';
-                  }
+                  const url = activation?.snapshot?.url;
+                  const path = activation?.snapshot?.routeConfig?.path;
+                  let rawTitle = 'meteo';
+                  if (url?.length > 0 && path !== '**')
+                    rawTitle = url.map(s => s.path).join('.');
+
+                  this.title = this.translate.instant(`title.${rawTitle}`);
                 }
                 catch { }
             });
@@ -51,9 +51,8 @@ export class NavMenuComponent {
             this.menuService.menus.appMenus ?? [] :
             this.menuService.menus.publicMenus ?? [];
 
-          for(const m of menus) {
-            m.name = this.translate.instant(`menu.${m.code}`);
-          }
+          for(const m of menus)
+            m.name = this.translate.instant(`menu${m.url}`.replace(/\//g, '.'));
 
           this.menus = menus;
         });

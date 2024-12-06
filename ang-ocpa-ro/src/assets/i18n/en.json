@@ -10,29 +10,36 @@
     "title": {
         "meteo": "OcPa's Weather Forecast",
         "protone": "ProTONE Player Web Site",
-        "meteo-photos": "OcPa's Animated Forecast",
-        "photography": "Photo Album",
-        "electronics": "Electronics Blog",
         "login": "Login",
         "logout": "Logout",
-        "confirm": "Confirm",
+        "wiki-container": {
+            "meteo-animated": "OcPa's Animated Forecast",
+            "electronics": "Electronics Blog",
+            "daily-cat": "Daily Cat"
+        },
         "admin": {
             "users": "Manage Users",
-            "meteo-db": "Manage Meteo Database"
-        }
+            "meteo-database": "Manage Meteo Database",
+            "content": "Manage Site Content"
+        },
+        "confirm": "Confirm"
     },
 
     "menu": {
-        "WFOR": "Weather Forecast",
-        "PLAY": "ProTONE Player",
-        "AFOR": "Animated Forecast",
-        "ELBL": "Electronics Blog",
-        "PHOT": "Photo Album",
-        "MUSR": "Users & Devices",
-        "MMDB": "Meteo Databases",
-        "LIN": "Login",
-        "LOUT": "Logout",
-        "MCNT": "Site Content"
+        "meteo": "Weather Forecast",
+        "protone": "ProTONE Player",
+        "login": "Login",
+        "logout": "Logout",
+        "wiki-container": {
+            "meteo-animated": "Animated Forecast",
+            "electronics": "Electronics Blog",
+            "daily-cat": "Daily Cat"
+        },
+        "admin": {
+            "users": "Manage Users",
+            "meteo-database": "Manage Meteo Database",
+            "content": "Manage Site Content"
+        }
     },
 
     "wiki": {

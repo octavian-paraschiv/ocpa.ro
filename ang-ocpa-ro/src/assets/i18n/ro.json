@@ -10,29 +10,36 @@
     "title": {
         "meteo": "Prognoza Meteo dupa OcPa",
         "protone": "ProTONE Player",
-        "meteo-photos": "Prognoza Animata",
-        "photography": "Album Foto",
-        "electronics": "Blog Electronica",
         "login": "Autentificare",
         "logout": "Deconectare",
-        "confirm": "Confirmare",
+        "wiki-container": {
+            "meteo-animated": "Prognoza Animata",
+            "electronics": "Blog Electronica",
+            "daily-cat": "Mâţa zilei"
+        },
         "admin": {
             "users": "Gestionare Utilizatori",
-            "meteo-db": "Gestionare Baze de Date Meteo"
-        }
+            "meteo-database": "Gestionare Baze de Date Meteo",
+            "content": "Gestionare Continut Site"
+        },
+        "confirm": "Confirmare"
     },
 
-    "menu": {
-        "WFOR": "Prognoza Meteo",
-        "PLAY": "ProTONE Player",
-        "AFOR": "Prognoza Animata",
-        "ELBL": "Blog Electronica",
-        "PHOT": "Album Foto",
-        "MUSR": "Utilizatori",
-        "MMDB": "Baze de Date Meteo",
-        "LIN": "Autentificare",
-        "LOUT": "Deconectare",
-        "MCNT": "Continut Site"
+   "menu": {
+        "meteo": "Prognoza Meteo",
+        "protone": "ProTONE Player",
+        "login": "Autentificare",
+        "logout": "Deconectare",
+        "wiki-container": {
+            "meteo-animated": "Prognoza Animata",
+            "electronics": "Blog Electronica",
+            "daily-cat": "Mâţa zilei"
+        },
+        "admin": {
+            "users": "Utilizatori",
+            "meteo-database": "Baze De Date Meteo",
+            "content": "Continut Site"
+        }
     },
 
     "wiki": {
