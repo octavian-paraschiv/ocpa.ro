@@ -33,7 +33,8 @@
         "wiki-container": {
             "meteo-animated": "Prognoza Animata",
             "electronics": "Blog Electronica",
-            "daily-cat": "Mâţa zilei"
+            "daily-cat": "Mâţa zilei",
+            "live-webcam": "Camera Web Live"
         },
         "admin": {
             "users": "Utilizatori",

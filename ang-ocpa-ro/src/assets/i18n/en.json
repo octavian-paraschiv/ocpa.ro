@@ -33,7 +33,8 @@
         "wiki-container": {
             "meteo-animated": "Animated Forecast",
             "electronics": "Electronics Blog",
-            "daily-cat": "Daily Cat"
+            "daily-cat": "Daily Cat",
+            "live-webcam": "Live Webcam"
         },
         "admin": {
             "users": "Manage Users",
