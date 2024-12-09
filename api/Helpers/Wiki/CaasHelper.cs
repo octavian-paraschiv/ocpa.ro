@@ -19,6 +19,8 @@ namespace ocpa.ro.api.Helpers.Wiki
     public class CaasHelper : BaseHelper, ICaasHelper, IDisposable
     {
         private const string CatCacheKey = "cat";
+        private const string FetchCatCacheKey = "fetch_cat";
+
         private const string DefaultCatImagePath = "Helpers/Wiki/loadcat.gif";
 
         private readonly CaasConfig _config;
@@ -80,26 +82,69 @@ namespace ocpa.ro.api.Helpers.Wiki
 
                 while (!_terminateBackgroundProcess.Wait(0))
                 {
-                    try
+                    _logger.Debug($"[CAAS] Checking to see whether image should be re-fecthed ...");
+                    bool fetch = (await _cache.GetAsync(FetchCatCacheKey)) == null;
+
+                    if (fetch)
                     {
-                        string resourcePath = string.Empty;
-                        string queryString = string.Empty;
+                        try
+                        {
+                            _logger.Debug($"[CAAS] Fetching new image ...");
 
-                        await _paramsSemaphore.WaitAsync();
-                        resourcePath = _resourcePath;
-                        queryString = _queryString;
-                        _paramsSemaphore.Release();
+                            string resourcePath = string.Empty;
+                            string queryString = string.Empty;
 
-                        var data = await _client.GetByteArrayAsync($"{resourcePath}{queryString}");
-                        if (data?.Length > 0)
-                            await _cache.SetAsync(CatCacheKey, data);
+                            await _paramsSemaphore.WaitAsync();
+                            resourcePath = _resourcePath;
+                            queryString = _queryString;
+                            _paramsSemaphore.Release();
+
+                            var data = await _client.GetByteArrayAsync($"{resourcePath}{queryString}");
+                            if (data?.Length > 0)
+                            {
+                                try
+                                {
+                                    _logger.Debug($"[CAAS] New image fetched OK, caching it ...");
+                                    await _cache.SetAsync(CatCacheKey, data);
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogException(ex);
+                                }
+
+                                try
+                                {
+                                    _logger.Debug($"[CAAS] Saving image on disk ...");
+                                    await File.WriteAllBytesAsync(DefaultCatImagePath, data);
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogException(ex);
+                                }
+
+                                try
+                                {
+                                    _logger.Debug($"[CAAS] Setting cache validity indicator ...");
+                                    await _cache.SetAsync(FetchCatCacheKey, [], new DistributedCacheEntryOptions
+                                    {
+                                        AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_config.RefreshPeriod)
+                                    });
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogException(ex);
+                                }
+
+                                _logger.Debug($"[CAAS] All fetching OK");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogException(ex);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        LogException(ex);
-                    }
 
-                    Thread.Sleep(Math.Max(1, _config.RefreshPeriod) * 1000);
+                    Thread.Sleep(30000); // Check every 30 sec
                 }
             });
         }
