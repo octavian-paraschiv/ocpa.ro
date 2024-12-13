@@ -16,6 +16,7 @@ namespace ocpa.ro.api.Models.Authentication
     public class UserType
     {
         [PrimaryKey]
+        [AutoIncrement]
         public int Id { get; set; }
 
         [NotNull]
@@ -28,6 +29,7 @@ namespace ocpa.ro.api.Models.Authentication
     public class User
     {
         [PrimaryKey]
+        [AutoIncrement]
         public int Id { get; set; }
 
         [NotNull]
@@ -38,6 +40,8 @@ namespace ocpa.ro.api.Models.Authentication
 
         [NotNull]
         public int Type { get; set; }
+
+        public bool Enabled { get; set; }
     }
 
     public class AuthenticateResponse
@@ -61,6 +65,7 @@ namespace ocpa.ro.api.Models.Authentication
     public class RegisteredDevice
     {
         [PrimaryKey]
+        [AutoIncrement]
         public int Id { get; set; }
 
         [NotNull]

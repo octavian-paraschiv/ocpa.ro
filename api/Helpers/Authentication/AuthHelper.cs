@@ -18,7 +18,7 @@ using Auth = OPMFileUploader.Authentication;
 
 namespace ocpa.ro.api.Helpers.Authentication
 {
-    public interface IAuthHelper
+    public interface IAuthHelper : IAuthHelperManagement
     {
         User AuthorizeUser(AuthenticateRequest req);
         User SaveUser(User user, out bool inserted);
@@ -39,7 +39,7 @@ namespace ocpa.ro.api.Helpers.Authentication
         int DeleteRegisteredDevice(string deviceId);
     }
 
-    public class AuthHelper : BaseHelper, IAuthHelper
+    public partial class AuthHelper : BaseHelper
     {
         private readonly SQLiteConnection _db = null;
         private readonly IGeographyHelper _geographyHelper = null;

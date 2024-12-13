@@ -39,11 +39,14 @@ namespace ocpa.ro.api.Controllers
         {
             var user = _authHelper.AuthorizeUser(model);
             if (user == null)
-                return Unauthorized();
+                return Unauthorized("ERR_BAD_CREDENTIALS");
+
+            if (!user.Enabled)
+                return Unauthorized("ERR_ACCOUNT_DISABLED");
 
             var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
             if (string.IsNullOrEmpty(rsp?.Token))
-                return Unauthorized();
+                return Unauthorized("ERR_NO_TOKEN");
 
             // If succesfully logged in, register the device used to log in
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();

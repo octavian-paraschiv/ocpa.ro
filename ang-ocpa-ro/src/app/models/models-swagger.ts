@@ -14,10 +14,31 @@ export interface AppMenu {
     id?: number;
     name?: string | undefined;
     url?: string | undefined;
-    displayMode?: MenuDisplayMode;
+    displayMode?: EMenuDisplayMode;
     menuIcon?: string | undefined;
     userId?: number | undefined;
     appName?: string | undefined;
+}
+
+export interface Application {
+    id?: number;
+    name?: string | undefined;
+    code?: string | undefined;
+    loginRequired?: boolean;
+    adminMode?: boolean;
+    builtin?: boolean;
+}
+
+export interface ApplicationMenu {
+    id?: number;
+    applicationId?: number;
+    menuId?: number;
+}
+
+export interface ApplicationUser {
+    id?: number;
+    applicationId?: number;
+    userId?: number;
 }
 
 export interface AuthenticateResponse {
@@ -75,6 +96,13 @@ export enum ContentUnitType {
     File = "File",
 }
 
+export enum EMenuDisplayMode {
+    AlwaysHide = "AlwaysHide",
+    AlwaysShow = "AlwaysShow",
+    HideOnMobile = "HideOnMobile",
+    ShowOnMobile = "ShowOnMobile",
+}
+
 export interface GeoLocation {
     status?: string | undefined;
     continent?: string | undefined;
@@ -117,19 +145,13 @@ export interface Menu {
     id?: number;
     name?: string | undefined;
     url?: string | undefined;
-    displayMode?: MenuDisplayMode;
+    displayModeId?: number;
     menuIcon?: string | undefined;
-}
-
-export enum MenuDisplayMode {
-    AlwaysHide = "AlwaysHide",
-    AlwaysShow = "AlwaysShow",
-    HideOnMobile = "HideOnMobile",
-    ShowOnMobile = "ShowOnMobile",
+    builtin?: boolean;
 }
 
 export interface Menus {
-    publicMenus?: Menu[] | undefined;
+    publicMenus?: VMenu[] | undefined;
     appMenus?: AppMenu[] | undefined;
     deviceId?: string | undefined;
 }
@@ -286,6 +308,14 @@ export interface UserType {
     id?: number;
     code?: string | undefined;
     description?: string | undefined;
+}
+
+export interface VMenu {
+    id?: number;
+    name?: string | undefined;
+    url?: string | undefined;
+    displayMode?: EMenuDisplayMode;
+    menuIcon?: string | undefined;
 }
 
 export interface Body {

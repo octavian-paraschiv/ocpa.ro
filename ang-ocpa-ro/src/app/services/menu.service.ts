@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { Menu, MenuDisplayMode, Menus } from 'src/app/models/models-swagger';
+import { Menu, EMenuDisplayMode, Menus, VMenu } from 'src/app/models/models-swagger';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map } from 'rxjs/operators';
 import { Helper } from 'src/app/services/helper';
@@ -34,7 +34,7 @@ export class MenuService {
                         name: 'Login',
                         code: 'LIN',
                         menuIcon: 'faRightToBracket',
-                        displayMode: MenuDisplayMode.HideOnMobile
+                        displayMode: EMenuDisplayMode.HideOnMobile
                     } as Menu);
                 }
                 this._menus.publicMenus = publicMenus.filter(m => MenuService.showMenu(m));
@@ -45,7 +45,7 @@ export class MenuService {
                     name: 'Logout',
                     code: 'LOUT',
                     menuIcon: 'faRightFromBracket',
-                    displayMode: MenuDisplayMode.HideOnMobile
+                    displayMode: EMenuDisplayMode.HideOnMobile
                 } as Menu)
                 .filter(m => MenuService.showMenu(m));
 
@@ -69,15 +69,15 @@ export class MenuService {
         return this.http.get<Menus>(url);
     }
 
-    private static showMenu(m: Menu): boolean {
+    private static showMenu(m: VMenu): boolean {
         switch(m?.displayMode) {
-            case MenuDisplayMode.AlwaysShow:
+            case EMenuDisplayMode.AlwaysShow:
                 return true;
-            case MenuDisplayMode.HideOnMobile:
+            case EMenuDisplayMode.HideOnMobile:
                 return !Helper.isMobile();
-            case MenuDisplayMode.ShowOnMobile:
+            case EMenuDisplayMode.ShowOnMobile:
                 return Helper.isMobile();
-            case MenuDisplayMode.AlwaysHide:
+            case EMenuDisplayMode.AlwaysHide:
             default:
                 return false;
         }
