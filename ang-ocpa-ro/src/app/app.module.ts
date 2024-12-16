@@ -37,6 +37,9 @@ import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-di
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { WikiContainerComponent } from 'src/app/components/non-auth/wiki-container/wiki-container.component';
+import { MenuDialogComponent } from 'src/app/components/auth/apps-menus/menu-dialog/menu-dialog.component';
+import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialog/app-dialog.component';
+import { AppsMenusComponent } from 'src/app/components/auth/apps-menus/apps-menus.component';
 
 const I18N_CONFIG = {
   defaultLanguage: 'en',
@@ -71,6 +74,10 @@ const I18N_CONFIG = {
         WikiViewerComponent,
         WikiContainerComponent,
 
+        AppsMenusComponent,
+        AppDialogComponent,
+        MenuDialogComponent,
+
         TempPipe,
         SpeedPipe,
         DistancePipe,
@@ -92,6 +99,7 @@ const I18N_CONFIG = {
 
           { path: 'admin/users', component: UsersComponent },
           { path: 'admin/meteo-database', component: MeteoDatabaseComponent },
+          { path: 'admin/apps-menus', component: AppsMenusComponent },
 
           { path: 'wiki-container/:a', component: WikiContainerComponent },
           { path: 'wiki-container/:a/:b', component: WikiContainerComponent },

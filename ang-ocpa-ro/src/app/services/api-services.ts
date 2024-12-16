@@ -1,15 +1,15 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-import { environment } from "src/environments/environment";
-import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
-import { catchError, map } from "rxjs/operators";
+    import { HttpClient } from "@angular/common/http";
+    import { Injectable } from "@angular/core";
+    import { Observable, of } from "rxjs";
+    import { environment } from "src/environments/environment";
+    import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
+    import { catchError, map } from "rxjs/operators";
 import { BuildInfo, CityDetail, GridCoordinates, MeteoData, ContentUnit, MeteoDbInfo } from 'src/app/models/models-swagger';
 import * as pako from 'pako';
 import * as CryptoJS from 'crypto-js';
 import { TranslateService } from '@ngx-translate/core';
 
-@UntilDestroy()
+    @UntilDestroy()
 @Injectable()
 export class WikiService {
     constructor(
