@@ -9,8 +9,8 @@ import { AppMenuManagementService } from 'src/app/services/app-menu-management.s
 
 @UntilDestroy()
 @Component({
-    selector: 'app-menu',
-    templateUrl: './app-menu.component.html'
+    selector: 'menu-dialog',
+    templateUrl: './menu-dialog.component.html'
 })
 export class MenuDialogComponent implements OnInit {
     constructor(

@@ -40,6 +40,7 @@ import { WikiContainerComponent } from 'src/app/components/non-auth/wiki-contain
 import { MenuDialogComponent } from 'src/app/components/auth/apps-menus/menu-dialog/menu-dialog.component';
 import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialog/app-dialog.component';
 import { AppsMenusComponent } from 'src/app/components/auth/apps-menus/apps-menus.component';
+import { AppMenuManagementService } from 'src/app/services/app-menu-management.service';
 
 const I18N_CONFIG = {
   defaultLanguage: 'en',
@@ -176,7 +177,8 @@ const I18N_CONFIG = {
     ProtoneApiService,
     MeteoApiService,
     ContentApiService,
-    WikiService
+    WikiService,
+    AppMenuManagementService
   ],
   bootstrap: [AppComponent]
 })

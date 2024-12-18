@@ -196,5 +196,16 @@
         "edit-logged-in": "Edit <b>{{loginId}}</b> user account (Logged In)",
         "edit": "Edit <b>{{loginId}}</b> user account",
         "create": "Create new user account"
+    },
+
+    "app-menus": {
+        "menu-name": "Name",
+        "menu-url": "URL",
+        "menu-display-mode": "Display Mode",
+        "menu-icon": "Icon",
+        "menu-builtin": "Builtin",
+        "add-menu": "Add menu",
+        "edit-menu": "Edit menu '{{desc}}'",
+        "del-menu": "Delete menu '{{desc}}'"
     }
 }

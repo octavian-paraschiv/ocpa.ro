@@ -8,6 +8,7 @@
 @import './login-form.scss';
 @import './users-page.scss';
 @import './meteo-database.scss';
+@import './apps-menus.scss';
 
 body, :root {
     color: $forecolor;
@@ -88,6 +89,33 @@ input::-ms-clear {
 
 .session-expired-message .mat-dialog-container {
     z-index: 2000;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position the tooltip above the icon */
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* MOBILE

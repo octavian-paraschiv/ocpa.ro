@@ -1,0 +1,61 @@
+.apps-menus-layout {
+    display: grid;
+    grid-template-columns: 1fr 5px 2fr;
+    grid-template-rows: auto 5px 1fr;
+    grid-template-areas: 
+    "al . aml"
+    "ml . aml";
+}
+
+.menus-list {
+    display: block;
+    grid-area: ml;
+    background-color: aqua;
+}
+
+.apps-list {
+    display: block;
+    grid-area: al;
+    background-color: bisque;
+}
+
+.apps-menus-list {
+    display: block;
+    grid-area: aml;
+    background-color: chartreuse;
+}
+
+.menu-row {
+    height: 2rem !important;
+}
+.menu-header-row {
+    height: 2.5rem !important;
+}
+
+
+.mat-column-menu-add {
+    @extend .mat-column-crud;
+    color: green;
+}
+
+.mat-column-menu-edit {
+    @extend .mat-column-crud;
+    color: navy;
+}
+
+.mat-column-menu-delete {
+    @extend .mat-column-crud;
+    color: red;
+}
+
+.mat-column-menu-name, 
+.mat-column-menu-display-mode {
+    width: auto;
+    max-width: 200px;
+    text-wrap-mode: nowrap;
+}
+
+.mat-column-menu-url {
+    width: auto;
+    text-wrap-mode: nowrap;
+}
