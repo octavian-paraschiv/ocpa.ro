@@ -116,8 +116,8 @@ export class UserDialogComponent implements OnInit {
         this.dialogRef.close({ loginId, passwordHash, type } as User);
     }
 
-    static showDialog(dialog: MatDialog, user: User = undefined): Observable<User> {
-        const dialogRef = dialog?.open(UserDialogComponent, { data: user });
-        return dialogRef.afterClosed().pipe(map(result => result as User));
-    }
+        static showDialog(dialog: MatDialog, user: User = undefined): Observable<User> {
+            const dialogRef = dialog?.open(UserDialogComponent, { data: user });
+            return dialogRef.afterClosed().pipe(map(result => result as User));
+        }
 }

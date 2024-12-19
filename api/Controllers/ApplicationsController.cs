@@ -88,17 +88,17 @@ namespace ocpa.ro.api.Controllers
 
         //------------------------
 
-        [HttpGet("{appId}/menus")]
+        [HttpGet("menus")]
         [ProducesResponseType(typeof(ApplicationUser[]), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [IgnoreWhenNotInDev]
         [SwaggerOperation(OperationId = "GetApplicationMenus")]
-        public IActionResult GetApplicationMenus([FromRoute] int appId)
+        public IActionResult GetApplicationMenus()
         {
             try
             {
-                return Ok(_authHelper.GetApplicationMenus(appId));
+                return Ok(_authHelper.GetApplicationMenus());
             }
             catch (Exception ex)
             {
@@ -106,17 +106,17 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        [HttpPost("{appId}/menu/save")]
+        [HttpPost("{appId}/menu/save/{menuId}")]
         [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [IgnoreWhenNotInDev]
         [SwaggerOperation(OperationId = "SaveApplicationMenu")]
-        public IActionResult SaveApplicationMenu([FromRoute] int appId, [FromBody] ApplicationMenu appMenu)
+        public IActionResult SaveApplicationMenu([FromRoute] int appId, [FromRoute] int menuId)
         {
             try
             {
-                var dbu = _authHelper.SaveApplicationMenu(appId, appMenu, out bool inserted);
+                var dbu = _authHelper.SaveApplicationMenu(appId, menuId, out bool inserted);
                 if (dbu != null)
                     return inserted ?
                         StatusCode(StatusCodes.Status201Created, dbu) :
@@ -130,17 +130,17 @@ namespace ocpa.ro.api.Controllers
             return BadRequest();
         }
 
-        [HttpPost("{appId}/menu/delete/{appMenuId}")]
+        [HttpPost("{appId}/menu/delete/{menuId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [IgnoreWhenNotInDev]
         [SwaggerOperation(OperationId = "DeleteApplicationMenu")]
-        public IActionResult DeleteApplicationMenu([FromRoute] int appId, [FromRoute] int appUserId)
+        public IActionResult DeleteApplicationMenu([FromRoute] int appId, [FromRoute] int menuId)
         {
             try
             {
-                return StatusCode(_authHelper.DeleteApplicationMenu(appId, appUserId));
+                return StatusCode(_authHelper.DeleteApplicationMenu(appId, menuId));
             }
             catch (Exception ex)
             {
@@ -192,7 +192,7 @@ namespace ocpa.ro.api.Controllers
             return BadRequest();
         }
 
-        [HttpPost("{appId}/menu/delete/{appUserId}")]
+        [HttpPost("{appId}/user/delete/{appUserId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

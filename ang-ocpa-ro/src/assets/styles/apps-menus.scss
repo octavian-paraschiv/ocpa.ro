@@ -1,7 +1,7 @@
 .apps-menus-layout {
     display: grid;
-    grid-template-columns: 1fr 5px 2fr;
-    grid-template-rows: auto 5px 1fr;
+    grid-template-columns: 1fr 5px auto;
+    grid-template-rows: auto 1fr;
     grid-template-areas: 
     "al . aml"
     "ml . aml";
@@ -10,28 +10,29 @@
 .menus-list {
     display: block;
     grid-area: ml;
-    background-color: aqua;
 }
 
 .apps-list {
     display: block;
     grid-area: al;
-    background-color: bisque;
 }
 
 .apps-menus-list {
     display: block;
     grid-area: aml;
-    background-color: chartreuse;
 }
 
-.menu-row {
+.menu-row,
+.app-row,
+.app-menu-row {
     height: 2rem !important;
 }
-.menu-header-row {
+
+.menu-header-row,
+.app-header-row,
+.app-menu-header-row {
     height: 2.5rem !important;
 }
-
 
 .mat-column-menu-add {
     @extend .mat-column-crud;

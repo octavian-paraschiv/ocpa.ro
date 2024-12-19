@@ -24,9 +24,9 @@ namespace ocpa.ro.api.Helpers.Authentication
 
         //------------------------
 
-        IEnumerable<ApplicationMenu> GetApplicationMenus(int appId);
-        ApplicationMenu SaveApplicationMenu(int appId, ApplicationMenu appMenu, out bool inserted);
-        int DeleteApplicationMenu(int appId, int appMenuId);
+        IEnumerable<ApplicationMenu> GetApplicationMenus();
+        ApplicationMenu SaveApplicationMenu(int appId, int menuId, out bool inserted);
+        int DeleteApplicationMenu(int appId, int menuId);
 
         //------------------------
 
@@ -234,13 +234,11 @@ namespace ocpa.ro.api.Helpers.Authentication
 
         //------------------------
 
-        public IEnumerable<ApplicationMenu> GetApplicationMenus(int appId)
+        public IEnumerable<ApplicationMenu> GetApplicationMenus()
         {
-            ValidateAppId(appId);
-
             try
             {
-                return _db.Table<ApplicationMenu>().Where(am => am.ApplicationId == appId);
+                return _db.Table<ApplicationMenu>();
             }
             catch (Exception ex)
             {
@@ -250,57 +248,48 @@ namespace ocpa.ro.api.Helpers.Authentication
             return Array.Empty<ApplicationMenu>();
         }
 
-        public ApplicationMenu SaveApplicationMenu(int appId, ApplicationMenu appMenu, out bool inserted)
+        public ApplicationMenu SaveApplicationMenu(int appId, int menuId, out bool inserted)
         {
-            ApplicationMenu dbu = null;
             inserted = false;
 
             ValidateAppId(appId);
+            ValidateMenuId(menuId);
 
             try
             {
-                var id = appMenu.Id;
+                var dbu = _db.Table<ApplicationMenu>().FirstOrDefault(a => a.ApplicationId == appId && a.MenuId == menuId);
+                if (dbu != null)
+                    return dbu; // Already present
 
-                dbu = _db.Table<ApplicationMenu>().FirstOrDefault(a => id == a.Id && appId == a.ApplicationId);
-
-                bool newEntry = (dbu == null);
-
-                dbu ??= new ApplicationMenu();
-
-                dbu.ApplicationId = appId;
-                dbu.MenuId = appMenu.MenuId;
-
-                if (newEntry)
+                dbu = new ApplicationMenu
                 {
-                    dbu.Id = (_db.Table<ApplicationMenu>().OrderByDescending(u => u.Id).FirstOrDefault()?.Id ?? 0) + 1;
+                    ApplicationId = appId,
+                    MenuId = menuId,
+                    Id = (_db.Table<ApplicationMenu>().OrderByDescending(u => u.Id).FirstOrDefault()?.Id ?? 0) + 1
+                };
 
-                    if (_db.Insert(dbu) > 0)
-                        inserted = true;
-                    else
-                        dbu = null;
-                }
-                else
+                if (_db.Insert(dbu) > 0)
                 {
-                    if (_db.Update(dbu) <= 0)
-                        dbu = null;
+                    inserted = true;
+                    return dbu;
                 }
             }
             catch (Exception ex)
             {
                 LogException(ex);
-                dbu = null;
             }
 
-            return dbu;
+            return null;
         }
 
-        public int DeleteApplicationMenu(int appId, int appMenuId)
+        public int DeleteApplicationMenu(int appId, int menuId)
         {
             ValidateAppId(appId);
+            ValidateMenuId(menuId);
 
             try
             {
-                var dbu = _db.Table<ApplicationMenu>().FirstOrDefault(u => u.Id == appMenuId && u.ApplicationId == appId);
+                var dbu = _db.Table<ApplicationMenu>().FirstOrDefault(a => a.ApplicationId == appId && a.MenuId == menuId);
                 if (dbu == null)
                     return StatusCodes.Status404NotFound;
 
@@ -408,6 +397,21 @@ namespace ocpa.ro.api.Helpers.Authentication
                 var app = _db.Table<Application>().FirstOrDefault(a => a.Id == appId);
                 if (app == null)
                     throw new ExtendedException("ERR_APP_NOT_FOUND");
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                throw;
+            }
+        }
+
+        private void ValidateMenuId(int menuId)
+        {
+            try
+            {
+                var app = _db.Table<Menu>().FirstOrDefault(a => a.Id == menuId);
+                if (app == null)
+                    throw new ExtendedException("ERR_MENU_NOT_FOUND");
             }
             catch (Exception ex)
             {

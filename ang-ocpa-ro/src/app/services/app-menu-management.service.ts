@@ -42,16 +42,16 @@ export class AppMenuManagementService {
 
     //------------------------
 
-    public getAllAppMenus(appId: number): Observable<ApplicationMenu[]> {
-        return this.http.get<ApplicationMenu[]>(`${environment.apiUrl}/applications/${appId}/menus`);
+    public getAllAppMenus(): Observable<ApplicationMenu[]> {
+        return this.http.get<ApplicationMenu[]>(`${environment.apiUrl}/applications/menus`);
     }
 
-    public saveAppMenu(appId: number, appMenu: ApplicationMenu): Observable<ApplicationMenu> {
-        return this.http.post<ApplicationMenu>(`${environment.apiUrl}/applications/${appId}/menu/save`, appMenu);
+    public saveAppMenu(appId: number, menuId: number): Observable<ApplicationMenu> {
+        return this.http.post<ApplicationMenu>(`${environment.apiUrl}/applications/${appId}/menu/save/${menuId}`, undefined);
     }
 
-    public deleteAppMenu(appId: number, appMenuId: number): Observable<Object> {
-        return this.http.post(`${environment.apiUrl}/applications/${appId}/menu/delete/${appMenuId}`, undefined);
+    public deleteAppMenu(appId: number, menuId: number): Observable<Object> {
+        return this.http.post(`${environment.apiUrl}/applications/${appId}/menu/delete/${menuId}`, undefined);
     }
 
     //------------------------

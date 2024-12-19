@@ -40,7 +40,8 @@
         "admin": {
             "users": "Manage Users",
             "meteo-database": "Manage Meteo Database",
-            "content": "Manage Site Content"
+            "content": "Manage Site Content",
+            "apps-menus": "Apps & Menus"
         }
     },
 
@@ -198,7 +199,10 @@
         "create": "Create new user account"
     },
 
-    "app-menus": {
+    "apps-menus": {
+        "app-list": "Application List:",
+        "menu-list": "Menu List:",
+        "app-menu-list": "Apps/Menus Associations List:",
         "menu-name": "Name",
         "menu-url": "URL",
         "menu-display-mode": "Display Mode",
@@ -206,6 +210,10 @@
         "menu-builtin": "Builtin",
         "add-menu": "Add menu",
         "edit-menu": "Edit menu '{{desc}}'",
-        "del-menu": "Delete menu '{{desc}}'"
+        "del-menu": "Delete menu '{{desc}}'",
+        "menu-assoc-created": "Succesfully created menu assciation",
+        "menu-assoc-create-err": "Failed to create menu assciation",
+        "menu-assoc-remove": "Succesfully removed menu assciation",
+        "menu-assoc-remove-err": "Failed to remove menu assciation"
     }
 }
