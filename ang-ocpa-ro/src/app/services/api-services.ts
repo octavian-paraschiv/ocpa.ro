@@ -61,7 +61,7 @@ export class GeographyApiService {
                     return true;
                 }),
                 catchError(err => {
-                    console.error(err);
+                    console.error(err.toString());
                     this._cities = [];
                     return of(false);
                 })

@@ -25,7 +25,7 @@
             <ng-container matColumnDef="menu-delete">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let menu">
-                    <a class="table-link" (click)="deleteMenu(menu.Id)" *ngIf="!menu.builtin"
+                    <a class="table-link" (click)="deleteMenu(menu)" *ngIf="!menu.builtin"
                         title="{{'apps-menus.del-menu' | translate: { desc: menu.name } }}">
                         <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
                     </a>
@@ -75,7 +75,10 @@
         <label mat-small style="margin-bottom: 0.2rem;">{{'apps-menus.app-menu-list' | translate}}</label>
         <table mat-table [dataSource]="appMenuData">
             <ng-container matColumnDef="app-menu-name">
-              <th mat-header-cell *matHeaderCellDef></th>
+              <th mat-header-cell *matHeaderCellDef class="two-fields-zone">
+                <div class="two-fields-zone-left" [innerHtml]="'apps-menus.apps-menus-header-menus' | translate"></div>
+                <div class="two-fields-zone-right" [innerHtml]="'apps-menus.apps-menus-header-apps' | translate"></div>
+              </th>
               <td mat-cell *matCellDef="let appMenu">{{appMenu.menuName}}</td> 
             </ng-container>
             <ng-container *ngFor="let appName of appNames" matColumnDef="app-menu-{{appName}}">
@@ -94,5 +97,77 @@
 
     <div class="apps-list">
         <label mat-small style="margin-bottom: 0.2rem;">{{'apps-menus.app-list' | translate}}</label>
+        <table mat-table [dataSource]="apps">
+            <!-- Add Column -->
+            <ng-container matColumnDef="app-add">
+                <th mat-header-cell *matHeaderCellDef>
+                    <a class="table-link" (click)="saveApp()" title="{{'apps-menus.add-app' | translate}}">
+                        <fa-icon [icon]="faAdd" [transform]="size"></fa-icon>
+                    </a>
+                </th>
+                <td mat-cell *matCellDef="let app"></td>
+            </ng-container>
+            <!-- Edit Column -->
+            <ng-container matColumnDef="app-edit">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let app">
+                    <a class="table-link" (click)="saveApp(app)" *ngIf="!app.builtin"
+                        title="{{'apps-menus.edit-app' | translate: { desc: app.name } }}">
+                        <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
+                    </a>
+                </td>
+            </ng-container>
+            <!-- Delete Column -->
+            <ng-container matColumnDef="app-delete">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let app">
+                    <a class="table-link" (click)="deleteApp(app)" *ngIf="!app.builtin"
+                        title="{{'apps-menus.del-app' | translate: { desc: app.name } }}">
+                        <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
+                    </a>
+                </td>
+            </ng-container>
+            <!-- Name Column -->
+            <ng-container matColumnDef="app-name">
+                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-name' | translate}}</th>
+                <td mat-cell *matCellDef="let app">{{app.name}}</td>
+            </ng-container>
+            <!-- Code Column -->
+            <ng-container matColumnDef="app-code">
+                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-code' | translate}}</th>
+                <td mat-cell *matCellDef="let app">{{app.code}}</td>
+            </ng-container>
+            <!-- LoginRequired Column -->
+            <ng-container matColumnDef="app-login-required">
+                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-login-required' | translate}}</th>
+                <td mat-cell *matCellDef="let app">
+                    <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.loginRequired">
+                    </fa-icon>
+                </td>
+            </ng-container>           
+            <!-- Admin Mode Column -->
+            <ng-container matColumnDef="app-admin-mode">
+            <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-admin-mode' | translate}}</th>
+            <td mat-cell *matCellDef="let app">
+                <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.adminMode">
+                </fa-icon>
+            </td>
+            </ng-container>   
+            <!-- Builtin Column -->
+            <ng-container matColumnDef="app-builtin">
+                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-builtin' | translate}}</th>
+                <td mat-cell *matCellDef="let app">
+                    <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.builtin">
+                    </fa-icon>
+                </td>
+            </ng-container>   
+            <!-- Filler Column -->
+            <ng-container matColumnDef="app-filler">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let user"></td>
+            </ng-container>
+            <tr mat-header-row class="app-header-row" *matHeaderRowDef="appsColumns"></tr>
+            <tr mat-row class="app-row" *matRowDef="let row; columns: appsColumns;"></tr>
+        </table>  
     </div>
 </div>

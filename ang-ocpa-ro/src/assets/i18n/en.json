@@ -7,6 +7,19 @@
     "Today": "Today",
     "day-short": "d",
 
+    "ERR_BAD_CREDENTIALS": "Incorrect user name or password.",
+    "ERR_ACCOUNT_DISABLED": "Account is disabled",
+    "ERR_NO_TOKEN": "Failed to log in",
+    "ERR_EDIT_BUILT_IN_APP": "The application '{{name}}' is builtin and cannot be edited",
+    "ERR_DELETE_BUILTIN_APP": "The application '{{name}}' is builtin and cannot be deleted",
+    "ERR_DELETE_APP_MENU_ASSOCIATIONS": "The app '{{name}}' has menu associations and cannot be deleted",
+    "ERR_DELETE_APP_USER_ASSOCIATIONS": "The app '{{name}}' has user associations and cannot be deleted",
+    "ERR_EDIT_BUILTIN_MENU": "The menu '{{name}}' is builtin and cannot be edited",
+    "ERR_DELETE_BUILTIN_MENU": "The menu '{{name}}' is builtin and cannot be deleted",
+    "ERR_DELETE_MENU_APP_ASSOCIATIONS": "The menu '{{name}}' has app associations and cannot be deleted",
+    "ERR_APP_NOT_FOUND": "The application '{{name}}' was not found",
+    "ERR_MENU_NOT_FOUND": "The menu '{{name}}' was not found",
+
     "title": {
         "meteo": "OcPa's Weather Forecast",
         "protone": "ProTONE Player Web Site",
@@ -129,6 +142,7 @@
         "alt-hint": "Contents of {{name}} / Data length: {{length}}.<br>(Press Escape to close the window)",
         "data-hint": "<b>{{name}}</b> between <b>{{startDate}} and {{endDate}}</b><br />Use the +/- buttons to go the desired date.",
         "data-hint-fetching": "Fetching data for: <b>{{name}}</b>...",
+        "data-hint-fetching-alt": "Fetching data...",
         "empty-db": "The database is empty!"
     },
 
@@ -202,7 +216,7 @@
     "apps-menus": {
         "app-list": "Application List:",
         "menu-list": "Menu List:",
-        "app-menu-list": "Apps/Menus Associations List:",
+        "app-menu-list": "Menus/Apps Associations List:",
         "menu-name": "Name",
         "menu-url": "URL",
         "menu-display-mode": "Display Mode",
@@ -211,9 +225,43 @@
         "add-menu": "Add menu",
         "edit-menu": "Edit menu '{{desc}}'",
         "del-menu": "Delete menu '{{desc}}'",
+        "delete-menu": "Are you sure you want to delete the menu '{{name}}'?",
+        "delete-app": "Are you sure you want to delete the application '{{name}}'?",
+        "success-save-menu": "Successfully saved menu '{{name}}'",
+        "error-save-menu": "Failed to save the menu",
+        "success-save-app": "Successfully saved application '{{name}}'",
+        "error-save-app": "Failed to save the application",
+        "apps-menus-header-menus": "Menus <b>&darr;</b>",
+        "apps-menus-header-apps": "Apps <b>&rarr;</b>",
         "menu-assoc-created": "Succesfully created menu assciation",
         "menu-assoc-create-err": "Failed to create menu assciation",
         "menu-assoc-remove": "Succesfully removed menu assciation",
-        "menu-assoc-remove-err": "Failed to remove menu assciation"
+        "menu-assoc-remove-err": "Failed to remove menu assciation",
+        "add-app": "Add application",
+        "edit-app": "Edit application '{{desc}}'", 
+        "del-app": "Delete application '{{desc}}'", 
+        "app-name": "Name",
+        "app-code": "Code",
+        "app-login-required": "Requires Login",
+        "app-admin-mode": "Admin Mode only",
+        "app-builtin": "Builtin"
+    },
+
+    "app-dialog": {
+        "edit": "Edit application '{{name}}'",
+        "create": "Create new application",
+        "name": "Application name",
+        "name-required": "App name must have 3..16 chars, consisting in letters and digits only",
+        "code": "Application code",
+        "code-required": "App code must have 3..5 upper case letters, w/o spaces",
+        "login-required": "Application requires login",
+        "admin-mode": "Restricted to admin mode only"
+    },
+
+    "menu-dialog": {
+        "edit": "Edit menu '{{name}}'",
+        "create": "Create new menu"
     }
+
+
 }

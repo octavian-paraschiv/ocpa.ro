@@ -1,6 +1,7 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
+import { catchError } from 'rxjs/operators';
 import { environment } from "src/environments/environment";
 import { UntilDestroy } from "@ngneat/until-destroy";
 import { TranslateService } from '@ngx-translate/core';
@@ -67,4 +68,4 @@ export class AppMenuManagementService {
     public deleteAppUser(appId: number, appUserId: number): Observable<Object> {
         return this.http.post(`${environment.apiUrl}/applications/${appId}/user/delete/${appUserId}`, undefined);
     }
-}   
+}       

@@ -23,7 +23,7 @@ export class UserTypeService {
                 return true;
             }),
             catchError(err => {
-                console.error(err);
+                console.error(err.toString());
                 this._userTypes = [];
                 return of(false);
             })

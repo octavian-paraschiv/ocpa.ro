@@ -66,8 +66,8 @@ export class UserDialogComponent implements OnInit {
 
         const loggedInUser = this.authService.authUserChanged$.getValue();
 
-        if (this.user.loginId === loggedInUser?.loginId)
-            this.f.t1.disable();
+            if (this.user.loginId === loggedInUser?.loginId)
+                this.f.t1.disable();
     }
 
     // convenience getter for easy access to form fields

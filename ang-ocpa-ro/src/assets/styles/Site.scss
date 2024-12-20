@@ -118,6 +118,28 @@ input::-ms-clear {
     opacity: 1;
 }
 
+.two-fields-zone {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "lf . rf";
+}
+.two-fields-zone-left {
+    align-self: center;
+    grid-area: lf;
+}
+.two-fields-zone-right {
+    align-self: center;
+    grid-area: rf;
+}
+
+.error-snackbar {
+    .mdc-snackbar__surface {
+        background-color: maroon !important;
+    }
+}
+
+
 /* MOBILE
 ----------------------------------------------------------*/
 @media screen and (max-width: 1080px) and (orientation: portrait) {

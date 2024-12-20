@@ -1,0 +1,32 @@
+<mat-card class="mat-app-card">
+    <mat-card-header style="padding: 0; padding-left: 0.1rem; padding-top: 0.1rem; padding-bottom: 0.1rem;">
+        <mat-card-subtitle [innerHtml]="title | translate: {name: app?.name}"></mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider style="margin: 0;"></mat-divider>
+    <mat-card-content class="mat-app-card-content" style="padding: 0;">
+        <form mat-dialog-content class="app-dialog-form" [formGroup]="appForm" (ngSubmit)="onOk()" style="padding: 1rem;">
+            <div style="display: grid;">                
+                <mat-form-field appearance="outline" class="app-form-control">
+                    <mat-label>{{'app-dialog.name' | translate}}</mat-label>
+                    <input formControlName="name" matInput>
+                    <mat-error *ngIf="f?.name?.errors">{{'app-dialog.name-required' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="app-form-control">
+                    <mat-label>{{'app-dialog.code' | translate}}</mat-label>
+                    <input formControlName="code" matInput>
+                    <mat-error *ngIf="f?.code?.errors   ">{{'app-dialog.code-required' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-checkbox formControlName="loginRequired" matCheckbox>{{'app-dialog.login-required' | translate}}</mat-checkbox>
+                <mat-checkbox formControlName="adminMode" matCheckbox>{{'app-dialog.admin-mode' | translate}}</mat-checkbox>
+                <div mat-dialog-actions class="app-form-control">
+                    <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>
+                        {{'OK' | translate}}
+                    </button>
+                    <button style="margin: 0; padding: 0; " mat-raised-button (click)="onCancel()">
+                        {{'Cancel' | translate}}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

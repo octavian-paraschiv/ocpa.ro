@@ -139,7 +139,8 @@ export class MeteoDataBrowserComponent implements OnInit  {
 
   get dataHint(): string {
     const key = this.isFetching ? 'meteo.data-hint-fetching' :
-      (this.meteoData?.length > 0) ? 'meteo.data-hint' : '';
+      (this.meteoData?.length > 0) ? 'meteo.data-hint' : 
+        'data-hint-fetching-alt';
 
     return this.translate.instant(key, { 
       name: this.selectedCity?.name ?? location, 

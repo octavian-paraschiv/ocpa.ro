@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
@@ -13,6 +13,9 @@ import { AppMenuManagementService } from 'src/app/services/app-menu-management.s
     templateUrl: './app-dialog.component.html'
 })
 export class AppDialogComponent implements OnInit {
+    appForm: UntypedFormGroup;
+    editMode = false;
+
     constructor(
         private appMenuService: AppMenuManagementService,
         private formBuilder: UntypedFormBuilder,
@@ -21,11 +24,64 @@ export class AppDialogComponent implements OnInit {
     ) {
     }
 
+    // convenience getter for easy access to form fields
+    get f() { return this.appForm?.controls; }
+
+    get title(): string {
+        return (this.editMode) ? 
+            'app-dialog.edit' :
+            'app-dialog.create';
+    }
+
+
     ngOnInit(){
+        this.editMode = this.app?.id > 0;
+
+        if (!this.app)
+            this.app = {
+                name: '',
+                code: '',
+                loginRequired: false,
+                adminMode: false,
+                builtin: false
+            } as Application;
+
+        // Should not happen, but anyways
+        if (this.app.builtin)
+            return;            
+        
+        // Validators.pattern('^(\/[^\/ ]*)+\/?$|^.{0,32}$') 
+
+        this.appForm = this.formBuilder.group({
+            name: [ this.app.name, [ Validators.required, Validators.pattern('^[a-zA-Z0-9]{3,16}$') ] ],
+            code: [ this.app.code, [ Validators.required, Validators.pattern('^[A-Z]{3,5}$') ] ],
+            loginRequired: [ this.app.loginRequired ?? false ],
+            adminMode: [ this.app.adminMode ?? false ]
+        });
+    }
+
+    onCancel(): void {
+        this.dialogRef.close();
+    }
+
+    onOk(): void {
+        // stop here if form is invalid
+        if (this.appForm.invalid) {
+            return;
+        }
+
+        this.dialogRef.close({
+            id: this.app.id,
+            name: this.f?.name?.value,
+            code: this.f?.code?.value,
+            adminMode: this.f?.adminMode?.value ?? false,
+            loginRequired: this.f?.loginRequired?.value ?? false,
+            builtin: false
+        } as Application);
     }
 
     static showDialog(dialog: MatDialog, app: Application = undefined): Observable<Application> {
-        const dialogRef = dialog?.open(AppDialogComponent, { data: app });
+        const dialogRef = dialog?.open(AppDialogComponent, { data: app, width: '500px' });
         return dialogRef.afterClosed().pipe(map(result => result as Application));
     }
 }

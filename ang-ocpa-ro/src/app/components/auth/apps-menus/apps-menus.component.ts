@@ -8,9 +8,12 @@ import { Application, ApplicationMenu, EMenuDisplayMode, Menu } from 'src/app/mo
 import { AppMenuManagementService } from 'src/app/services/app-menu-management.service';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { faCheck, fas, faSquareMinus, faSquarePen, faSquarePlus } from '@fortawesome/free-solid-svg-icons';
-import { first, tap } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { first, tap, switchMap } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
+import { MenuDialogComponent } from 'src/app/components/auth/apps-menus/menu-dialog/menu-dialog.component';
+import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialog/app-dialog.component';
+import { MessagePopupService } from 'src/app/services/message-popup.service';
 
 export interface AppMenuData {
     menuId: number;
@@ -77,8 +80,8 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         }
         
         obs.pipe(first(), untilDestroyed(this)).subscribe({
-            next: () => this.snackBar.open(this.translate.instant(key), undefined, { duration: 5000 }),
-            error: () => this.snackBar.open(this.translate.instant(keyErr), undefined, { duration: 5000 })
+            next: () => this.popup.showMessage(key),
+            error: () => this.popup.showError(keyErr),
         });
     }
 
@@ -88,11 +91,11 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         authenticationService: AuthenticationService,
         ngZone: NgZone,
         dialog: MatDialog,
-        private readonly snackBar: MatSnackBar) {
+        private readonly popup: MessagePopupService) {
             super(translate, router, authenticationService, ngZone, dialog)
-        }
+    }
     
-    ngOnInit(): void {
+    onInit() {
         this.appMenuData = [];
 
         const o1 = this.appMenuService.getAllMenus()
@@ -142,5 +145,73 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
 
     displayMode(displayModeId: number) {
         return Object.values(EMenuDisplayMode)[displayModeId];
+    }
+
+    deleteMenu(menu: Menu) {
+        MessageBoxComponent.show(this.dialog, {
+            title: this.translate.instant('title.confirm'),
+            message: this.translate.instant('apps-menus.delete-menu', { name: menu.name })
+        } as MessageBoxOptions)
+        .pipe(untilDestroyed(this))
+        .subscribe(res => {
+            if (res) {
+                this.appMenuService.deleteMenu(menu.id)
+                .pipe(untilDestroyed(this))
+                .subscribe({
+                    next: () => this.onInit(),
+                    error: err => this.popup.showError(err.toString(), { name: menu.name })
+                });
+            }
+        });
+    }
+
+    deleteApp(app: Application) {
+        MessageBoxComponent.show(this.dialog, {
+            title: this.translate.instant('title.confirm'),
+            message: this.translate.instant('apps-menus.delete-app', { name: app.name })
+        } as MessageBoxOptions)
+        .pipe(untilDestroyed(this))
+        .subscribe(res => {
+            if (res) {
+                this.appMenuService.deleteApp(app.id)
+                .pipe(untilDestroyed(this))
+                .subscribe({
+                    next: () => this.onInit(),
+                    error: err => this.popup.showError(err.toString(), { name: app.name })
+                });
+            }
+        });
+    }
+
+    saveMenu(menu: Menu = undefined) {
+        MenuDialogComponent.showDialog(this.dialog, menu)
+        .pipe(
+            untilDestroyed(this),
+            switchMap(menu => menu ? this.appMenuService.saveMenu(menu) : of(undefined as Menu))
+            
+        ).subscribe(menu => {
+            if (menu) {
+                this.onInit();
+                this.popup.showMessage('apps-menus.success-save-menu', { name: menu.name });
+            } else {
+                this.popup.showError('apps-menus.error-save-menu');
+            }
+        });
+    }
+
+    saveApp(app: Application = undefined) {
+        AppDialogComponent.showDialog(this.dialog, app)
+        .pipe(
+            untilDestroyed(this),
+            switchMap(app => app ? this.appMenuService.saveApp(app) : of(undefined as Application))
+            
+        ).subscribe(app => {
+            if (app) {
+                this.onInit();
+                this.popup.showMessage('apps-menus.success-save-app', { name: app.name });
+            } else {
+                this.popup.showError('apps-menus.error-save-app');
+            }
+        });
     }
 }

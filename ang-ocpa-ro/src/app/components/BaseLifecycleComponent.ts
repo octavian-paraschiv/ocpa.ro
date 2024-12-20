@@ -12,7 +12,7 @@ export abstract class BaseLifecycleComponent implements OnInit, OnDestroy, After
 
     ngOnDestroy(): void {
         this.onDestroy();
-    }
+    }   
 
     ngAfterViewInit(): void {
         this.onAfterViewInit();
