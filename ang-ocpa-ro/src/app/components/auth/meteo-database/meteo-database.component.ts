@@ -7,12 +7,12 @@ import { AuthenticationService } from 'src/app/services/authentication.services'
 import { take } from 'rxjs/operators';
 import { MeteoDbInfo } from 'src/app/models/models-swagger';
 import { faEye, faSquareMinus, faUpload, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { formatDate } from '@angular/common';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { MessagePopupService } from 'src/app/services/message-popup.service';
 
 @UntilDestroy()
 @Component({
@@ -42,7 +42,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         authenticationService: AuthenticationService,
         dialog: MatDialog,
         private readonly meteoApi: MeteoApiService,
-        private readonly snackBar: MatSnackBar
+        private readonly popup: MessagePopupService
     ) { 
         super(translate, router, authenticationService, ngZone, dialog);
     }
@@ -70,16 +70,12 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
                         .pipe(untilDestroyed(this))
                         .subscribe({
                             next: () => {
-                                this.snackBar.open(
-                                    this.translate.instant('meteo-db.success-upload', { name: db.name }), 
-                                    undefined, { duration: 5000 });
                                 this.onInit();
+                                this.popup.showMessage('meteo-db.success-upload', { name: db.name });
                             },
                             error: err => {
-                                this.snackBar.open(
-                                    this.translate.instant('meteo-db.error-upload', {name: db.name, err}), 
-                                    undefined, { duration: 5000 });
-                                    this.onInit();
+                                this.onInit();
+                                this.popup.showError('meteo-db.error-upload', {name: db.name, err});
                             }
                         });
                 });
@@ -106,16 +102,12 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
                     .pipe(untilDestroyed(this))
                     .subscribe({
                         next: () => {
-                            this.snackBar.open(
-                                this.translate.instant('meteo-db.success-promote', {name: db.name}), 
-                                undefined, { duration: 5000 });
                             this.onInit();
+                            this.popup.showMessage('meteo-db.success-promote', {name: db.name});
                         },
                         error: err => {
-                            this.snackBar.open(
-                                this.translate.instant('meteo-db.error-promote', {name: db.name, err}), 
-                                undefined, { duration: 5000 });
-                                this.onInit();
+                            this.onInit();
+                            this.popup.showError('meteo-db.error-promote', {name: db.name, err});
                         }
                     });
             }

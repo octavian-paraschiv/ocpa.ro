@@ -6,7 +6,37 @@
     <mat-card-content class="mat-menu-card-content" style="padding: 0;">
         <form mat-dialog-content class="menu-dialog-form" [formGroup]="menuForm" (ngSubmit)="onOk()" style="padding: 1rem;">
             <div style="display: grid;">
-                <!-- form content here -->
+                <mat-form-field appearance="outline" class="menu-form-control">
+                    <mat-label>{{'menu-dialog.name' | translate}}</mat-label>
+                    <input formControlName="name" matInput>
+                    <mat-error *ngIf="f?.name?.errors">{{'menu-dialog.name-required' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="menu-form-control">
+                    <mat-label>{{'menu-dialog.url' | translate}}</mat-label>
+                    <input formControlName="url" matInput>
+                    <mat-error *ngIf="f?.url?.errors">{{'menu-dialog.url-required' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="menu-form-control menu-display-mode-select" >
+                    <mat-label>{{'menu-dialog.display-mode' | translate}}</mat-label>
+                    <mat-select formControlName="displayMode">
+                        <mat-option *ngFor="let dm of displayModes;" [value]="dm">
+                          {{dm}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="menu-form-control" >
+                    <mat-label>{{'menu-dialog.menu-icon' | translate}}</mat-label>
+                    <mat-select formControlName="menuIcon">
+                        <mat-select-trigger>
+                            <fa-icon [icon]="allIcons[selIcon]" [transform]="size"></fa-icon>
+                            <label>&nbsp;&nbsp;[{{selIcon}}]</label>
+                          </mat-select-trigger>
+                        <mat-option *ngFor="let mi of menuIcons;" [value]="mi" (onSelectionChange)="onIconChanged($event)">
+                            <fa-icon [icon]="allIcons[mi]" [transform]="size"></fa-icon>
+                            <label>&nbsp;&nbsp;[{{mi}}]</label>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <div mat-dialog-actions class="menu-form-control">
                     <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>
                         {{'OK' | translate}}

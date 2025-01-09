@@ -187,12 +187,13 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         MenuDialogComponent.showDialog(this.dialog, menu)
         .pipe(
             untilDestroyed(this),
-            switchMap(menu => menu ? this.appMenuService.saveMenu(menu) : of(undefined as Menu))
-            
+            switchMap(menu => menu?.id === -1 ? of(menu) : this.appMenuService.saveMenu(menu))            
         ).subscribe(menu => {
             if (menu) {
-                this.onInit();
-                this.popup.showMessage('apps-menus.success-save-menu', { name: menu.name });
+                if (menu.id > 0) {
+                    this.onInit();
+                    this.popup.showMessage('apps-menus.success-save-menu', { name: menu.name });
+                }
             } else {
                 this.popup.showError('apps-menus.error-save-menu');
             }
@@ -203,12 +204,13 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         AppDialogComponent.showDialog(this.dialog, app)
         .pipe(
             untilDestroyed(this),
-            switchMap(app => app ? this.appMenuService.saveApp(app) : of(undefined as Application))
-            
+            switchMap(app => app?.id === -1 ? of(app) : this.appMenuService.saveApp(app))
         ).subscribe(app => {
             if (app) {
-                this.onInit();
-                this.popup.showMessage('apps-menus.success-save-app', { name: app.name });
+                if (app.id > 0) {
+                    this.onInit();
+                    this.popup.showMessage('apps-menus.success-save-app', { name: app.name });
+                }
             } else {
                 this.popup.showError('apps-menus.error-save-app');
             }

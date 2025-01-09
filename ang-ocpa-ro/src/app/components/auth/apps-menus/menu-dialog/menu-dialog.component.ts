@@ -1,11 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatOptionSelectionChange } from '@angular/material/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { fas, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EMenuDisplayMode, Menu } from 'src/app/models/models-swagger';
-import { AppMenuManagementService } from 'src/app/services/app-menu-management.service';
 
 @UntilDestroy()
 @Component({
@@ -15,9 +16,13 @@ import { AppMenuManagementService } from 'src/app/services/app-menu-management.s
 export class MenuDialogComponent implements OnInit {
     menuForm: UntypedFormGroup;
     editMode = false;
+    displayModes = Object.keys(EMenuDisplayMode);
+    menuIcons = Object.keys(fas);
+    allIcons = fas;
+    size = "grow-3";
+    selIcon: string = undefined;
 
     constructor(
-        private appMenuService: AppMenuManagementService,
         private formBuilder: UntypedFormBuilder,
         public dialogRef: MatDialogRef<MenuDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public menu: Menu
@@ -40,30 +45,51 @@ export class MenuDialogComponent implements OnInit {
             this.menu = {
                name: '',
                url: '',
-               menuIcon: '',
+               menuIcon: this.menuIcons[this.menuIcons.length - 1],
                displayModeId: Object.keys(EMenuDisplayMode).indexOf(EMenuDisplayMode.AlwaysHide)
             } as Menu;
 
         // Should not happen, but anyways
         if (this.menu.builtin)
             return;
+
+        this.selIcon = this.menu.menuIcon;
+
+        this.menuForm = this.formBuilder.group({
+            name: [ this.menu.name, [ Validators.required, Validators.pattern('^.{3,24}$') ] ],
+            url: [ this.menu.url, [ Validators.required, Validators.pattern('^\/[a-zA-Z0-9\/-_]{2,127}$') ] ],
+            displayMode: [ Object.keys(EMenuDisplayMode)[this.menu.displayModeId] ],
+            menuIcon: [ this.selIcon ]
+        });
     }
 
     onCancel(): void {
-        this.dialogRef.close();
+        this.dialogRef.close({id: -1} as Menu);
     }
 
     onOk(): void {
         // stop here if form is invalid
-        if (this.menuForm.invalid) {
+        if (this.menuForm.invalid)
             return;
-        }   
 
-        this.dialogRef.close({  } as Menu);
+        this.dialogRef.close({  
+            id: this.menu.id,
+            name: this.f?.name?.value,
+            url: this.f?.url?.value,
+            displayModeId: Object.keys(EMenuDisplayMode).indexOf(this.f?.displayMode?.value),
+            menuIcon: this.f?.menuIcon?.value,
+            builtin: false
+        } as Menu);
     }
 
+    onIconChanged(event: MatOptionSelectionChange) {
+        if (event.isUserInput) {
+            this.selIcon = event.source.value;
+        }
+      }
+
     static showDialog(dialog: MatDialog, menu: Menu = undefined): Observable<Menu> {
-        const dialogRef = dialog?.open(MenuDialogComponent, { data: menu });
+        const dialogRef = dialog?.open(MenuDialogComponent, { data: menu, width: '500px' });
         return dialogRef.afterClosed().pipe(map(result => result as Menu));
     }
 }

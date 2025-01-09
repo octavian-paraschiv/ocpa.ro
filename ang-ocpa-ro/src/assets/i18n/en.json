@@ -34,7 +34,8 @@
         "admin": {
             "users": "Manage Users",
             "meteo-database": "Manage Meteo Database",
-            "content": "Manage Site Content"
+            "content": "Manage Site Content",
+            "apps-menus": "Apps & Menus"
         },
         "confirm": "Confirm"
     },
@@ -260,8 +261,12 @@
 
     "menu-dialog": {
         "edit": "Edit menu '{{name}}'",
-        "create": "Create new menu"
+        "create": "Create new menu",
+        "name": "Menu name",
+        "name-required": "Menu name must have 3..24 chars",
+        "url": "URL",
+        "url-required": "URL must have 3..128 chars, must start with a slash (/) and must only have letters, digits, slashes (/), dashes (-) and underscores (_).",
+        "display-mode": "Display mode",
+        "menu-icon": "Menu icon"
     }
-
-
 }

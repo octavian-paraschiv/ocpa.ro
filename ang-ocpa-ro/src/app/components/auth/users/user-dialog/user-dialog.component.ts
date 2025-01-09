@@ -95,7 +95,7 @@ export class UserDialogComponent implements OnInit {
     }
 
     onCancel(): void {
-        this.dialogRef.close();
+        this.dialogRef.close({id: -1} as User);
     }
 
     onOk(): void {

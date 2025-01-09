@@ -15,6 +15,6 @@ export class MessagePopupService {
 
     public showError(key: string, interpolateParams?: InterpolationParameters) {
         const msg = this.translate.instant(key, interpolateParams);
-        return this.snackBar.open(msg, undefined, { duration: 500000, panelClass: [ 'error-snackbar' ] });
+        return this.snackBar.open(msg, undefined, { duration: 5000, panelClass: [ 'error-snackbar' ] });
     }
 }

@@ -11,11 +11,11 @@ import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { UserTypeService } from 'src/app/services/user-type.service';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { RegisteredDevice, User } from 'src/app/models/models-swagger';
 import { RegisteredDeviceService } from 'src/app/services/registered-device.service';
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { MessagePopupService } from 'src/app/services/message-popup.service';
 
 @UntilDestroy()
 @Component({
@@ -41,10 +41,10 @@ export class UsersComponent extends BaseAuthComponent {
         ngZone: NgZone,
         dialog: MatDialog,
         authenticationService: AuthenticationService,
-        private readonly snackBar: MatSnackBar,
         private readonly userService: UserService,
         private readonly regDeviceService: RegisteredDeviceService,
-        private readonly userTypeService: UserTypeService
+        private readonly userTypeService: UserTypeService,
+        private readonly popup: MessagePopupService
     ) { 
         super(translate, router, authenticationService, ngZone, dialog);
     }
@@ -78,16 +78,15 @@ export class UsersComponent extends BaseAuthComponent {
         UserDialogComponent.showDialog(this.dialog, user)
             .pipe(
                 untilDestroyed(this),
-                switchMap(user => user ? this.userService.saveUser(user) : of(undefined as User))
-                
+                switchMap(user => user?.id === -1 ? of(user) : this.userService.saveUser(user))                
             ).subscribe(user => {
                 if (user) {
-                    this.onInit();
-                    this.snackBar.open(this.translate.instant('users.success-save', { loginId: user.loginId }),
-                        undefined, { duration: 5000 });
+                    if (user?.id > 0) {
+                        this.onInit();
+                        this.popup.showMessage('users.success-save', { loginId: user.loginId });
+                    }
                 } else {
-                    this.snackBar.open(this.translate.instant('users.error-save'), 
-                        undefined, { duration: 5000 });
+                    this.popup.showError('users.error-save');
                 }
             });
     }

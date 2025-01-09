@@ -113,13 +113,13 @@ namespace ocpa.ro.api.Helpers.Authentication
                     return StatusCodes.Status404NotFound;
 
                 if (dbu.Builtin)
-                    throw new ExtendedException($"ERR_DELETE_BUILTIN_APP");
+                    throw new ExtendedException("ERR_DELETE_BUILTIN_APP");
 
                 if (_db.Table<ApplicationMenu>().Any(am => am.ApplicationId == appId))
-                    throw new ExtendedException($"ERR_DELETE_APP_MENU_ASSOCIATIONS");
+                    throw new ExtendedException("ERR_DELETE_APP_MENU_ASSOCIATIONS");
 
                 if (_db.Table<ApplicationUser>().Any(am => am.ApplicationId == appId))
-                    throw new ExtendedException($"ERR_DELETE_APP_USER_ASSOCIATIONS");
+                    throw new ExtendedException("ERR_DELETE_APP_USER_ASSOCIATIONS");
 
                 if (_db.Delete(dbu) > 0)
                     return StatusCodes.Status200OK;
@@ -163,7 +163,7 @@ namespace ocpa.ro.api.Helpers.Authentication
 
                 dbu = _db.Table<Menu>().FirstOrDefault(a => id == a.Id);
                 if (dbu?.Builtin ?? false)
-                    throw new ExtendedException($"ERR_EDIT_BUILTIN_MENU");
+                    throw new ExtendedException("ERR_EDIT_BUILTIN_MENU");
 
                 bool newEntry = (dbu == null);
 
@@ -212,10 +212,10 @@ namespace ocpa.ro.api.Helpers.Authentication
                     return StatusCodes.Status404NotFound;
 
                 if (dbu.Builtin)
-                    throw new ExtendedException($"ERR_DELETE_BUILTIN_MENU");
+                    throw new ExtendedException("ERR_DELETE_BUILTIN_MENU");
 
                 if (_db.Table<ApplicationMenu>().Any(am => am.MenuId == menuId))
-                    throw new ExtendedException($"ERR_DELETE_MENU_APP_ASSOCIATIONS");
+                    throw new ExtendedException("ERR_DELETE_MENU_APP_ASSOCIATIONS");
 
                 if (_db.Delete(dbu) > 0)
                     return StatusCodes.Status200OK;

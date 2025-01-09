@@ -5,7 +5,6 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Application } from 'src/app/models/models-swagger';
-import { AppMenuManagementService } from 'src/app/services/app-menu-management.service';
 
 @UntilDestroy()
 @Component({
@@ -17,7 +16,6 @@ export class AppDialogComponent implements OnInit {
     editMode = false;
 
     constructor(
-        private appMenuService: AppMenuManagementService,
         private formBuilder: UntypedFormBuilder,
         public dialogRef: MatDialogRef<AppDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public app: Application
@@ -50,8 +48,6 @@ export class AppDialogComponent implements OnInit {
         if (this.app.builtin)
             return;            
         
-        // Validators.pattern('^(\/[^\/ ]*)+\/?$|^.{0,32}$') 
-
         this.appForm = this.formBuilder.group({
             name: [ this.app.name, [ Validators.required, Validators.pattern('^[a-zA-Z0-9]{3,16}$') ] ],
             code: [ this.app.code, [ Validators.required, Validators.pattern('^[A-Z]{3,5}$') ] ],
@@ -61,14 +57,13 @@ export class AppDialogComponent implements OnInit {
     }
 
     onCancel(): void {
-        this.dialogRef.close();
+        this.dialogRef.close({id: -1} as Application);
     }
 
     onOk(): void {
         // stop here if form is invalid
-        if (this.appForm.invalid) {
+        if (this.appForm.invalid)
             return;
-        }
 
         this.dialogRef.close({
             id: this.app.id,
@@ -81,7 +76,7 @@ export class AppDialogComponent implements OnInit {
     }
 
     static showDialog(dialog: MatDialog, app: Application = undefined): Observable<Application> {
-        const dialogRef = dialog?.open(AppDialogComponent, { data: app, width: '500px' });
+        const dialogRef = dialog?.open(AppDialogComponent, { data: app   });
         return dialogRef.afterClosed().pipe(map(result => result as Application));
     }
 }
