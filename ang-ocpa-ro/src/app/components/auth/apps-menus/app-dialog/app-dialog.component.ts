@@ -76,7 +76,7 @@ export class AppDialogComponent implements OnInit {
     }
 
     static showDialog(dialog: MatDialog, app: Application = undefined): Observable<Application> {
-        const dialogRef = dialog?.open(AppDialogComponent, { data: app   });
+        const dialogRef = dialog?.open(AppDialogComponent, { data: app, width: '500px' });
         return dialogRef.afterClosed().pipe(map(result => result as Application));
     }
 }

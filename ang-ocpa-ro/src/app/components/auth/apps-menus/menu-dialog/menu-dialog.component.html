@@ -16,7 +16,7 @@
                     <input formControlName="url" matInput>
                     <mat-error *ngIf="f?.url?.errors">{{'menu-dialog.url-required' | translate}}</mat-error>
                 </mat-form-field>
-                <mat-form-field appearance="outline" class="menu-form-control menu-display-mode-select" >
+                <mat-form-field appearance="outline" class="menu-form-control extra-space-above" >
                     <mat-label>{{'menu-dialog.display-mode' | translate}}</mat-label>
                     <mat-select formControlName="displayMode">
                         <mat-option *ngFor="let dm of displayModes;" [value]="dm">

@@ -11,7 +11,7 @@
                     <input formControlName="name" matInput>
                     <mat-error *ngIf="f?.name?.errors">{{'app-dialog.name-required' | translate}}</mat-error>
                 </mat-form-field>
-                <mat-form-field appearance="outline" class="app-form-control">
+                <mat-form-field appearance="outline" class="app-form-control extra-space-above">
                     <mat-label>{{'app-dialog.code' | translate}}</mat-label>
                     <input formControlName="code" matInput>
                     <mat-error *ngIf="f?.code?.errors   ">{{'app-dialog.code-required' | translate}}</mat-error>

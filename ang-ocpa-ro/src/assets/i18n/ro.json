@@ -232,8 +232,8 @@
         "error-save-menu": "Salvarea meniului a eșuat",
         "success-save-app": "Aplicația '{{name}}' a fost salvată cu succes",
         "error-save-app": "Salvarea aplicației a eșuat",
-        "apps-menus-header-menus": "Meniuri <b>&darr;</b>",
-        "apps-menus-header-apps": "Aplicații <b>&rarr;</b>",
+        "apps-menus-header-menus": "Menus<b>&darr;</b>&nbsp;",
+        "apps-menus-header-apps": "Apps<b>&rarr;</b>",
         "menu-assoc-created": "Asocierea meniului a fost creată cu succes",
         "menu-assoc-create-err": "Crearea asocierii meniului a eșuat",
         "menu-assoc-remove": "Asocierea meniului a fost eliminată cu succes",
@@ -260,7 +260,7 @@
     },
 
     "menu-dialog": {
-        "edit": "Editează meniul '{{name}}'",
+        "edit": "Editează meniul '{{name}}'",   
         "create": "Creează meniu nou",
         "name": "Numele meniului",
         "name-required": "Numele meniului trebuie să aibă între 3 și 24 de caractere",

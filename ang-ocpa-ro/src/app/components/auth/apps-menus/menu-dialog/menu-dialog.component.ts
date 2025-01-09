@@ -89,7 +89,7 @@ export class MenuDialogComponent implements OnInit {
       }
 
     static showDialog(dialog: MatDialog, menu: Menu = undefined): Observable<Menu> {
-        const dialogRef = dialog?.open(MenuDialogComponent, { data: menu, width: '500px' });
+        const dialogRef = dialog?.open(MenuDialogComponent, { data: menu, width: '600px' });
         return dialogRef.afterClosed().pipe(map(result => result as Menu));
     }
 }
