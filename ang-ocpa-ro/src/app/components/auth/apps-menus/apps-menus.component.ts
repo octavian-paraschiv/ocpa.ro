@@ -110,17 +110,17 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
                 })), 
                 untilDestroyed(this));
 
-        const o2 = this.appMenuService.getAllApps()
-            .pipe(
-                first(), 
-                tap(apps => this.apps = apps.sort((m1, m2) => {
-                    if (m1.builtin != m2.builtin) {
-                        if (m1.builtin) return -1;
-                        else if (m2.builtin) return 1;
-                    }
-                    return (m1.id - m2.id);
-                })), 
-                untilDestroyed(this));
+            const o2 = this.appMenuService.getAllApps()
+                .pipe(
+                    first(), 
+                    tap(apps => this.apps = apps.sort((m1, m2) => {
+                        if (m1.builtin != m2.builtin) {
+                            if (m1.builtin) return -1;
+                            else if (m2.builtin) return 1;
+                        }
+                        return (m1.id - m2.id);
+                    })), 
+                    untilDestroyed(this));
 
         const o3 = this.appMenuService.getAllAppMenus()
             .pipe(

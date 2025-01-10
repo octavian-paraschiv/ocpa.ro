@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Helpers.Authentication;
+using ocpa.ro.api.Models.Applications;
 using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Models.Menus;
 using ocpa.ro.api.Policies;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections.Generic;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -146,6 +148,66 @@ namespace ocpa.ro.api.Controllers
             {
                 LogException(ex);
                 return NotFound(ex.Message);
+            }
+        }
+
+
+        [HttpGet("{userId}/apps")]
+        [ProducesResponseType(typeof(ApplicationUser[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "GetAppsForUser")]
+        public IActionResult GetAppsForUser([FromRoute] int userId)
+        {
+            try
+            {
+                return Ok(_authHelper.GetAppsForUser(userId));
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost("{userId}/apps/save")]
+        [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "SaveAppsForUser")]
+        public IActionResult SaveAppsForUser([FromRoute] int userId, [FromBody] IEnumerable<ApplicationUser> appsForUser)
+        {
+            try
+            {
+                _authHelper.SaveAppsForUser(userId, appsForUser);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("{userId}/apps/delete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "DeleteAppsForUser")]
+        public IActionResult DeleteAppsForUser([FromRoute] int userId)
+        {
+            try
+            {
+                _authHelper.DeleteAppsForUser(userId, false);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return BadRequest(ex.Message);
             }
         }
     }

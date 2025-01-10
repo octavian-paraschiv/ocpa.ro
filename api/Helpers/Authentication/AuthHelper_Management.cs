@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Models.Applications;
+using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Models.Menus;
 using System;
 using System.Collections.Generic;
@@ -30,9 +31,9 @@ namespace ocpa.ro.api.Helpers.Authentication
 
         //------------------------
 
-        IEnumerable<ApplicationUser> GetApplicationUsers(int appId);
-        ApplicationUser SaveApplicationUser(int appId, ApplicationUser appUser, out bool inserted);
-        int DeleteApplicationUser(int appId, int appUserId);
+        IEnumerable<ApplicationUser> GetAppsForUser(int userId);
+        void SaveAppsForUser(int userId, IEnumerable<ApplicationUser> appsForUser);
+        void DeleteAppsForUser(int userId, bool saveContext);
     }
 
     public partial class AuthHelper : IAuthHelper
@@ -306,13 +307,13 @@ namespace ocpa.ro.api.Helpers.Authentication
 
         //------------------------
 
-        public IEnumerable<ApplicationUser> GetApplicationUsers(int appId)
+        public IEnumerable<ApplicationUser> GetAppsForUser(int userId)
         {
-            ValidateAppId(appId);
+            ValidateUserId(userId);
 
             try
             {
-                return _db.Table<ApplicationUser>().Where(au => au.ApplicationId == appId);
+                return _db.Table<ApplicationUser>().Where(au => au.UserId == userId);
             }
             catch (Exception ex)
             {
@@ -322,70 +323,35 @@ namespace ocpa.ro.api.Helpers.Authentication
             return Array.Empty<ApplicationUser>();
         }
 
-        public ApplicationUser SaveApplicationUser(int appId, ApplicationUser appUser, out bool inserted)
+        public void SaveAppsForUser(int userId, IEnumerable<ApplicationUser> appsForUser)
         {
+            DeleteAppsForUser(userId, true);
 
-            ApplicationUser dbu = null;
-            inserted = false;
-
-            ValidateAppId(appId);
-
-            try
+            if (appsForUser?.Any() ?? false)
             {
-                var id = appUser.Id;
-
-                dbu = _db.Table<ApplicationUser>().FirstOrDefault(a => id == a.Id && appId == a.ApplicationId);
-
-                bool newEntry = (dbu == null);
-
-                dbu ??= new ApplicationUser();
-
-                dbu.ApplicationId = appId;
-                dbu.UserId = appUser.UserId;
-
-                if (newEntry)
+                foreach (ApplicationUser au in appsForUser)
                 {
-                    dbu.Id = (_db.Table<ApplicationUser>().OrderByDescending(u => u.Id).FirstOrDefault()?.Id ?? 0) + 1;
-
-                    if (_db.Insert(dbu) > 0)
-                        inserted = true;
-                    else
-                        dbu = null;
-                }
-                else
-                {
-                    if (_db.Update(dbu) <= 0)
-                        dbu = null;
+                    au.Id = (_db.Table<ApplicationUser>().OrderByDescending(u => u.Id).FirstOrDefault()?.Id ?? 0) + 1;
+                    if (_db.Insert(au) <= 0)
+                        throw new ExtendedException("ERR_FAIL_SAVE_APPS_FOR_USER");
                 }
             }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                dbu = null;
-            }
-
-            return dbu;
         }
 
-        public int DeleteApplicationUser(int appId, int appUserId)
+        public void DeleteAppsForUser(int userId, bool saveContext)
         {
-            ValidateAppId(appId);
-
-            try
+            var appsForUser = GetAppsForUser(userId);
+            if (appsForUser?.Any() ?? false)
             {
-                var dbu = _db.Table<ApplicationUser>().FirstOrDefault(u => u.Id == appUserId && u.ApplicationId == appId);
-                if (dbu == null)
-                    return StatusCodes.Status404NotFound;
-
-                if (_db.Delete(dbu) > 0)
-                    return StatusCodes.Status200OK;
+                foreach (ApplicationUser au in appsForUser)
+                {
+                    if (_db.Delete(au) <= 0)
+                    {
+                        var msg = saveContext ? "ERR_FAIL_DELETE_APPS_FOR_USER" : "ERR_FAIL_CLEAR_APPS_FOR_USER";
+                        throw new ExtendedException(msg);
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                LogException(ex);
-            }
-
-            return StatusCodes.Status400BadRequest;
         }
 
         //------------------------
@@ -412,6 +378,21 @@ namespace ocpa.ro.api.Helpers.Authentication
                 var app = _db.Table<Menu>().FirstOrDefault(a => a.Id == menuId);
                 if (app == null)
                     throw new ExtendedException("ERR_MENU_NOT_FOUND");
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                throw;
+            }
+        }
+
+        private void ValidateUserId(int userId)
+        {
+            try
+            {
+                var app = _db.Table<User>().FirstOrDefault(a => a.Id == userId);
+                if (app == null)
+                    throw new ExtendedException("ERR_USER_NOT_FOUND");
             }
             catch (Exception ex)
             {

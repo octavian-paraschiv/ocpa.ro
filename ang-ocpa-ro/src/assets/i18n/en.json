@@ -19,6 +19,10 @@
     "ERR_DELETE_MENU_APP_ASSOCIATIONS": "The menu '{{name}}' has app associations and cannot be deleted",
     "ERR_APP_NOT_FOUND": "The application '{{name}}' was not found",
     "ERR_MENU_NOT_FOUND": "The menu '{{name}}' was not found",
+    "ERR_USER_NOT_FOUND": "The user '{{loginId}}' was not found",
+    "ERR_FAIL_SAVE_APPS_USERS": "Failed to save applications for user '{{loginId}}'",
+    "ERR_FAIL_DELETE_APPS_FOR_USER": "Failed to delete applications for user '{{loginId}}'",
+    "ERR_FAIL_CLEAR_APPS_FOR_USER": "Failed to clear old applications for user '{{loginId}}'",
 
     "title": {
         "meteo": "OcPa's Weather Forecast",
@@ -67,6 +71,9 @@
         "username": "User name",
         "username-required": "User name is required",
         "password": "Password",
+        "repeat-password": "Repeat password",
+        "disabled-account": "Disabled account",
+        "user-apps": "User applications",
         "password-required": "Password is required",
         "enter-credentials": "Please enter your username and password:",
         "invalid-credentials": "Incorrect user name or password.",

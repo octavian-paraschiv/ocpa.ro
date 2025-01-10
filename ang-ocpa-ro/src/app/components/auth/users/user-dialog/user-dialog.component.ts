@@ -1,13 +1,23 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { MatChipSelectionChange } from '@angular/material/chips';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { UserType, User } from 'src/app/models/models-swagger';
+import { Observable, of } from 'rxjs';
+import { first, tap, map } from 'rxjs/operators';
+import { UserType, User, Application, ApplicationUser } from 'src/app/models/models-swagger';
+import { AppMenuManagementService } from 'src/app/services/app-menu-management.service';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UserTypeService } from 'src/app/services/user-type.service';
 import { environment } from 'src/environments/environment';
+
+export interface ApplicationInfo extends Application {
+    selected: boolean;
+}
+
+export interface UserInfo extends User {
+    appsForUser: ApplicationUser[];
+}
 
 @UntilDestroy()
 @Component({
@@ -18,9 +28,13 @@ export class UserDialogComponent implements OnInit {
     userForm: UntypedFormGroup;
     hide = true;
     editMode = false;
-    userTypes: UserType[] = undefined
+    userTypes: UserType[] = undefined;
+
+    apps: ApplicationInfo[] = [];
+    appsForUser: ApplicationUser[] = [];
 
     constructor(
+        private appMenuService: AppMenuManagementService,
         private authService: AuthenticationService,
         private userTypeService: UserTypeService,
         private formBuilder: UntypedFormBuilder,
@@ -52,7 +66,8 @@ export class UserDialogComponent implements OnInit {
                 u1: [ this.user.loginId, Validators.required ],
                 p1: [ '', Validators.minLength(8) ],
                 p2: [ '', this.passwordMatch() ],
-                t1: [ this.user.type ]
+                t1: [ this.user.type ],
+                disableAccount: [ !this.user.enabled ],
             });
             this.f.u1.disable();
         } else {
@@ -60,14 +75,41 @@ export class UserDialogComponent implements OnInit {
                 u1: [ this.user.loginId, Validators.required ],
                 p1: [ '', [ Validators.required, Validators.minLength(8)] ],
                 p2: [ '', this.passwordMatch() ],
-                t1: [ this.user.type ]
+                t1: [ this.user.type ],
+                disableAccount: [ !this.user.enabled ],
             });
         }
 
         const loggedInUser = this.authService.authUserChanged$.getValue();
+        if (this.user.loginId === loggedInUser?.loginId)
+            this.f.t1.disable();
 
-            if (this.user.loginId === loggedInUser?.loginId)
-                this.f.t1.disable();
+        const o1 = (this.editMode) ? 
+            this.appMenuService.getAppsForUser(this.user.id).pipe(
+                first(), 
+                tap(appsForUser => this.appsForUser = appsForUser), 
+                untilDestroyed(this)) : of([]);
+
+        o1.subscribe({
+            next: () => this.fetchApps(),
+            error: () => this.fetchApps(),
+        });
+    }
+
+    fetchApps() {
+        this.appMenuService.getAllApps()
+            .pipe(first(), untilDestroyed(this))
+            .subscribe(apps => this.apps = apps
+                .filter(a => a.loginRequired && !a.adminMode)
+                .map(a => ({
+                    adminMode: a.adminMode,
+                    builtin: a.builtin,
+                    code: a.code,
+                    id: a.id,
+                    loginRequired: a.loginRequired,
+                    name: a.name,
+                    selected: this.appsForUser?.find(au => au.applicationId === a.id)?.id > 0
+                } as ApplicationInfo)));
     }
 
     // convenience getter for easy access to form fields
@@ -113,11 +155,19 @@ export class UserDialogComponent implements OnInit {
             passwordHash =  environment.ext.hash(loginId, pass);
         }
 
-        this.dialogRef.close({ loginId, passwordHash, type } as User);
+        this.dialogRef.close({ loginId, passwordHash, type, enabled: this.user.enabled,
+            appsForUser: this.apps.filter(a => a.selected).map(a => ({
+                applicationId: a.id,
+                userId: this.user.id,
+            } as ApplicationUser)) } as UserInfo);
     }
 
-        static showDialog(dialog: MatDialog, user: User = undefined): Observable<User> {
-            const dialogRef = dialog?.open(UserDialogComponent, { data: user });
-            return dialogRef.afterClosed().pipe(map(result => result as User));
-        }
+    get isApplicationUser() {
+        return this.userTypes.find(ut => ut.id === this.f?.t1?.value)?.code === 'APP';  
+    }
+
+    static showDialog(dialog: MatDialog, user: User = undefined): Observable<UserInfo> {
+        const dialogRef = dialog?.open(UserDialogComponent, { data: user, height: 'auto' });
+        return dialogRef.afterClosed().pipe(map(result => result as UserInfo));
+    }
 }

@@ -302,6 +302,7 @@ export interface User {
     loginId?: string | undefined;
     passwordHash?: string | undefined;
     type?: number;
+    enabled?: boolean;
 }
 
 export interface UserType {

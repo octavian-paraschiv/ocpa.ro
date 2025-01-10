@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Models.Authentication;
@@ -108,6 +109,7 @@ namespace ocpa.ro.api.Helpers.Authentication
 
                 dbu.Type = user.Type;
                 dbu.PasswordHash = user.PasswordHash;
+                dbu.Enabled = user.Enabled;
 
                 if (newUser)
                 {
@@ -142,8 +144,14 @@ namespace ocpa.ro.api.Helpers.Authentication
                 if (dbu == null)
                     return StatusCodes.Status404NotFound;
 
+                DeleteAppsForUser(dbu.Id, false);
+
                 if (_db.Delete(dbu) > 0)
                     return StatusCodes.Status200OK;
+            }
+            catch (ExtendedException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

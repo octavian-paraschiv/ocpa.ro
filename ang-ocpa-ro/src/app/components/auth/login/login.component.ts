@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
             .pipe(first(), untilDestroyed(this))
             .subscribe({
                 next: msg => (msg?.length > 0) ? this.handleError(msg) : this.redirectToDefaultPage(),
-                error: () => this.handleError('auth.invalid-credentials')
+                error: err => this.handleError(err)
             });
     }
 

@@ -19,6 +19,10 @@
     "ERR_DELETE_MENU_APP_ASSOCIATIONS": "Meniul '{{name}}' are asocieri de aplicații și nu poate fi șters",
     "ERR_APP_NOT_FOUND": "Aplicația '{{name}}' nu a fost găsită",
     "ERR_MENU_NOT_FOUND": "Meniul '{{name}}' nu a fost găsit",
+    "ERR_USER_NOT_FOUND": "Utilizatorul '{{loginId}}' nu a fost găsit",
+    "ERR_FAIL_SAVE_APPS_USERS": "Nu s-au putut salva aplicațiile pentru utilizatorul '{{loginId}}'",
+    "ERR_FAIL_DELETE_APPS_FOR_USER": "Nu s-au putut șterge aplicațiile pentru utilizatorul '{{loginId}}'",
+    "ERR_FAIL_CLEAR_APPS_FOR_USER": "Nu s-au putut elimina vechile aplicații pentru utilizatorul '{{loginId}}'",
 
     "title": {
         "meteo": "Prognoza Meteo după OcPa",
@@ -67,6 +71,9 @@
         "username": "Nume utilizator",
         "username-required": "Numele de utilizator este obligatoriu.",
         "password": "Parolă",
+        "repeat-password": "Repetă parola",
+        "disabled-account": "Cont dezactivat",
+        "user-apps": "Aplicațiile utilizatorului",
         "password-required": "Parola este obligatorie",
         "enter-credentials": "Introduceți Numele de utilizator și Parola:",
         "invalid-credentials": "Nume de utilizator sau Parolă incorectă.",

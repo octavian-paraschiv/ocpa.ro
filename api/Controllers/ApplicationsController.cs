@@ -107,8 +107,8 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpPost("{appId}/menu/save/{menuId}")]
-        [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApplicationMenu), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApplicationMenu), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [IgnoreWhenNotInDev]
         [SwaggerOperation(OperationId = "SaveApplicationMenu")]
@@ -149,65 +149,5 @@ namespace ocpa.ro.api.Controllers
         }
 
         //------------------------
-
-        [HttpGet("{appId}/users")]
-        [ProducesResponseType(typeof(ApplicationUser[]), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [IgnoreWhenNotInDev]
-        [SwaggerOperation(OperationId = "GetApplicationUsers")]
-        public IActionResult GetApplicationUsers([FromRoute] int appId)
-        {
-            try
-            {
-                return Ok(_authHelper.GetApplicationUsers(appId));
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        [HttpPost("{appId}/user/save")]
-        [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        [IgnoreWhenNotInDev]
-        [SwaggerOperation(OperationId = "SaveApplicationUser")]
-        public IActionResult SaveApplicationUser([FromRoute] int appId, [FromBody] ApplicationUser appUser)
-        {
-            try
-            {
-                var dbu = _authHelper.SaveApplicationUser(appId, appUser, out bool inserted);
-                if (dbu != null)
-                    return inserted ?
-                        StatusCode(StatusCodes.Status201Created, dbu) :
-                        Ok(dbu);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            return BadRequest();
-        }
-
-        [HttpPost("{appId}/user/delete/{appUserId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        [IgnoreWhenNotInDev]
-        [SwaggerOperation(OperationId = "DeleteApplicationUser")]
-        public IActionResult DeleteApplicationUser([FromRoute] int appId, [FromRoute] int appUserId)
-        {
-            try
-            {
-                return StatusCode(_authHelper.DeleteApplicationUser(appId, appUserId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
 }

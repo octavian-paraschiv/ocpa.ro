@@ -1,10 +1,8 @@
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, throwError } from "rxjs";
-import { catchError } from 'rxjs/operators';
+import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
 import { UntilDestroy } from "@ngneat/until-destroy";
-import { TranslateService } from '@ngx-translate/core';
 import { Application, ApplicationMenu, ApplicationUser, Menu } from 'src/app/models/models-swagger';
 
 @UntilDestroy()
@@ -57,15 +55,13 @@ export class AppMenuManagementService {
 
     //------------------------
 
-    public getAllAppUsers(appId: number): Observable<ApplicationUser[]> {
-        return this.http.get<ApplicationUser[]>(`${environment.apiUrl}/applications/${appId}/users`);
+    public getAppsForUser(userId: number): Observable<ApplicationUser[]> {
+        return this.http.get<ApplicationUser[]>(`${environment.apiUrl}/users/${userId}/apps`);
     }
 
-    public saveAppUser(appId: number, appUser: ApplicationUser): Observable<ApplicationUser> {
-        return this.http.post<ApplicationUser>(`${environment.apiUrl}/applications/${appId}/user/save`, appUser);
-    }
-
-    public deleteAppUser(appId: number, appUserId: number): Observable<Object> {
-        return this.http.post(`${environment.apiUrl}/applications/${appId}/user/delete/${appUserId}`, undefined);
+    public saveAppsForUser(userId: number, appsForUser: ApplicationUser[]): Observable<Object> {
+        return (appsForUser?.length > 0) ? 
+            this.http.post<ApplicationUser>(`${environment.apiUrl}/users/${userId}/apps/save`, appsForUser) : 
+            this.http.post<ApplicationUser>(`${environment.apiUrl}/users/${userId}/apps/delete`, undefined); 
     }
 }       
