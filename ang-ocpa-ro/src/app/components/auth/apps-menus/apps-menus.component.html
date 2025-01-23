@@ -85,6 +85,7 @@
               <th mat-header-cell *matHeaderCellDef>{{appName}}</th>
               <td mat-cell *matCellDef="let appMenu">   
                 <mat-checkbox
+                    [color]="primary"
                     [checked]="state(appMenu, appName)"
                     (change)="onAppMenuChange(appMenu, appName, $event.checked)">
                 </mat-checkbox>
