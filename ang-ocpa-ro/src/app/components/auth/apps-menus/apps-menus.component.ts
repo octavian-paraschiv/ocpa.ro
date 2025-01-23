@@ -80,7 +80,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         }
         
         obs.pipe(first(), untilDestroyed(this)).subscribe({
-            next: () => this.popup.showMessage(key),
+            next: () => this.popup.showSuccess(key),
             error: () => this.popup.showError(keyErr),
         });
     }
@@ -192,7 +192,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
             if (menu) {
                 if (menu.id > 0) {
                     this.onInit();
-                    this.popup.showMessage('apps-menus.success-save-menu', { name: menu.name });
+                    this.popup.showSuccess('apps-menus.success-save-menu', { name: menu.name });
                 }
             } else {
                 this.popup.showError('apps-menus.error-save-menu');
@@ -209,7 +209,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
             if (app) {
                 if (app.id > 0) {
                     this.onInit();
-                    this.popup.showMessage('apps-menus.success-save-app', { name: app.name });
+                    this.popup.showSuccess('apps-menus.success-save-app', { name: app.name });
                 }
             } else {
                 this.popup.showError('apps-menus.error-save-app');

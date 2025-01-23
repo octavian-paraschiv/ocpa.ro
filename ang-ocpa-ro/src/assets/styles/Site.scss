@@ -133,6 +133,12 @@ input::-ms-clear {
     grid-area: rf;
 }
 
+.success-snackbar {
+    .mdc-snackbar__surface {
+        background-color: green !important;
+    }
+}
+
 .error-snackbar {
     .mdc-snackbar__surface {
         background-color: maroon !important;

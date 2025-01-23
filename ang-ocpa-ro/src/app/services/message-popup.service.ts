@@ -4,17 +4,40 @@ import { InterpolationParameters, TranslateService } from '@ngx-translate/core';
 
 @Injectable({ providedIn: 'root' })
 export class MessagePopupService {
+    
     constructor(private snackBar: MatSnackBar,
         private translate: TranslateService
     ) { }
 
-    public showMessage(key: string, interpolateParams?: InterpolationParameters) {
+    public showInfo(key: string, interpolateParams?: InterpolationParameters) {
         const msg = this.translate.instant(key, interpolateParams);
-        return this.snackBar.open(msg, undefined, { duration: 5000 });
+        return this.snackBar.open(msg, undefined, 
+            { 
+                duration: 5000, 
+                horizontalPosition: 'end',
+                verticalPosition: 'bottom'
+            });
+    }
+
+    public showSuccess(key: string, interpolateParams?: InterpolationParameters) {
+        const msg = this.translate.instant(key, interpolateParams);
+        return this.snackBar.open(msg, undefined, 
+            { 
+                duration: 5000, 
+                horizontalPosition: 'end',
+                verticalPosition: 'bottom',
+                panelClass: [ 'success-snackbar' ]
+            });
     }
 
     public showError(key: string, interpolateParams?: InterpolationParameters) {
         const msg = this.translate.instant(key, interpolateParams);
-        return this.snackBar.open(msg, undefined, { duration: 5000, panelClass: [ 'error-snackbar' ] });
+        return this.snackBar.open(msg, undefined, 
+            { 
+                duration: 5000, 
+                horizontalPosition: 'end',
+                verticalPosition: 'bottom',
+                panelClass: [ 'error-snackbar' ]
+            });
     }
 }

@@ -71,7 +71,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
                         .subscribe({
                             next: () => {
                                 this.onInit();
-                                this.popup.showMessage('meteo-db.success-upload', { name: db.name });
+                                this.popup.showSuccess('meteo-db.success-upload', { name: db.name });
                             },
                             error: err => {
                                 this.onInit();
@@ -103,7 +103,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
                     .subscribe({
                         next: () => {
                             this.onInit();
-                            this.popup.showMessage('meteo-db.success-promote', {name: db.name});
+                            this.popup.showSuccess('meteo-db.success-promote', {name: db.name});
                         },
                         error: err => {
                             this.onInit();
