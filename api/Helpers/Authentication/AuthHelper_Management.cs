@@ -331,6 +331,7 @@ namespace ocpa.ro.api.Helpers.Authentication
             {
                 foreach (ApplicationUser au in appsForUser)
                 {
+                    au.UserId = userId; // should already be set like this, but anyways
                     au.Id = (_db.Table<ApplicationUser>().OrderByDescending(u => u.Id).FirstOrDefault()?.Id ?? 0) + 1;
                     if (_db.Insert(au) <= 0)
                         throw new ExtendedException("ERR_FAIL_SAVE_APPS_FOR_USER");
