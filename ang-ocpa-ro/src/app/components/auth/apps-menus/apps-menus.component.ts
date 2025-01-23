@@ -158,7 +158,10 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
                 this.appMenuService.deleteMenu(menu.id)
                 .pipe(untilDestroyed(this))
                 .subscribe({
-                    next: () => this.onInit(),
+                    next: () => {
+                        this.onInit();
+                        this.popup.showSuccess('apps-menus.success-delete-menu', { name: menu.name });
+                    },
                     error: err => this.popup.showError(err.toString(), { name: menu.name })
                 });
             }
@@ -176,7 +179,10 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
                 this.appMenuService.deleteApp(app.id)
                 .pipe(untilDestroyed(this))
                 .subscribe({
-                    next: () => this.onInit(),
+                    next: () => {
+                        this.onInit();
+                        this.popup.showSuccess('apps-menus.success-delete-app', { name: app.name });
+                    },
                     error: err => this.popup.showError(err.toString(), { name: app.name })
                 });
             }

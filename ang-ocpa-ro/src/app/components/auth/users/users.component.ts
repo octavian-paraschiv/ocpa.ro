@@ -65,14 +65,20 @@ export class UsersComponent extends BaseAuthComponent {
     onDelete(loginId: string) {
         MessageBoxComponent.show(this.dialog, {
             title: this.translate.instant('title.confirm'),
-            message: this.translate.instant('users.delete-user', { loginId: loginId })
+            message: this.translate.instant('users.delete-user', { loginId })
         } as MessageBoxOptions)
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
                 this.userService.deleteUser(loginId)
                 .pipe(untilDestroyed(this))
-                .subscribe(() => this.onInit());
+                .subscribe({
+                    next: () => {
+                        this.onInit();
+                        this.popup.showSuccess('users.success-delete', { loginId });
+                    },
+                    error: err => this.popup.showError(err.toString(), { loginId })
+                });
             }
         });
     }
