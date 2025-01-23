@@ -183,7 +183,7 @@
         "device-login-ipaddr": "Ultima adresă IP de conectare",
         "delete-user": "Sunteți sigur că doriți să ștergeți utilizatorul: <b>{{loginId}}</b>?",
         "delete-device": "Sunteți sigur că doriți să ștergeți dispozitivul: <b>{{deviceId}}</b>?",
-        "success-save": "Utilizatorul \"{{loginId}}\" a fost șters.",
+        "success-save": "Utilizatorul \"{{loginId}}\" a fost salvat cu succes",
         "error-save": "Ștergerea utilizatorului a eșuat"
     },
 
