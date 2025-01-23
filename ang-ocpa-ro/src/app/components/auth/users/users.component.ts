@@ -87,7 +87,7 @@ export class UsersComponent extends BaseAuthComponent {
                 if (usr) {
                     if (usr?.id > 0) {
                         this.onInit();
-                        this.popup.showMessage('users.success-save', { loginId: user.loginId });
+                        this.popup.showSuccess('users.success-save', { loginId: user.loginId });
                     }
                 } else {
                     this.popup.showError('users.error-save');
@@ -102,6 +102,8 @@ export class UsersComponent extends BaseAuthComponent {
             first(),
             tap(u => {
                 if (u?.id > 0) {
+                    for (let au of ui.appsForUser)
+                        au.userId = u.id;
                     this.appMenuService.saveAppsForUser(u.id, ui.appsForUser)
                         .pipe(first(), untilDestroyed(this))
                         .subscribe({
