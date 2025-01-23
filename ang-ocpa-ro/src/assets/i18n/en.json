@@ -184,6 +184,7 @@
         "delete-user": "Are you sure you want to delete user: <b>{{loginId}}</b>?",
         "delete-device": "Are you sure you want to delete device: <b>{{deviceId}}</b>?",
         "success-save": "User \"{{loginId}}\" succesfully saved.",
+        "success-delete": "User \"{{loginId}}\" succesfully deleted.",
         "error-save": "Failed to save user"
     },
 
@@ -209,12 +210,12 @@
 
     "devices-dialog": {
         "info": "Information for device <b>{{device}}</b>"
-    },
+    },  
 
     "user-dialog": {
         "user-type": "User Type",
         "password-hint": "To keep the password as-is,<br>leave both password fields empty.",
-        "password-lenght-hint": "The password must have at least 8 characters",
+        "password-length-hint": "The password must have at least 8 characters",
         "password-match-hint": "The two passwords must match.",
         "edit-logged-in": "Edit <b>{{loginId}}</b> user account (Logged In)",
         "edit": "Edit <b>{{loginId}}</b> user account",
@@ -236,8 +237,10 @@
         "delete-menu": "Are you sure you want to delete the menu '{{name}}'?",
         "delete-app": "Are you sure you want to delete the application '{{name}}'?",
         "success-save-menu": "Successfully saved menu '{{name}}'",
+        "success-delete-menu": "Successfully deleted ved menu '{{name}}'",
         "error-save-menu": "Failed to save the menu",
         "success-save-app": "Successfully saved application '{{name}}'",
+        "success-delete-app": "Successfully deleted application '{{name}}'",
         "error-save-app": "Failed to save the application",
         "apps-menus-header-menus": "Menus <b>&darr;</b>",
         "apps-menus-header-apps": "Apps <b>&rarr;</b>",

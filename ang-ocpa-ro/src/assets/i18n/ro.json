@@ -184,6 +184,7 @@
         "delete-user": "Sunteți sigur că doriți să ștergeți utilizatorul: <b>{{loginId}}</b>?",
         "delete-device": "Sunteți sigur că doriți să ștergeți dispozitivul: <b>{{deviceId}}</b>?",
         "success-save": "Utilizatorul \"{{loginId}}\" a fost salvat cu succes",
+        "success-delete": "Utilizatorul \"{{loginId}}\" a fost șters cu succes",
         "error-save": "Ștergerea utilizatorului a eșuat"
     },
 
@@ -214,7 +215,7 @@
     "user-dialog": {
         "user-type": "Tip utilizator",
         "password-hint": "Pentru a păstra parola existentă,<br>lăsați ambele câmpuri Parola goale.",
-        "password-lenght-hint": "Parola trebuie să aibă cel puțin 8 caractere",
+        "password-length-hint": "Parola trebuie să aibă cel puțin 8 caractere",
         "password-match-hint": "Cele două parole trebuie să fie identice",
         "edit-logged-in": "Editează utilizatorul <b>{{loginId}}</b> (Conectat)",
         "edit": "Editează utilizatorul <b>{{loginId}}</b>",
@@ -236,8 +237,10 @@
         "delete-menu": "Ești sigur că vrei să ștergi meniul '{{name}}'?",
         "delete-app": "Ești sigur că vrei să ștergi aplicația '{{name}}'?",
         "success-save-menu": "Meniul '{{name}}' a fost salvat cu succes",
+        "success-delete-menu": "Meniul '{{name}}' a fost șters cu succes",
         "error-save-menu": "Salvarea meniului a eșuat",
         "success-save-app": "Aplicația '{{name}}' a fost salvată cu succes",
+        "success-delete-app": "Aplicația '{{name}}' a fost ștearsă cu succes",
         "error-save-app": "Salvarea aplicației a eșuat",
         "apps-menus-header-menus": "Menus<b>&darr;</b>&nbsp;",
         "apps-menus-header-apps": "Apps<b>&rarr;</b>",
