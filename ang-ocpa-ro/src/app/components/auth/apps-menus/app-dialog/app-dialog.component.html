@@ -16,8 +16,8 @@
                     <input formControlName="code" matInput>
                     <mat-error *ngIf="f?.code?.errors   ">{{'app-dialog.code-required' | translate}}</mat-error>
                 </mat-form-field>
-                <mat-checkbox formControlName="loginRequired" [color]="primary" matCheckbox>{{'app-dialog.login-required' | translate}}</mat-checkbox>
-                <mat-checkbox formControlName="adminMode" [color]="primary" matCheckbox>{{'app-dialog.admin-mode' | translate}}</mat-checkbox>
+                <mat-checkbox formControlName="loginRequired" [color]="'primary'" matCheckbox>{{'app-dialog.login-required' | translate}}</mat-checkbox>
+                <mat-checkbox formControlName="adminMode" [color]="'primary'" matCheckbox>{{'app-dialog.admin-mode' | translate}}</mat-checkbox>
                 <div mat-dialog-actions class="app-form-control">
                     <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>
                         {{'OK' | translate}}

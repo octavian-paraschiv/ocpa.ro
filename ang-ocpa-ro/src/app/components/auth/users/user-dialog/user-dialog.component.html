@@ -53,7 +53,7 @@
                 </mat-form-field>
                 <div class="user-form-control">
                     <mat-label>{{'auth.disabled-account' | translate}}</mat-label>
-                    <mat-checkbox [color]="primary" [checked]="!(user.enabled)" (change)="user.enabled = !($event.checked)">
+                    <mat-checkbox [color]="'primary'" [checked]="!(user.enabled)" (change)="user.enabled = !($event.checked)">
                     </mat-checkbox>
                 </div>
                 <div class="user-form-control" *ngIf="isApplicationUser">
