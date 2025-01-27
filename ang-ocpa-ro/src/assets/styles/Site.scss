@@ -30,21 +30,14 @@ app-root {
     margin: 0;
     padding: 0;
 }
+app-root[single-menu-app = true] {
+    grid-template-columns: 2.7rem 1fr;
+}
 
 #app-nav-menu {
     grid-area: anm;
     color: $nav-forecolor;
     background-color: $nav-backcolor;
-}
-
-app-root[show-nav-bar = false] {
-    grid-template-columns: 1fr;
-    grid-template-areas: "ro";
-}
-
-#app-nav-menu[show-nav-bar = false] {
-    grid-area: unset;
-    width: 0;
 }
 
 #router-outlet {

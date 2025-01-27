@@ -18,8 +18,13 @@
     display: contents;
     cursor: pointer;
 }
+.nav-item:hover {
+    color: $nav-forecolor;
+    background-color: lighten($nav-alt-backcolor, 0.5);
+    border-radius: 5px;
+}
 
-.nav-link:hover, .nav-link:focus, .link-active {
+.link-active {
     color: $nav-forecolor;
     background-color: $nav-alt-backcolor;
     border-radius: 5px;
@@ -32,19 +37,23 @@
     grid-template-areas: "img txt";
     padding: 6px;
 }
+app-root[single-menu-app = true].nav-link-div {
+    grid-template-columns: unset;
+}
+
 .nav-link-img {
     grid-area: img;
     margin: 0;
     cursor: pointer;
     align-content: center;
 }
+
 .nav-link-txt {
     grid-area: txt;
     margin: 0;
     align-content: center;
     cursor: pointer;
 }
-
 
 #navbarContainer {
     display: grid;

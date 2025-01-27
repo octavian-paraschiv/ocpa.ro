@@ -8,24 +8,21 @@ import { MenuService } from 'src/app/services/menu.service';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  showNavBar = true;
-
   constructor(
     private readonly menuService: MenuService,
     private el: ElementRef, 
     private renderer: Renderer2
   ) {
-    this.menuService.showNavBar$
+    this.menuService.singleMenuApp$
       .pipe(untilDestroyed(this))
-      .subscribe(res => this.setNavBarVisibility(res));
+      .subscribe(res => this.setSingleMenuApp(res));
   }
 
   ngOnInit() {
-    this.setNavBarVisibility(this.menuService.showNavBar$.getValue());
+    this.setSingleMenuApp(this.menuService.singleMenuApp$.getValue());
   }
 
-  private setNavBarVisibility(show: boolean) {
-    this.showNavBar = show;
-    this.renderer.setAttribute(this.el.nativeElement, 'show-nav-bar', show ? 'true' : 'false');
+  private setSingleMenuApp(singleMenuApp: boolean) {
+    this.renderer.setAttribute(this.el.nativeElement, 'single-menu-app', singleMenuApp ? 'true' : 'false');
   }
 }

@@ -18,6 +18,7 @@ export class NavMenuComponent {
     faEarth = faEarth;
     title = 'OcPa\'s Web Site';
     menus: Menu[] = [];
+    singleMenuApp = false;
 
     constructor(
       private readonly translate: TranslateService,
@@ -55,6 +56,7 @@ export class NavMenuComponent {
             m.name = this.translate.instant(`menu${m.url}`.replace(/\//g, '.'));
 
           this.menus = menus;
+          this.singleMenuApp = this.menuService.singleMenuApp$.getValue();
         });
     }
 

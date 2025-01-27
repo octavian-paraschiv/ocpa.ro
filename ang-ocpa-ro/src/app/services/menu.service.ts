@@ -13,7 +13,7 @@ import { FingerprintService } from 'src/app/services/fingerprint.service';
 @Injectable()
 export class MenuService {
     private _menus: Menus = {};
-    showNavBar$ = new BehaviorSubject<boolean>(true);
+    singleMenuApp$ = new BehaviorSubject<boolean>(true);
 
     constructor(private readonly http: HttpClient,
         private readonly fingerprintService: FingerprintService,
@@ -50,8 +50,8 @@ export class MenuService {
                 } as Menu)
                 .filter(m => MenuService.showMenu(m));
 
-                const showNavBar = !isUserLoggedIn || (menus?.appMenus ?? []).length > 1;
-                this.showNavBar$.next(showNavBar);
+                const singleMenuApp = isUserLoggedIn && !((menus?.appMenus ?? []).length > 1);
+                this.singleMenuApp$.next(singleMenuApp);
 
                 return isUserLoggedIn ? 
                     (this._menus?.appMenus?.length > 1) : 
