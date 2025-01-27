@@ -64,7 +64,7 @@ export class MenuDialogComponent implements OnInit {
     }
 
     onCancel(): void {
-        this.dialogRef.close({id: -1} as Menu);
+        this.dialogRef.close();
     }
 
     onOk(): void {
@@ -90,6 +90,6 @@ export class MenuDialogComponent implements OnInit {
 
     static showDialog(dialog: MatDialog, menu: Menu = undefined): Observable<Menu> {
         const dialogRef = dialog?.open(MenuDialogComponent, { data: menu, width: '600px' });
-        return dialogRef.afterClosed().pipe(map(result => result as Menu));
+        return dialogRef.afterClosed().pipe(map(result => (result ?? {id: -1}) as Menu));
     }
 }

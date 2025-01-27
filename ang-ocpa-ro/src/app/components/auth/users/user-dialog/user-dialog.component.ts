@@ -137,7 +137,7 @@ export class UserDialogComponent implements OnInit {
     }
 
     onCancel(): void {
-        this.dialogRef.close({id: -1} as UserInfo);
+        this.dialogRef.close();
     }
 
     onOk(): void {
@@ -168,6 +168,6 @@ export class UserDialogComponent implements OnInit {
 
     static showDialog(dialog: MatDialog, user: User = undefined): Observable<UserInfo> {
         const dialogRef = dialog?.open(UserDialogComponent, { data: user, height: 'auto' });
-        return dialogRef.afterClosed().pipe(map(result => result as UserInfo));
+        return dialogRef.afterClosed().pipe(map(result => (result ?? {id: -1}) as UserInfo));
     }
 }

@@ -57,7 +57,7 @@ export class AppDialogComponent implements OnInit {
     }
 
     onCancel(): void {
-        this.dialogRef.close({id: -1} as Application);
+        this.dialogRef.close();
     }
 
     onOk(): void {
@@ -77,6 +77,6 @@ export class AppDialogComponent implements OnInit {
 
     static showDialog(dialog: MatDialog, app: Application = undefined): Observable<Application> {
         const dialogRef = dialog?.open(AppDialogComponent, { data: app, width: '500px' });
-        return dialogRef.afterClosed().pipe(map(result => result as Application));
+        return dialogRef.afterClosed().pipe(map(result => (result ?? {id: -1}) as Application));
     }
 }

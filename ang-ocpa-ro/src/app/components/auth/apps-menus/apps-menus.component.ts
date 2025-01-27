@@ -194,15 +194,18 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         .pipe(
             untilDestroyed(this),
             switchMap(menu => menu?.id === -1 ? of(menu) : this.appMenuService.saveMenu(menu))            
-        ).subscribe(menu => {
-            if (menu) {
-                if (menu.id > 0) {
-                    this.onInit();
-                    this.popup.showSuccess('apps-menus.success-save-menu', { name: menu.name });
+        ).subscribe({
+            next: menu => {
+                if (menu) {
+                    if (menu.id > 0) {
+                        this.onInit();
+                        this.popup.showSuccess('apps-menus.success-save-menu', { name: menu.name });
+                    }
+                } else {
+                    this.popup.showError('apps-menus.error-save-menu');
                 }
-            } else {
-                this.popup.showError('apps-menus.error-save-menu');
-            }
+            },
+            error: err => this.popup.showError(err.toString(), { name: menu.name })
         });
     }
 
@@ -211,15 +214,18 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         .pipe(
             untilDestroyed(this),
             switchMap(app => app?.id === -1 ? of(app) : this.appMenuService.saveApp(app))
-        ).subscribe(app => {
-            if (app) {
-                if (app.id > 0) {
-                    this.onInit();
-                    this.popup.showSuccess('apps-menus.success-save-app', { name: app.name });
+        ).subscribe({
+            next: app => {
+                if (app) {
+                    if (app.id > 0) {
+                        this.onInit();
+                        this.popup.showSuccess('apps-menus.success-save-app', { name: app.name });
+                    }
+                } else {
+                    this.popup.showError('apps-menus.error-save-app');
                 }
-            } else {
-                this.popup.showError('apps-menus.error-save-app');
-            }
+            },
+            error: err => this.popup.showError(err.toString(), { name: app.name })
         });
     }
 }
