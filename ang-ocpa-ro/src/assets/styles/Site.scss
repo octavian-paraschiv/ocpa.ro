@@ -37,6 +37,16 @@ app-root {
     background-color: $nav-backcolor;
 }
 
+app-root[show-nav-bar = false] {
+    grid-template-columns: 1fr;
+    grid-template-areas: "ro";
+}
+
+#app-nav-menu[show-nav-bar = false] {
+    grid-area: unset;
+    width: 0;
+}
+
 #router-outlet {
     grid-area: ro;
     height: $site-height;

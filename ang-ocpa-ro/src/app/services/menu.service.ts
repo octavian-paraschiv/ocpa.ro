@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Menu, EMenuDisplayMode, Menus, VMenu } from 'src/app/models/models-swagger';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { FingerprintService } from 'src/app/services/fingerprint.service';
 @Injectable()
 export class MenuService {
     private _menus: Menus = {};
+    showNavBar$ = new BehaviorSubject<boolean>(true);
 
     constructor(private readonly http: HttpClient,
         private readonly fingerprintService: FingerprintService,
@@ -48,6 +49,9 @@ export class MenuService {
                     displayMode: EMenuDisplayMode.HideOnMobile
                 } as Menu)
                 .filter(m => MenuService.showMenu(m));
+
+                const showNavBar = !isUserLoggedIn || (menus?.appMenus ?? []).length > 1;
+                this.showNavBar$.next(showNavBar);
 
                 return isUserLoggedIn ? 
                     (this._menus?.appMenus?.length > 1) : 
