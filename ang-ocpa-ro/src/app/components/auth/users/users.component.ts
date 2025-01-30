@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
@@ -23,7 +23,7 @@ import { AppMenuManagementService } from 'src/app/services/app-menu-management.s
     selector: 'app-users',
     templateUrl: './users.component.html'
 })
-export class UsersComponent extends BaseAuthComponent {
+export class UsersComponent extends BaseAuthComponent implements OnInit {
     faEye = faEye;
     faAdd = faSquarePlus;
     faEdit = faSquarePen;
@@ -50,6 +50,10 @@ export class UsersComponent extends BaseAuthComponent {
         private readonly popup: MessagePopupService
     ) { 
         super(translate, router, authenticationService, ngZone, dialog);
+    }
+
+    ngOnInit(): void {
+        this.onInit();
     }
 
     protected onInit() {

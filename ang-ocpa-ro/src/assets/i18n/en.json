@@ -6,6 +6,8 @@
     "Cancel": "Cancel",
     "Today": "Today",
     "day-short": "d",
+    "unauthorized-access": "You are not authorized to view this page: '{{url}}'",
+    "not-found": "This page does not exist: '{{url}}'",
 
     "ERR_BAD_CREDENTIALS": "Incorrect user name or password.",
     "ERR_ACCOUNT_DISABLED": "Account is disabled",
@@ -29,6 +31,7 @@
         "protone": "ProTONE Player Web Site",
         "login": "Login",
         "logout": "Logout",
+        "unauthorized": "UNAUTHORIZED",
         "wiki-container": {
             "meteo-animated": "OcPa's Animated Forecast",
             "electronics": "Electronics Blog",

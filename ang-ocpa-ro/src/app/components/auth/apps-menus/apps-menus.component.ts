@@ -95,6 +95,10 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
             super(translate, router, authenticationService, ngZone, dialog)
     }
     
+    ngOnInit(): void {
+        this.onInit();
+    }
+
     onInit() {
         this.appMenuData = [];
 

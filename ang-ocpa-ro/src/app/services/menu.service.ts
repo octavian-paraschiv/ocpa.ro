@@ -9,6 +9,12 @@ import { Helper } from 'src/app/services/helper';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { FingerprintService } from 'src/app/services/fingerprint.service';
 
+export enum UrlKind {
+    Public,
+    App,
+    Unavailable
+}
+
 @UntilDestroy()
 @Injectable()
 export class MenuService {
@@ -22,6 +28,18 @@ export class MenuService {
 
     get menus () { return this._menus; }
 
+    getUrlKind(url: string): UrlKind {
+        if (url === '/') return UrlKind.Public;
+
+        url = (url ?? '').toUpperCase();
+
+        return ((this._menus?.publicMenus ?? []).filter(m => url.startsWith(m.url.toUpperCase())).length > 0) ?
+            UrlKind.Public :
+            ((this._menus?.appMenus ?? []).filter(m => url.startsWith(m.url.toUpperCase())).length > 0) ?
+                UrlKind.App :
+                UrlKind.Unavailable;
+    }
+
     init(): Observable<boolean> {
         const fingerprint = this.fingerprintService.Fingerprint;
         return this.getMenus().pipe(
@@ -30,7 +48,7 @@ export class MenuService {
                 const isUserLoggedIn = this.authService.isUserLoggedIn();
                 let publicMenus = (menus?.publicMenus ?? []);
                 if (fingerprint === menus?.deviceId) {
-                    publicMenus = publicMenus .concat({
+                    publicMenus = publicMenus.concat({
                         url: '/login',
                         name: 'Login',
                         code: 'LIN',

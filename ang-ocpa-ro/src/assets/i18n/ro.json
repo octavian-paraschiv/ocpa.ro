@@ -6,6 +6,8 @@
     "Cancel": "Anulare",
     "Today": "Astăzi",
     "day-short": "z",
+    "unauthorized-access": "Nu sunteți autorizat să accesați această pagină: '{{url}}'",
+    "not-found": "Această pagină nu există: '{{url}}'",
 
     "ERR_BAD_CREDENTIALS": "Nume de utilizator sau parolă incorectă",
     "ERR_ACCOUNT_DISABLED": "Contul este dezactivat",
@@ -29,6 +31,7 @@
         "protone": "ProTONE Player",
         "login": "Autentificare",
         "logout": "Deconectare",
+        "unauthorized": "NEAUTORIZAT",
         "wiki-container": {
             "meteo-animated": "Prognoza Animată",
             "electronics": "Blog Electronică",

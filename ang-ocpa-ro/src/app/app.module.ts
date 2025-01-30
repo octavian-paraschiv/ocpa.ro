@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, inject, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { CanActivateFn, Route, Router, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { ProTONEComponent } from './components/non-auth/protone/protone.component';
@@ -26,7 +26,7 @@ import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/u
 import { UserTypeService } from 'src/app/services/user-type.service';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
-import { MenuService } from 'src/app/services/menu.service';
+import { MenuService, UrlKind } from 'src/app/services/menu.service';
 import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { NgChartsModule } from 'ng2-charts';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
@@ -36,12 +36,13 @@ import { RegisteredDeviceService } from 'src/app/services/registered-device.serv
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { WikiContainerComponent } from 'src/app/components/non-auth/wiki-container/wiki-container.component';
+import { WikiContainerComponent } from 'src/app/components/shared/wiki-container/wiki-container.component';
 import { MenuDialogComponent } from 'src/app/components/auth/apps-menus/menu-dialog/menu-dialog.component';
 import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialog/app-dialog.component';
 import { AppsMenusComponent } from 'src/app/components/auth/apps-menus/apps-menus.component';
 import { AppMenuManagementService } from 'src/app/services/app-menu-management.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
+import { UnavailablePageComponent, UnavailablePageKind } from 'src/app/components/non-auth/unavailable-page/unavailable-page.component';
 
 const I18N_CONFIG = {
   defaultLanguage: 'en',
@@ -51,6 +52,62 @@ const I18N_CONFIG = {
     deps: [HttpClient]
   }
 }
+
+const authGuard: CanActivateFn = (_, state) => {
+  const authService = inject(AuthenticationService);
+  const menuService = inject(MenuService);
+  const router = inject(Router);
+  const url = (state?.url ?? '/').toLowerCase();
+
+  if (url !== '/' && !url.startsWith('/wiki-container')) {
+    const matchingRoutes = routes.filter(r => `/${r.path.toLowerCase()}` === url);
+    if (!(matchingRoutes?.length > 0)) {
+      router.navigate(['/unavailable'], 
+        { queryParams: { kind: UnavailablePageKind.Unauthorized, url }});
+      return false;
+    }
+  }
+
+  const urlKind = menuService.getUrlKind(state.url);
+
+  switch(urlKind) {
+    case UrlKind.Unavailable:
+      router.navigate(['/unavailable'], 
+        { queryParams: { kind: UnavailablePageKind.Unauthorized, url }});
+      return false;
+
+    case UrlKind.App:
+      if (!authService.isUserLoggedIn()) {
+        router.navigate(['/login']);
+        return false;
+      }
+      return true;
+  }
+
+  return true;
+};
+
+const routes = [
+  { path: 'protone', component: ProTONEComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'logout', component: LogoutComponent },
+  { path: 'unavailable-page', component: UnavailablePageComponent },
+
+  { path: 'admin/users', component: UsersComponent, canActivate: [authGuard] },
+  { path: 'admin/meteo-database', component: MeteoDatabaseComponent, canActivate: [authGuard] },
+  { path: 'admin/apps-menus', component: AppsMenusComponent, canActivate: [authGuard] },
+
+  { path: 'wiki-container/:a', component: WikiContainerComponent, canActivate: [authGuard] },
+  { path: 'wiki-container/:a/:b', component: WikiContainerComponent, canActivate: [authGuard] },
+  { path: 'wiki-container/:a/:b/:c', component: WikiContainerComponent, canActivate: [authGuard] },
+  { path: 'wiki-container/:a/:b/:c/:d', component: WikiContainerComponent, canActivate: [authGuard] },
+  { path: 'wiki-container/:a/:b/:c/:d/:e', component: WikiContainerComponent, canActivate: [authGuard] },
+  { path: 'wiki-container/:a/:b/:c/:d/:e/:f', component: WikiContainerComponent, canActivate: [authGuard] },
+
+  { path: 'meteo', component: MeteoComponent },
+  { path: '', component: MeteoComponent },
+  { path: '**', component: UnavailablePageComponent } as Route,
+];
 
 @NgModule({
     declarations: [
@@ -69,6 +126,7 @@ const I18N_CONFIG = {
 
         LoginComponent,
         LogoutComponent,
+        UnavailablePageComponent,
 
         DayRisksComponent,
         MeteoDataBrowserComponent,
@@ -94,25 +152,7 @@ const I18N_CONFIG = {
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    RouterModule.forRoot([
-          { path: 'protone', component: ProTONEComponent },
-          { path: 'login', component: LoginComponent },
-          { path: 'logout', component: LogoutComponent },
-
-          { path: 'admin/users', component: UsersComponent },
-          { path: 'admin/meteo-database', component: MeteoDatabaseComponent },
-          { path: 'admin/apps-menus', component: AppsMenusComponent },
-
-          { path: 'wiki-container/:a', component: WikiContainerComponent },
-          { path: 'wiki-container/:a/:b', component: WikiContainerComponent },
-          { path: 'wiki-container/:a/:b/:c', component: WikiContainerComponent },
-          { path: 'wiki-container/:a/:b/:c/:d', component: WikiContainerComponent },
-          { path: 'wiki-container/:a/:b/:c/:d/:e', component: WikiContainerComponent },
-          { path: 'wiki-container/:a/:b/:c/:d/:e/:f', component: WikiContainerComponent },
-
-          { path: 'meteo', component: MeteoComponent },
-          { path: '**', component: MeteoComponent },
-    ]),
+    RouterModule.forRoot(routes),
     NoopAnimationsModule,
     FontAwesomeModule,
     NgSelectModule,

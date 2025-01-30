@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
@@ -19,7 +19,7 @@ import { MessagePopupService } from 'src/app/services/message-popup.service';
     selector: 'app-meteo-database',
     templateUrl: './meteo-database.component.html'
 })
-export class MeteoDatabaseComponent extends BaseAuthComponent {
+export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit {
     faEye = faEye;
     faPromote = faUpRightFromSquare;
     faUpload = faUpload;
@@ -45,6 +45,10 @@ export class MeteoDatabaseComponent extends BaseAuthComponent {
         private readonly popup: MessagePopupService
     ) { 
         super(translate, router, authenticationService, ngZone, dialog);
+    }
+
+    ngOnInit(): void {
+        this.onInit();
     }
 
     protected onInit(): void {

@@ -1,29 +1,26 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { first, map } from 'rxjs/operators';
-import { BaseLifecycleComponent } from 'src/app/components/BaseLifecycleComponent';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { AuthenticationService } from 'src/app/services/authentication.services';
 import { Helper } from 'src/app/services/helper';
 
 @UntilDestroy()
 @Component({ template: '' })
-export abstract class BaseAuthComponent extends BaseLifecycleComponent {
+export abstract class BaseAuthComponent implements OnDestroy, AfterViewInit {
     static dialogRef: MatDialogRef<MessageBoxComponent> = undefined;
     dialogTimeout: any = undefined;
 
     constructor(
-        translate: TranslateService,
+        protected translate: TranslateService,
         private router: Router,
         protected authenticationService: AuthenticationService,
         private ngZone: NgZone,
         protected dialog: MatDialog
     ) { 
-        super(translate);
-
         if (Helper.isMobile())
             this.router.navigate(['/meteo']); // Forbid Admin mode when using a mobile device
 
@@ -35,11 +32,11 @@ export abstract class BaseAuthComponent extends BaseLifecycleComponent {
         this.authenticationService.logout(true);
     }
 
-    protected onDestroy(): void {
+    ngOnDestroy(): void {
         clearInterval(this.dialogTimeout);
     }
 
-    protected onAfterViewInit() {
+    ngAfterViewInit() {
         clearInterval(this.dialogTimeout);
         this.dialogTimeout = setInterval(() => {
             console.debug('onAfterViewInit -> setInterval');
