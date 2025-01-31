@@ -153,6 +153,13 @@ input::-ms-clear {
     max-height: unset !important;
 }
 
+.unavailable-page {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    display: grid;
+    grid-auto-flow: row;
+}
+
 
 /* MOBILE
 ----------------------------------------------------------*/
