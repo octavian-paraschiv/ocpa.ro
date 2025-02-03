@@ -29,7 +29,8 @@ export class MenuService {
     get menus () { return this._menus; }
 
     getUrlKind(url: string): UrlKind {
-        if (url === '/') return UrlKind.Public;
+        if (url === '/' || url === '/meteo') 
+            return UrlKind.Public;
 
         url = (url ?? '').toUpperCase();
 

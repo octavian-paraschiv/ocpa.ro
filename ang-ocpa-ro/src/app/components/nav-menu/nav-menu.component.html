@@ -18,7 +18,7 @@
             <a class="nav-link" [routerLink]="[menu.url]">
               <div class="nav-link-div">
                 <fa-icon class="nav-link-img" [icon]="icons[menu.menuIcon]" transform="grow-10" title="{{menu.name}}"></fa-icon>
-                <ng-container *ngIf="!singleMenuApp">
+                <ng-container>
                   <label class="nav-link-txt">{{menu.name}}</label>
                 </ng-container>
               </div>

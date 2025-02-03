@@ -31,7 +31,7 @@
         "protone": "ProTONE Player",
         "login": "Autentificare",
         "logout": "Deconectare",
-        "unauthorized": "NEAUTORIZAT",
+        "unavailable": "Pagina indisponibila",
         "wiki-container": {
             "meteo-animated": "Prognoza Animată",
             "electronics": "Blog Electronică",

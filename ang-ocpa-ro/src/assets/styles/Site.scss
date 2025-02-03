@@ -23,16 +23,15 @@ body, :root {
 
 app-root {
     display: grid;
-    grid-template-columns: 14rem 1fr;
-    grid-template-rows: 1fr;
-    grid-template-areas: "anm ro";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 
+    "anm"
+    "ro";
+    width: 99.5vw;
+    max-width: 99.5vw;
     height: $site-height;
     max-height: $site-height;
-    margin: 0;
-    padding: 0;
-}
-app-root[single-menu-app = true] {
-    grid-template-columns: 2.7rem 1fr;
 }
 
 #app-nav-menu {
@@ -43,13 +42,10 @@ app-root[single-menu-app = true] {
 
 #router-outlet {
     grid-area: ro;
-    height: $site-height;
-    max-height: $site-height;
-    border: 2px solid $nav-backcolor;
-    border-radius: 0 10px 10px 0;
+    height: 80wh;
+    max-height: 80wh;
     padding-left: 10px;
     padding-right: 10px;
-    overflow-y: auto;
 }
 
 .container {
@@ -164,19 +160,7 @@ input::-ms-clear {
 /* MOBILE
 ----------------------------------------------------------*/
 @media screen and (max-width: 1080px) and (orientation: portrait) {
-    app-root {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-        grid-template-areas: 
-        "anm"
-        "ro";
-        width: 99.5vw;
-        max-width: 99.5vw;
-    }
-
     #router-outlet {
-        border-radius: unset;
         height: 90vh;
         max-height: 90vh;
     }

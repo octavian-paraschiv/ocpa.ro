@@ -28,10 +28,10 @@
 
     "title": {
         "meteo": "OcPa's Weather Forecast",
-        "protone": "ProTONE Player Web Site",
+        "protone": "ProTONE Player",
         "login": "Login",
         "logout": "Logout",
-        "unauthorized": "UNAUTHORIZED",
+        "unavailable": "Page not available",
         "wiki-container": {
             "meteo-animated": "OcPa's Animated Forecast",
             "electronics": "Electronics Blog",

@@ -7,6 +7,7 @@ import { MenuService } from 'src/app/services/menu.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Menu } from 'src/app/models/models-swagger';
 import { TranslateService } from '@ngx-translate/core';
+import { translateTitle } from 'src/app/module.routes';
 
 @UntilDestroy()
 @Component({
@@ -31,18 +32,7 @@ export class NavMenuComponent {
               filter(e => e instanceof ActivationStart),
               map(e => e as ActivationStart)
             )
-            .subscribe(activation => {
-                try { 
-                  const url = activation?.snapshot?.url;
-                  const path = activation?.snapshot?.routeConfig?.path;
-                  let rawTitle = 'meteo';
-                  if (url?.length > 0 && path !== '**')
-                    rawTitle = url.map(s => s.path).join('.');
-
-                  this.title = this.translate.instant(`title.${rawTitle}`);
-                }
-                catch { }
-            });
+            .subscribe(activation => this.title = translateTitle(activation.snapshot, translate));
 
         this.authService.authUserChanged$.pipe(
           untilDestroyed(this),

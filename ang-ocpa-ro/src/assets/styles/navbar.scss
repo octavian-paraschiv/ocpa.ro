@@ -1,15 +1,18 @@
 .navbar-nav {
     padding: 0;
     margin: 0;
-    padding-top: 1rem;
-    margin-left: 0.5rem;
-    margin-right: 1rem;
     list-style-type: none;
     text-align: start;
 }
 
 .nav-item {
-    cursor: pointer;
+    display: table-cell;
+    width: auto;
+    text-align: center;
+    margin-left: 0.5rem;
+}
+.navbar-brand {
+    border-bottom: unset;
 }
 
 .nav-link {
@@ -37,9 +40,6 @@
     grid-template-areas: "img txt";
     padding: 6px;
 }
-app-root[single-menu-app = true].nav-link-div {
-    grid-template-columns: unset;
-}
 
 .nav-link-img {
     grid-area: img;
@@ -57,16 +57,14 @@ app-root[single-menu-app = true].nav-link-div {
 
 #navbarContainer {
     display: grid;
-    grid-template-rows: 3rem 1fr auto;
-    grid-template-columns: 1fr;
-    grid-template-areas: 
-    "b"
-    "."
-    "m";
+    grid-template-rows: auto;
+    grid-template-columns: auto auto 1fr;
+    grid-template-areas: "b . m";
 }
 
 #navbarMenu {
     grid-area: m;
+    align-self: center;
 }
 
 .navbar-brand {
@@ -75,13 +73,16 @@ app-root[single-menu-app = true].nav-link-div {
     grid-template-columns: 2em 1fr;
     grid-template-rows: 1fr;
     grid-template-areas: "i t";
-    border-bottom: 1px solid $backcolor;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-right: 1.5rem;
 }
 
 .navbar-title {
+    display: none;
     grid-area: t;
     margin: 0;
-    margin-left: 1rem;
+    margin-left: 1.5rem;
     margin-right: 1rem;
     color: $nav-forecolor;
     align-content: center;
@@ -102,26 +103,11 @@ app-root[single-menu-app = true].nav-link-div {
 /* MOBILE
 ----------------------------------------------------------*/
 @media screen and (max-width: 1080px) and (orientation: portrait) {
-    /*
-    #navbarMenu {
-        display: none;
-    }
-    */
     .navbar-nav {
         padding: 0;
         margin: 0;
         width: 100%;
         display: table;
         table-layout: fixed;
-    }
-    .nav-item {
-        display: table-cell;
-        width: auto;
-        text-align: center;
-    }
-
-
-    .navbar-brand {
-        border-bottom: unset;
     }
 }
