@@ -1,11 +1,11 @@
 ﻿import { Component, OnInit } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { AuthenticationService } from 'src/app/services/authentication.services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { MenuService } from 'src/app/services/menu.service';
 import { TranslateService } from '@ngx-translate/core';
+import { first } from 'rxjs/operators';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
+import { MenuService } from 'src/app/services/api/menu.service';
 
 @UntilDestroy()
 @Component({

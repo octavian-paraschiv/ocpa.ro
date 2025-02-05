@@ -1,6 +1,5 @@
-import { ViewChild } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterStateSnapshot } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 

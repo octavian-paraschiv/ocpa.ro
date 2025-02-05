@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
-import { WikiService } from 'src/app/services/api-services';
 import { first } from 'rxjs/operators';
+import { WikiService } from 'src/app/services/api/wiki.service';
 
 @UntilDestroy()
 @Component({

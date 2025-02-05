@@ -5,8 +5,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Menu, EMenuDisplayMode, Menus, VMenu } from 'src/app/models/models-swagger';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map } from 'rxjs/operators';
-import { Helper } from 'src/app/services/helper';
-import { AuthenticationService } from 'src/app/services/authentication.services';
+import { Helper } from 'src/app/helpers/helper';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { FingerprintService } from 'src/app/services/fingerprint.service';
 
 export enum UrlKind {
@@ -54,7 +54,7 @@ export class MenuService {
                         name: 'Login',
                         code: 'LIN',
                         menuIcon: 'faRightToBracket',
-                        displayMode: EMenuDisplayMode.HideOnMobile
+                        displayMode: EMenuDisplayMode.AlwaysShow
                     } as Menu);
                 }
                 this._menus.publicMenus = publicMenus.filter(m => MenuService.showMenu(m));
@@ -65,7 +65,7 @@ export class MenuService {
                     name: 'Logout',
                     code: 'LOUT',
                     menuIcon: 'faRightFromBracket',
-                    displayMode: EMenuDisplayMode.HideOnMobile
+                    displayMode: EMenuDisplayMode.AlwaysShow
                 } as Menu)
                 .filter(m => MenuService.showMenu(m));
 

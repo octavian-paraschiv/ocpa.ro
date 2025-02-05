@@ -1,17 +1,18 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
-import { MeteoApiService } from 'src/app/services/api-services';
-import { AuthenticationService } from 'src/app/services/authentication.services';
-import { take } from 'rxjs/operators';
-import { MeteoDbInfo } from 'src/app/models/models-swagger';
-import { faEye, faSquareMinus, faUpload, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
-import { MatDialog } from '@angular/material/dialog';
-import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { formatDate } from '@angular/common';
-import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
+import { Component, OnInit, NgZone } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { faEye, faUpRightFromSquare, faUpload, faSquareMinus } from '@fortawesome/free-solid-svg-icons';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { take } from 'rxjs/operators';
+import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
+import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
+import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
+import { MessageBoxOptions } from 'src/app/models/models-local';
+import { MeteoDbInfo } from 'src/app/models/models-swagger';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
+import { MeteoApiService } from 'src/app/services/api/meteo-api.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
 
 @UntilDestroy()

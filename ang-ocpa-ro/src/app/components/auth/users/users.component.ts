@@ -1,22 +1,23 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
-import { AuthenticationService } from 'src/app/services/authentication.services';
-import { UserService } from 'src/app/services/user.service';
-import { faEye, faSquarePlus, faSquarePen, faSquareMinus, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { UserDialogComponent, UserInfo } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
-import { first, tap, switchMap } from 'rxjs/operators';
-import { Observable, of, throwError } from 'rxjs';
-import { UserTypeService } from 'src/app/services/user-type.service';
-import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
-import { RegisteredDevice, User } from 'src/app/models/models-swagger';
-import { RegisteredDeviceService } from 'src/app/services/registered-device.service';
-import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
+import { Router } from '@angular/router';
+import { faEye, faSquarePlus, faSquarePen, faSquareMinus, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { of, Observable, throwError } from 'rxjs';
+import { first, switchMap, tap } from 'rxjs/operators';
+import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
+import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
+import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
+import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
+import { MessageBoxOptions, UserInfo } from 'src/app/models/models-local';
+import { User, RegisteredDevice } from 'src/app/models/models-swagger';
+import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
+import { RegisteredDeviceService } from 'src/app/services/api/registered-device.service';
+import { UserTypeService } from 'src/app/services/api/user-type.service';
+import { UserService } from 'src/app/services/api/user.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
-import { AppMenuManagementService } from 'src/app/services/app-menu-management.service';
 
 @UntilDestroy()
 @Component({

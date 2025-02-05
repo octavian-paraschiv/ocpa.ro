@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import { UserTypeService } from 'src/app/services/user-type.service';
+import { UserTypeService } from 'src/app/services/api/user-type.service';
 import { AuthenticateResponse, UserType } from 'src/app/models/models-swagger';
 import { FingerprintService } from 'src/app/services/fingerprint.service';
 

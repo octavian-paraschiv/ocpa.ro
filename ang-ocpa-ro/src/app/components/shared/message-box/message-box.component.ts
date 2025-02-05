@@ -1,20 +1,10 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthenticationService } from 'src/app/services/authentication.services';
-
-export interface MessageBoxOptions {
-    message: string;
-    title: string;
-    icon: string;
-    yesButtonText?: string;
-    noButtonText?: string;
-    noTimeout?: number;
-    yesTimeout?: number;
-    isSessionTimeoutMessage?: boolean;
-}
+import { MessageBoxOptions } from 'src/app/models/models-local';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
 
 @UntilDestroy()
 @Component({

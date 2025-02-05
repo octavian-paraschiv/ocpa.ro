@@ -1,18 +1,19 @@
-import { OnInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
-import { CityDetail, GridCoordinates, MeteoDailyData, MeteoData } from 'src/app/models/models-swagger';
-import { GeographyApiService, MeteoApiService } from 'src/app/services/api-services';
-import { Helper } from 'src/app/services/helper';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import { Chart, ChartConfiguration, ChartOptions, TooltipItem } from "chart.js";
-import { Unit } from 'src/app/models/models-local';
-import { DistancePipe, TempPipe, VolumePipe } from 'src/app/services/unit-transform-pipe';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TranslateService } from '@ngx-translate/core';
 import annotationPlugin, { AnnotationOptions } from 'chartjs-plugin-annotation';
 import { BaseChartDirective } from 'ng2-charts';
-import { TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
+import { Helper } from 'src/app/helpers/helper';
+import { Unit } from 'src/app/models/models-local';
+import { CityDetail, GridCoordinates, MeteoDailyData, MeteoData } from 'src/app/models/models-swagger';
+import { GeographyApiService } from 'src/app/services/api/geography-api.service';
+import { MeteoApiService } from 'src/app/services/api/meteo-api.service';
+import { TempPipe, VolumePipe, DistancePipe } from 'src/app/services/unit-transform-pipe';
+import { Chart, ChartConfiguration, ChartOptions, TooltipItem } from "chart.js";
 
 Chart.register(annotationPlugin);
 

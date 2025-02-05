@@ -1,12 +1,13 @@
-import { Component, NgZone, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
-import { first, map } from 'rxjs/operators';
-import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
-import { AuthenticationService } from 'src/app/services/authentication.services';
-import { Helper } from 'src/app/services/helper';
+import { map, first } from 'rxjs/operators';
+import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
+import { Helper } from 'src/app/helpers/helper';
+import { MessageBoxOptions } from 'src/app/models/models-local';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
 
 @UntilDestroy()
 @Component({ template: '' })

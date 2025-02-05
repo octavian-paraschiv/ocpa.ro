@@ -1,23 +1,15 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { MatChipSelectionChange } from '@angular/material/chips';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, Inject } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Observable, of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { first, tap, map } from 'rxjs/operators';
-import { UserType, User, Application, ApplicationUser } from 'src/app/models/models-swagger';
-import { AppMenuManagementService } from 'src/app/services/app-menu-management.service';
-import { AuthenticationService } from 'src/app/services/authentication.services';
-import { UserTypeService } from 'src/app/services/user-type.service';
+import { ApplicationInfo, UserInfo } from 'src/app/models/models-local';
+import { UserType, ApplicationUser, User } from 'src/app/models/models-swagger';
+import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
+import { UserTypeService } from 'src/app/services/api/user-type.service';
 import { environment } from 'src/environments/environment';
-
-export interface ApplicationInfo extends Application {
-    selected: boolean;
-}
-
-export interface UserInfo extends User {
-    appsForUser: ApplicationUser[];
-}
 
 @UntilDestroy()
 @Component({

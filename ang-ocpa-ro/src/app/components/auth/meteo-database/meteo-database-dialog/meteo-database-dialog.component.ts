@@ -1,9 +1,9 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
-import { AuthenticationService } from 'src/app/services/authentication.services';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
 
 @UntilDestroy()
 @Component({

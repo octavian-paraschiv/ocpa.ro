@@ -1,10 +1,10 @@
 import { formatDate } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { RegisteredDevice } from 'src/app/models/models-swagger';
-import { AuthenticationService } from 'src/app/services/authentication.services';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
 
 @UntilDestroy()
 @Component({

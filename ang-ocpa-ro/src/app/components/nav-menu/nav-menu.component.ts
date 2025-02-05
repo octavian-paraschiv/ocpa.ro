@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { Router, ActivationStart } from '@angular/router';
-import { filter, switchMap, map } from 'rxjs/operators';
 import { fas, faEarth } from '@fortawesome/free-solid-svg-icons';
-import { AuthenticationService } from 'src/app/services/authentication.services';
-import { MenuService } from 'src/app/services/menu.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Menu } from 'src/app/models/models-swagger';
 import { TranslateService } from '@ngx-translate/core';
-import { translateTitle } from 'src/app/module.routes';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { Menu } from 'src/app/models/models-swagger';
+import { translateTitle } from 'src/app/modules/module.routes';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
+import { MenuService } from 'src/app/services/api/menu.service';
 
 @UntilDestroy()
 @Component({

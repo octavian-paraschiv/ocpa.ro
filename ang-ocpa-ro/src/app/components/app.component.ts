@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer2 } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { MenuService } from 'src/app/services/menu.service';
+import { MenuService } from 'src/app/services/api/menu.service';
 
 @UntilDestroy()
 @Component({

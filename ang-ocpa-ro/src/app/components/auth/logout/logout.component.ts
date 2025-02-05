@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { AuthenticationService } from 'src/app/services/authentication.services';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { UntilDestroy } from '@ngneat/until-destroy';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
 
 @UntilDestroy()
 @Component({

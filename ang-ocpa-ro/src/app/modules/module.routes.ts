@@ -10,8 +10,8 @@ import { MeteoComponent } from 'src/app/components/non-auth/meteo/meteo.componen
 import { ProTONEComponent } from 'src/app/components/non-auth/protone/protone.component';
 import { UnavailablePageComponent, UnavailablePageKind } from 'src/app/components/non-auth/unavailable-page/unavailable-page.component';
 import { WikiContainerComponent } from 'src/app/components/shared/wiki-container/wiki-container.component';
-import { AuthenticationService } from 'src/app/services/authentication.services';
-import { MenuService, UrlKind } from 'src/app/services/menu.service';
+import { AuthenticationService } from 'src/app/services/api/authentication.services';
+import { MenuService, UrlKind } from 'src/app/services/api/menu.service';
 
 export function translateTitle(route: ActivatedRouteSnapshot, translate: TranslateService): string {
   let rawTitle = 'unavailable';

@@ -1,6 +1,5 @@
-import { Component, Input, OnChanges } from '@angular/core';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-
+import { Component, Input } from '@angular/core';
+import { UntilDestroy } from '@ngneat/until-destroy';
 
 @UntilDestroy()
 @Component({
