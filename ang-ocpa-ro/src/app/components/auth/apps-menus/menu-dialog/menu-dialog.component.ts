@@ -57,7 +57,7 @@ export class MenuDialogComponent implements OnInit {
 
         this.menuForm = this.formBuilder.group({
             name: [ this.menu.name, [ Validators.required, Validators.pattern('^.{3,24}$') ] ],
-            url: [ this.menu.url, [ Validators.required, Validators.pattern('^\/[a-zA-Z0-9\/.\-_]{2,127}$') ] ],
+            url: [ this.menu.url, [ Validators.required, Validators.pattern('^\/[a-zA-Z0-9/._-]{2,127}$') ] ],
             displayMode: [ Object.keys(EMenuDisplayMode)[this.menu.displayModeId] ],
             menuIcon: [ this.selIcon ]
         });
