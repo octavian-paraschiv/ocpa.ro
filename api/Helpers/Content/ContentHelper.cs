@@ -130,7 +130,7 @@ namespace ocpa.ro.api.Helpers.Content
                         .Select(d => ExplorePath(d.FullName, level - 1, filter))
                         .Where(c => c?.Children?.Count > 0);
 
-                    var files = dirInfo.GetFiles(filter)?
+                    var files = GetFilesWithComposedFilter(dirInfo, filter)
                         .Select(f => ExplorePath(f.FullName, level - 1, filter))
                         .Where(c => c != null);
 
@@ -152,6 +152,21 @@ namespace ocpa.ro.api.Helpers.Content
                 Type = ContentUnitType.None,
                 Path = Path.GetRelativePath(_hostingEnvironment.ContentPath(), Path.GetDirectoryName(path))
             };
+        }
+
+        private static FileInfo[] GetFilesWithComposedFilter(DirectoryInfo dirInfo, string composedFilter = "*")
+        {
+            List<FileInfo> results = new List<FileInfo>();
+
+            var filters = composedFilter.Split('|', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var filter in filters)
+            {
+                var files = dirInfo.GetFiles(filter);
+                if (files?.Length > 0)
+                    results.AddRange(files);
+            }
+
+            return results.ToArray();
         }
 
         private async Task<bool> WriteContent(string contentPath, byte[] contentBytes)
