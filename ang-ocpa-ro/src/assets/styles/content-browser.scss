@@ -1,0 +1,80 @@
+.content-browser {
+  color: $forecolor !important;
+  background-color: $backcolor !important;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  display: grid;
+  grid-template-columns: 30vw 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: 
+    "tv tb tb"
+    "tv ce cv";
+}
+
+.mat-tree-node, .mat-nested-tree-node {
+  color: $forecolor !important;
+  background-color: $backcolor !important;
+}
+
+app-content-tree {
+  grid-area: tv;
+  border: 2px solid $forecolor;
+  color: $forecolor;
+  min-height: 90vh;  
+  max-height: 90vh;
+  margin: 0;
+  margin-right: 0.5rem;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+app-content-toolbar {
+  grid-area: tb;
+}
+
+app-content-editor {
+  grid-area: ce;
+}
+
+app-content-viewer {
+  grid-area: cv;
+}
+
+.mat-tree-node {
+  height: 25px !important;
+  min-height: 25px !important;
+  max-height: 25px !important;
+  line-height: 25px !important;
+  font-size: 12px;
+}
+
+.content-tree-invisible {
+  display: none;
+}
+  
+.content-tree ul,
+.content-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+  
+.content-tree .mat-nested-tree-node div[role=group] {
+  padding-left: 25px;
+}
+
+.content-toolbar {
+  background-color: aquamarine;
+}
+
+.content-editor {
+  background-color: cadetblue;
+}
+
+.content-viewer {
+  background-color: darkcyan;
+}
