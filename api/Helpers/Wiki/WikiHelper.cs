@@ -11,7 +11,7 @@ namespace ocpa.ro.api.Helpers.Wiki
 {
     public interface IWikiHelper
     {
-        Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language);
+        Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language);
     }
 
     public class WikiHelper : BaseHelper, IWikiHelper
@@ -21,9 +21,10 @@ namespace ocpa.ro.api.Helpers.Wiki
         {
         }
 
-        public async Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language)
+        public async Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language)
         {
             byte[] data = null;
+
             try
             {
                 bool resourceExists = false;
@@ -70,6 +71,7 @@ namespace ocpa.ro.api.Helpers.Wiki
                                 $"<style>" +
                                 $".markdown-body {{ font-family: Arial; font-size: 12px; line-height: 1.3; word-wrap: break-word; }}" +
                                 $"</style>" +
+                                $"<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>" +
                                 $"</head>" +
                                 $"<body>" +
                                 $"<div class=\"markdown-body\">" +
@@ -78,7 +80,7 @@ namespace ocpa.ro.api.Helpers.Wiki
                                 $"</body>" +
                                 $"<html>";
 
-                            return Encoding.UTF8.GetBytes(html);
+                            return (Encoding.UTF8.GetBytes(html), true);
                         }
                     }
                     else
@@ -94,7 +96,7 @@ namespace ocpa.ro.api.Helpers.Wiki
                 data = null;
             }
 
-            return data;
+            return (data, false);
         }
     }
 }

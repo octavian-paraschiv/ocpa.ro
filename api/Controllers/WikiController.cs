@@ -26,6 +26,7 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("{*resourcePath}")]
+        [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK, "text/html")]
         [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK, "application/octet-stream")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "GetWikiResource")]
@@ -54,9 +55,10 @@ namespace ocpa.ro.api.Controllers
                 var ext = System.IO.Path.GetExtension(resourcePath);
                 if (ext?.Length > 0)
                 {
-                    var data = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot, language).ConfigureAwait(false);
+                    var (data, isHtml) = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot, language).ConfigureAwait(false);
                     if (data?.Length > 0)
-                        return File(data, "application/octet-stream");
+                        return File(data, isHtml ?
+                            "text/html" : "application/octet-stream");
                 }
             }
             catch (Exception ex)
