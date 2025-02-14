@@ -58,7 +58,7 @@ namespace ocpa.ro.api.Helpers.Meteo
 
                 // "Touch" the databases to ensure they're created
                 using var db = MeteoDB.OpenOrCreate(_dbPaths[i], false);
-                _ = db.Data.FirstOrDefault();
+                _ = db.GetData(take: 1);
             }
 
             var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
@@ -267,8 +267,8 @@ namespace ocpa.ro.api.Helpers.Meteo
 
             try
             {
-                var x = database.Data
-                    .Where(d => d.RegionCode == _geographyHelper.FirstRegionCode && d.R == 0 && d.C == 0)
+                var x = database
+                    .GetData(_geographyHelper.FirstRegionCode)
                     .OrderBy(d => d.Timestamp)
                     .Distinct();
 
@@ -295,17 +295,10 @@ namespace ocpa.ro.api.Helpers.Meteo
             return result;
         }
 
-        private TableQuery<Data> GetData(MeteoDB database, string regionName, GridCoordinates gc, int skip, int take)
+        private IEnumerable<Data> GetData(MeteoDB database, string regionName, GridCoordinates gc, int skip, int take)
         {
             var rgn = _geographyHelper.GetRegion(regionName);
-
-            var x = database.Data
-                .Where(d => d.RegionCode == rgn.Code.ToUpper() && d.R == gc.R && d.C == gc.C)
-                .OrderBy(d => d.Timestamp)
-                .Skip(skip)
-                .Take(take);
-
-            return x;
+            return database.GetData(rgn.Code.ToUpper(), gc, skip, take);
         }
 
         #endregion
