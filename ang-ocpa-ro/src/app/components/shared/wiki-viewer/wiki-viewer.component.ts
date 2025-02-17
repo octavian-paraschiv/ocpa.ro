@@ -7,7 +7,7 @@ import { WikiService } from 'src/app/services/api/wiki.service';
 @UntilDestroy()
 @Component({
     selector: 'app-wiki-viewer',
-    template: '<div [innerHtml]="content"></div>'
+    template: '<div [mathjax]="content"></div>'
 })
 export class WikiViewerComponent {
     content = 'n/a';

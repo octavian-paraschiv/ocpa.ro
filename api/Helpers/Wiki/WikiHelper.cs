@@ -11,7 +11,8 @@ namespace ocpa.ro.api.Helpers.Wiki
 {
     public interface IWikiHelper
     {
-        Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language);
+        Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
+            bool fullHtml);
     }
 
     public class WikiHelper : BaseHelper, IWikiHelper
@@ -21,7 +22,8 @@ namespace ocpa.ro.api.Helpers.Wiki
         {
         }
 
-        public async Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language)
+        public async Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
+            bool fullHtml)
         {
             byte[] data = null;
 
@@ -64,23 +66,22 @@ namespace ocpa.ro.api.Helpers.Wiki
                                 .ToHtml(markdown, pipeline)
                                 .Replace("%root%", $"{reqRoot.TrimEnd('/')}/wiki");
 
-                            var html = $"<html>" +
-                                $"<head>" +
-                                $"<meta charset=\"utf-8\">" +
-                                $"<meta http-equiv=\"cache-control\" content=\"no-cache\">" +
-                                $"<style>" +
-                                $".markdown-body {{ font-family: Arial; font-size: 12px; line-height: 1.3; word-wrap: break-word; }}" +
-                                $"</style>" +
-                                $"<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>" +
-                                $"</head>" +
-                                $"<body>" +
-                                $"<div class=\"markdown-body\">" +
-                                $"{body}" +
-                                $"</div>" +
-                                $"</body>" +
-                                $"<html>";
+                            StringBuilder sb = new();
 
-                            return (Encoding.UTF8.GetBytes(html), true);
+                            if (fullHtml)
+                            {
+                                sb.AppendLine("<html><head><meta charset=\"utf-8\"><meta http-equiv=\"cache-control\" content=\"no-cache\">");
+                                sb.AppendLine("<style>.markdown-body {{ font-family: Arial; font-size: 12px; line-height: 1.3; word-wrap: break-word; }}</style>");
+                                sb.AppendLine("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' defer></script>");
+                                sb.AppendLine("</head><body><div class=\"markdown-body\">");
+                            }
+
+                            sb.AppendLine(body);
+
+                            if (fullHtml)
+                                sb.AppendLine("</div></body><html>");
+
+                            return (Encoding.UTF8.GetBytes(sb.ToString()), true);
                         }
                     }
                     else

@@ -31,7 +31,8 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "GetWikiResource")]
         public async Task<IActionResult> GetWikiResource([FromRoute] string resourcePath,
-            [FromHeader(Name = "X-Language")] string language)
+            [FromHeader(Name = "X-Language")] string language,
+            [FromHeader(Name = "X-HtmlFragment")] string htmlFragment)
         {
             try
             {
@@ -52,10 +53,12 @@ namespace ocpa.ro.api.Controllers
                     language = null;
                 }
 
+                bool fullHtml = !string.Equals(htmlFragment, "TRUE", StringComparison.OrdinalIgnoreCase);
+
                 var ext = System.IO.Path.GetExtension(resourcePath);
                 if (ext?.Length > 0)
                 {
-                    var (data, isHtml) = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot, language).ConfigureAwait(false);
+                    var (data, isHtml) = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot, language, fullHtml).ConfigureAwait(false);
                     if (data?.Length > 0)
                         return File(data, isHtml ?
                             "text/html" : "application/octet-stream");

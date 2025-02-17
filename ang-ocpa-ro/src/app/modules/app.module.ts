@@ -8,6 +8,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MathjaxModule } from 'mathjax-angular';
 import { NgChartsModule } from 'ng2-charts';
 import { AppComponent } from 'src/app/components/app.component';
 import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialog/app-dialog.component';
@@ -99,6 +100,14 @@ const I18N_CONFIG = {
     ],
   imports: [
     BrowserModule,
+    MathjaxModule.forRoot({
+      config: {
+        loader: { load: ['input/tex', 'output/svg'] },
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+        svg: { fontCache: 'global' }
+      },
+      src: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js'
+    }),
     TranslateModule.forRoot(I18N_CONFIG),
     HttpClientModule,
     ReactiveFormsModule,

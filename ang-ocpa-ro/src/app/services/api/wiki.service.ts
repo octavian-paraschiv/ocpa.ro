@@ -20,7 +20,8 @@ export class WikiService {
             responseType: 'text',
             headers: { 
                 'Cache-Control': 'no-cache',
-                'X-Language': this.translate.getBrowserLang() ?? 'en'
+                'X-Language': this.translate.getBrowserLang() ?? 'en',
+                'X-HtmlFragment': 'true',
             }
         });
     }
