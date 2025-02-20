@@ -5,8 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NETCore.MailKit.Extensions;
-using NETCore.MailKit.Infrastructure.Internal;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Content;
@@ -119,25 +117,6 @@ builder.Services.AddSwaggerGen(option =>
             Title = "Backend API for ocpa.ro",
             Version = "v1"
         });
-});
-
-builder.Services.AddMailKit(optionBuilder =>
-{
-    var creds = StringEncoding.DecodeStrings(emailConfig.Credentials).ToArray();
-    optionBuilder.UseMailKit(new MailKitOptions()
-    {
-        //get options from sercets.json
-        Server = emailConfig.ServerAddress,
-        Port = emailConfig.ServerPort,
-        SenderName = emailConfig.FromName,
-        SenderEmail = emailConfig.FromAddress,
-
-        Account = creds[0],
-        Password = creds[1],
-
-        // enable ssl or tls
-        Security = emailConfig.ServerPort != 25
-    });
 });
 
 #endregion

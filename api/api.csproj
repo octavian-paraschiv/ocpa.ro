@@ -13,10 +13,10 @@
 
     <ItemGroup>
         <PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
+        <PackageReference Include="MailKit" Version="4.10.0" />
         <PackageReference Include="Markdig" Version="0.40.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
         <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.4.0" />
-        <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.2.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.4.0" />        
