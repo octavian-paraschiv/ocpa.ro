@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Content;
+using ocpa.ro.api.Helpers.Email;
 using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Helpers.Medical;
@@ -40,6 +41,7 @@ builder.Configuration.ResolveConfiguration(builder.Services, JwtConfig.SectionNa
 builder.Configuration.ResolveConfiguration(builder.Services, AuthConfig.SectionName, out AuthConfig _);
 builder.Configuration.ResolveConfiguration(builder.Services, GeoLocationConfig.SectionName, out GeoLocationConfig _);
 builder.Configuration.ResolveConfiguration(builder.Services, CaasConfig.SectionName, out CaasConfig _);
+builder.Configuration.ResolveConfiguration(builder.Services, EmailConfig.SectionName, out EmailConfig emailConfig);
 #endregion
 
 #region Services
@@ -90,6 +92,7 @@ builder.Services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
 
 builder.Services.AddTransient<IMultipartRequestHelper, MultipartRequestHelper>();
 builder.Services.AddTransient<IWikiHelper, WikiHelper>();
+builder.Services.AddTransient<IEmailHelper, EmailHelper>();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -115,6 +118,13 @@ builder.Services.AddSwaggerGen(option =>
             Version = "v1"
         });
 });
+
+var creds = StringEncoding.DecodeStrings(emailConfig.Credentials).ToArray();
+
+builder.Services
+    .AddFluentEmail(emailConfig.FromAddress, emailConfig.FromName)
+    .AddSmtpSender(emailConfig.ServerAddress, emailConfig.ServerPort, creds[0], creds[1]);
+
 #endregion
 
 #region App
