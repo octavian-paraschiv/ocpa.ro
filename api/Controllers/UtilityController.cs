@@ -58,11 +58,8 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var err = await _emailHelper.SendEmail(request.Recipients, request.Subject, request.Body);
-                if (string.IsNullOrEmpty(err))
-                    return Ok();
-
-                return BadRequest(err);
+                await _emailHelper.SendEmail(request.Recipients, request.Subject, request.Body);
+                return Ok();
             }
             catch (Exception ex)
             {
