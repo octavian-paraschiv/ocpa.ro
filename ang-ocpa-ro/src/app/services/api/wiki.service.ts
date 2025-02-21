@@ -8,10 +8,7 @@ import { environment } from 'src/environments/environment';
 @UntilDestroy()
 @Injectable()
 export class WikiService {
-    constructor(
-        private readonly translate: TranslateService,
-        private readonly httpClient: HttpClient
-    ) {
+    constructor(private readonly httpClient: HttpClient) {
     }
 
     public getWiki(location: string): Observable<string> {
@@ -20,7 +17,7 @@ export class WikiService {
             responseType: 'text',
             headers: { 
                 'Cache-Control': 'no-cache',
-                'X-Language': this.translate.getBrowserLang() ?? 'en',
+                'X-Language': navigator.language ?? 'en',
                 'X-HtmlFragment': 'true',
             }
         });

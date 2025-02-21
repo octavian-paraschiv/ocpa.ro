@@ -33,7 +33,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     size = "grow-6";
 
     users: User[] = [];
-    usersColumns: string[] = [ 'user-add', 'user-edit', 'user-delete', 'user-loginId', 'user-type', 'user-disabled', 'filler' ];
+    usersColumns: string[] = [ 'user-add', 'user-edit', 'user-delete', 'user-loginId', 'user-email', 'user-type', 'user-mfa', 'user-attempts', 'user-disabled', 'filler' ];
 
     devices: RegisteredDevice[] = [];
     devicesColumns: string[] = [ 'device-view', 'device-delete', 'device-deviceId', 'device-loginId', 'device-timestamp', 'device-ipaddress', 'filler' ];
@@ -109,6 +109,9 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     _saveUser(ui: UserInfo): Observable<User> {
+        if (ui.enabled)
+            ui.loginAttemptsRemaining = 5;
+
         return this.userService.saveUser(ui).pipe(
             first(),
             tap(u => {

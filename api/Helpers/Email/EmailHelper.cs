@@ -15,6 +15,7 @@ namespace ocpa.ro.api.Helpers.Email
     public interface IEmailHelper
     {
         Task SendEmail(string[] recipients, string subject, string message);
+        Task SendMfaChallenge(string recipient, string mfa, string language);
     }
 
     public class EmailHelper : BaseHelper, IEmailHelper
@@ -25,6 +26,21 @@ namespace ocpa.ro.api.Helpers.Email
             : base(hostingEnvironment, logger)
         {
             _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
+        }
+
+        public Task SendMfaChallenge(string recipient, string mfa, string language)
+        {
+            bool isRomanian = string.Equals(language, "ro", StringComparison.OrdinalIgnoreCase);
+            return SendEmail(
+                    recipients: [recipient],
+
+                    subject: isRomanian ?
+                        "Conectarea la contul tau OCPA.RO" :
+                        "Connect to your OCPA.RO account",
+
+                    message: isRomanian ?
+                        $"Pentru conectare la contul tau OCPA.RO, foloseste codul: {mfa}" :
+                        $"To connect to your OCPA.RO account, use this code: {mfa}");
         }
 
         public async Task SendEmail(string[] recipients, string subject, string message)
@@ -48,7 +64,7 @@ namespace ocpa.ro.api.Helpers.Email
 
                 if (_config?.Credentials?.Length > 0)
                 {
-                    var creds = StringEncoding.DecodeStrings(_config.Credentials).ToArray();
+                    var creds = StringUtility.DecodeStrings(_config.Credentials).ToArray();
                     await client.AuthenticateAsync(creds[0], creds[1]);
                 }
 

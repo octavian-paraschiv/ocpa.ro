@@ -41,12 +41,13 @@ export interface ApplicationUser {
     userId?: number;
 }
 
-export interface AuthenticateResponse {
+export interface AuthenticationResponse {
     loginId: string;
     token: string;
     type: number;
     expires: Date;
     validity: number;
+    useMFA: boolean;
 }
 
 export interface BuildInfo {
@@ -101,6 +102,11 @@ export enum EMenuDisplayMode {
     AlwaysShow = "AlwaysShow",
     HideOnMobile = "HideOnMobile",
     ShowOnMobile = "ShowOnMobile",
+}
+
+export interface FailedAuthenticationResponse {
+    errorMessage?: string | undefined;
+    loginAttemptsRemaining?: number;
 }
 
 export interface GeoLocation {
@@ -303,6 +309,10 @@ export interface User {
     passwordHash?: string | undefined;
     type?: number;
     enabled?: boolean;
+    loginAttemptsRemaining?: number;
+    emailAddress?: string | undefined;
+    useMfa?: boolean;
+    mfaChallenge?: string | undefined;
 }
 
 export interface UserType {
@@ -320,6 +330,13 @@ export interface VMenu {
 }
 
 export interface Body {
+    LoginId: string;
+    Password: string;
+
+    [key: string]: any;
+}
+
+export interface Body2 {
     LoginId: string;
     Password: string;
 

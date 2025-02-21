@@ -10,10 +10,10 @@ import { MenuService } from 'src/app/services/api/menu.service';
 
 @UntilDestroy()
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html'
+    selector: 'app-mfa',
+    templateUrl: './mfa.component.html'
 })
-export class LoginComponent implements OnInit {
+export class MfaComponent implements OnInit {
     loginForm: UntypedFormGroup;
     loading = false;
     submitted = false;
@@ -33,8 +33,7 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required],
-            password: ['', Validators.required]
+            mfa: ['', Validators.required],
         });
     }
 
@@ -50,7 +49,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.authenticationService.authenticate(this.f.username.value, this.f.password.value, false)
+        this.authenticationService.sendMfa(this.f.mfa.value)
             .pipe(first(), untilDestroyed(this))
             .subscribe({
                 next: msg => (msg?.length > 0) ? this.handleError(msg) : this.redirectToDefaultPage(),
@@ -59,15 +58,11 @@ export class LoginComponent implements OnInit {
     }
 
     handleError(err: any) {
-        if (err === 'auth.useMfa') {
-            // redirect to MFA page
-            setTimeout(() => this.router.navigate([ '/mfa' ]), 300);
-        } else {
-            const far = err as FailedAuthenticationResponse;
-            this.error = far ? 
-                this.translate.instant(far.errorMessage, { username: this.f.username.value, retries: far.loginAttemptsRemaining }) :
-                this.translate.instant(err, { username: this.f.username.value });
-        }
+        const far = err as FailedAuthenticationResponse;
+        const username = this.authenticationService.mfaUserChanged$.getValue();
+        this.error = far ? 
+            this.translate.instant(far.errorMessage, { username, retries: far.loginAttemptsRemaining }) :
+            this.translate.instant(err, { username });
 
         this.loading = false;
     }

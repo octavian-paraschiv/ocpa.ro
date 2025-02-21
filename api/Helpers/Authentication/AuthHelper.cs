@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Models.Authentication;
+using ocpa.ro.api.Models.Configuration;
 using ocpa.ro.api.Models.Menus;
 using Serilog;
 using System;
@@ -22,6 +24,8 @@ namespace ocpa.ro.api.Helpers.Authentication
     public interface IAuthHelper : IAuthHelperManagement
     {
         User AuthorizeUser(AuthenticateRequest req);
+        User MfaChallenge(AuthenticateRequest req);
+
         User SaveUser(User user, out bool inserted);
         User GetUser(string loginId);
         int DeleteUser(string loginId);
@@ -44,14 +48,47 @@ namespace ocpa.ro.api.Helpers.Authentication
     {
         private readonly SQLiteConnection _db = null;
         private readonly IGeographyHelper _geographyHelper = null;
+        private readonly AuthConfig _config;
 
-        public AuthHelper(IWebHostEnvironment hostingEnvironment, ILogger logger, IGeographyHelper geographyHelper)
+        public AuthHelper(IWebHostEnvironment hostingEnvironment, ILogger logger, IGeographyHelper geographyHelper, IOptions<AuthConfig> config)
             : base(hostingEnvironment, logger)
         {
             _geographyHelper = geographyHelper;
+            _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
 
             string authDbFile = Path.Combine(_hostingEnvironment.ContentPath(), "auth.db");
             _db = new SQLiteConnection(authDbFile, SQLiteOpenFlags.ReadWrite);
+        }
+
+        public User MfaChallenge(AuthenticateRequest req)
+        {
+            try
+            {
+                var loginId = (req.LoginId ?? "").ToLowerInvariant();
+                var user = _db.Get<User>(u => u.LoginId.ToLower() == loginId);
+
+                if (user?.MfaChallenge?.Length > 0 && req.Password?.Length > 0)
+                {
+                    if (user.MfaChallenge == req.Password)
+                    {
+                        user.LoginAttemptsRemaining = _config.MaxLoginRetries;
+                        user.MfaChallenge = null;
+                    }
+                    else
+                    {
+                        user.LoginAttemptsRemaining = Math.Max(0, user.LoginAttemptsRemaining - 1);
+                        user.Enabled = user.LoginAttemptsRemaining > 0;
+                    }
+
+                    return SaveUser(user, out _);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return null;
         }
 
         public User AuthorizeUser(AuthenticateRequest req)
@@ -64,7 +101,23 @@ namespace ocpa.ro.api.Helpers.Authentication
                 {
                     var seed = Auth.getSeed(req.Password);
                     var calc = Auth.calcHash(user.PasswordHash, seed);
-                    return (calc == req.Password) ? user : null;
+
+                    if (calc == req.Password)
+                    {
+                        user.LoginAttemptsRemaining = _config.MaxLoginRetries;
+                    }
+                    else
+                    {
+                        user.LoginAttemptsRemaining = Math.Max(0, user.LoginAttemptsRemaining - 1);
+                        user.Enabled = user.LoginAttemptsRemaining > 0;
+                    }
+
+                    if (_config.UseMFA || (user?.UseMfa ?? false))
+                        user.MfaChallenge = Guid.NewGuid().ToString().Replace("-", "");
+                    else
+                        user.MfaChallenge = null;
+
+                    return SaveUser(user, out _);
                 }
             }
             catch (Exception ex)
@@ -105,11 +158,16 @@ namespace ocpa.ro.api.Helpers.Authentication
 
                 bool newUser = (dbu == null);
 
-                dbu ??= new User { LoginId = loginId };
+                dbu ??= new User { LoginId = loginId, LoginAttemptsRemaining = _config.MaxLoginRetries };
 
                 dbu.Type = user.Type;
                 dbu.PasswordHash = user.PasswordHash;
                 dbu.Enabled = user.Enabled;
+
+                dbu.LoginAttemptsRemaining = user.LoginAttemptsRemaining;
+                dbu.EmailAddress = user.EmailAddress;
+                dbu.UseMfa = user.UseMfa;
+                dbu.MfaChallenge = user.MfaChallenge;
 
                 if (newUser)
                 {
@@ -168,7 +226,13 @@ namespace ocpa.ro.api.Helpers.Authentication
                 Id = u.Id,
                 LoginId = u.LoginId,
                 Type = u.Type,
+
+                EmailAddress = u.EmailAddress,
+                UseMfa = u.UseMfa,
+                LoginAttemptsRemaining = u.LoginAttemptsRemaining,
+
                 PasswordHash = null,
+                MfaChallenge = null,
             });
         }
 

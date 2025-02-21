@@ -18,6 +18,7 @@ import { LoginComponent } from 'src/app/components/auth/login/login.component';
 import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
+import { MfaComponent } from 'src/app/components/auth/mfa/mfa.component';
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
 import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
 import { UsersComponent } from 'src/app/components/auth/users/users.component';
@@ -78,6 +79,7 @@ const I18N_CONFIG = {
 
         LoginComponent,
         LogoutComponent,
+        MfaComponent,
         UnavailablePageComponent,
 
         DayRisksComponent,

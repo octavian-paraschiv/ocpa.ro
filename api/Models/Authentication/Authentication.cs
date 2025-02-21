@@ -41,10 +41,23 @@ namespace ocpa.ro.api.Models.Authentication
         [NotNull]
         public int Type { get; set; }
 
+        [NotNull]
         public bool Enabled { get; set; }
+
+        [NotNull]
+        public int LoginAttemptsRemaining { get; set; }
+
+        [NotNull]
+        public string EmailAddress { get; set; }
+
+        [NotNull]
+        public bool UseMfa { get; set; }
+
+        [NotNull]
+        public string MfaChallenge { get; set; }
     }
 
-    public class AuthenticateResponse
+    public class AuthenticationResponse
     {
         [Required]
         public string LoginId { get; set; }
@@ -60,6 +73,21 @@ namespace ocpa.ro.api.Models.Authentication
 
         [Required]
         public int Validity { get; set; }
+
+        [Required]
+        public bool UseMFA { get; set; }
+    }
+
+    public class FailedAuthenticationResponse
+    {
+        public string ErrorMessage { get; private set; } = string.Empty;
+        public int LoginAttemptsRemaining { get; private set; } = -1;
+
+        public FailedAuthenticationResponse(string errorMessage, int loginAttemptsRemaining = -1)
+        {
+            ErrorMessage = errorMessage;
+            LoginAttemptsRemaining = loginAttemptsRemaining;
+        }
     }
 
     public class RegisteredDevice

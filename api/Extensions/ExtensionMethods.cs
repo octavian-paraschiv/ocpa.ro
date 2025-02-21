@@ -151,7 +151,7 @@ namespace ocpa.ro.api.Extensions
         }
     }
 
-    public static class StringEncoding
+    public static class StringUtility
     {
         public static string EncodeStrings(IEnumerable<string> strings)
         => Encode(new string(string.Join(' ', strings?.Select(s => Encode(s)))?.Trim()?.Reverse()?.ToArray() ?? []));
@@ -164,5 +164,18 @@ namespace ocpa.ro.api.Extensions
 
         private static string Decode(string str)
         => Encoding.ASCII.GetString(Convert.FromBase64String(str));
+
+        public static string GenerateRandomToken(int len, char from = 'A', char to = 'Z')
+        {
+            string token = string.Empty;
+
+            Random rnd = new Random((int)DateTime.Now.Ticks);
+            for (int i = 0; i < len; i++)
+            {
+                token += (char)rnd.Next((int)from, (int)to);
+            }
+
+            return token;
+        }
     }
 }

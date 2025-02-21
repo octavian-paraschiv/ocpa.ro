@@ -5,8 +5,9 @@ import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { UserTypeService } from 'src/app/services/api/user-type.service';
-import { AuthenticateResponse, UserType } from 'src/app/models/models-swagger';
+import { AuthenticationResponse, UserType } from 'src/app/models/models-swagger';
 import { FingerprintService } from 'src/app/services/fingerprint.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,7 +16,8 @@ export class AuthenticationService {
     private readonly passKey = 'ocpa_ro_admin_pass';
     private readonly timeKey = 'ocpa_ro_admin_time';
 
-    authUserChanged$ = new BehaviorSubject<AuthenticateResponse>(undefined);
+    authUserChanged$ = new BehaviorSubject<AuthenticationResponse>(undefined);
+    mfaUserChanged$ = new BehaviorSubject<string>(null);
 
     constructor(
         private readonly fingerprintService: FingerprintService,
@@ -23,10 +25,10 @@ export class AuthenticationService {
         private readonly http: HttpClient,
         private readonly router: Router) {
 
-        let authUser: AuthenticateResponse = undefined;
+        let authUser: AuthenticationResponse = undefined;
         
         try {
-            authUser = JSON.parse(localStorage.getItem(this.userKey)) as AuthenticateResponse;
+            authUser = JSON.parse(localStorage.getItem(this.userKey)) as AuthenticationResponse;
         } catch {
             authUser = undefined;
         }
@@ -56,18 +58,44 @@ export class AuthenticationService {
             this.router.navigate(['/meteo']);
     }
 
-    authenticate(username: string, password: string): Observable<string> {
+    sendMfa(mfa: string) {
+        const formParams = new HttpParams()
+            .set('loginId', this.mfaUserChanged$.getValue())
+            .set('password', mfa);
+
+        let headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
+        const pass = localStorage.getItem(this.passKey);
+
+        return this.http.post<AuthenticationResponse>(
+            `${environment.apiUrl}/users/mfa`, 
+            formParams, { headers, withCredentials: true } )
+            .pipe(map(rsp => {
+                const authResult = this.validateAuthenticationResponse(rsp, this.mfaUserChanged$.getValue(), pass);
+                return (authResult?.length > 0) ? `auth.${authResult}` : undefined
+            }));
+    }
+
+    authenticate(username: string, password: string, refreshAuth: boolean): Observable<string> {
+        this.mfaUserChanged$.next(null);
+
         const hash = environment.ext.calc(username, password, environment.ext.seed())
         const formParams = new HttpParams()
             .set('loginId', username)
             .set('password', hash);
 
         let headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
         const fingerprint = this.fingerprintService.Fingerprint;
         if (fingerprint?.length > 0)
             headers = headers.set('X-Device-Id', fingerprint);
 
-        return this.http.post<AuthenticateResponse>(
+        if (refreshAuth)
+            headers = headers.set('X-Refresh-Auth', '1');
+
+        headers = headers.set('X-Language', navigator.language ?? 'en');
+
+        return this.http.post<AuthenticationResponse>(
             `${environment.apiUrl}/users/authenticate`, 
             formParams, { headers, withCredentials: true } )
             .pipe(map(rsp => {
@@ -76,23 +104,27 @@ export class AuthenticationService {
             }));
     }
 
-    private validateAuthenticationResponse(rsp: AuthenticateResponse, username: string, password: string): string  {
+    private validateAuthenticationResponse(rsp: AuthenticationResponse, username: string, password: string): string  {
         if (rsp?.loginId?.toUpperCase() !== username?.toUpperCase())
             return 'login-failed-1';
         
-        if (!(rsp?.validity > 0))
-            return 'login-failed-2'
-
         if (!this.apiUserType)
             this.apiUserType = this.userTypeService.userType('API');
 
         if (rsp?.type === this.apiUserType?.id)
             return 'login-failed-3';
         
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem(this.userKey, JSON.stringify(rsp));
         localStorage.setItem(this.passKey, password);
         
+        if (rsp.useMFA) {
+            this.mfaUserChanged$.next(rsp.loginId);
+            return 'useMfa';
+        }
+
+        if (!(rsp?.validity > 0))
+            return 'login-failed-2'
+
         const loggedInTime = new Date();
         loggedInTime.setSeconds(loggedInTime.getSeconds() + rsp.validity);
         localStorage.setItem(this.timeKey, JSON.stringify(loggedInTime.getTime()));
@@ -118,9 +150,9 @@ export class AuthenticationService {
 
     refreshAuthentication(): Observable<string> {
         if (this.isSessionExpired()) {
-            const user = JSON.parse(localStorage.getItem(this.userKey)) as AuthenticateResponse;
+            const user = JSON.parse(localStorage.getItem(this.userKey)) as AuthenticationResponse;
             const pass = localStorage.getItem(this.passKey);
-            return this.authenticate(user?.loginId, pass);
+            return this.authenticate(user?.loginId, pass, true);
         }
         
         return of(undefined);

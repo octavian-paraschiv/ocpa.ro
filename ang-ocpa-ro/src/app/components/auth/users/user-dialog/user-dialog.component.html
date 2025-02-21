@@ -11,6 +11,11 @@
                     <input formControlName="u1" matInput>
                     <mat-error *ngIf="f?.u1?.errors?.required">{{'auth.username-required' | translate}}</mat-error>
                 </mat-form-field>
+                <mat-form-field appearance="outline" class="user-form-control">
+                    <mat-label>{{'users.email' | translate}}</mat-label>
+                    <input formControlName="email" matInput>
+                    <mat-error *ngIf="f?.url?.errors">{{'user-dialog.email-required' | translate}}</mat-error>
+                </mat-form-field>
                 <mat-form-field appearance="outline" class="user-form-control" >
                     <mat-label>{{'user-dialog.user-type' | translate}}</mat-label>
                     <mat-select formControlName="t1">
@@ -54,6 +59,11 @@
                 <div class="user-form-control">
                     <mat-label>{{'auth.disabled-account' | translate}}</mat-label>
                     <mat-checkbox [color]="'primary'" [checked]="!(user.enabled)" (change)="user.enabled = !($event.checked)">
+                    </mat-checkbox>
+                </div>
+                <div class="user-form-control">
+                    <mat-label>{{'users.mfa' | translate}}</mat-label>
+                    <mat-checkbox [color]="'primary'" [checked]="user.useMfa" (change)="user.useMfa = ($event.checked)">
                     </mat-checkbox>
                 </div>
                 <div class="user-form-control" *ngIf="isApplicationUser">

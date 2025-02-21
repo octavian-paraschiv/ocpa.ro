@@ -5,6 +5,7 @@ import { AppsMenusComponent } from 'src/app/components/auth/apps-menus/apps-menu
 import { LoginComponent } from 'src/app/components/auth/login/login.component';
 import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
+import { MfaComponent } from 'src/app/components/auth/mfa/mfa.component';
 import { UsersComponent } from 'src/app/components/auth/users/users.component';
 import { MeteoComponent } from 'src/app/components/non-auth/meteo/meteo.component';
 import { ProTONEComponent } from 'src/app/components/non-auth/protone/protone.component';
@@ -25,7 +26,17 @@ export function translateTitle(route: ActivatedRouteSnapshot, translate: Transla
 };
 
 const titleResolver: ResolveFn<string> = (route, _) => translateTitle(route, inject(TranslateService));
-  
+
+const mfaGuard: CanActivateFn = (_, __) => {
+  const authService = inject(AuthenticationService);
+  const router = inject(Router);
+  const activate = authService.mfaUserChanged$.getValue()?.length > 0 && !authService.isUserLoggedIn();
+  if (!activate) {
+    router.navigate(['/meteo']);
+  }
+  return activate;
+}
+
 const authGuard: CanActivateFn = (_, state) => {
     const authService = inject(AuthenticationService);
     const menuService = inject(MenuService);
@@ -64,6 +75,7 @@ export const routes = [
     { path: 'meteo', component: MeteoComponent, title: titleResolver } as Route,
     { path: 'protone', component: ProTONEComponent, title: titleResolver } as Route,    
     { path: 'login', component: LoginComponent, title: titleResolver } as Route,    
+    { path: 'mfa', component: MfaComponent, canActivate: [mfaGuard], title: titleResolver } as Route,    
     { path: 'logout', component: LogoutComponent, title: titleResolver } as Route,    
     { path: 'unavailable-page', component: UnavailablePageComponent, title: titleResolver } as Route,
   

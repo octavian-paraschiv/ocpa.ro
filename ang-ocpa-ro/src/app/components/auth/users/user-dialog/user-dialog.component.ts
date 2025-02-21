@@ -59,7 +59,7 @@ export class UserDialogComponent implements OnInit {
                 p1: [ '', Validators.minLength(8) ],
                 p2: [ '', this.passwordMatch() ],
                 t1: [ this.user.type ],
-                disableAccount: [ !this.user.enabled ],
+                email: [ this.user.emailAddress, Validators.email ],
             });
             this.f.u1.disable();
         } else {
@@ -68,7 +68,7 @@ export class UserDialogComponent implements OnInit {
                 p1: [ '', [ Validators.required, Validators.minLength(8)] ],
                 p2: [ '', this.passwordMatch() ],
                 t1: [ this.user.type ],
-                disableAccount: [ !this.user.enabled ],
+                email: [ this.user.emailAddress, Validators.email ],
             });
         }
 
@@ -147,7 +147,13 @@ export class UserDialogComponent implements OnInit {
             passwordHash =  environment.ext.hash(loginId, pass);
         }
 
-        this.dialogRef.close({ loginId, passwordHash, type, enabled: this.user.enabled,
+        this.dialogRef.close({ 
+            loginId, 
+            passwordHash, 
+            type, 
+            enabled: this.user.enabled,
+            useMfa: this.user.useMfa,
+            emailAddress: this.user.emailAddress,
             appsForUser: this.apps.filter(a => a.selected).map(a => ({
                 applicationId: a.id,
                 userId: this.user.id,

@@ -2,15 +2,20 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using ocpa.ro.api.Helpers.Authentication;
+using ocpa.ro.api.Helpers.Email;
 using ocpa.ro.api.Models.Applications;
 using ocpa.ro.api.Models.Authentication;
+using ocpa.ro.api.Models.Configuration;
 using ocpa.ro.api.Models.Menus;
 using ocpa.ro.api.Policies;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -22,39 +27,132 @@ namespace ocpa.ro.api.Controllers
     [Authorize(Roles = "ADM")]
     public class UsersController : ApiControllerBase
     {
+        private readonly IEmailHelper _emailHelper;
         private readonly IJwtTokenHelper _jwtTokenGenerator;
+        private readonly AuthConfig _config;
 
-        public UsersController(IWebHostEnvironment hostingEnvironment, IAuthHelper authHelper, IJwtTokenHelper jwtTokenGenerator, ILogger logger)
+        public UsersController(IWebHostEnvironment hostingEnvironment,
+            IAuthHelper authHelper,
+            IJwtTokenHelper jwtTokenGenerator,
+            ILogger logger,
+            IEmailHelper emailHelper,
+            IOptions<AuthConfig> config)
             : base(hostingEnvironment, logger, authHelper)
         {
-            _jwtTokenGenerator = jwtTokenGenerator;
+            _jwtTokenGenerator = jwtTokenGenerator ?? throw new ArgumentNullException(nameof(jwtTokenGenerator));
+            _emailHelper = emailHelper ?? throw new ArgumentNullException(nameof(emailHelper));
+            _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
+        }
+
+        [HttpPost("mfa")]
+        [Consumes("application/x-www-form-urlencoded")]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailedAuthenticationResponse), StatusCodes.Status401Unauthorized)]
+        [AllowAnonymous]
+        [SwaggerOperation(OperationId = "MfaChallenge")]
+        public IActionResult MfaChallenge([FromForm] AuthenticateRequest model)
+        {
+            var user = _authHelper.MfaChallenge(model);
+            if (user == null)
+                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
+
+            if (!user.Enabled)
+                return Unauthorized(new FailedAuthenticationResponse("ERR_ACCOUNT_DISABLED"));
+
+            if (user.LoginAttemptsRemaining < _config.MaxLoginRetries)
+                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_MFA_CHALLENGE", user.LoginAttemptsRemaining));
+
+            var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+            if (string.IsNullOrEmpty(rsp?.Token))
+                return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
+
+            return Ok(rsp);
         }
 
         [HttpPost("authenticate")]
         [Consumes("application/x-www-form-urlencoded")]
-        [ProducesResponseType(typeof(AuthenticateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailedAuthenticationResponse), StatusCodes.Status401Unauthorized)]
         [AllowAnonymous]
         [SwaggerOperation(OperationId = "Authenticate")]
         public IActionResult Authenticate([FromForm] AuthenticateRequest model,
+            [FromHeader(Name = "X-Refresh-Auth")] string refreshAuth,
+            [FromHeader(Name = "X-Language")] string language,
             [FromHeader(Name = "X-Device-Id")] string deviceId)
         {
+            bool isRefreshAuth = refreshAuth == "1";
+
             var user = _authHelper.AuthorizeUser(model);
             if (user == null)
-                return Unauthorized("ERR_BAD_CREDENTIALS");
+                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
 
             if (!user.Enabled)
-                return Unauthorized("ERR_ACCOUNT_DISABLED");
+                return Unauthorized(new FailedAuthenticationResponse("ERR_ACCOUNT_DISABLED"));
 
-            var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
-            if (string.IsNullOrEmpty(rsp?.Token))
-                return Unauthorized("ERR_NO_TOKEN");
+            if (user.LoginAttemptsRemaining < _config.MaxLoginRetries)
+                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS", user.LoginAttemptsRemaining));
 
-            // If succesfully logged in, register the device used to log in
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-            _authHelper.RegisterDevice(deviceId, ipAddress, user.LoginId);
 
-            return Ok(rsp);
+            if (isRefreshAuth)
+            {
+                var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+                if (string.IsNullOrEmpty(rsp?.Token))
+                    return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
+
+                return Ok(rsp);
+            }
+            else
+            {
+                ThreadPool.QueueUserWorkItem(async _ =>
+                {
+                    // If succesfully logged in, register the device used to log in
+                    var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                    await _authHelper.RegisterDevice(deviceId, ipAddress, user.LoginId);
+                });
+
+                if (user.MfaChallenge?.Length > 0)
+                {
+                    ThreadPool.QueueUserWorkItem(async _ =>
+                    {
+                        try
+                        {
+                            var ci = new CultureInfo(language);
+                            language = ci.TwoLetterISOLanguageName.ToLowerInvariant();
+                        }
+                        catch
+                        {
+                            language = "en";
+                        }
+
+                        try
+                        {
+                            await _emailHelper.SendMfaChallenge(user.EmailAddress, user.MfaChallenge, language);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogException(ex);
+                        }
+                    });
+
+                    var rsp = new AuthenticationResponse
+                    {
+                        LoginId = user.LoginId,
+                        Type = user?.Type ?? default,
+                        UseMFA = true,
+                        Token = null
+                    };
+
+                    return Ok(rsp);
+                }
+                else
+                {
+                    var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+                    if (string.IsNullOrEmpty(rsp?.Token))
+                        return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
+
+                    return Ok(rsp);
+                }
+            }
         }
 
 
@@ -89,6 +187,7 @@ namespace ocpa.ro.api.Controllers
                 if (dbu != null)
                 {
                     dbu.PasswordHash = null;
+                    dbu.MfaChallenge = null;
 
                     return inserted ?
                         StatusCode(StatusCodes.Status201Created, dbu) :

@@ -37,8 +37,7 @@ Environment.SetEnvironmentVariable("LOGDIR", logDir);
 
 
 #region ConfigurationResolving
-builder.Configuration.ResolveConfiguration(builder.Services, JwtConfig.SectionName, out JwtConfig jwtConfig);
-builder.Configuration.ResolveConfiguration(builder.Services, AuthConfig.SectionName, out AuthConfig _);
+builder.Configuration.ResolveConfiguration(builder.Services, AuthConfig.SectionName, out AuthConfig authConfig);
 builder.Configuration.ResolveConfiguration(builder.Services, GeoLocationConfig.SectionName, out GeoLocationConfig _);
 builder.Configuration.ResolveConfiguration(builder.Services, CaasConfig.SectionName, out CaasConfig _);
 builder.Configuration.ResolveConfiguration(builder.Services, EmailConfig.SectionName, out EmailConfig emailConfig);
@@ -67,8 +66,8 @@ builder.Services.AddAuthentication(options =>
 
     o.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = jwtConfig.Issuer,
-        ValidAudience = jwtConfig.Audience,
+        ValidIssuer = authConfig.Jwt.Issuer,
+        ValidAudience = authConfig.Jwt.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(JwtConfig.KeyBytes.ToArray()),
         ValidateIssuer = true,
         ValidateAudience = true,
