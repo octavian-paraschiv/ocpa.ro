@@ -7,6 +7,7 @@ import { first } from 'rxjs/operators';
 import { FailedAuthenticationResponse } from 'src/app/models/models-swagger';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { MenuService } from 'src/app/services/api/menu.service';
+import { SessionInformationService } from 'src/app/services/session-information.service';
 
 @UntilDestroy()
 @Component({
@@ -21,6 +22,7 @@ export class MfaComponent implements OnInit {
     hide = true;
 
     constructor(
+        private sessionInfo: SessionInformationService,
         private translate: TranslateService,
         private formBuilder: UntypedFormBuilder,
         private router: Router,
@@ -59,7 +61,7 @@ export class MfaComponent implements OnInit {
 
     handleError(err: any) {
         const far = err as FailedAuthenticationResponse;
-        const username = this.authenticationService.mfaUserChanged$.getValue();
+        const username = this.sessionInfo.getUserSessionInformation()?.loginId;
         this.error = far ? 
             this.translate.instant(far.errorMessage, { username, retries: far.loginAttemptsRemaining }) :
             this.translate.instant(err, { username });

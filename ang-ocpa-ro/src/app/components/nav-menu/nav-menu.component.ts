@@ -34,7 +34,7 @@ export class NavMenuComponent {
             )
             .subscribe(activation => this.title = translateTitle(activation.snapshot, translate));
 
-        this.authService.authUserChanged$.pipe(
+        this.authService.userLoginState$.pipe(
           untilDestroyed(this),
           switchMap(_ => this.menuService.init())
         ).subscribe(_ => {

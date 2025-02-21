@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { fas, faSquarePlus, faSquarePen, faSquareMinus, faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -28,6 +28,9 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
     faRemove = faSquareMinus;
     faCheck = faCheck;
     size = "grow-6";
+
+    private readonly appMenuService = inject(AppMenuManagementService);
+    private readonly popup = inject(MessagePopupService);
 
     menus: Menu[] = [];
     menusColumns = ['menu-add', 'menu-edit', 'menu-delete', 'menu-name', 'menu-url', 'menu-display-mode', 'menu-icon', 'menu-builtin', 'menu-filler'];
@@ -74,16 +77,6 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         });
     }
 
-    constructor(private readonly appMenuService: AppMenuManagementService,
-        translate: TranslateService,
-        router: Router,
-        authenticationService: AuthenticationService,
-        ngZone: NgZone,
-        dialog: MatDialog,
-        private readonly popup: MessagePopupService) {
-            super(translate, router, authenticationService, ngZone, dialog)
-    }
-    
     ngOnInit(): void {
         this.onInit();
     }

@@ -1,9 +1,6 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
 import { faEye, faSquarePlus, faSquarePen, faSquareMinus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslateService } from '@ngx-translate/core';
 import { of, Observable, throwError } from 'rxjs';
 import { first, switchMap, tap } from 'rxjs/operators';
 import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
@@ -13,7 +10,6 @@ import { MessageBoxComponent } from 'src/app/components/shared/message-box/messa
 import { MessageBoxOptions, UserInfo } from 'src/app/models/models-local';
 import { User, RegisteredDevice } from 'src/app/models/models-swagger';
 import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
-import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { RegisteredDeviceService } from 'src/app/services/api/registered-device.service';
 import { UserTypeService } from 'src/app/services/api/user-type.service';
 import { UserService } from 'src/app/services/api/user.service';
@@ -38,26 +34,13 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     devices: RegisteredDevice[] = [];
     devicesColumns: string[] = [ 'device-view', 'device-delete', 'device-deviceId', 'device-loginId', 'device-timestamp', 'device-ipaddress', 'filler' ];
 
-    constructor(
-        translate: TranslateService,
-        router: Router,
-        ngZone: NgZone,
-        dialog: MatDialog,
-        authenticationService: AuthenticationService,
-        private readonly appMenuService: AppMenuManagementService,
-        private readonly userService: UserService,
-        private readonly regDeviceService: RegisteredDeviceService,
-        private readonly userTypeService: UserTypeService,
-        private readonly popup: MessagePopupService
-    ) { 
-        super(translate, router, authenticationService, ngZone, dialog);
-    }
+    private readonly appMenuService = inject(AppMenuManagementService);
+    private readonly userService = inject(UserService);
+    private readonly regDeviceService = inject(RegisteredDeviceService);
+    private readonly userTypeService = inject(UserTypeService);
+    private readonly popup = inject(MessagePopupService);
 
     ngOnInit(): void {
-        this.onInit();
-    }
-
-    protected onInit() {
         this.userService.getAllUsers()
             .pipe(untilDestroyed(this))
             .subscribe(users => this.users = users);
@@ -79,7 +62,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
                 .pipe(untilDestroyed(this))
                 .subscribe({
                     next: () => {
-                        this.onInit();
+                        this.ngOnInit();
                         this.popup.showSuccess('users.success-delete', { loginId });
                     },
                     error: err => this.popup.showError(err.toString(), { loginId })
@@ -97,7 +80,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
             next: (usr) => {
                 if (usr) {
                     if (usr?.id > 0) {
-                        this.onInit();
+                        this.ngOnInit();
                         this.popup.showSuccess('users.success-save', { loginId: user.loginId });
                     }
                 } else {
@@ -134,8 +117,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     get currentLoginId() {
-        const loggedInUser = this.authenticationService.authUserChanged$.getValue();
-        return loggedInUser?.loginId;
+        return this.authenticationService.userLoginState$.getValue();
     }
 
     onDeleteDevice(deviceId: string) {
@@ -148,7 +130,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
             if (res) {
                 this.regDeviceService.deleteRegisteredDevice(deviceId)
                 .pipe(untilDestroyed(this))
-                .subscribe(() => this.onInit());
+                .subscribe(() => this.ngOnInit());
             }
         });
     }

@@ -49,6 +49,7 @@ import { WikiService } from 'src/app/services/api/wiki.service';
 import { FingerprintService } from 'src/app/services/fingerprint.service';
 import { Iso3166HelperService } from 'src/app/services/iso3166-helper.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
+import { SessionInformationService } from 'src/app/services/session-information.service';
 import { TranslationInitService } from 'src/app/services/translation-init.service';
 import { TempPipe, SpeedPipe, DistancePipe, VolumePipe, PressurePipe, CountryCodePipe, CalendarPipe } from 'src/app/services/unit-transform-pipe';
 
@@ -124,6 +125,8 @@ const I18N_CONFIG = {
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+
+    SessionInformationService,
 
     TranslationInitService,
     {

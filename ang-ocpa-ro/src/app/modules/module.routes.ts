@@ -30,7 +30,7 @@ const titleResolver: ResolveFn<string> = (route, _) => translateTitle(route, inj
 const mfaGuard: CanActivateFn = (_, __) => {
   const authService = inject(AuthenticationService);
   const router = inject(Router);
-  const activate = authService.mfaUserChanged$.getValue()?.length > 0 && !authService.isUserLoggedIn();
+  const activate = authService.mfaRequested$.getValue() && !authService.isUserLoggedIn();
   if (!activate) {
     router.navigate(['/meteo']);
   }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit, NgZone, OnInit, inject } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -11,26 +11,26 @@ import { AuthenticationService } from 'src/app/services/api/authentication.servi
 
 @UntilDestroy()
 @Component({ template: '' })
-export abstract class BaseAuthComponent implements OnDestroy, AfterViewInit {
+export abstract class BaseAuthComponent implements OnInit, OnDestroy, AfterViewInit {
     static dialogRef: MatDialogRef<MessageBoxComponent> = undefined;
     dialogTimeout: any = undefined;
 
-    constructor(
-        protected translate: TranslateService,
-        private router: Router,
-        protected authenticationService: AuthenticationService,
-        private ngZone: NgZone,
-        protected dialog: MatDialog
-    ) { 
+    protected readonly translate = inject(TranslateService);
+    protected readonly authenticationService = inject(AuthenticationService);
+    protected readonly dialog = inject(MatDialog);
+    private readonly router = inject(Router);
+    private readonly ngZone = inject(NgZone);
+
+    logout() {
+        this.authenticationService.logout(true);
+    }
+
+    ngOnInit(): void {
         if (Helper.isMobile())
             this.router.navigate(['/meteo']); // Forbid Admin mode when using a mobile device
 
         else if (!this.authenticationService.isUserLoggedIn())
             this.router.navigate(['/login']);
-    }
-
-    logout() {
-        this.authenticationService.logout(true);
     }
 
     ngOnDestroy(): void {

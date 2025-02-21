@@ -21,7 +21,7 @@ export class MessageBoxComponent implements OnInit {
 
     ngOnInit(): void {
         if (!this.options?.isSessionTimeoutMessage) {
-            this.authService.authUserChanged$
+            this.authService.userLoginState$
             .pipe(untilDestroyed(this))
             .subscribe(() => {
                 if(!this.authService.isUserLoggedIn())

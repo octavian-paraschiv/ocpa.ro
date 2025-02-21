@@ -21,7 +21,7 @@ export class DevicesDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.authService.authUserChanged$
+        this.authService.userLoginState$
         .pipe(untilDestroyed(this))
         .subscribe(() => {
             if(!this.authService.isUserLoggedIn())

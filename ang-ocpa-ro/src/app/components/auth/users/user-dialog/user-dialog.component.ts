@@ -9,6 +9,7 @@ import { UserType, ApplicationUser, User } from 'src/app/models/models-swagger';
 import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { UserTypeService } from 'src/app/services/api/user-type.service';
+import { SessionInformationService } from 'src/app/services/session-information.service';
 import { environment } from 'src/environments/environment';
 
 @UntilDestroy()
@@ -26,6 +27,7 @@ export class UserDialogComponent implements OnInit {
     appsForUser: ApplicationUser[] = [];
 
     constructor(
+        private sessionInfo: SessionInformationService,
         private appMenuService: AppMenuManagementService,
         private authService: AuthenticationService,
         private userTypeService: UserTypeService,
@@ -37,7 +39,7 @@ export class UserDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.authService.authUserChanged$
+        this.authService.userLoginState$
             .pipe(untilDestroyed(this))
             .subscribe(() => {
                 if(!this.authService.isUserLoggedIn())
@@ -72,8 +74,8 @@ export class UserDialogComponent implements OnInit {
             });
         }
 
-        const loggedInUser = this.authService.authUserChanged$.getValue();
-        if (this.user.loginId === loggedInUser?.loginId)
+        const loggedInUser = this.sessionInfo.getUserSessionInformation()?.loginId;
+        if (this.user.loginId === loggedInUser)
             this.f.t1.disable();
 
         const o1 = (this.editMode) ? 
@@ -108,9 +110,9 @@ export class UserDialogComponent implements OnInit {
     get f() { return this.userForm?.controls; }
 
     get title(): string {
-        const loggedInUser = this.authService.authUserChanged$.getValue();
+        const loggedInUser = this.sessionInfo.getUserSessionInformation()?.loginId;
         return (this.editMode) ? 
-            (this.user.loginId === loggedInUser?.loginId) ? 
+            (this.user.loginId === loggedInUser) ? 
                 'user-dialog.edit-logged-in' : 
                 'user-dialog.edit' :
             'user-dialog.create';

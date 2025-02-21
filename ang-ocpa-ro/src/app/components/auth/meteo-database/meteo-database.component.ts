@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { faEye, faUpRightFromSquare, faUpload, faSquareMinus } from '@fortawesome/free-solid-svg-icons';
@@ -36,23 +36,10 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
 
     studioDownloadUrl: string = undefined;
 
-    constructor(
-        translate: TranslateService,
-        router: Router,
-        ngZone: NgZone,
-        authenticationService: AuthenticationService,
-        dialog: MatDialog,
-        private readonly meteoApi: MeteoApiService,
-        private readonly popup: MessagePopupService
-    ) { 
-        super(translate, router, authenticationService, ngZone, dialog);
-    }
+    private readonly meteoApi = inject(MeteoApiService);
+    private readonly popup = inject(MessagePopupService);
 
     ngOnInit(): void {
-        this.onInit();
-    }
-
-    protected onInit(): void {
         this.meteoApi.getStudioDownloadUrl()
             .pipe(take(1), untilDestroyed(this))
             .subscribe(url => this.studioDownloadUrl = url);
@@ -75,11 +62,11 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
                         .pipe(untilDestroyed(this))
                         .subscribe({
                             next: () => {
-                                this.onInit();
+                                this.ngOnInit();
                                 this.popup.showSuccess('meteo-db.success-upload', { name: db.name });
                             },
                             error: err => {
-                                this.onInit();
+                                this.ngOnInit();
                                 this.popup.showError('meteo-db.error-upload', {name: db.name, err});
                             }
                         });
@@ -107,11 +94,11 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
                     .pipe(untilDestroyed(this))
                     .subscribe({
                         next: () => {
-                            this.onInit();
+                            this.ngOnInit();
                             this.popup.showSuccess('meteo-db.success-promote', {name: db.name});
                         },
                         error: err => {
-                            this.onInit();
+                            this.ngOnInit();
                             this.popup.showError('meteo-db.error-promote', {name: db.name, err});
                         }
                     });
