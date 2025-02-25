@@ -41,8 +41,8 @@ namespace ocpa.ro.api.Helpers.Email
                             "Connect to your OCPA.RO account",
 
                         message: isRomanian ?
-                            $"Pentru conectare la contul tau OCPA.RO, foloseste codul: {mfa}" :
-                            $"To connect to your OCPA.RO account, use this code: {mfa}");
+                            $"Pentru conectare la contul tau OCPA.RO, foloseste codul: <b>{mfa}</b>" :
+                            $"To connect to your OCPA.RO account, use this code: <b>{mfa}</b>");
             }
             catch (Exception ex)
             {
@@ -58,7 +58,7 @@ namespace ocpa.ro.api.Helpers.Email
             recipients.ToList().ForEach(r => mm.To.Add(new MailboxAddress(r, r)));
 
             mm.Subject = subject;
-            mm.Body = new TextPart("plain") { Text = message };
+            mm.Body = new TextPart("html") { Text = message };
 
             using (var client = new SmtpClient())
             {
