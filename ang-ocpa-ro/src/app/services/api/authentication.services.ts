@@ -40,11 +40,10 @@ export class AuthenticationService {
 
     generateOtp(): Observable<boolean> {
         const loginId = this.sessionInfo.getUserSessionInformation()?.loginId;
-        const headers = new HttpHeaders({ 'X-Language': navigator.language ?? 'en' });
 
         return this.http.post<boolean>(
             `${environment.apiUrl}/users/generate-otp?loginId=${loginId}`, 
-            null, { headers } );
+            null);
     }
 
     validateOtp(otp: string): Observable<string> {
@@ -82,8 +81,6 @@ export class AuthenticationService {
 
         if (refreshAuth)
             headers = headers.set('X-Refresh-Auth', '1');
-
-        headers = headers.set('X-Language', navigator.language ?? 'en');
 
         return this.http.post<AuthenticationResponse>(
             `${environment.apiUrl}/users/authenticate`, 

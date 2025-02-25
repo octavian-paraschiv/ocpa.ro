@@ -66,12 +66,11 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(FailedAuthenticationResponse), StatusCodes.Status401Unauthorized)]
         [AllowAnonymous]
         [SwaggerOperation(OperationId = "GenerateOTP")]
-        public async Task<IActionResult> GenerateOTP([FromQuery] string loginId,
-            [FromHeader(Name = "X-Language")] string language)
+        public async Task<IActionResult> GenerateOTP([FromQuery] string loginId)
         {
             try
             {
-                bool success = await _authHelper.GenerateOTP(loginId, language);
+                bool success = await _authHelper.GenerateOTP(loginId, RequestLanguage);
                 return Ok(success);
             }
             catch (Exception ex)
@@ -88,7 +87,6 @@ namespace ocpa.ro.api.Controllers
         [SwaggerOperation(OperationId = "Authenticate")]
         public IActionResult Authenticate([FromForm] AuthenticateRequest model,
             [FromHeader(Name = "X-Refresh-Auth")] string refreshAuth,
-            [FromHeader(Name = "X-Language")] string language,
             [FromHeader(Name = "X-Device-Id")] string deviceId)
         {
             bool isRefreshAuth = refreshAuth == "1";

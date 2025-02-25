@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 
 
 @Injectable()
-export class JwtInterceptor implements HttpInterceptor {
+export class RequestInterceptor implements HttpInterceptor {
     constructor(
         private readonly sessionInfo: SessionInformationService) { }
 
@@ -14,21 +14,24 @@ export class JwtInterceptor implements HttpInterceptor {
         const token = this.sessionInfo.getUserSessionInformation()?.token;        
         const isLoggedIn = token?.length > 0;
         const isApiUrl = request.url.startsWith(environment.apiUrl);
-        
-        if (isLoggedIn && isApiUrl) {
+
+        if (isLoggedIn && isApiUrl && token?.length > 0) {
             request = request.clone({
                 setHeaders: {
                     Authorization: `Bearer ${token}`
                 }
             });
         }
+
+        let headers = request.headers.set('X-Language', navigator.language ?? 'en');
         
         if (!environment.production) {
-            let headers = request.headers.set('Access-Control-Allow-Origin', '*');
+            headers = headers.set('Access-Control-Allow-Origin', '*');
             headers = headers.set('Access-Control-Allow-Methods', 'GET,POST');
             headers = headers.set('Access-Control-Allow-Headers', '*');
-            request = request.clone( { headers });
         }
+
+        request = request.clone( { headers });
 
         return next.handle(request);
     }

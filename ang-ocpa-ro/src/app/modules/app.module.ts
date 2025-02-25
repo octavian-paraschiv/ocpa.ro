@@ -32,7 +32,7 @@ import { MessageBoxComponent } from 'src/app/components/shared/message-box/messa
 import { WikiContainerComponent } from 'src/app/components/shared/wiki-container/wiki-container.component';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
-import { JwtInterceptor } from 'src/app/interceptors/jwt.interceptor';
+import { RequestInterceptor } from 'src/app/interceptors/request.interceptor';
 import { MaterialModule } from 'src/app/modules/material.module';
 import { routes } from 'src/app/modules/module.routes';
 import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
@@ -123,7 +123,7 @@ const I18N_CONFIG = {
     NgChartsModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 
     SessionInformationService,

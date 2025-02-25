@@ -17,7 +17,6 @@ export class WikiService {
             responseType: 'text',
             headers: { 
                 'Cache-Control': 'no-cache',
-                'X-Language': navigator.language ?? 'en',
                 'X-HtmlFragment': 'true',
             }
         });
