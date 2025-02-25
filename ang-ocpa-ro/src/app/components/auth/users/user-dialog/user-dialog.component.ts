@@ -154,7 +154,7 @@ export class UserDialogComponent implements OnInit {
             passwordHash, 
             type, 
             enabled: this.user.enabled,
-            useMfa: this.user.useMfa,
+            useOTP: this.user.useOTP,
             emailAddress: this.user.emailAddress,
             appsForUser: this.apps.filter(a => a.selected).map(a => ({
                 applicationId: a.id,

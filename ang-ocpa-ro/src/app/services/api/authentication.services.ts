@@ -16,7 +16,7 @@ export class AuthenticationService {
     private apiUserType: UserType;
 
     userLoginState$ = new BehaviorSubject<boolean>(false);
-    mfaRequested$ = new BehaviorSubject<boolean>(false);
+    shouldSendOtp$ = new BehaviorSubject<boolean>(false);
 
     constructor(
         private readonly sessionInfo: SessionInformationService,
@@ -38,16 +38,26 @@ export class AuthenticationService {
             this.router.navigate(['/meteo']);
     }
 
-    sendMfa(mfa: string) {
+    generateOtp(): Observable<boolean> {
         const loginId = this.sessionInfo.getUserSessionInformation()?.loginId;
+        const headers = new HttpHeaders({ 'X-Language': navigator.language ?? 'en' });
+
+        return this.http.post<boolean>(
+            `${environment.apiUrl}/users/generate-otp?loginId=${loginId}`, 
+            null, { headers } );
+    }
+
+    validateOtp(otp: string): Observable<string> {
+        const loginId = this.sessionInfo.getUserSessionInformation()?.loginId;
+        const hash = environment.ext.calc(loginId, otp, environment.ext.seed())
         const formParams = new HttpParams()
             .set('loginId', loginId)
-            .set('password', mfa);
+            .set('password', hash);
 
-        let headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
         return this.http.post<AuthenticationResponse>(
-            `${environment.apiUrl}/users/mfa`, 
+            `${environment.apiUrl}/users/validate-otp`, 
             formParams, { headers, withCredentials: true } )
             .pipe(map(rsp => {
                 const password = this.sessionInfo.getUserSessionInformation()?.password;
@@ -57,7 +67,7 @@ export class AuthenticationService {
     }
 
     authenticate(username: string, password: string, refreshAuth: boolean): Observable<string> {
-        this.mfaRequested$.next(false);
+        this.shouldSendOtp$.next(false);
 
         const hash = environment.ext.calc(username, password, environment.ext.seed())
         const formParams = new HttpParams()
@@ -105,14 +115,15 @@ export class AuthenticationService {
         this.sessionInfo.setUserSessionInformation({
             loginId: rsp.loginId,
             token: rsp.token,
+            anonymizedEmail: rsp.anonymizedEmail,
             loginTimestamp,
             tokenExpiration,
             password,
         } as UserSessionInformation, sessionInfoExpiration);
         
-        if (rsp.useMFA) {
-            this.mfaRequested$.next(true);
-            return 'useMfa';
+        if (rsp.sendOTP) {
+            this.shouldSendOtp$.next(true);
+            return 'sendOTP';
         }
 
         if (!(rsp?.validity > 0))

@@ -60,6 +60,7 @@ export interface UserSessionInformation {
     loginId: string;
     password: string;
     token: string;
+    anonymizedEmail: string;
     tokenExpiration: Date;
     loginTimestamp: Date;
 }

@@ -59,9 +59,9 @@ export class LoginComponent implements OnInit {
     }
 
     handleError(err: any) {
-        if (err === 'auth.useMfa') {
-            // redirect to MFA page
-            setTimeout(() => this.router.navigate([ '/mfa' ]), 300);
+        if (err === 'auth.sendOTP') {
+            // redirect to otp page
+            setTimeout(() => this.router.navigate([ '/otp' ]), 300);
         } else {
             const far = err as FailedAuthenticationResponse;
             this.error = far ? 

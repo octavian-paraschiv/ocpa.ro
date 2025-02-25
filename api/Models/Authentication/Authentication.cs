@@ -51,10 +51,23 @@ namespace ocpa.ro.api.Models.Authentication
         public string EmailAddress { get; set; }
 
         [NotNull]
-        public bool UseMfa { get; set; }
+        public bool UseOTP { get; set; }
+    }
+
+    public class OneTimePassword
+    {
+        [PrimaryKey]
+        [AutoIncrement]
+        public int Id { get; set; }
 
         [NotNull]
-        public string MfaChallenge { get; set; }
+        public int UserId { get; set; }
+
+        [NotNull]
+        public string Hash { get; set; }
+
+        [NotNull]
+        public DateTime Expiration { get; set; }
     }
 
     public class AuthenticationResponse
@@ -63,19 +76,19 @@ namespace ocpa.ro.api.Models.Authentication
         public string LoginId { get; set; }
 
         [Required]
+        public string AnonymizedEmail { get; set; }
+
+        [Required]
         public string Token { get; set; }
 
         [Required]
         public int Type { get; set; }
 
         [Required]
-        public DateTime Expires { get; set; }
-
-        [Required]
         public int Validity { get; set; }
 
         [Required]
-        public bool UseMFA { get; set; }
+        public bool SendOTP { get; set; }
     }
 
     public class FailedAuthenticationResponse

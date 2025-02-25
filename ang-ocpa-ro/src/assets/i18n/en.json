@@ -10,7 +10,7 @@
     "not-found": "This page does not exist: '{{url}}'",
 
     "ERR_BAD_CREDENTIALS": "Incorrect user name or password.<br>Remaining attempts: <b>{{retries}}<b>",
-    "ERR_BAD_MFA_CHALLENGE": "Incorrect login code.<br>Remaining attempts: <b>{{retries}}<b>",
+    "ERR_BAD_OTP": "Incorrect login code.<br>Please try again, or click 'Regenerate' to receive a new code on your email.",
     "ERR_ACCOUNT_DISABLED": "The account is disabled.",
     "ERR_NO_TOKEN": "There was an error trying to log you in. Please try again.",
 
@@ -33,6 +33,7 @@
         "protone": "ProTONE Player",
         "login": "Login",
         "continue-login": "Continue",
+        "regenerate-otp": "Regenerate",
         "logout": "Logout",
         "unavailable": "Page not available",
         "wiki-container": {
@@ -47,7 +48,7 @@
             "content": "Manage Site Content",
             "apps-menus": "Apps & Menus"
         },
-        "confirm": "Confirm"
+        "confirm": "Confirm"        
     },
 
     "menu": {
@@ -83,9 +84,9 @@
         "password-required": "Password is required",
         "enter-credentials": "Please enter your username and password:",
         "invalid-credentials": "Incorrect user name or password.",
-        "enter-mfa": "Please enter the login code sent to your email address, then press 'Continue'",
-        "mfa-challenge": "(enter login code here)",
-        "mfa-required": "The login code is required",
+        "enter-otp": "Please enter the login code sent to your email address ({{email}}), then press 'Continue'",
+        "otp-challenge": "(enter login code here)",
+        "otp-required": "The login code is required",
         "login-failed-1": "User <b>{{username}}</b> cannot log in [1]",
         "login-failed-2": "User <b>{{username}}</b> cannot log in [2]",
         "login-failed-3": "User <b>{{username}}</b> is not associated with any application",
@@ -185,7 +186,7 @@
         "attempts": "Remaining login attempts",
         "logged-in": "[CONNECTED]",
         "type": "Type",
-        "mfa": "Two steps Authentication",
+        "otp": "Two steps Authentication",
         "device-list": "Registered devices:",
         "view-device": "View device '{{deviceId}}'",
         "del-device": "Delete '{{deviceId}}'",

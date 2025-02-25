@@ -10,7 +10,7 @@
     "not-found": "Această pagină nu există: '{{url}}'",
 
     "ERR_BAD_CREDENTIALS": "Nume de utilizator și/sau parolă incorectă.<br>Încercări rămase: <b>{{retries}}</b>",
-    "ERR_BAD_MFA_CHALLENGE": "Cod de conectare incorect.<br>Încercări rămase: <b>{{retries}}</b>",
+    "ERR_BAD_OTP": "Cod de conectare incorect.<br>Încercați din nou, sau apăsați 'Regenerează' pentru a primi un nou cod pe email.",
     "ERR_ACCOUNT_DISABLED": "Contul este dezactivat.",
     "ERR_NO_TOKEN": "Autentificarea a eșuat",
 
@@ -33,6 +33,7 @@
         "protone": "ProTONE Player",
         "login": "Autentificare",
         "continue-login": "Continuare",
+        "regenerate-otp": "Regenerează",
         "logout": "Deconectare",
         "unavailable": "Pagina indisponibila",
         "wiki-container": {
@@ -83,9 +84,9 @@
         "password-required": "Parola este obligatorie",
         "enter-credentials": "Introduceți Numele de utilizator și Parola:",
         "invalid-credentials": "Nume de utilizator sau Parolă incorectă.",
-        "enter-mfa": "Introduceți codul de conectare trimis la adresa dvs. de email, apoi apăsați 'Continuare'",
-        "mfa-challenge": "(introduceți codul de conectare)",
-        "mfa-required": "Codul de conectare este obligatoriu",
+        "enter-otp": "Introduceți codul de conectare trimis la adresa dvs. de email ({{email}}), apoi apăsați 'Continuare'",
+        "otp-challenge": "(introduceți codul de conectare)",
+        "otp-required": "Codul de conectare este obligatoriu",
         "login-failed-1": "Utilizatorul <b>{{username}}</b> nu se poate conecta [1]",
         "login-failed-2": "Utilizatorul <b>{{username}}</b> nu se poate conecta [2]",
         "login-failed-3": "Utilizatorul <b>{{username}}</b> nu e asociat cu nicio aplicație",
@@ -185,7 +186,7 @@
         "attempts": "Încercări autentificare rămase",
         "logged-in": "[CONECTAT]",
         "type": "Tip",
-        "mfa": "Autentificare în 2 pași",
+        "otp": "Autentificare în 2 pași",
         "device-list": "Lista dispozitive înregistrate:",
         "view-device": "Afișează informații dispozitiv '{{deviceId}}'",
         "del-device": "Șterge dispozitivul '{{deviceId}}'",

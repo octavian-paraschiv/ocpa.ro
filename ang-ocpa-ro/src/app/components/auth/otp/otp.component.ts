@@ -11,15 +11,16 @@ import { SessionInformationService } from 'src/app/services/session-information.
 
 @UntilDestroy()
 @Component({
-    selector: 'app-mfa',
-    templateUrl: './mfa.component.html'
+    selector: 'app-otp',
+    templateUrl: './otp.component.html'
 })
-export class MfaComponent implements OnInit {
+export class OtpComponent implements OnInit {
     loginForm: UntypedFormGroup;
     loading = false;
     submitted = false;
     error = '';
     hide = true;
+    otpGenerated = false;
 
     constructor(
         private sessionInfo: SessionInformationService,
@@ -34,13 +35,26 @@ export class MfaComponent implements OnInit {
     }
 
     ngOnInit() {
+        
+        this.onGenerateOtp();
+
         this.loginForm = this.formBuilder.group({
-            mfa: ['', Validators.required],
+            otp: ['', Validators.required],
         });
     }
 
     // convenience getter for easy access to form fields
     get f() { return this.loginForm.controls; }
+
+    get anonymizedEmail() {
+        return this.sessionInfo.getUserSessionInformation()?.anonymizedEmail;
+    }
+
+    onGenerateOtp() {
+        this.authenticationService.generateOtp()
+            .pipe(untilDestroyed(this))
+            .subscribe(res => this.otpGenerated = res);
+    }
 
     onSubmit() {
         this.submitted = true;
@@ -51,7 +65,7 @@ export class MfaComponent implements OnInit {
         }
 
         this.loading = true;
-        this.authenticationService.sendMfa(this.f.mfa.value)
+        this.authenticationService.validateOtp(this.f.otp.value)
             .pipe(first(), untilDestroyed(this))
             .subscribe({
                 next: msg => (msg?.length > 0) ? this.handleError(msg) : this.redirectToDefaultPage(),

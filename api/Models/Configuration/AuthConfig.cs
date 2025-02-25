@@ -26,7 +26,8 @@ namespace ocpa.ro.api.Models.Configuration
 
         public JwtConfig Jwt { get; set; }
 
-        public bool UseMFA { get; set; } = false;
+        public bool UseOTP { get; set; } = false;
+        public int OTPDuration { get; set; } = 180;
         public int PasswordHistoryLength { get; set; } = 5;
         public int MaxPasswordAge { get; set; } = 90;
         public int MaxLoginRetries { get; set; } = 5;

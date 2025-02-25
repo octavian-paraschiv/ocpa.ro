@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Models.Configuration;
 using System;
@@ -50,9 +51,9 @@ namespace ocpa.ro.api.Helpers.Authentication
 
             return new AuthenticationResponse
             {
-                Expires = tokenDescriptor.Expires.Value,
                 Validity = _config.Jwt.Validity,
                 LoginId = user?.LoginId,
+                AnonymizedEmail = StringUtility.AnonymizeEmail(user?.EmailAddress ?? ""),
                 Token = tokenHandler.WriteToken(token),
                 Type = user?.Type ?? default,
             };

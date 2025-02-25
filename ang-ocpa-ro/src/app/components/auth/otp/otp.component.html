@@ -1,0 +1,26 @@
+﻿<mat-card class="mat-card-login">
+    <mat-card-header>
+        <mat-card-subtitle>{{'auth.enter-otp' | translate: { email: anonymizedEmail } }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider style="margin-bottom: 20px;"></mat-divider>
+    <mat-card-content>
+        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">            
+            <mat-form-field appearance="outline" class="login-form-control">
+                <mat-label>{{'auth.otp-challenge' | translate}}</mat-label>
+                <input matInput formControlName="otp">
+                <mat-error *ngIf="f?.otp?.errors?.required">{{'auth.otp-required' | translate}}</mat-error>
+            </mat-form-field>
+            <button mat-raised-button [disabled]="loading" type="button" class="login-form-control"
+                (click)="onGenerateOtp()" style="margin-bottom: 10px; margin-right: 10px;">
+                {{'title.regenerate-otp' | translate}}
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="loading || !otpGenerated" class="login-form-control" style="margin-bottom: 10px;">
+                {{'title.continue-login' | translate}}
+            </button>
+          </form>
+    </mat-card-content>
+    <mat-card-footer>
+        <mat-progress-bar *ngIf="loading" mode="buffer"></mat-progress-bar>
+        <mat-error *ngIf="error" [innerHtml]="error" class="login-form-control"></mat-error>        
+    </mat-card-footer>
+</mat-card>

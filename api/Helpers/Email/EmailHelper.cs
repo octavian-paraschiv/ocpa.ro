@@ -15,7 +15,7 @@ namespace ocpa.ro.api.Helpers.Email
     public interface IEmailHelper
     {
         Task SendEmail(string[] recipients, string subject, string message);
-        Task SendMfaChallenge(string recipient, string mfa, string language);
+        Task SendOneTimePassword(string recipient, string mfa, string language);
     }
 
     public class EmailHelper : BaseHelper, IEmailHelper
@@ -28,19 +28,26 @@ namespace ocpa.ro.api.Helpers.Email
             _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
         }
 
-        public Task SendMfaChallenge(string recipient, string mfa, string language)
+        public async Task SendOneTimePassword(string recipient, string mfa, string language)
         {
-            bool isRomanian = string.Equals(language, "ro", StringComparison.OrdinalIgnoreCase);
-            return SendEmail(
-                    recipients: [recipient],
+            try
+            {
+                bool isRomanian = string.Equals(language, "ro", StringComparison.OrdinalIgnoreCase);
+                await SendEmail(
+                        recipients: [recipient],
 
-                    subject: isRomanian ?
-                        "Conectarea la contul tau OCPA.RO" :
-                        "Connect to your OCPA.RO account",
+                        subject: isRomanian ?
+                            "Conectarea la contul tau OCPA.RO" :
+                            "Connect to your OCPA.RO account",
 
-                    message: isRomanian ?
-                        $"Pentru conectare la contul tau OCPA.RO, foloseste codul: {mfa}" :
-                        $"To connect to your OCPA.RO account, use this code: {mfa}");
+                        message: isRomanian ?
+                            $"Pentru conectare la contul tau OCPA.RO, foloseste codul: {mfa}" :
+                            $"To connect to your OCPA.RO account, use this code: {mfa}");
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
         }
 
         public async Task SendEmail(string[] recipients, string subject, string message)

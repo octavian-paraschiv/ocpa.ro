@@ -62,8 +62,8 @@
                     </mat-checkbox>
                 </div>
                 <div class="user-form-control">
-                    <mat-label>{{'users.mfa' | translate}}</mat-label>
-                    <mat-checkbox [color]="'primary'" [checked]="user.useMfa" (change)="user.useMfa = ($event.checked)">
+                    <mat-label>{{'users.otp' | translate}}</mat-label>
+                    <mat-checkbox [color]="'primary'" [checked]="user.useOTP" (change)="user.useOTP = ($event.checked)">
                     </mat-checkbox>
                 </div>
                 <div class="user-form-control" *ngIf="isApplicationUser">

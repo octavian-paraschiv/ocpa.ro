@@ -43,11 +43,11 @@ export interface ApplicationUser {
 
 export interface AuthenticationResponse {
     loginId: string;
+    anonymizedEmail: string;
     token: string;
     type: number;
-    expires: Date;
     validity: number;
-    useMFA: boolean;
+    sendOTP: boolean;
 }
 
 export interface BuildInfo {
@@ -311,8 +311,7 @@ export interface User {
     enabled?: boolean;
     loginAttemptsRemaining?: number;
     emailAddress?: string | undefined;
-    useMfa?: boolean;
-    mfaChallenge?: string | undefined;
+    useOTP?: boolean;
 }
 
 export interface UserType {
