@@ -48,6 +48,7 @@
             "content": "Manage Site Content",
             "apps-menus": "Apps & Menus"
         },
+        "otp": "Enter the login code",
         "confirm": "Confirm"        
     },
 
