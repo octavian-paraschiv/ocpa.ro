@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
@@ -11,8 +11,7 @@ import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-
 export class WikiContainerComponent implements OnInit {
   @ViewChild('viewer', { static: true }) dataBrowser: WikiViewerComponent;
 
-  constructor(private readonly route: ActivatedRoute) {
-  }
+  private readonly route = inject(ActivatedRoute);
 
   ngOnInit(): void {
     this.route.params

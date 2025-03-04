@@ -4,17 +4,26 @@
     </mat-card-header>
     <mat-divider style="margin-bottom: 20px;"></mat-divider>
     <mat-card-content>
-        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">            
+        <form class="login-form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">            
             <mat-form-field appearance="outline" class="login-form-control">
                 <mat-label>{{'auth.otp-challenge' | translate}}</mat-label>
                 <input matInput formControlName="otp">
                 <mat-error *ngIf="f?.otp?.errors?.required">{{'auth.otp-required' | translate}}</mat-error>
             </mat-form-field>
-            <button mat-raised-button [disabled]="loading" type="button" class="login-form-control"
-                (click)="onGenerateOtp()" style="margin-bottom: 10px; margin-right: 10px;">
+            <button mat-raised-button 
+                type="button" 
+                class="login-form-control"
+                style="margin-bottom: 10px; margin-right: 10px;" 
+                [disabled]="loading || waiting"
+                (click)="onGenerateOtp()" >
                 {{'title.regenerate-otp' | translate}}
             </button>
-            <button mat-raised-button color="primary" type="submit" [disabled]="loading || !otpGenerated" class="login-form-control" style="margin-bottom: 10px;">
+            <button mat-raised-button 
+                color="primary"
+                type="submit" 
+                class="login-form-control" 
+                style="margin-bottom: 10px;"
+                [disabled]="loading || !otpGenerated">
                 {{'title.continue-login' | translate}}
             </button>
           </form>

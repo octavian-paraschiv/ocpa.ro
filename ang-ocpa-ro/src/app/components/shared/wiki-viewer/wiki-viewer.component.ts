@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
@@ -11,11 +11,9 @@ import { WikiService } from 'src/app/services/api/wiki.service';
 })
 export class WikiViewerComponent {
     content = 'n/a';
-    constructor(
-        private translate: TranslateService,
-        private wikiService: WikiService
-    ) {
-    }
+
+    private readonly translate = inject(TranslateService);
+    private readonly wikiService = inject(WikiService);
 
     public displayLocation(location: string) {
         this.wikiService

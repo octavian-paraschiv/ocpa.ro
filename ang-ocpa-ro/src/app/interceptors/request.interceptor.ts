@@ -1,5 +1,5 @@
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SessionInformationService } from 'src/app/services/session-information.service';
 import { environment } from 'src/environments/environment';
@@ -7,8 +7,7 @@ import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class RequestInterceptor implements HttpInterceptor {
-    constructor(
-        private readonly sessionInfo: SessionInformationService) { }
+    private readonly sessionInfo = inject(SessionInformationService);
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const token = this.sessionInfo.getUserSessionInformation()?.token;        

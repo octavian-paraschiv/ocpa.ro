@@ -7,8 +7,6 @@ import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/met
 })
 export class MeteoComponent implements OnInit {
   @ViewChild('meteoDataBrowser', { static: true }) dataBrowser: MeteoDataBrowserComponent;
-  constructor() {
-  }
 
   ngOnInit(): void {
     this.dataBrowser.init();

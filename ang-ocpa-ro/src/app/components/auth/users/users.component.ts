@@ -3,9 +3,9 @@ import { faEye, faSquarePlus, faSquarePen, faSquareMinus, faCheck } from '@forta
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { of, Observable, throwError } from 'rxjs';
 import { first, switchMap, tap } from 'rxjs/operators';
-import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
 import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
+import { BaseAuthComponent } from 'src/app/components/base/BaseComponent';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
 import { MessageBoxOptions, UserInfo } from 'src/app/models/models-local';
 import { User, RegisteredDevice } from 'src/app/models/models-swagger';
@@ -14,6 +14,7 @@ import { RegisteredDeviceService } from 'src/app/services/api/registered-device.
 import { UserTypeService } from 'src/app/services/api/user-type.service';
 import { UserService } from 'src/app/services/api/user.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
+
 
 @UntilDestroy()
 @Component({
@@ -38,7 +39,6 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     private readonly userService = inject(UserService);
     private readonly regDeviceService = inject(RegisteredDeviceService);
     private readonly userTypeService = inject(UserTypeService);
-    private readonly popup = inject(MessagePopupService);
 
     ngOnInit(): void {
         this.userService.getAllUsers()
@@ -117,7 +117,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     get currentLoginId() {
-        return this.authenticationService.userLoginState$.getValue();
+        return this.authService.userLoginState$.getValue();
     }
 
     onDeleteDevice(deviceId: string) {

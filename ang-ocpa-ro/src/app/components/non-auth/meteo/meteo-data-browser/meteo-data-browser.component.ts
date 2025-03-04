@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslateService } from '@ngx-translate/core';
 import annotationPlugin, { AnnotationOptions } from 'chartjs-plugin-annotation';
 import { BaseChartDirective } from 'ng2-charts';
 import { Subject } from 'rxjs';
@@ -14,6 +13,7 @@ import { GeographyApiService } from 'src/app/services/api/geography-api.service'
 import { MeteoApiService } from 'src/app/services/api/meteo-api.service';
 import { TempPipe, VolumePipe, DistancePipe } from 'src/app/services/unit-transform-pipe';
 import { Chart, ChartConfiguration, ChartOptions, TooltipItem } from "chart.js";
+import { BaseComponent } from 'src/app/components/base/BaseComponent';
 
 Chart.register(annotationPlugin);
 
@@ -22,8 +22,12 @@ Chart.register(annotationPlugin);
   selector: 'app-meteo-data-browser',
   templateUrl: './meteo-data-browser.component.html'
 })
-export class MeteoDataBrowserComponent implements OnInit  {
+export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+
+  private readonly geoApi = inject(GeographyApiService);
+  private readonly meteoApi = inject(MeteoApiService);
+  private readonly route = inject(ActivatedRoute);
 
   icons = fas;
   plugins = [annotationPlugin];
@@ -117,15 +121,6 @@ export class MeteoDataBrowserComponent implements OnInit  {
       }
     },
   };
-
-  
-
-  constructor(
-    private readonly translate: TranslateService,
-    private readonly geoApi: GeographyApiService,
-    private readonly meteoApi: MeteoApiService,
-    private readonly route: ActivatedRoute) {
-  }
 
   ngOnInit() {
     this.hint = this.translate.instant('meteo.default-hint');

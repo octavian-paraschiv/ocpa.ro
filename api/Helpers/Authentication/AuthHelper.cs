@@ -24,7 +24,7 @@ namespace ocpa.ro.api.Helpers.Authentication
 {
     public interface IAuthHelper : IAuthHelperManagement, IAuthHelperOtp
     {
-        (User user, bool useOTP) AuthorizeUser(AuthenticateRequest req);
+        (User user, bool useOTP) Authenticate(AuthenticateRequest req);
 
         User SaveUser(User user, out bool inserted);
         User GetUser(string loginId);
@@ -66,7 +66,7 @@ namespace ocpa.ro.api.Helpers.Authentication
             _db = new SQLiteConnection(authDbFile, SQLiteOpenFlags.ReadWrite);
         }
 
-        public (User user, bool useOTP) AuthorizeUser(AuthenticateRequest req)
+        public (User user, bool useOTP) Authenticate(AuthenticateRequest req)
         {
             try
             {

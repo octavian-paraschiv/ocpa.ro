@@ -26,7 +26,7 @@
                 <label class="smart-city-label-name">{{item.name}}</label>
                 <label class="smart-city-label-info">({{item.subregion}}, {{item.regionName}})</label>
                 <div class="smart-city-label-flag">
-                    <img class="smart-city-label-flag-image" src="assets/countries/{{item | countryCode }}.png"/>
+                    <img class="smart-city-label-flag-image" src="assets/images/flags/{{item | countryCode }}.png"/>
                 </div>
             </div>
         </ng-template>
@@ -37,7 +37,7 @@
                     <label class="smart-city-name">{{item.name}}</label>
                     <label class="smart-city-info">({{item.subregion}}, {{item.regionName}})</label>
                     <div class="smart-city-flag">
-                        <img class="smart-city-flag-image" src="assets/countries/{{item | countryCode }}.png"/>
+                        <img class="smart-city-flag-image" src="assets/images/flags/{{item | countryCode }}.png"/>
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                     <ng-container matColumnDef="symbol">
                         <td mat-cell *matCellDef="let md" class="{{centerCellClass(md)}}">
                             <img class="meteo-mat-small img-day-summary-forecast" 
-                                src="assets/icons/meteo/precip_{{md.forecast}}.png" />
+                                src="assets/images/meteo/precip_{{md.forecast}}.png" />
                         </td>
                     </ng-container>
                     

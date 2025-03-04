@@ -13,6 +13,7 @@ namespace ocpa.ro.api.Helpers.Authentication
     public interface IJwtTokenHelper
     {
         AuthenticationResponse GenerateJwtToken(User user);
+
     }
 
     public class JwtTokenHelper : IJwtTokenHelper
@@ -23,6 +24,8 @@ namespace ocpa.ro.api.Helpers.Authentication
         {
             _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
         }
+
+
 
         public AuthenticationResponse GenerateJwtToken(User user)
         {

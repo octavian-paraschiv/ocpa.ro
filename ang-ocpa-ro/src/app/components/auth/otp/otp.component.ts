@@ -1,12 +1,9 @@
-﻿import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+﻿import { Component, inject } from '@angular/core';
+import { UntypedFormGroup, Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
+import { BaseFormComponent } from 'src/app/components/base/BaseComponent';
 import { FailedAuthenticationResponse } from 'src/app/models/models-swagger';
-import { AuthenticationService } from 'src/app/services/api/authentication.services';
-import { MenuService } from 'src/app/services/api/menu.service';
 import { SessionInformationService } from 'src/app/services/session-information.service';
 
 @UntilDestroy()
@@ -14,46 +11,40 @@ import { SessionInformationService } from 'src/app/services/session-information.
     selector: 'app-otp',
     templateUrl: './otp.component.html'
 })
-export class OtpComponent implements OnInit {
+export class OtpComponent extends BaseFormComponent {
     loginForm: UntypedFormGroup;
     loading = false;
+    waiting = false;
     submitted = false;
     error = '';
     hide = true;
     otpGenerated = false;
 
-    constructor(
-        private sessionInfo: SessionInformationService,
-        private translate: TranslateService,
-        private formBuilder: UntypedFormBuilder,
-        private router: Router,
-        private authenticationService: AuthenticationService,
-        private menuService: MenuService) { 
-        
-        if (this.authenticationService.isUserLoggedIn())
-            this.redirectToDefaultPage();
-    }
+    private sessionInfo = inject(SessionInformationService);
 
-    ngOnInit() {
-        
+    protected createForm(): UntypedFormGroup {
+        if (this.authService.isUserLoggedIn())
+            this.redirectToDefaultPage();
+
         this.onGenerateOtp();
 
-        this.loginForm = this.formBuilder.group({
+        return this.formBuilder.group({
             otp: ['', Validators.required],
         });
     }
-
-    // convenience getter for easy access to form fields
-    get f() { return this.loginForm.controls; }
 
     get anonymizedEmail() {
         return this.sessionInfo.getUserSessionInformation()?.anonymizedEmail;
     }
 
     onGenerateOtp() {
-        this.authenticationService.generateOtp()
+        this.waiting = true;
+        this.authService.generateOtp()
             .pipe(untilDestroyed(this))
-            .subscribe(res => this.otpGenerated = res);
+            .subscribe(res => {
+                this.otpGenerated = res;
+                setTimeout(() => this.waiting = false, 60000);
+            });
     }
 
     onSubmit() {
@@ -65,7 +56,7 @@ export class OtpComponent implements OnInit {
         }
 
         this.loading = true;
-        this.authenticationService.validateOtp(this.f.otp.value)
+        this.authService.validateOtp(this.f.otp.value)
             .pipe(first(), untilDestroyed(this))
             .subscribe({
                 next: msg => (msg?.length > 0) ? this.handleError(msg) : this.redirectToDefaultPage(),
@@ -81,17 +72,5 @@ export class OtpComponent implements OnInit {
             this.translate.instant(err, { username });
 
         this.loading = false;
-    }
-
-    redirectToDefaultPage() {
-        setTimeout(() => {
-            const defaultPage = 
-            (this.menuService?.menus?.appMenus?.length > 0) ? 
-                this.menuService.menus.appMenus[0].url :
-                (this.menuService?.menus?.publicMenus?.length > 0) ? 
-                    this.menuService.menus.publicMenus[0].url : '/';
-
-            this.router.navigate([ defaultPage ]);
-        }, 300);
     }
 }

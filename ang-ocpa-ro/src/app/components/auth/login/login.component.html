@@ -4,7 +4,7 @@
     </mat-card-header>
     <mat-divider style="margin-bottom: 20px;"></mat-divider>
     <mat-card-content>
-        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">            
+        <form class="login-form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">            
             <mat-form-field appearance="outline" class="login-form-control">
                 <mat-label>{{'auth.username' | translate}}</mat-label>
                 <input matInput formControlName="username">

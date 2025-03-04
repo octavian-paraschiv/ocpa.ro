@@ -1,19 +1,15 @@
-import { Component, OnInit, NgZone, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
 import { fas, faSquarePlus, faSquarePen, faSquareMinus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslateService } from '@ngx-translate/core';
 import { of, forkJoin } from 'rxjs';
 import { first, tap, switchMap } from 'rxjs/operators';
 import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialog/app-dialog.component';
 import { MenuDialogComponent } from 'src/app/components/auth/apps-menus/menu-dialog/menu-dialog.component';
-import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
+import { BaseAuthComponent } from 'src/app/components/base/BaseComponent';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
-import { AppData, AppMenuData, MessageBoxOptions } from 'src/app/models/models-local';
+import { AppMenuData, AppData, MessageBoxOptions } from 'src/app/models/models-local';
 import { Menu, Application, ApplicationMenu, EMenuDisplayMode } from 'src/app/models/models-swagger';
 import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
-import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
 
 @UntilDestroy()
@@ -30,7 +26,6 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
     size = "grow-6";
 
     private readonly appMenuService = inject(AppMenuManagementService);
-    private readonly popup = inject(MessagePopupService);
 
     menus: Menu[] = [];
     menusColumns = ['menu-add', 'menu-edit', 'menu-delete', 'menu-name', 'menu-url', 'menu-display-mode', 'menu-icon', 'menu-builtin', 'menu-filler'];

@@ -6,7 +6,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MathjaxModule } from 'mathjax-angular';
 import { NgChartsModule } from 'ng2-charts';
@@ -22,7 +22,7 @@ import { OtpComponent } from 'src/app/components/auth/otp/otp.component';
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
 import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
 import { UsersComponent } from 'src/app/components/auth/users/users.component';
-import { NavMenuComponent } from 'src/app/components/nav-menu/nav-menu.component';
+import { NavMenuComponent } from 'src/app/components/shared/nav-menu/nav-menu.component';
 import { DayRisksComponent } from 'src/app/components/non-auth/meteo/day-risks/day-risks.component';
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
 import { MeteoComponent } from 'src/app/components/non-auth/meteo/meteo.component';
@@ -50,7 +50,6 @@ import { FingerprintService } from 'src/app/services/fingerprint.service';
 import { Iso3166HelperService } from 'src/app/services/iso3166-helper.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
 import { SessionInformationService } from 'src/app/services/session-information.service';
-import { TranslationInitService } from 'src/app/services/translation-init.service';
 import { TempPipe, SpeedPipe, DistancePipe, VolumePipe, PressurePipe, CountryCodePipe, CalendarPipe } from 'src/app/services/unit-transform-pipe';
 
 
@@ -58,7 +57,7 @@ const I18N_CONFIG = {
   defaultLanguage: 'en',
   loader: {
     provide: TranslateLoader,
-    useFactory: (httpClient: HttpClient) => new TranslateHttpLoader(httpClient, './assets/i18n/', '.json'),
+    useFactory: (httpClient: HttpClient) => new TranslateHttpLoader(httpClient, './assets/translations/', '.json'),
     deps: [HttpClient]
   }
 }
@@ -123,11 +122,23 @@ const I18N_CONFIG = {
     NgChartsModule
   ],
   providers: [
+    AuthenticationService,
+
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 
+
+    FingerprintService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (svc: FingerprintService) => () => svc.init().toPromise(),
+      deps: [FingerprintService],
+      multi: true
+    },
+
     SessionInformationService,
 
+    /*
     TranslationInitService,
     {
       provide: APP_INITIALIZER,
@@ -135,6 +146,7 @@ const I18N_CONFIG = {
       deps: [TranslationInitService],
       multi: true
     },
+    */
 
     GeographyApiService,
     {
@@ -162,15 +174,6 @@ const I18N_CONFIG = {
 
     UserService,
     RegisteredDeviceService,
-    AuthenticationService,
-
-    FingerprintService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (svc: FingerprintService) => () => svc.init().toPromise(),
-      deps: [FingerprintService],
-      multi: true
-    },
 
     MenuService,
     {
@@ -185,8 +188,9 @@ const I18N_CONFIG = {
     ContentApiService,
     WikiService,
     AppMenuManagementService,
-    MessagePopupService
+    MessagePopupService,
   ],
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

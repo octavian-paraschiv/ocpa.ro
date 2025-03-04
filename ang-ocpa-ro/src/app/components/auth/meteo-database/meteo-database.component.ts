@@ -1,19 +1,14 @@
 import { formatDate } from '@angular/common';
-import { Component, OnInit, NgZone, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
 import { faEye, faUpRightFromSquare, faUpload, faSquareMinus } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslateService } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
-import { BaseAuthComponent } from 'src/app/components/auth/base/BaseAuthComponent';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
+import { BaseAuthComponent } from 'src/app/components/base/BaseComponent';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
 import { MessageBoxOptions } from 'src/app/models/models-local';
 import { MeteoDbInfo } from 'src/app/models/models-swagger';
-import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { MeteoApiService } from 'src/app/services/api/meteo-api.service';
-import { MessagePopupService } from 'src/app/services/message-popup.service';
 
 @UntilDestroy()
 @Component({
@@ -21,6 +16,8 @@ import { MessagePopupService } from 'src/app/services/message-popup.service';
     templateUrl: './meteo-database.component.html'
 })
 export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit {
+    private readonly meteoApi = inject(MeteoApiService);
+
     faEye = faEye;
     faPromote = faUpRightFromSquare;
     faUpload = faUpload;
@@ -35,9 +32,6 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
         'db-filler' ];
 
     studioDownloadUrl: string = undefined;
-
-    private readonly meteoApi = inject(MeteoApiService);
-    private readonly popup = inject(MessagePopupService);
 
     ngOnInit(): void {
         this.meteoApi.getStudioDownloadUrl()
