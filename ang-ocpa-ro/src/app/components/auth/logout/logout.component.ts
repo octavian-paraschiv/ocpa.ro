@@ -16,7 +16,7 @@ export class LogoutComponent extends BaseAuthFormComponent {
         });
     }
 
-    onValidFormSubmitted() {
+    doLogout() {
         this.authService.logout(true);
     }
 }
