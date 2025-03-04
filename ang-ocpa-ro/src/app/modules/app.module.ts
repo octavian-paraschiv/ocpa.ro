@@ -51,6 +51,7 @@ import { Iso3166HelperService } from 'src/app/services/iso3166-helper.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
 import { SessionInformationService } from 'src/app/services/session-information.service';
 import { TempPipe, SpeedPipe, DistancePipe, VolumePipe, PressurePipe, CountryCodePipe, CalendarPipe } from 'src/app/services/unit-transform-pipe';
+import { TranslationInitService } from 'src/app/services/translation-init.service';
 
 
 const I18N_CONFIG = {
@@ -138,7 +139,6 @@ const I18N_CONFIG = {
 
     SessionInformationService,
 
-    /*
     TranslationInitService,
     {
       provide: APP_INITIALIZER,
@@ -146,8 +146,7 @@ const I18N_CONFIG = {
       deps: [TranslationInitService],
       multi: true
     },
-    */
-
+    
     GeographyApiService,
     {
       provide: APP_INITIALIZER,

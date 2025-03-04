@@ -15,7 +15,6 @@ export class OtpComponent extends BaseFormComponent {
     loginForm: UntypedFormGroup;
     loading = false;
     waiting = false;
-    submitted = false;
     error = '';
     hide = true;
     otpGenerated = false;
@@ -47,14 +46,7 @@ export class OtpComponent extends BaseFormComponent {
             });
     }
 
-    onSubmit() {
-        this.submitted = true;
-
-        // stop here if form is invalid
-        if (this.loginForm.invalid) {
-            return;
-        }
-
+    onValidFormSubmitted() {
         this.loading = true;
         this.authService.validateOtp(this.f.otp.value)
             .pipe(first(), untilDestroyed(this))
