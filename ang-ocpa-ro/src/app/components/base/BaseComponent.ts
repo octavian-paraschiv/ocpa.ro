@@ -10,7 +10,7 @@ import { MenuService } from 'src/app/services/api/menu.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
 
 @UntilDestroy()
-@Component({ template: '' })
+@Component({ selector: 'base-component', template: '' })
 export abstract class BaseComponent {
     protected readonly translate = inject(TranslateService);
     protected readonly dialog = inject(MatDialog);
@@ -33,7 +33,7 @@ export abstract class BaseComponent {
 }
 
 @UntilDestroy()
-@Component({ template: '' })
+@Component({ selector: 'base-form-component', template: '' })
 export abstract class BaseFormComponent extends BaseComponent {
     protected formGroup: UntypedFormGroup;
     protected formBuilder = inject(UntypedFormBuilder);
@@ -64,7 +64,7 @@ export abstract class BaseFormComponent extends BaseComponent {
 
 
 @UntilDestroy()
-@Component({ template: '' })
+@Component({ selector: 'base-auth-component', template: '' })
 export abstract class BaseAuthComponent extends BaseComponent implements OnInit {
     ngOnInit() {
         if (Helper.isMobile())
@@ -76,7 +76,7 @@ export abstract class BaseAuthComponent extends BaseComponent implements OnInit 
 }
 
 @UntilDestroy()
-@Component({ template: '' })
+@Component({ selector: 'base-auth-form-component', template: '' })
 export abstract class BaseAuthFormComponent extends BaseFormComponent implements OnInit {
     ngOnInit() {
         if (Helper.isMobile())
