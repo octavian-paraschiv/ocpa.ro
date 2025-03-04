@@ -6,8 +6,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MathjaxModule } from 'mathjax-angular';
 import { NgChartsModule } from 'ng2-charts';
 import { AppComponent } from 'src/app/components/app.component';
 import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialog/app-dialog.component';
@@ -21,10 +22,11 @@ import { LoginComponent } from 'src/app/components/auth/login/login.component';
 import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
+import { OtpComponent } from 'src/app/components/auth/otp/otp.component';
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
 import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
 import { UsersComponent } from 'src/app/components/auth/users/users.component';
-import { NavMenuComponent } from 'src/app/components/nav-menu/nav-menu.component';
+import { NavMenuComponent } from 'src/app/components/shared/nav-menu/nav-menu.component';
 import { DayRisksComponent } from 'src/app/components/non-auth/meteo/day-risks/day-risks.component';
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
 import { MeteoComponent } from 'src/app/components/non-auth/meteo/meteo.component';
@@ -35,7 +37,7 @@ import { MessageBoxComponent } from 'src/app/components/shared/message-box/messa
 import { WikiContainerComponent } from 'src/app/components/shared/wiki-container/wiki-container.component';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 import { ErrorInterceptor } from 'src/app/interceptors/error.interceptor';
-import { JwtInterceptor } from 'src/app/interceptors/jwt.interceptor';
+import { RequestInterceptor } from 'src/app/interceptors/request.interceptor';
 import { MaterialModule } from 'src/app/modules/material.module';
 import { routes } from 'src/app/modules/module.routes';
 import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
@@ -52,15 +54,16 @@ import { WikiService } from 'src/app/services/api/wiki.service';
 import { FingerprintService } from 'src/app/services/fingerprint.service';
 import { Iso3166HelperService } from 'src/app/services/iso3166-helper.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
-import { TranslationInitService } from 'src/app/services/translation-init.service';
+import { SessionInformationService } from 'src/app/services/session-information.service';
 import { TempPipe, SpeedPipe, DistancePipe, VolumePipe, PressurePipe, CountryCodePipe, CalendarPipe } from 'src/app/services/unit-transform-pipe';
+import { TranslationInitService } from 'src/app/services/translation-init.service';
 
 
 const I18N_CONFIG = {
   defaultLanguage: 'en',
   loader: {
     provide: TranslateLoader,
-    useFactory: (httpClient: HttpClient) => new TranslateHttpLoader(httpClient, './assets/i18n/', '.json'),
+    useFactory: (httpClient: HttpClient) => new TranslateHttpLoader(httpClient, './assets/translations/', '.json'),
     deps: [HttpClient]
   }
 }
@@ -88,6 +91,7 @@ const I18N_CONFIG = {
 
         LoginComponent,
         LogoutComponent,
+        OtpComponent,
         UnavailablePageComponent,
 
         DayRisksComponent,
@@ -110,6 +114,14 @@ const I18N_CONFIG = {
     ],
   imports: [
     BrowserModule,
+    MathjaxModule.forRoot({
+      config: {
+        loader: { load: ['input/tex', 'output/svg'] },
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+        svg: { fontCache: 'global' }
+      },
+      src: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js'
+    }),
     TranslateModule.forRoot(I18N_CONFIG),
     HttpClientModule,
     ReactiveFormsModule,
@@ -122,8 +134,21 @@ const I18N_CONFIG = {
     NgChartsModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    AuthenticationService,
+
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+
+
+    FingerprintService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (svc: FingerprintService) => () => svc.init().toPromise(),
+      deps: [FingerprintService],
+      multi: true
+    },
+
+    SessionInformationService,
 
     TranslationInitService,
     {
@@ -132,7 +157,7 @@ const I18N_CONFIG = {
       deps: [TranslationInitService],
       multi: true
     },
-
+    
     GeographyApiService,
     {
       provide: APP_INITIALIZER,
@@ -159,15 +184,6 @@ const I18N_CONFIG = {
 
     UserService,
     RegisteredDeviceService,
-    AuthenticationService,
-
-    FingerprintService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (svc: FingerprintService) => () => svc.init().toPromise(),
-      deps: [FingerprintService],
-      multi: true
-    },
 
     MenuService,
     {
@@ -182,8 +198,9 @@ const I18N_CONFIG = {
     ContentApiService,
     WikiService,
     AppMenuManagementService,
-    MessagePopupService
+    MessagePopupService,
   ],
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

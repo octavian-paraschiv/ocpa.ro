@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Content;
+using ocpa.ro.api.Helpers.Email;
 using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Helpers.Medical;
@@ -36,10 +37,10 @@ Environment.SetEnvironmentVariable("LOGDIR", logDir);
 
 
 #region ConfigurationResolving
-builder.Configuration.ResolveConfiguration(builder.Services, JwtConfig.SectionName, out JwtConfig jwtConfig);
-builder.Configuration.ResolveConfiguration(builder.Services, AuthConfig.SectionName, out AuthConfig _);
+builder.Configuration.ResolveConfiguration(builder.Services, AuthConfig.SectionName, out AuthConfig authConfig);
 builder.Configuration.ResolveConfiguration(builder.Services, GeoLocationConfig.SectionName, out GeoLocationConfig _);
 builder.Configuration.ResolveConfiguration(builder.Services, CaasConfig.SectionName, out CaasConfig _);
+builder.Configuration.ResolveConfiguration(builder.Services, EmailConfig.SectionName, out EmailConfig emailConfig);
 #endregion
 
 #region Services
@@ -65,8 +66,8 @@ builder.Services.AddAuthentication(options =>
 
     o.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = jwtConfig.Issuer,
-        ValidAudience = jwtConfig.Audience,
+        ValidIssuer = authConfig.Jwt.Issuer,
+        ValidAudience = authConfig.Jwt.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(JwtConfig.KeyBytes.ToArray()),
         ValidateIssuer = true,
         ValidateAudience = true,
@@ -90,6 +91,7 @@ builder.Services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
 
 builder.Services.AddTransient<IMultipartRequestHelper, MultipartRequestHelper>();
 builder.Services.AddTransient<IWikiHelper, WikiHelper>();
+builder.Services.AddTransient<IEmailHelper, EmailHelper>();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -115,6 +117,7 @@ builder.Services.AddSwaggerGen(option =>
             Version = "v1"
         });
 });
+
 #endregion
 
 #region App

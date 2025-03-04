@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -6,8 +6,7 @@ import { Observable } from 'rxjs';
 @UntilDestroy()
 @Injectable()
 export class TranslationInitService {
-    constructor(private readonly translate: TranslateService) {
-    }
+    private readonly translate = inject(TranslateService);
 
     public init(): Observable<any> {
         const lang = this.translate.getBrowserLang() ?? 'en';

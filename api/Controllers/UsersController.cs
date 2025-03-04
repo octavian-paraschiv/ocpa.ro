@@ -2,15 +2,22 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Models.Applications;
 using ocpa.ro.api.Models.Authentication;
+using ocpa.ro.api.Models.Configuration;
 using ocpa.ro.api.Models.Menus;
 using ocpa.ro.api.Policies;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -23,36 +30,132 @@ namespace ocpa.ro.api.Controllers
     public class UsersController : ApiControllerBase
     {
         private readonly IJwtTokenHelper _jwtTokenGenerator;
+        private readonly AuthConfig _config;
 
-        public UsersController(IWebHostEnvironment hostingEnvironment, IAuthHelper authHelper, IJwtTokenHelper jwtTokenGenerator, ILogger logger)
+        public UsersController(IWebHostEnvironment hostingEnvironment,
+            IAuthHelper authHelper,
+            IJwtTokenHelper jwtTokenGenerator,
+            ILogger logger,
+            IOptions<AuthConfig> config)
             : base(hostingEnvironment, logger, authHelper)
         {
-            _jwtTokenGenerator = jwtTokenGenerator;
+            _jwtTokenGenerator = jwtTokenGenerator ?? throw new ArgumentNullException(nameof(jwtTokenGenerator));
+            _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
+        }
+
+        [HttpPost("validate-otp")]
+        [Consumes("application/x-www-form-urlencoded")]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailedAuthenticationResponse), StatusCodes.Status401Unauthorized)]
+        [AllowAnonymous]
+        [SwaggerOperation(OperationId = "ValidateOTP")]
+        public IActionResult ValidateOTP([FromForm] AuthenticateRequest model)
+        {
+            var (err, user) = _authHelper.ValidateOTP(model);
+            if (err?.Length > 0 || user == null)
+                return Unauthorized(new FailedAuthenticationResponse(err));
+
+            var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+            if (string.IsNullOrEmpty(rsp?.Token))
+                return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
+
+            return Ok(rsp);
+        }
+
+        [HttpPost("generate-otp")]
+        [Consumes("application/x-www-form-urlencoded")]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailedAuthenticationResponse), StatusCodes.Status401Unauthorized)]
+        [AllowAnonymous]
+        [SwaggerOperation(OperationId = "GenerateOTP")]
+        public async Task<IActionResult> GenerateOTP([FromQuery] string loginId)
+        {
+            try
+            {
+                bool success = await _authHelper.GenerateOTP(loginId, RequestLanguage);
+                return Ok(success);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailedAuthenticationResponse), StatusCodes.Status401Unauthorized)]
+        [SwaggerOperation(OperationId = "RefreshToken")]
+        public IActionResult RefreshToken([FromQuery] string loginId)
+        {
+            var bearerToken = (Request?.Headers?.Authorization ?? "").ToString().Replace("Bearer", "").Trim();
+            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(bearerToken);
+            var claimedID = jwtToken?.Claims?.Where(c => c.Type == "id")?.Select(c => c.Value)?.FirstOrDefault();
+            var now = DateTime.UtcNow;
+
+            if (jwtToken == null ||
+                jwtToken.ValidFrom >= now ||
+                jwtToken.ValidTo <= now ||
+                claimedID != loginId)
+                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
+
+            var user = _authHelper.GetUser(loginId);
+            if (user == null)
+                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
+
+            var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+            if (string.IsNullOrEmpty(rsp?.Token))
+                return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
+
+            return Ok(rsp);
         }
 
         [HttpPost("authenticate")]
         [Consumes("application/x-www-form-urlencoded")]
-        [ProducesResponseType(typeof(AuthenticateResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailedAuthenticationResponse), StatusCodes.Status401Unauthorized)]
         [AllowAnonymous]
         [SwaggerOperation(OperationId = "Authenticate")]
         public IActionResult Authenticate([FromForm] AuthenticateRequest model,
             [FromHeader(Name = "X-Device-Id")] string deviceId)
         {
-            var user = _authHelper.AuthorizeUser(model);
+            var (user, useOTP) = _authHelper.Authenticate(model);
             if (user == null)
-                return Unauthorized("ERR_BAD_CREDENTIALS");
+                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
 
             if (!user.Enabled)
-                return Unauthorized("ERR_ACCOUNT_DISABLED");
+                return Unauthorized(new FailedAuthenticationResponse("ERR_ACCOUNT_DISABLED"));
 
-            var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
-            if (string.IsNullOrEmpty(rsp?.Token))
-                return Unauthorized("ERR_NO_TOKEN");
+            if (user.LoginAttemptsRemaining < _config.MaxLoginRetries)
+                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS", user.LoginAttemptsRemaining));
 
-            // If succesfully logged in, register the device used to log in
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-            _authHelper.RegisterDevice(deviceId, ipAddress, user.LoginId);
+            ThreadPool.QueueUserWorkItem(async _ =>
+            {
+                // If succesfully logged in, register the device used to log in
+                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                await _authHelper.RegisterDevice(deviceId, ipAddress, user.LoginId);
+            });
+
+            AuthenticationResponse rsp = null;
+
+            if (useOTP)
+            {
+                rsp = new AuthenticationResponse
+                {
+                    LoginId = user.LoginId,
+                    Type = user?.Type ?? default,
+                    SendOTP = useOTP,
+                    AnonymizedEmail = StringUtility.AnonymizeEmail(user?.EmailAddress ?? ""),
+                    Token = null
+                };
+            }
+            else
+            {
+                rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+                rsp.SendOTP = false;
+
+                if (string.IsNullOrEmpty(rsp?.Token))
+                    return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
+            }
 
             return Ok(rsp);
         }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { take } from 'rxjs/operators';
 import { BuildInfo } from 'src/app/models/models-swagger';
@@ -15,8 +15,7 @@ export class ProTONEComponent implements OnInit {
     legacyBuilds: BuildInfo[] = []
     developmentBuilds: BuildInfo[] = [];
 
-    constructor(private readonly api: ProtoneApiService) {
-    }
+    private readonly api = inject(ProtoneApiService);
 
     ngOnInit(): void {
         this.api.getProtoneBuilds('legacy')

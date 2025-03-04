@@ -7,11 +7,13 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 
 namespace ocpa.ro.api.Extensions
 {
@@ -148,5 +150,23 @@ namespace ocpa.ro.api.Extensions
                 // If kvp.Value is null, do nothing (ignore null values)
             }
         }
+    }
+
+    public static class StringUtility
+    {
+        public static string EncodeStrings(IEnumerable<string> strings)
+        => Encode(new string(string.Join(' ', strings?.Select(s => Encode(s)))?.Trim()?.Reverse()?.ToArray() ?? []));
+
+        public static IEnumerable<string> DecodeStrings(string str)
+        => new string(Decode(str)?.Reverse()?.ToArray() ?? [])?.Split(' ')?.Select(s => Decode(s));
+
+        private static string Encode(string str)
+        => Convert.ToBase64String(Encoding.ASCII.GetBytes(str));
+
+        private static string Decode(string str)
+        => Encoding.ASCII.GetString(Convert.FromBase64String(str));
+
+        public static string AnonymizeEmail(string email)
+        => Regex.Replace(email, @"(?<=.).(?=.*@)", "*");
     }
 }

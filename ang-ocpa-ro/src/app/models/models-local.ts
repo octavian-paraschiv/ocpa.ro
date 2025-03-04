@@ -55,3 +55,10 @@ export interface MessageBoxOptions {
     yesTimeout?: number;
     isSessionTimeoutMessage?: boolean;
 }
+
+export interface UserSessionInformation {
+    loginId: string;
+    token: string;
+    anonymizedEmail: string;
+    tokenExpiration: Date;
+}
