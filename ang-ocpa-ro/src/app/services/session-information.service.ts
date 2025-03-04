@@ -1,30 +1,28 @@
 import { Injectable, inject } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { CookieService } from 'ngx-cookie-service';
+import * as SecureLS from 'secure-ls';
 import { UserSessionInformation } from 'src/app/models/models-local';
 
 @UntilDestroy()
 @Injectable()
 export class SessionInformationService {
     private readonly userSessionKey = 'ocpa_ro_user_session';
-    private readonly defaultExpiration = 1 / 48; // half an hour as days
-    private readonly cookieService = inject(CookieService);
+    private readonly storage = new SecureLS({ encodingType: 'aes', isCompression: true });
 
-    public set<T>(data: T, key: string, expiration: number) {
+    public set<T>(data: T, key: string) {
         try {
-            this.cookieService.set(key, JSON.stringify(data), expiration);
+            this.storage.set(key, JSON.stringify(data));
         } catch {
         }
     }
 
-    public setUserSessionInformation(data: UserSessionInformation, expiration?: number) {
-        expiration = expiration ?? this.defaultExpiration;
-        this.set<UserSessionInformation>(data, this.userSessionKey, expiration);
+    public setUserSessionInformation(data: UserSessionInformation) {
+        this.set<UserSessionInformation>(data, this.userSessionKey);
     }
 
     public get<T>(key: string): T {
         try {
-            const json = this.cookieService.get(key);
+            const json = this.storage.get(key) as string;
             if (json?.length > 0) 
                 return JSON.parse(json) as T;
         } catch {
@@ -37,9 +35,9 @@ export class SessionInformationService {
         return this.get<UserSessionInformation>(this.userSessionKey);
     }
 
-    public delete(key?: string) {
+    public delete(key: string) {
         try {
-            this.cookieService.delete(key);
+            this.storage.remove(key);
         } catch {
         }
     }

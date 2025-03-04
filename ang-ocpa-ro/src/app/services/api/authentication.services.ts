@@ -114,7 +114,7 @@ export class AuthenticationService {
             token: rsp.token,
             anonymizedEmail: rsp.anonymizedEmail,
             tokenExpiration
-        } as UserSessionInformation, sessionInfoExpiration);
+        } as UserSessionInformation);
         
         if (rsp.sendOTP) {
             this.shouldSendOtp$.next(true);
