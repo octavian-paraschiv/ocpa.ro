@@ -88,7 +88,7 @@ namespace ocpa.ro.api.Helpers.Authentication
                     }
 
                     bool useOTP = _config.UseOTP || (user?.UseOTP ?? false);
-                    return (user, useOTP);
+                    return (SaveUser(user, out _), useOTP);
                 }
             }
             catch (Exception ex)
