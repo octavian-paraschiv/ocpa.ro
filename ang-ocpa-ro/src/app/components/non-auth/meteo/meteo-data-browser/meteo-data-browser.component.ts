@@ -428,10 +428,9 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
   }
 
   private refreshSelMeteoData() {
-
     setTimeout(() => {
       const height = this.calculateDataGridHeight();
-
+      
       let delta = 3;
 
       const chartInstance = this.chart?.chart;
@@ -461,6 +460,8 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
 
       this.selMeteoData = this.meteoData.filter(md => 
         md.date.localeCompare(start) >= 0 && md.date.localeCompare(end) <= 0);
+
+      setTimeout(() => this.adjustWidhts(), 50);
     }, 100);
   }
 
@@ -493,7 +494,14 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
     height -= 15;
 
     this.dataGridHeight = height;
+
     return height;
+  }
+
+  adjustWidhts() {
+    const w = document.getElementById('meteo-calendar')?.clientWidth;
+    document.getElementById('dSmartControls').style.width = `${w}px`;
+    document.getElementById('dHint').style.width = `${w}px`;
   }
 
   private getAbsoluteHeight(el: HTMLElement) {

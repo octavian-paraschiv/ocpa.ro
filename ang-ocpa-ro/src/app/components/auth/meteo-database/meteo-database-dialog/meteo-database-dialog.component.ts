@@ -39,7 +39,12 @@ export class MeteoDatabaseDialogComponent implements OnInit {
         const dialogRef = dialog?.open(MeteoDatabaseDialogComponent, 
             { 
                 data: dbi,
-                panelClass: 'full-screen-dialog'
+                width: '99vw',
+                minWidth: '99vw',
+                maxWidth: '99vw',
+                height: '99vh',
+                minHeight: '99vh',
+                maxHeight: '99vh',
             });
         return dialogRef.afterClosed();
     }

@@ -4,8 +4,8 @@ import { fas, faEarth } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
+import { Helper } from 'src/app/helpers/helper';
 import { Menu } from 'src/app/models/models-swagger';
-import { translateTitle } from 'src/app/modules/module.routes';
 
 @UntilDestroy()
 @Component({
@@ -25,7 +25,7 @@ export class NavMenuComponent extends BaseComponent implements OnInit {
               filter(e => e instanceof ActivationStart),
               map(e => e as ActivationStart)
             )
-            .subscribe(activation => this.title = translateTitle(activation.snapshot, this.translate));
+            .subscribe(activation => this.title = Helper.translateTitle(activation.snapshot, this.translate));
 
         this.authService.userLoginState$.pipe(
           untilDestroyed(this),

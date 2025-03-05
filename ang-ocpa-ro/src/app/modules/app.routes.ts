@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, ResolveFn, Route, Router } from '@angular/router';
+import { CanActivateFn, ResolveFn, Route, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AppsMenusComponent } from 'src/app/components/auth/apps-menus/apps-menus.component';
 import { LoginComponent } from 'src/app/components/auth/login/login.component';
@@ -11,21 +11,11 @@ import { MeteoComponent } from 'src/app/components/non-auth/meteo/meteo.componen
 import { ProTONEComponent } from 'src/app/components/non-auth/protone/protone.component';
 import { UnavailablePageComponent, UnavailablePageKind } from 'src/app/components/non-auth/unavailable-page/unavailable-page.component';
 import { WikiContainerComponent } from 'src/app/components/shared/wiki-container/wiki-container.component';
+import { Helper } from 'src/app/helpers/helper';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { MenuService, UrlKind } from 'src/app/services/api/menu.service';
 
-export function translateTitle(route: ActivatedRouteSnapshot, translate: TranslateService): string {
-  let rawTitle = 'unavailable';
-  
-  const url = route.url;
-  const path = route.routeConfig?.path;
-  if (url?.length > 0 && path !== '**')
-    rawTitle = url.map(s => s.path).join('.');
-
-  return translate.instant(`title.${rawTitle}`);
-};
-
-const titleResolver: ResolveFn<string> = (route, _) => translateTitle(route, inject(TranslateService));
+const titleResolver: ResolveFn<string> = (route, _) => Helper.translateTitle(route, inject(TranslateService));
 
 const otpGuard: CanActivateFn = (_, __) => {
   const authService = inject(AuthenticationService);
@@ -44,7 +34,7 @@ const authGuard: CanActivateFn = (_, state) => {
     const url = (state?.url ?? '/').toLowerCase();
   
     if (url !== '/' && !url.startsWith('/wiki-container')) {
-      const matchingRoutes = routes.filter(r => `/${r.path.toLowerCase()}` === url);
+      const matchingRoutes = appRoutes.filter(r => `/${r.path.toLowerCase()}` === url);
       if (!(matchingRoutes?.length > 0)) {
         router.navigate(['/unavailable'], 
           { queryParams: { kind: UnavailablePageKind.Unauthorized, url }});
@@ -71,7 +61,7 @@ const authGuard: CanActivateFn = (_, state) => {
     return true;
   };
 
-export const routes = [
+export const appRoutes = [
     { path: 'meteo', component: MeteoComponent, title: titleResolver } as Route,
     { path: 'protone', component: ProTONEComponent, title: titleResolver } as Route,    
     { path: 'login', component: LoginComponent, title: titleResolver } as Route,    

@@ -8,6 +8,15 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
   <body class="mat-typography">
-    <app-root single-menu-app="true">Loading...</app-root>
+    <app-root id="appRoot" single-menu-app="true"></app-root>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var userLang = navigator.language || navigator.userLanguage;
+        var contentDiv = document.getElementById('appRoot');
+        contentDiv.innerHTML = userLang.startsWith('ro') ? 
+          '<b>&nbsp;Încărcare...</b>' : 
+          '<b>&nbsp;Loading...</b>';
+      });
+    </script>
   </body>
 </html>

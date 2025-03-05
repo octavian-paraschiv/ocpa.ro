@@ -32,6 +32,7 @@ app-root {
     max-width: 99.5vw;
     height: $site-height;
     max-height: $site-height;
+    overflow: hidden;
 }
 
 #app-nav-menu {
@@ -46,6 +47,7 @@ app-root {
     max-height: 80wh;
     padding-left: 10px;
     padding-right: 10px;
+    overflow: auto;
 }
 
 .container {
@@ -78,13 +80,6 @@ input::-ms-clear {
     background-color: $forecolor !important;
     color: $backcolor !important;
     height: 3rem !important;
-}
-
-.full-screen-dialog {
-    min-width: 98vw;
-    min-height: 98vh;
-    max-width: 99vw;
-    max-height: 99vh;
 }
 
 .session-expired-message .mat-dialog-container {
