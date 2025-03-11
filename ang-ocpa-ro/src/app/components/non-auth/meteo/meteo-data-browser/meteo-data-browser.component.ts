@@ -342,7 +342,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
         labels: this.meteoData.map(md => md.date),
         datasets: [
           {
-            data: this.meteoData.map(md => md.tMaxActual ?? 0),
+            data: this.meteoData.map(md => (md.tMaxActual ?? 0)),
             label: this.translate.instant('meteo.t-max'),
             tension: 0.5,
             borderColor: 'red',
@@ -351,7 +351,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
             pointHitRadius: 5,
           },
           {
-            data: this.meteoData.map(md => md.tMinActual ?? 0),
+            data: this.meteoData.map(md => (md.tMinActual ?? 0)),
             label: this.translate.instant('meteo.t-min'),
             tension: 0.5,
             borderColor: 'blue',
@@ -380,7 +380,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
       if (this.meteoData.filter(md => md.snow > 0)?.length > 0) {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
-            data: this.meteoData.map(md => md.snow ?? 0),
+            data: this.meteoData.map(md => (md.snow ?? 0)),
             label: this.translate.instant('meteo.snow-new'),
             tension: 0.5,
             borderColor: 'lightblue',
@@ -396,7 +396,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
       if (this.meteoData.filter(md => md.snowCover > 0)?.length > 0) {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
-            data: this.meteoData.map(md => md.snowCover ?? 0),
+            data: this.meteoData.map(md => (md.snowCover ?? 0)),
             label: this.translate.instant('meteo.snow-total'),
             tension: 0.5,
             borderColor: 'cadetblue',
@@ -412,7 +412,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
       if (this.meteoData.filter(md => md.rain > 0)?.length > 0) {
         this.lineChartData.datasets = [ ...this.lineChartData.datasets,
           {
-            data: this.meteoData.map(md => md.rain ?? 0),
+            data: this.meteoData.map(md => (md.rain ?? 0)),
             label: this.translate.instant('meteo.rain'),
             tension: 0.5,
             borderColor: 'lightgray',
@@ -608,7 +608,8 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
   }
 
   inst(md: MeteoDailyData): number {
-    let val = Math.max(0, 6 - md?.instability ?? 0);
+    let val = Math.max(0, 6 - (md?.instability ?? 0));
+    console.debug(`Instability: ${md.date}: ${md?.instability} => ${val}`);
     return val;
   }
 
