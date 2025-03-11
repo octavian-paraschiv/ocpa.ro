@@ -1,6 +1,6 @@
 ﻿# Exec params:
 # Command: powershell.exe
-# with arguments: -ExecutionPolicy Bypass -File D:\vhosts\ocpa.ro\Scripts\deploy.ps1 > D:\vhosts\ocpa.ro\logs\cmd.out
+# with arguments: -ExecutionPolicy Bypass -File D:\vhosts\ocpa.ro\Scripts\deploy.ocpa.ro.ps1 > D:\vhosts\ocpa.ro\logs\deploy.log 2>&1
 
 # Define variables
 $hostPath = "D:\vhosts\ocpa.ro"
