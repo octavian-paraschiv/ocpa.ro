@@ -1,4 +1,7 @@
-﻿@import './variables.scss';
+﻿@use '@angular/material' as mat;
+@use 'custom-theme.scss';
+
+@import './variables.scss';
 @import './navbar.scss';
 @import './homepage.scss';
 @import './smart-city-search.scss';
@@ -14,11 +17,6 @@ body, :root {
     color: $forecolor;
     background-color: $backcolor;
     font-family: $font-family;
-}
-
-.mat-typography {
-    margin: 0;
-    padding: 0;
 }
 
 app-root {
