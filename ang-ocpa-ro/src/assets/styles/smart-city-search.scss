@@ -79,14 +79,16 @@
 
 /* MOBILE
 ----------------------------------------------------------*/
-@media screen and (max-width: 1080px) and (orientation: portrait) {
-    #smart-city-select {
-        > .ng-select-container {
-            width: calc(98.5vw - 20px);
-        }
+:root { 
+    @include attribute-check('appRoot', 'mobile', 'true') {
+        #smart-city-select {
+            > .ng-select-container {
+                width: calc(98.5vw - 20px);
+            }
 
-        .ng-select-container .ng-value-container {
-            padding: 0;
+            .ng-select-container .ng-value-container {
+                padding: 0;
+            }
         }
     }
 }

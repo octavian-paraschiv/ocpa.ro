@@ -2,6 +2,7 @@
 @use 'custom-theme.scss';
 
 @import './variables.scss';
+@import './mixins.scss';
 @import './navbar.scss';
 @import './homepage.scss';
 @import './smart-city-search.scss';
@@ -152,9 +153,11 @@ input::-ms-clear {
 
 /* MOBILE
 ----------------------------------------------------------*/
-@media screen and (max-width: 1080px) and (orientation: portrait) {
-    #router-outlet {
-        height: 90vh;
-        max-height: 90vh;
+:root { 
+    @include attribute-check('appRoot', 'mobile', 'true') {
+        #router-outlet {
+            height: 90vh;
+            max-height: 90vh;
+        }
     }
 }

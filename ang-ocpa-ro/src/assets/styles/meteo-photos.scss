@@ -16,8 +16,10 @@
 }
 // ----------------------------------------------------------------
 // mobile devices
-@media screen and (max-width: 1080px) and (orientation: portrait) {
-    .meteo-single-image {
-        width: 80vw;
+:root { 
+    @include attribute-check('appRoot', 'mobile', 'true') {
+        .meteo-single-image {
+            width: 80vw;
+        }
     }
 }

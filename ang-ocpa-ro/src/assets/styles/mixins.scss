@@ -1,0 +1,5 @@
+@mixin attribute-check($id, $attribute, $value) {
+    ##{$id}[#{$attribute}="#{$value}"] {
+      @content;
+    }
+  }

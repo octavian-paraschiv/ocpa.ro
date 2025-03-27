@@ -340,40 +340,40 @@ app-day-risks {
 
 /* MOBILE
 ----------------------------------------------------------*/
-@media screen and (max-width: 1080px) and (orientation: portrait) {
-   
+:root { 
+    @include attribute-check('appRoot', 'mobile', 'true') {
+        .meteo-data-other {
+            display: none !important;
+        }
 
-    .meteo-data-other {
-        display: none !important;
-    }
+        .mat-column-precip {
+            display: none;
+        }
+        
+        .mat-column-risks {
+            min-width: 0 !important;
+            max-width: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        app-day-risks {
+            display: none;
+        }
 
-    .mat-column-precip {
-        display: none;
-    }
-    
-    .mat-column-risks {
-        min-width: 0 !important;
-        max-width: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    app-day-risks {
-        display: none;
-    }
-
-    .mat-column-symbol {
-        min-width: 2.9rem;
-        max-width: 2.9rem;
-    }
-    
-    .mat-column-summary,
-    .mat-column-temp {
-        min-width: 6.5rem;
-        font-size: 0.8rem;
-    }
-    
-    .mat-column-precip {
-        min-width: 10rem;
-        max-width: 10rem;
+        .mat-column-symbol {
+            min-width: 2.9rem;
+            max-width: 2.9rem;
+        }
+        
+        .mat-column-summary,
+        .mat-column-temp {
+            min-width: 6.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .mat-column-precip {
+            min-width: 10rem;
+            max-width: 10rem;
+        }
     }
 }
