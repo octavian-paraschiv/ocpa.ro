@@ -136,7 +136,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
   get dataHint(): string {
     const key = this.isFetching ? 'meteo.data-hint-fetching' :
       (this.meteoData?.length > 0) ? 'meteo.data-hint' : 
-        'data-hint-fetching-alt';
+        'meteo.data-hint-fetching-alt';
 
     return this.translate.instant(key, { 
       name: this.selectedCity?.name ?? location, 
@@ -499,10 +499,14 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
   }
 
   adjustWidhts() {
-    const w = document.getElementById('meteo-calendar')?.clientWidth;
+    let w = document.getElementById('meteo-calendar')?.clientWidth;
+    if (Helper.displayMode() !== 'm4') {
+      w = window.innerWidth - 90;
+      document.getElementById('meteo-calendar').style.width = `${w}px`;
+    }
     document.getElementById('dSmartControls').style.width = `${w}px`;
     document.getElementById('dHint').style.width = `${w}px`;
-  }
+}
 
   private getAbsoluteHeight(el: HTMLElement) {
     if (el) {
@@ -548,6 +552,11 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
   }
 
 
+  baseCellClass(md: MeteoDailyData): string {
+    const isWeekend = new Date(md?.date).getDay() % 6 === 0;
+    return isWeekend ? 'date-cell-weekend-base' : 'date-cell-base';
+  }
+  
   dateCellClass(md: MeteoDailyData): string {
     const isWeekend = new Date(md?.date).getDay() % 6 === 0;
     return isWeekend ? 'date-cell-weekend' : 'date-cell';

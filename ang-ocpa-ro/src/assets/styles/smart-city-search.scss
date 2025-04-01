@@ -9,7 +9,7 @@
 
 #smart-city-select {
     > .ng-select-container {
-       height: 5vh;
+       height: 4vh;
        border: 2px solid #6d7e94;
     }
     > div > div > div.ng-input > input[type=text] {
@@ -35,15 +35,15 @@
 }
 .smart-city-flag {
     grid-area: f;
-    min-height: 5vh;
-    max-height: 5vh;
+    min-height: 4vh;
+    max-height: 4vh;
     margin: 0;
     margin-left: 0.2em;
     text-align: justify;
 }
 
 .smart-city-flag-image {
-    height: 5vh;
+    height: 4vh;
     margin: 0;
 }
 
@@ -79,16 +79,14 @@
 
 /* MOBILE
 ----------------------------------------------------------*/
-:root { 
-    @include attribute-check('appRoot', 'mobile', 'true') {
-        #smart-city-select {
-            > .ng-select-container {
-                width: calc(98.5vw - 20px);
-            }
+:root[mobile="true"] {
+    #smart-city-select {
+        > .ng-select-container {
+            width: calc(98.5vw - 20px);
+        }
 
-            .ng-select-container .ng-value-container {
-                padding: 0;
-            }
+        .ng-select-container .ng-value-container {
+            padding: 0;
         }
     }
 }

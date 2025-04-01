@@ -18,10 +18,22 @@ app-meteo {
     padding: 0;
     margin: 0;
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: 
+    "mdb";
+}
+
+.meteo-data-browser {
+    display: grid;
+    padding: 0;
+    margin: 0;
+    grid-area: mdb;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto 1fr;
     grid-template-areas: 
     "h"
     "c"
+    "dh"
     "odg";
 }
 
@@ -38,7 +50,6 @@ app-meteo {
 
 .meteo-data-hint {
     @extend .meteo-hint;
-    margin-left: 1vw;
     margin-top: 0;
     margin-bottom: 5px;
     grid-area: dh;
@@ -50,15 +61,10 @@ app-meteo {
     margin: 0;
 }
 
-
-
-.meteo-data-browser {
-    grid-area: odg;
-}
-
 .outer-meteo-data-grid {
     display: grid;
     white-space: nowrap;
+    grid-area: odg;
     grid-template-columns: repeat(7, auto) 1fr;
     grid-template-rows: auto 1fr;
     grid-template-areas: 
@@ -177,11 +183,14 @@ app-meteo {
     min-width: 3rem;
     padding: 2px !important;
 }
+.date-cell-base {
+    background-color: gray !important;
+}
 .date-cell {
+    @extend .date-cell-base;
     display: grid;
     font-size: 0.8rem;
     text-align: center;
-    background-color: gray;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto 1fr;
     grid-template-areas: 
@@ -206,9 +215,11 @@ app-meteo {
     color: white;
 }
 
+.date-cell-weekend-base {
+    background-color: $meteo-weekend-header-color !important;
+}
 .date-cell-weekend {
-    @extend .date-cell;
-    background-color: $meteo-weekend-header-color;
+    @extend .date-cell, .date-cell-weekend-base;    
 }
 // -------------------- 
 
@@ -259,19 +270,27 @@ app-meteo {
 // --- other cells ---
 .mat-column-symbol,
 .mat-column-summary,
-.mat-column-temp,
-.mat-column-precip {
+.mat-column-temp {
     @extend .mat-meteo-column;
 }
+
+.mat-column-precip {
+    @extend .mat-meteo-column;
+    display: none !important;
+}
+
 .mat-column-risks {
     @extend .mat-meteo-column;
-    padding-right: 15px !important
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 // --------------------
 .meteo-data-other {
     grid-area: ot;
-    display: grid;
+    display: none !important;
     overflow-y: hidden;
     grid-template-columns: 1fr auto 1fr;
     grid-template-rows: 1fr auto 1fr;
@@ -290,7 +309,7 @@ app-meteo {
 // ----------------------------------------------------------------
 app-day-risks {
     grid-area: risk;
-    display: block;
+    display: none !important;
     text-align: justify;
     margin-bottom: 0;
 }
@@ -338,42 +357,65 @@ app-day-risks {
     vertical-align: middle;
 }
 
-/* MOBILE
+/* dynamic styles
 ----------------------------------------------------------*/
-:root { 
-    @include attribute-check('appRoot', 'mobile', 'true') {
-        .meteo-data-other {
-            display: none !important;
-        }
-
-        .mat-column-precip {
-            display: none;
-        }
-        
-        .mat-column-risks {
-            min-width: 0 !important;
-            max-width: 0 !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-        app-day-risks {
-            display: none;
-        }
-
-        .mat-column-symbol {
-            min-width: 2.9rem;
-            max-width: 2.9rem;
-        }
-        
-        .mat-column-summary,
-        .mat-column-temp {
-            min-width: 6.5rem;
-            font-size: 0.8rem;
-        }
-        
-        .mat-column-precip {
-            min-width: 10rem;
-            max-width: 10rem;
-        }
+:root[display-mode="m4"] {
+    .mat-column-precip { display: table-cell !important; }
+    app-day-risks { display: block !important; }
+    .mat-column-risks {
+        min-width: unset !important;
+        max-width: unset !important;
+        padding: unset !important;
+        margin: unset !important;
+        padding-right: 15px !important
+    } 
+    .meteo-data-other { display: grid !important; }
+    #meteo-calendar {
+        min-width: 590px !important;
+        max-width: 590px !important;
     }
 }
+
+:root[display-mode="m3"] {
+    .mat-column-precip { display: table-cell !important; }
+    app-day-risks { display: block !important; }
+    .mat-column-risks {
+        min-width: unset !important;
+        max-width: unset !important;
+        padding: unset !important;
+        margin: unset !important;
+        padding-right: 15px !important
+    }
+    #meteo-calendar {
+        min-width: 90vw !important;
+        max-width: 90wv !important;
+    }        
+}
+
+:root[display-mode="m2"] {
+    .mat-column-precip { display: table-cell !important; }
+    #meteo-calendar {
+        min-width: 90vw !important;
+        max-width: 90wv !important;
+    }        
+}
+
+:root[display-mode="m1"] {
+    #meteo-calendar {
+        min-width: 90vw !important;
+        max-width: 90wv !important;
+    }        
+}
+
+:root[mobile="true"] {
+    .mat-column-symbol {
+        min-width: 2.9rem;
+        max-width: 2.9rem;
+    }    
+    .mat-column-summary,
+    .mat-column-temp {
+        min-width: 6.5rem;
+        font-size: 0.8rem;
+    }
+}
+

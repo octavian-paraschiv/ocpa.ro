@@ -30,9 +30,15 @@ export class Helper {
         return result;
     }
 
+    public static displayMode(): string {
+       return (window.innerWidth < 500) ? "m1" : 
+        (window.innerWidth < 640) ? "m2" : 
+        (window.innerWidth < 1080) ? "m3" : 
+        "m4";
+    }
+
     public static isMobile(): boolean {
-        return ((window?.innerWidth ?? 0) < 1080) ||
-            (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i)
+        return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i)
                 .test(navigator?.userAgent);
     }
 }

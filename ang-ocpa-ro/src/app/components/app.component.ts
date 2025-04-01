@@ -37,11 +37,14 @@ export class AppComponent extends BaseComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onWindowResized(_event: any) {
-    this.renderer.setAttribute(this.el.nativeElement, 'mobile', Helper.isMobile() ? 'true' : 'false');
+    const root = document.documentElement;
+    root.setAttribute('mobile', Helper.isMobile() ? 'true' : 'false');
+    root.setAttribute('display-mode', Helper.displayMode());
   }
 
   private setSingleMenuApp(singleMenuApp: boolean) {
-    this.renderer.setAttribute(this.el.nativeElement, 'single-menu-app', singleMenuApp ? 'true' : 'false');
+    const root = document.documentElement;
+    root.setAttribute('single-menu-app', singleMenuApp ? 'true' : 'false');
   }
 
   private startRefreshAuthTimer() {

@@ -61,18 +61,16 @@ app-home {
 
 /* MOBILE
 ----------------------------------------------------------*/
-:root { 
-    @include attribute-check('appRoot', 'mobile', 'true') {
-        app-home {
-            display: grid;
-            grid-template-columns: repeat(4, auto) 1fr;
-            grid-template-rows: repeat(3, auto) 1fr;
-            grid-template-areas: 
-            "t t t t t"
-            "c1 c1 c5 c5 ."
-            "c2 c2 c3 c3 ."
-            ". c4 c4 . ."
-            ". . . . .";
-        }
+:root[mobile="true"] {
+    app-home {
+        display: grid;
+        grid-template-columns: repeat(4, auto) 1fr;
+        grid-template-rows: repeat(3, auto) 1fr;
+        grid-template-areas: 
+        "t t t t t"
+        "c1 c1 c5 c5 ."
+        "c2 c2 c3 c3 ."
+        ". c4 c4 . ."
+        ". . . . .";
     }
 }

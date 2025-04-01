@@ -16,10 +16,8 @@
 }
 // ----------------------------------------------------------------
 // mobile devices
-:root { 
-    @include attribute-check('appRoot', 'mobile', 'true') {
-        .meteo-single-image {
-            width: 80vw;
-        }
+:root[mobile="true"] {
+    .meteo-single-image {
+        width: 80vw;
     }
 }

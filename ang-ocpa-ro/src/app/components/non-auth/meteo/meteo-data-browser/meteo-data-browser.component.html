@@ -58,7 +58,7 @@
                     <table id="meteo-calendar" mat-table [dataSource]="selMeteoData">
                         <!-- Date Column -->
                         <ng-container matColumnDef="date">
-                            <td mat-cell *matCellDef="let md" class="{{leftCellClass(md)}}">
+                            <td mat-cell *matCellDef="let md" class="{{leftCellClass(md)}} {{baseCellClass(md)}}">
                                 <div class="{{dateCellClass(md)}}">
                                     <label class="dow-row">{{md.date | date: 'EEE'}}</label>
                                     <label class="dom-row">{{md.date | date: 'MMM-dd'}}</label>

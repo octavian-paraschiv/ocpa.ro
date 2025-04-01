@@ -160,7 +160,7 @@
         "snow-cover": "Strat:",
         "default-hint": "Pentru a căuta o localitate, dați clic în lista de mai jos, apoi tastați numele localității.",
         "alt-hint": "Conținutul {{name}} / Lungime date: {{length}}.<br>(Apăsați Escape pt. a închide fereastra)",
-        "data-hint": "<b>{{name}}</b> între <b>{{startDate}} și {{endDate}}</b><br />Folosiți butoanele +/- pentru a ajunge la data dorită.",
+        "data-hint": "Prognoza pentru: <b>{{name}}</b> între <b>{{startDate}} și {{endDate}}</b>. Folosiți butoanele +/- pentru a ajunge la data dorită.",
         "data-hint-fetching": "Încărcare date pentru: <b>{{name}}</b>...",
         "data-hint-fetching-alt": "Încărcare date...",
         "empty-db": "Baza de date este goală."

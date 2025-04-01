@@ -102,14 +102,12 @@
 
 /* MOBILE
 ----------------------------------------------------------*/
-:root { 
-    @include attribute-check('appRoot', 'mobile', 'true') {
-        .navbar-nav {
-            padding: 0;
-            margin: 0;
-            width: 100%;
-            display: table;
-            table-layout: fixed;
-        }
+:root[mobile="true"] {
+    .navbar-nav {
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        display: table;
+        table-layout: fixed;
     }
 }
