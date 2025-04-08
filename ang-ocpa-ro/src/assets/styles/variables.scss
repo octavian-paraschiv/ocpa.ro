@@ -1,13 +1,14 @@
 $font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Adjusted", "Segoe UI", "Liberation Sans", sans-serif;
 $site-height: 99vh;
 
-$forecolor: #053064;
+$nav-backcolor: #3f51b5;
+$nav-alt-backcolor: #0A60C8;
+
+$forecolor: darken($nav-backcolor, 30%);
 $backcolor: white;
 $shadow-color: #CCCCDD;
 
 $nav-forecolor: $backcolor;
-$nav-backcolor: #3f51b5;
-$nav-alt-backcolor: #0A60C8;
 
 $home-image-color: lighten($forecolor, 10%);
 
