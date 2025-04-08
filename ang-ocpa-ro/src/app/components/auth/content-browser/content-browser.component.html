@@ -1,0 +1,6 @@
+<div class="content-browser">
+    <app-content-tree #tree [filter]="filter" (nodeSelected)="onNodeSelected($event)"></app-content-tree>
+    <app-content-toolbar #toolbar></app-content-toolbar>
+    <app-content-editor #editor></app-content-editor>
+    <app-content-viewer #viewer></app-content-viewer>
+</div>
