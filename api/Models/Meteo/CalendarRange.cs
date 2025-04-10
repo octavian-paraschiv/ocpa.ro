@@ -23,11 +23,11 @@ namespace ocpa.ro.api.Models.Meteo
         }
         public override void Write(Utf8JsonWriter writer, DateTime date, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(date.ToString(MeteoConstants.DateFormat));
+            writer.WriteStringValue(date.ToString(Constants.DateFormat));
         }
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return DateTime.ParseExact(reader.GetString(), MeteoConstants.DateFormat, CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(reader.GetString(), Constants.DateFormat, CultureInfo.InvariantCulture);
         }
     }
 }

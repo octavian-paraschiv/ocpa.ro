@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ocpa.ro.api;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Content;
@@ -82,6 +83,8 @@ builder.Services.AddHttpClients();
 builder.Services.AddSingleton<IAuthHelper, AuthHelper>();
 builder.Services.AddSingleton<IGeographyHelper, GeographyHelper>();
 builder.Services.AddSingleton<IMeteoDataHelper, MeteoDataHelper>();
+builder.Services.AddSingleton<IMeteoScalesHelper, MeteoScalesHelper>();
+builder.Services.AddSingleton<IWeatherTypeHelper, WeatherTypeHelper>();
 builder.Services.AddSingleton<IMedicalDataHelper, MedicalDataHelper>();
 builder.Services.AddSingleton<IAuthorizationHandler, AuthorizePolicy>();
 builder.Services.AddSingleton<IContentHelper, ContentHelper>();
@@ -110,11 +113,11 @@ builder.Services.AddSwaggerGen(option =>
     option.EnableAnnotations();
     option.DocumentFilter<IgnoreWhenNotInDevFilter>();
 
-    option.SwaggerDoc("v1",
+    option.SwaggerDoc(Constants.ApiVersion,
         new OpenApiInfo
         {
-            Title = "Backend API for ocpa.ro",
-            Version = "v1"
+            Title = Constants.AppName,
+            Version = Constants.ApiVersion
         });
 });
 

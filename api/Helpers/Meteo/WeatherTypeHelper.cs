@@ -5,40 +5,70 @@ using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Helpers.Meteo
 {
-    public static class WeatherTypeHelper
+    public enum WindDirection
     {
-        static readonly string[] wdirs =
-        [
-                "W", "WSW", "SW", "SSW", "S", "SSE", "SE", "ESE", "E", "ENE", "NE", "NNE", "N", "NNW", "NW", "WNW"
-        ];
+        W = 0,
+        WSW,
+        SW,
+        SSW,
+        S,
+        SSE,
+        SE,
+        ESE,
+        E,
+        ENE,
+        NE,
+        NNE,
+        N,
+        NNW,
+        NW,
+        WNW
+    };
 
+    public interface IWeatherTypeHelper
+    {
+        string GetWeatherType(Data meteoData, int windSpeed, List<string> risks);
+        (int windSpeed, WindDirection direction) GetWind(Data meteoData);
+        string GetPrecipType(Data meteoData);
+        string GetTempFeel(Data meteoData);
+    }
 
-        public static string GetWeatherType(MeteoScaleHelpers scale, Data meteoData, int wind, List<string> risks)
+    public class WeatherTypeHelper : IWeatherTypeHelper
+    {
+        private readonly WindDirection[] _windDirections = Enum.GetValues<WindDirection>();
+        private IMeteoScalesHelper _scales;
+
+        public WeatherTypeHelper(IMeteoScalesHelper meteoScalesHelper)
+        {
+            _scales = meteoScalesHelper ?? throw new ArgumentNullException(nameof(meteoScalesHelper));
+        }
+
+        public string GetWeatherType(Data meteoData, int windSpeed, List<string> risks)
         {
             float precip = meteoData.C_00;
             float inst = -meteoData.L_00;
             float fog = meteoData.F_SI;
 
-            var inst_threshold = scale.Instability.Weak;
-            var inst_heavy = scale.Instability.Heavy;
+            var inst_threshold = _scales.Instability.Weak;
+            var inst_heavy = _scales.Instability.Heavy;
 
-            var precip_weak = scale.Precip.Weak;
-            var precip_moderate = scale.Precip.Moderate;
-            var precip_heavy = scale.Precip.Heavy;
-            var precip_extreme = scale.Precip.Extreme;
+            var precip_weak = _scales.Precip.Weak;
+            var precip_moderate = _scales.Precip.Moderate;
+            var precip_heavy = _scales.Precip.Heavy;
+            var precip_extreme = _scales.Precip.Extreme;
 
-            var fog_weak = scale.Fog.Weak;
-            var fog_moderate = scale.Fog.Moderate;
-            var fog_heavy = scale.Fog.Heavy;
-            var fog_extreme = scale.Fog.Extreme;
+            var fog_weak = _scales.Fog.Weak;
+            var fog_moderate = _scales.Fog.Moderate;
+            var fog_heavy = _scales.Fog.Heavy;
+            var fog_extreme = _scales.Fog.Extreme;
 
-            var wind_weak = scale.Wind.Weak;
-            var wind_moderate = scale.Wind.Moderate;
-            var wind_heavy = scale.Wind.Heavy;
-            var wind_extreme = scale.Wind.Extreme;
+            var wind_weak = _scales.Wind.Weak;
+            var wind_moderate = _scales.Wind.Moderate;
+            var wind_heavy = _scales.Wind.Heavy;
+            var wind_extreme = _scales.Wind.Extreme;
 
             string intensity = "00";
-            string type = GetPrecipType(scale, meteoData);
+            string type = GetPrecipType(meteoData);
             if (type == "rain" && inst >= inst_threshold)
                 type = "inst";
 
@@ -68,9 +98,9 @@ namespace ocpa.ro.api.Helpers.Meteo
             else if (fog <= fog_heavy)
                 risks.Add("thick_fog");
 
-            if (wind >= wind_extreme)
+            if (windSpeed >= wind_extreme)
                 risks.Add("heavy_wind");
-            else if (wind >= wind_heavy)
+            else if (windSpeed >= wind_heavy)
                 risks.Add("strong_wind");
 
             if (intensity != "00")
@@ -93,19 +123,19 @@ namespace ocpa.ro.api.Helpers.Meteo
             else if (fog <= fog_weak)
                 return "01_fog";
 
-            if (wind >= wind_extreme)
+            if (windSpeed >= wind_extreme)
                 return "04_wind";
-            else if (wind >= wind_heavy)
+            else if (windSpeed >= wind_heavy)
                 return "03_wind";
-            else if (wind >= wind_moderate)
+            else if (windSpeed >= wind_moderate)
                 return "02_wind";
-            else if (wind >= wind_weak)
+            else if (windSpeed >= wind_weak)
                 return "01_wind";
 
             return "00";
         }
 
-        public static int GetWind(Data meteoData, out string direction)
+        public (int windSpeed, WindDirection direction) GetWind(Data meteoData)
         {
             var w00 = meteoData.W_00;
             var w01 = meteoData.W_01;
@@ -113,13 +143,15 @@ namespace ocpa.ro.api.Helpers.Meteo
             var w11 = meteoData.W_11;
 
             var slice = Math.Floor(4 * (w10 + w11) / Math.PI);
-            var idx = (int)Math.Min(wdirs.Length - 1, Math.Max(0, slice));
-            direction = wdirs[idx];
+            var idx = (int)Math.Min(_windDirections.Length - 1, Math.Max(0, slice));
 
-            return (int)Math.Round(7.6f * (w00 + w01));
+            int windSpeed = (int)Math.Round(7.6f * (w00 + w01));
+            WindDirection windDirection = _windDirections[idx];
+
+            return (windSpeed, windDirection);
         }
 
-        public static string GetPrecipType(MeteoScaleHelpers scale, Data meteoData)
+        public string GetPrecipType(Data meteoData)
         {
             var te = meteoData.T_TE;
             var ts = meteoData.T_TS;
@@ -130,7 +162,7 @@ namespace ocpa.ro.api.Helpers.Meteo
                 te, ts, t01,
 
                 // Boundary temperatures as read from config file
-                scale.Boundaries,
+                _scales.Boundaries,
 
                 // Computed precip type: snow
                 () => "snow",
@@ -146,18 +178,18 @@ namespace ocpa.ro.api.Helpers.Meteo
             );
         }
 
-        public static string GetTempFeel(MeteoScaleHelpers scale, Data meteoData)
+        public string GetTempFeel(Data meteoData)
         {
             float num = meteoData.T_SH;
             float num2 = meteoData.T_SL;
             float num3 = meteoData.T_NH;
 
-            float colder = scale.Temperature.Colder;
-            float cold = scale.Temperature.Cold;
-            float warm = scale.Temperature.Warm;
-            float warmer = scale.Temperature.Warmer;
-            float hot = scale.Temperature.Hot;
-            float frost = scale.Temperature.Frost;
+            float colder = _scales.Temperature.Colder;
+            float cold = _scales.Temperature.Cold;
+            float warm = _scales.Temperature.Warm;
+            float warmer = _scales.Temperature.Warmer;
+            float hot = _scales.Temperature.Hot;
+            float frost = _scales.Temperature.Frost;
 
             if (num >= hot)
                 return "hot";

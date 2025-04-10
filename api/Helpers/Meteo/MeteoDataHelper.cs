@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using ocpa.ro.api.Extensions;
-using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Models.Meteo;
 using Serilog;
@@ -22,7 +21,6 @@ namespace ocpa.ro.api.Helpers.Meteo
         Task PromotePreviewDatabase(int dbi);
         Task<MeteoData> GetMeteoData(int dbi, GridCoordinates gc, string region, int skip, int take);
         Task<IEnumerable<MeteoDbInfo>> GetDatabases();
-        MeteoScaleHelpers Scale { get; }
         string LatestStudioFile { get; }
     }
 
@@ -34,20 +32,23 @@ namespace ocpa.ro.api.Helpers.Meteo
 
         #region Private members
 
-        private readonly MeteoScaleHelpers _scale;
         private readonly string _dataFolder;
         private readonly string[] _dbPaths = new string[DbCount];
         private readonly SemaphoreSlim _lock = new(1, 1);
+
         private readonly IGeographyHelper _geographyHelper;
+        private readonly IWeatherTypeHelper _weatherTypeHelper;
 
         #endregion
 
         #region Constructor (DI)
 
-        public MeteoDataHelper(IWebHostEnvironment hostingEnvironment, ILogger logger, IGeographyHelper geographyHelper)
+        public MeteoDataHelper(IWebHostEnvironment hostingEnvironment, ILogger logger,
+            IGeographyHelper geographyHelper, IWeatherTypeHelper weatherTypeHelper)
             : base(hostingEnvironment, logger)
         {
             _geographyHelper = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
+            _weatherTypeHelper = weatherTypeHelper ?? throw new ArgumentNullException(nameof(weatherTypeHelper));
 
             _dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Meteo");
 
@@ -61,16 +62,12 @@ namespace ocpa.ro.api.Helpers.Meteo
                 _ = db.GetData(take: 1);
             }
 
-            var iniPath = Path.Combine(_dataFolder, "ScaleSettings.ini");
-            var iniFile = new IniFileHelper(hostingEnvironment, logger, iniPath);
-            _scale = new MeteoScaleHelpers(iniFile);
+            _weatherTypeHelper = weatherTypeHelper;
         }
 
         #endregion
 
         #region IMeteoDataHelper implementation
-
-        public MeteoScaleHelpers Scale => _scale;
 
         public string LatestStudioFile
         {
@@ -222,8 +219,8 @@ namespace ocpa.ro.api.Helpers.Meteo
                     foreach (var d in allData)
                     {
                         List<string> risks = [];
-                        var wind = WeatherTypeHelper.GetWind(d, out string windDirection);
-                        var forecast = WeatherTypeHelper.GetWeatherType(Scale, d, wind, risks);
+                        var (windSpeed, windDirection) = _weatherTypeHelper.GetWind(d);
+                        var forecast = _weatherTypeHelper.GetWeatherType(d, windSpeed, risks);
 
                         MeteoDailyData value = new()
                         {
@@ -241,8 +238,8 @@ namespace ocpa.ro.api.Helpers.Meteo
                             P00 = d.P_00.Round(),
                             P01 = d.P_01.Round(),
 
-                            TempFeel = WeatherTypeHelper.GetTempFeel(Scale, d),
-                            Wind = wind,
+                            TempFeel = _weatherTypeHelper.GetTempFeel(d),
+                            Wind = windSpeed,
                             WindDirection = windDirection,
 
                             Hazards = risks,

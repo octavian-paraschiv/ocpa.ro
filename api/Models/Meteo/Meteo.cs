@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using ocpa.ro.api.Helpers.Meteo;
+using System.Collections.Generic;
 using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Models.Meteo
 {
-    public static class MeteoConstants
-    {
-        public const string DateFormat = "yyyy-MM-dd";
-    }
-
     public class MeteoDailyData
     {
         public string Date { get; set; }
@@ -19,7 +15,10 @@ namespace ocpa.ro.api.Models.Meteo
         public string TempFeel { get; set; }
 
         public List<string> Hazards { get; set; } = [];
+
         public int Wind { get; set; }
+        public WindDirection WindDirection { get; set; }
+
         public int Precip { get; set; }
         public int SnowCover { get; set; }
         public int SoilRain { get; set; }
@@ -28,8 +27,6 @@ namespace ocpa.ro.api.Models.Meteo
 
         public int Rain { get; set; }
         public int Snow { get; set; }
-
-        public string WindDirection { get; set; }
 
         public int P00 { get; set; }
         public int P01 { get; set; }
