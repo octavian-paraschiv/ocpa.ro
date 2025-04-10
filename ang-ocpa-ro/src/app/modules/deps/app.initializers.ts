@@ -31,7 +31,7 @@ function provideHttpInterceptor<T extends HttpInterceptor>(service: new (...args
     } as Provider;
 }
 
-export const appInitializers = [
+export const initializers = [
     provideHttpInterceptor(RequestInterceptor),
     provideHttpInterceptor(ErrorInterceptor),    
 
