@@ -172,6 +172,7 @@ export interface MeteoDailyData {
     tempFeel?: string | undefined;
     hazards?: string[] | undefined;
     wind?: number;
+    windDirection?: WindDirection;
     precip?: number;
     snowCover?: number;
     soilRain?: number;
@@ -179,7 +180,6 @@ export interface MeteoDailyData {
     fog?: number;
     rain?: number;
     snow?: number;
-    windDirection?: string | undefined;
     p00?: number;
     p01?: number;
 }
@@ -326,6 +326,25 @@ export interface VMenu {
     url?: string | undefined;
     displayMode?: EMenuDisplayMode;
     menuIcon?: string | undefined;
+}
+
+export enum WindDirection {
+    W = "W",
+    WSW = "WSW",
+    SW = "SW",
+    SSW = "SSW",
+    S = "S",
+    SSE = "SSE",
+    SE = "SE",
+    ESE = "ESE",
+    E = "E",
+    ENE = "ENE",
+    NE = "NE",
+    NNE = "NNE",
+    N = "N",
+    NNW = "NNW",
+    NW = "NW",
+    WNW = "WNW",
 }
 
 export interface Body {

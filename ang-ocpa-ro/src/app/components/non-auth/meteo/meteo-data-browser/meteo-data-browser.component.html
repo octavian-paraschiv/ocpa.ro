@@ -104,7 +104,7 @@
                                     <div *ngIf="md?.wind > 0" class="detail-wind">
                                         <fa-icon [icon]="icons['faWind']"></fa-icon>
                                         <label class="meteo-mat-small detail">&nbsp;{{ md.wind | speed: unit}}, {{md.windDirection }}&nbsp;</label>
-                                        <i class="wi wi-wind wi-from-{{md.windDirection.toLowerCase()}}"></i>
+                                        <i class="wi wi-wind wi-from-{{ (md.windDirection ?? '').toLowerCase()}}"></i>
                                     </div>
                                     <div *ngIf="md?.p00 > 0" class="detail-pres">
                                         <fa-icon [icon]="icons['faGauge']"></fa-icon>
