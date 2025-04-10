@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Renderer2, NgZone, inject, HostListener } from '@angular/core';
+import { Component, OnInit, NgZone, inject, HostListener } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BehaviorSubject } from 'rxjs';
@@ -7,8 +7,7 @@ import { BaseComponent } from 'src/app/components/base/BaseComponent';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
 import { Helper } from 'src/app/helpers/helper';
 import { MessageBoxOptions } from 'src/app/models/models-local';
-import { AuthenticationService } from 'src/app/services/api/authentication.services';
-import { MenuService } from 'src/app/services/api/menu.service';
+import { UtilityService } from 'src/app/services/api/utility.service';
 
 @UntilDestroy()
 @Component({
@@ -20,12 +19,17 @@ export class AppComponent extends BaseComponent implements OnInit {
   private dialogRef: MatDialogRef<MessageBoxComponent> = undefined;
 
   private readonly ngZone = inject(NgZone);
-  private readonly el = inject(ElementRef);
-  private readonly renderer = inject(Renderer2);
+  private readonly utility = inject(UtilityService);
 
   private refreshTokenPending$ = new BehaviorSubject<boolean>(false);
 
+  version = 'n/a';
+
   ngOnInit() {
+    this.utility.getBackendVersion()
+      .pipe(untilDestroyed(this))
+      .subscribe(res => this.version = (res ?? '').replace(/"/g, ''));
+
     this.menuService.singleMenuApp$
       .pipe(untilDestroyed(this))
       .subscribe(res => this.setSingleMenuApp(res));

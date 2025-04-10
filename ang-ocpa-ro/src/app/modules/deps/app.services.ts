@@ -8,6 +8,7 @@ import { ProtoneApiService } from 'src/app/services/api/protone-api.service';
 import { RegisteredDeviceService } from 'src/app/services/api/registered-device.service';
 import { UserTypeService } from 'src/app/services/api/user-type.service';
 import { UserService } from 'src/app/services/api/user.service';
+import { UtilityService } from 'src/app/services/api/utility.service';
 import { WikiService } from 'src/app/services/api/wiki.service';
 import { FingerprintService } from 'src/app/services/fingerprint.service';
 import { Iso3166HelperService } from 'src/app/services/iso3166-helper.service';
@@ -33,4 +34,5 @@ export const services = [
      WikiService,
      AppMenuManagementService,
      MessagePopupService,
+     UtilityService
 ];

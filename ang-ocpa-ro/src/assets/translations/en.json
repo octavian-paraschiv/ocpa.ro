@@ -9,6 +9,7 @@
     "day-short": "d",
     "unauthorized-access": "You are not authorized to view this page: '{{url}}'",
     "not-found": "This page does not exist: '{{url}}'",
+    "app-version": "Application version: {{version}}",
 
     "ERR_BAD_CREDENTIALS": "Incorrect user name or password.<br>Remaining attempts: <b>{{retries}}<b>",
     "ERR_BAD_OTP": "Incorrect login code.<br>Please try again, or click 'Regenerate' to receive a new code on your email.",
@@ -160,7 +161,7 @@
         "snow-cover": "Cover:",
         "default-hint": "To search a city, click/tap in the drop list below, then type the city name.",
         "alt-hint": "Contents of {{name}} / Data length: {{length}}.<br>(Press Escape to close the window)",
-        "data-hint": "Forecast for: <b>{{name}}</b> between <b>{{startDate}} and {{endDate}}</b>. Use the +/- buttons to go the desired date.",
+        "data-hint": "Weather in <b>{{name}}</b> from <b>{{startDate}}</b> to <b>{{endDate}}</b>. Use the +/- buttons to go the desired date.",
         "data-hint-fetching": "Fetching data for: <b>{{name}}</b>...",
         "data-hint-fetching-alt": "Fetching data...",
         "empty-db": "The database is empty!"

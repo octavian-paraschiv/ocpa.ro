@@ -9,7 +9,6 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MathjaxModule } from 'mathjax-angular';
 import { NgChartsModule } from 'ng2-charts';
-import { LMarkdownEditorModule } from 'ngx-markdown-editor';
 import { routes } from 'src/app/modules/deps/app.routes';
 import { MaterialModule } from 'src/app/modules/material.module';
 
@@ -42,6 +41,5 @@ export const modules = [
     FontAwesomeModule,
     NgSelectModule,
     MaterialModule,
-    NgChartsModule,
-    LMarkdownEditorModule
+    NgChartsModule
 ];

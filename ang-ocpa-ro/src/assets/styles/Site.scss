@@ -14,6 +14,10 @@
 @import './apps-menus.scss';
 @import './content-browser.scss';
 
+html {
+    --mat-table-row-item-container-height: auto !important;
+}
+
 body, :root {
     color: $forecolor;
     background-color: $backcolor;
@@ -23,14 +27,16 @@ body, :root {
 app-root {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas: 
-    "anm"
-    "ro";
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "anm"
+        "ro"
+        "api";
     width: 99.5vw;
     max-width: 99.5vw;
-    height: $site-height;
-    max-height: $site-height;
+    height: 99.5vh;
+    max-height: 99.5vh;
+    padding: 0 !important;
     overflow: hidden;
 }
 
@@ -40,12 +46,18 @@ app-root {
     background-color: $nav-backcolor;
 }
 
+.app-version-info {
+    grid-area: api;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: right;
+}
+
 #router-outlet {
     grid-area: ro;
-    height: 80wh;
-    max-height: 80wh;
     padding-left: 10px;
     padding-right: 10px;
+    margin: 0 !important;
     overflow: auto;
 }
 

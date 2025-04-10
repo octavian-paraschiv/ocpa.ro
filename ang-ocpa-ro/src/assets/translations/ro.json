@@ -9,6 +9,7 @@
     "day-short": "z",
     "unauthorized-access": "Nu sunteți autorizat să accesați această pagină: '{{url}}'",
     "not-found": "Această pagină nu există: '{{url}}'",
+    "app-version": "Versiune aplicatie: {{version}}",
 
     "ERR_BAD_CREDENTIALS": "Nume de utilizator și/sau parolă incorectă.<br>Încercări rămase: <b>{{retries}}</b>",
     "ERR_BAD_OTP": "Cod de conectare incorect.<br>Încercați din nou, sau apăsați 'Regenerează' pentru a primi un nou cod pe email.",
@@ -160,7 +161,7 @@
         "snow-cover": "Strat:",
         "default-hint": "Pentru a căuta o localitate, dați clic în lista de mai jos, apoi tastați numele localității.",
         "alt-hint": "Conținutul {{name}} / Lungime date: {{length}}.<br>(Apăsați Escape pt. a închide fereastra)",
-        "data-hint": "Prognoza pentru: <b>{{name}}</b> între <b>{{startDate}} și {{endDate}}</b>. Folosiți butoanele +/- pentru a ajunge la data dorită.",
+        "data-hint": "Vremea în <b>{{name}}</b> între <b>{{startDate}} și {{endDate}}</b>. Folosiți butoanele +/- pentru a ajunge la data dorită.",
         "data-hint-fetching": "Încărcare date pentru: <b>{{name}}</b>...",
         "data-hint-fetching-alt": "Încărcare date...",
         "empty-db": "Baza de date este goală."

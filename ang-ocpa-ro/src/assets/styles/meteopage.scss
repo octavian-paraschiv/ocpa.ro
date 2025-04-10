@@ -39,13 +39,14 @@ app-meteo {
 
 .meteo-hint {
     grid-area: h;
+    margin-top: 0.5em;
 }
 
 .smart-meteo-controls {
     grid-area: c;
     margin-right: 10px;
-    margin-top: 10px;
-    margin-bottom: 5px;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 .meteo-data-hint {
@@ -227,8 +228,11 @@ app-meteo {
 #meteo-calendar {
     grid-area: mc;
     .mat-mdc-cell {
-        // border-bottom: 1px solid transparent;
         border-top: 1px solid transparent;
+        height: auto !important;
+    }
+    .mat-mdc-row {
+        height: auto !important;
     }
     border: 1px solid lightgray;
     margin-bottom: 5px;

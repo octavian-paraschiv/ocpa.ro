@@ -487,7 +487,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
 
     height -= this.getAbsoluteHeight(document.getElementById('dHint'));
     height -= this.getAbsoluteHeight(document.getElementById('dControls'));
-    height -= this.getAbsoluteHeight(document.getElementById('dSmartControls'));
+    height -= 2 * this.getAbsoluteHeight(document.getElementById('dSmartControls'));
 
     height -= this.getAbsoluteHeight(document.getElementById('dDataHint'));
     height -= this.getAbsoluteHeight(document.getElementById('btnDate'));
