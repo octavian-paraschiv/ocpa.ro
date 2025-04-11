@@ -18,7 +18,6 @@ namespace ocpa.ro.api.Helpers.Generic
     public class MultipartRequestHelper : IMultipartRequestHelper
     {
         const int MultipartBoundaryLengthLimit = 8192;
-        public const long MaxFileSize = 256 * 1024L * 1024L;
 
         public async Task<byte[]> GetMultipartRequestData(HttpRequest request)
         {
@@ -49,7 +48,7 @@ namespace ocpa.ro.api.Helpers.Generic
                     if (memoryStream.Length == 0)
                         throw new ExtendedException($"The request couldn't be processed ({name} section has no data)");
 
-                    if (memoryStream.Length > MaxFileSize)
+                    if (memoryStream.Length > Constants.MaxMultipartRequestSize)
                         throw new ExtendedException($"The request couldn't be processed ({name} section has too many data)");
 
                     switch (name.ToLowerInvariant())

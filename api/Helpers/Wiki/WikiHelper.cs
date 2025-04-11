@@ -11,7 +11,7 @@ namespace ocpa.ro.api.Helpers.Wiki
 {
     public interface IWikiHelper
     {
-        Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
+        Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
             bool fullHtml);
     }
 
@@ -22,15 +22,15 @@ namespace ocpa.ro.api.Helpers.Wiki
         {
         }
 
-        public async Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
-            bool fullHtml)
+        public async Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
+            bool renderAsHtml)
         {
             byte[] data = null;
 
             try
             {
                 bool resourceExists = false;
-                var origPath = Path.Combine(_hostingEnvironment.ContentPath(), $"wiki/{wikiResourcePath}");
+                var origPath = Path.Combine(_hostingEnvironment.ContentPath(), wikiResourcePath);
                 var origExt = Path.GetExtension(origPath);
                 var localizedResourcePath = Path.ChangeExtension(origPath, $".{language}{origExt}");
 
@@ -43,7 +43,7 @@ namespace ocpa.ro.api.Helpers.Wiki
                 else
                 {
                     // Localized Wiki resource does not exist, check whether the default one exists
-                    wikiResourcePath = Path.Combine(_hostingEnvironment.ContentPath(), $"wiki/{wikiResourcePath}");
+                    wikiResourcePath = Path.Combine(_hostingEnvironment.ContentPath(), wikiResourcePath);
                     resourceExists = File.Exists(wikiResourcePath);
                 }
 
@@ -55,20 +55,27 @@ namespace ocpa.ro.api.Helpers.Wiki
                         var markdown = await File.ReadAllTextAsync(wikiResourcePath).ConfigureAwait(false);
                         if (markdown?.Length > 0)
                         {
-                            var pipeline = new MarkdownPipelineBuilder()
-                                .UseBootstrap()
-                                .UseEmojiAndSmiley()
-                                .UseSoftlineBreakAsHardlineBreak()
-                                .UseAdvancedExtensions()
-                                .Build();
+                            string body = markdown;
 
-                            var body = Markdown
-                                .ToHtml(markdown, pipeline)
-                                .Replace("%root%", $"{reqRoot.TrimEnd('/')}/wiki");
+                            if (renderAsHtml)
+                            {
+                                var pipeline = new MarkdownPipelineBuilder()
+                                   .UseBootstrap()
+                                   .UseEmojiAndSmiley()
+                                   .UseSoftlineBreakAsHardlineBreak()
+                                   .UseAdvancedExtensions()
+                                   .Build();
+
+                                body = Markdown.ToHtml(markdown, pipeline);
+                            }
+
+                            body = body
+                                .Replace("%root%", $"{reqRoot.TrimEnd('/')}/Content/render")
+                                .Replace("%wiki%", $"{reqRoot.TrimEnd('/')}/Content/render/wiki");
 
                             StringBuilder sb = new();
 
-                            if (fullHtml)
+                            if (renderAsHtml)
                             {
                                 sb.AppendLine("<html><head><meta charset=\"utf-8\"><meta http-equiv=\"cache-control\" content=\"no-cache\">");
                                 sb.AppendLine("<style>.markdown-body {{ font-family: Arial; font-size: 12px; line-height: 1.3; word-wrap: break-word; }}</style>");
@@ -78,10 +85,10 @@ namespace ocpa.ro.api.Helpers.Wiki
 
                             sb.AppendLine(body);
 
-                            if (fullHtml)
+                            if (renderAsHtml)
                                 sb.AppendLine("</div></body><html>");
 
-                            return (Encoding.UTF8.GetBytes(sb.ToString()), true);
+                            return Encoding.UTF8.GetBytes(sb.ToString());
                         }
                     }
                     else
@@ -97,7 +104,7 @@ namespace ocpa.ro.api.Helpers.Wiki
                 data = null;
             }
 
-            return (data, false);
+            return data;
         }
     }
 }

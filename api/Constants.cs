@@ -7,4 +7,7 @@ public static class Constants
     public const string CompanyName = "OPMedia Research";
     public const string CopyrightNotice = "Copyright © " + CompanyName;
     public const string DateFormat = "yyyy-MM-dd";
+
+    public const int MaxPlainRequestSize = 1024 * 1024;
+    public const long MaxMultipartRequestSize = 256L * MaxPlainRequestSize;
 }

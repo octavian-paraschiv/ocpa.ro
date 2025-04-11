@@ -104,7 +104,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
         [DisableFormValueModelBinding]
-        [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
+        [RequestSizeLimit(Constants.MaxMultipartRequestSize)]
         [Consumes("multipart/form-data")]
         [SwaggerOperation(OperationId = "UploadPreviewDatabase", Description = "Upload Preview Database - for Thorus")]
         public Task<IActionResult> UploadPreviewDatabase()
@@ -119,7 +119,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
         [DisableFormValueModelBinding]
-        [RequestSizeLimit(MultipartRequestHelper.MaxFileSize)]
+        [RequestSizeLimit(Constants.MaxMultipartRequestSize)]
         [Consumes("multipart/form-data")]
         [SwaggerOperation(OperationId = "UploadPreviewDatabaseByIndex", Description = "Upload a Preview Database (by index)")]
         public async Task<IActionResult> UploadPreviewDatabaseByDbi([FromRoute] int dbi)

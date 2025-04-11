@@ -13,6 +13,8 @@ namespace ocpa.ro.api.Helpers.Content
 {
     public interface IContentHelper
     {
+        public Task<byte[]> GetContent(string contentPath);
+
         public ContentUnit ListContent(string contentPath, int? level, string filter);
 
         public Task<UpdatedContentUnit> CreateOrUpdateContent(string contentPath, byte[] contentBytes);
@@ -25,6 +27,26 @@ namespace ocpa.ro.api.Helpers.Content
         public ContentHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
             : base(hostingEnvironment, logger)
         {
+        }
+
+        public async Task<byte[]> GetContent(string contentPath)
+        {
+            byte[] data = null;
+
+            try
+            {
+                var fullContentPath = Path.Combine(_hostingEnvironment.ContentPath(), contentPath);
+
+                if (File.Exists(fullContentPath))
+                    data = await File.ReadAllBytesAsync(fullContentPath);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                data = null;
+            }
+
+            return data;
         }
 
         public async Task<UpdatedContentUnit> CreateOrUpdateContent(string contentPath, byte[] contentBytes)
