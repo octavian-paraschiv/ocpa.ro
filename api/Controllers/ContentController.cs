@@ -175,6 +175,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK, "application/octet-stream")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "RenderContent")]
+        [AllowAnonymous]
         public async Task<IActionResult> RenderContent([FromRoute] string resourcePath,
            [FromHeader(Name = "X-RenderAsHtml")] string renderAsHtmlStr)
         {
