@@ -55,6 +55,11 @@ namespace ocpa.ro.api.Helpers.Wiki
                         var markdown = await File.ReadAllTextAsync(wikiResourcePath).ConfigureAwait(false);
                         if (markdown?.Length > 0)
                         {
+                            var pageDirName = Directory.GetParent(wikiResourcePath).FullName
+                                .Replace(_hostingEnvironment.ContentPath(), string.Empty)
+                                .Replace("\\", "/")
+                                .Trim('/');
+
                             string body = markdown;
 
                             if (renderAsHtml)
@@ -71,7 +76,8 @@ namespace ocpa.ro.api.Helpers.Wiki
 
                             body = body
                                 .Replace("%root%", $"{reqRoot.TrimEnd('/')}/Content/render")
-                                .Replace("%wiki%", $"{reqRoot.TrimEnd('/')}/Content/render/wiki");
+                                .Replace("%wiki%", $"{reqRoot.TrimEnd('/')}/Content/render/wiki")
+                                .Replace("%page%", $"{reqRoot.TrimEnd('/')}/Content/render/{pageDirName}");
 
                             StringBuilder sb = new();
 
