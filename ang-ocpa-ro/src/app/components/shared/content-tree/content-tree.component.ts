@@ -39,7 +39,7 @@ export class ContentTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.contentService.getContent(this.path, this.level, this.filter)
+    this.contentService.listContent(this.path, this.level, this.filter)
       .pipe(untilDestroyed(this))
       .subscribe(res => this.dataSource.data = res.children);
   }

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { provideMarkdown } from 'ngx-markdown';
 import { AppComponent } from 'src/app/components/app.component';
 import { components } from 'src/app/modules/deps/app.components';
 import { initializers } from 'src/app/modules/deps/app.initializers';
@@ -18,7 +19,8 @@ import { services } from 'src/app/modules/deps/app.services';
 
   providers: [
     initializers,
-    services
+    services,
+    provideMarkdown()
   ],
 
   bootstrap: [

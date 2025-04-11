@@ -617,9 +617,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
   }
 
   inst(md: MeteoDailyData): number {
-    let val = Math.max(0, 6 - (md?.instability ?? 0));
-    console.debug(`Instability: ${md.date}: ${md?.instability} => ${val}`);
-    return val;
+    return Math.max(0, 6 - (md?.instability ?? 0));
   }
 
   public chartClicked(e: any): void {

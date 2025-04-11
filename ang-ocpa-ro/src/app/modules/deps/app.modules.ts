@@ -7,8 +7,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MathjaxModule } from 'mathjax-angular';
 import { NgChartsModule } from 'ng2-charts';
+import { MarkdownModule } from 'ngx-markdown';
 import { routes } from 'src/app/modules/deps/app.routes';
 import { MaterialModule } from 'src/app/modules/material.module';
 
@@ -25,14 +25,6 @@ export const modules = [
     // Modules
     TranslateModule.forRoot(translationConfig),
     RouterModule.forRoot(routes),
-    MathjaxModule.forRoot({
-      config: {
-        loader: { load: ['input/tex', 'output/svg'] },
-        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-        svg: { fontCache: 'global' }
-      },
-      src: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js'
-    }),
     BrowserModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -41,5 +33,6 @@ export const modules = [
     FontAwesomeModule,
     NgSelectModule,
     MaterialModule,
-    NgChartsModule
+    NgChartsModule,
+    MarkdownModule.forRoot()
 ];

@@ -30,9 +30,18 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/assets/styles/custom-theme.scss",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
-              "src/assets/styles/Site.scss"
+              "src/assets/styles/Site.scss",
+              "node_modules/prismjs/themes/prism-okaidia.css",
+              "node_modules/katex/dist/katex.min.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-csharp.min.js",
+              "node_modules/prismjs/components/prism-css.min.js",
+              "node_modules/katex/dist/katex.min.js",
+              "node_modules/katex/dist/contrib/auto-render.min.js",
+              "node_modules/emoji-toolkit/lib/js/joypixels.min.js"
+            ],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
