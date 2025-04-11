@@ -4,6 +4,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
 import { ContentUnit } from 'src/app/models/models-swagger';
 import { environment } from 'src/environments/environment';
+import * as CryptoJS from 'crypto-js';
 
 @UntilDestroy()
 @Injectable()
@@ -31,10 +32,16 @@ export class ContentApiService {
         });
     }
 
-    public uploadPlainContent(path: string, content: string): Observable<any> {
-        const uri = `${environment.apiUrl}/Content/plain/${path}`;
-        const headers = new HttpHeaders({ 'Content-Type': 'text/plain' });
-        return this.httpClient.post(uri.toString(), content, { headers });
+    public uploadContent(path: string, content: ArrayBuffer, contentType: string): Observable<any> {
+        const uri = `${environment.apiUrl}/Content/upload/${path}`;
+        const formData = new FormData();
+        const signature = CryptoJS.HmacSHA1(CryptoJS.lib.WordArray.create(content), path);
+        const blob = new Blob([content], { type: contentType });
+
+        formData.append("signature", signature.toString(CryptoJS.enc.Base64));
+        formData.append("data", blob, path);
+
+        return this.httpClient.post(uri, formData);
     }
 
     public listContent(path: string = undefined, 

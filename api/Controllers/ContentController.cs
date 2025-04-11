@@ -13,7 +13,6 @@ using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Controllers
@@ -93,36 +92,7 @@ namespace ocpa.ro.api.Controllers
             return result;
         }
 
-        [HttpPost("plain/{*contentPath}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
-        [DisableFormValueModelBinding]
-        [RequestSizeLimit(Constants.MaxPlainRequestSize)]
-        [Consumes("text/plain")]
-        [SwaggerOperation(OperationId = "UploadPlainContent")]
-        public async Task<IActionResult> UploadPlainContent([FromRoute] string contentPath)
-        {
-            try
-            {
-                using var reader = new StreamReader(Request.Body, Encoding.UTF8);
-                var content = Encoding.UTF8.GetBytes(await reader.ReadToEndAsync());
-                var ucu = await _contentHelper.CreateOrUpdateContent(contentPath, content);
-                if (ucu == null)
-                    return NotFound(contentPath);
-
-                return StatusCode((int)ucu.StatusCode, ucu.StatusCode.IsSuccess() ? ucu : contentPath);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return Conflict(contentPath);
-            }
-        }
-
-        [HttpPost("multipart/{*contentPath}")]
+        [HttpPost("upload/{*contentPath}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]

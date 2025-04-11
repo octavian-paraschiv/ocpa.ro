@@ -15,6 +15,7 @@ export class ContentBrowserComponent extends BaseComponent {
   content = 'n/a';
   contentPath = '';
   keyDownTimeout = undefined;
+  saveError = false;
 
   @ViewChild('viewer', { static: true }) wikiViewer: WikiViewerComponent;
   
@@ -51,12 +52,17 @@ export class ContentBrowserComponent extends BaseComponent {
   }
 
   performSave() {
-    this.contentService.uploadPlainContent(this.contentPath, this.content)
+    this.saveError = false;
+    const buffer = new TextEncoder().encode(this.content).buffer;
+    this.contentService.uploadContent(this.contentPath, buffer, 'text/plain')
       .pipe(untilDestroyed(this))
       .subscribe({
-        next: () => { this.wikiViewer?.displayLocation(this.contentPath); },
+        next: () => { 
+          this.wikiViewer?.displayLocation(this.contentPath); 
+        },
         error: err => { 
           this.popup.showError('failed to save: ' + err.toString());
+          this.saveError = true;
         }
       });
   }
@@ -80,5 +86,9 @@ export class ContentBrowserComponent extends BaseComponent {
     
     return '[Non-Readable Binary Data]';
   }  
+
+  get previewStyle() {
+      return { 'backgrouund-color': this.saveError ? 'coral' : 'white' };
+  }
 }
         

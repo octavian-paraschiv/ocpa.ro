@@ -1,5 +1,5 @@
 <div class="content-browser">
     <app-content-tree #tree [filter]="filter" (nodeSelected)="onNodeSelected($event)"></app-content-tree>
     <textarea id="mde-edit" [(ngModel)]="content" (keydown)="onKeyDown()" ></textarea>
-    <app-wiki-viewer id="mde-preview" #viewer></app-wiki-viewer>
+    <app-wiki-viewer id="mde-preview" #viewer [ngStyle]="previewStyle"></app-wiki-viewer>
 </div>
