@@ -12,15 +12,18 @@ export class ContentApiService {
     constructor(private readonly httpClient: HttpClient) {
     }
 
-    public renderContent(path: string): Observable<string> {
+    public renderContent(path: string, renderTranslated: boolean): Observable<string> {
         const uri = `${environment.apiUrl}/Content/render/${path}`;
-        return this.httpClient.get(uri, { 
-            responseType: 'text',
-            headers: { 
-                'Cache-Control': 'no-cache',
-                'X-RenderAsHtml': 'false',
-            }
-        });
+        let headers: { [key: string]: string } = {};
+
+        headers['Cache-Control'] = 'no-cache';
+        headers['X-RenderAsHtml'] = 'false';
+        
+        if (renderTranslated) {
+            headers['X-Language'] = navigator.language ?? 'en';
+        }
+
+        return this.httpClient.get(uri, { responseType: 'text', headers });
     }
 
     public getContent(path: string): Observable<string> {

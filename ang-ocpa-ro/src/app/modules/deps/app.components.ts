@@ -3,9 +3,6 @@ import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialo
 import { AppsMenusComponent } from 'src/app/components/auth/apps-menus/apps-menus.component';
 import { MenuDialogComponent } from 'src/app/components/auth/apps-menus/menu-dialog/menu-dialog.component';
 import { ContentBrowserComponent } from 'src/app/components/auth/content-browser/content-browser.component';
-import { ContentEditorComponent } from 'src/app/components/auth/content-browser/content-editor/content-editor.component';
-import { ContentToolbarComponent } from 'src/app/components/auth/content-browser/content-toolbar/content-toolbar.component';
-import { ContentViewerComponent } from 'src/app/components/auth/content-browser/content-viewer/content-viewer.component';
 import { LoginComponent } from 'src/app/components/auth/login/login.component';
 import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
@@ -65,8 +62,5 @@ export const components = [
 
     // Content management
     ContentBrowserComponent,
-    ContentViewerComponent,
-    ContentToolbarComponent,
-    ContentEditorComponent,
     ContentTreeComponent
 ];

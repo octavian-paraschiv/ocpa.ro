@@ -16,6 +16,7 @@ export class ContentBrowserComponent extends BaseComponent {
   contentPath = '';
   keyDownTimeout = undefined;
   saveError = false;
+  editable = true;
 
   @ViewChild('viewer', { static: true }) wikiViewer: WikiViewerComponent;
   
@@ -33,7 +34,7 @@ export class ContentBrowserComponent extends BaseComponent {
           .pipe(untilDestroyed(this))
           .subscribe(res => {
             this.content = this.getText(res);
-            this.wikiViewer?.displayLocation(this.contentPath);
+            this.wikiViewer?.displayLocation(this.contentPath, false);
         });
       }
   }
@@ -58,7 +59,7 @@ export class ContentBrowserComponent extends BaseComponent {
       .pipe(untilDestroyed(this))
       .subscribe({
         next: () => { 
-          this.wikiViewer?.displayLocation(this.contentPath); 
+          this.wikiViewer?.displayLocation(this.contentPath, false); 
         },
         error: err => { 
           this.popup.showError('failed to save: ' + err.toString());
@@ -68,6 +69,7 @@ export class ContentBrowserComponent extends BaseComponent {
   }
   
   getText(base64: string): string {
+    this.editable = false;
     try {
       // Decode the Base64 string
       const decodedBytes = window.atob(base64);
@@ -77,18 +79,19 @@ export class ContentBrowserComponent extends BaseComponent {
         const decodedString = new TextDecoder().decode(new Uint8Array(decodedBytes.split('').map(char => char.charCodeAt(0))));
        
         // Check if the string contains valid UTF-8 characters
-        if (/^[\x00-\x7F]*$/.test(decodedString))
+        if (/^[\x00-\x7F]*$/.test(decodedString)) {
+          this.editable = true;
           return decodedString;
+        }
       }
     } catch {
       // If decoding fails, it's likely binary data
     }
-    
     return '[Non-Readable Binary Data]';
   }  
 
   get previewStyle() {
-      return { 'backgrouund-color': this.saveError ? 'coral' : 'white' };
+      return { 'background-color': this.saveError ? 'coral' : 'white' };
   }
 }
         

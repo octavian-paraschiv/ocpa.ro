@@ -55,7 +55,8 @@ namespace ocpa.ro.api.Helpers.Wiki
                         var markdown = await File.ReadAllTextAsync(wikiResourcePath).ConfigureAwait(false);
                         if (markdown?.Length > 0)
                         {
-                            var pageDirName = Directory.GetParent(wikiResourcePath).FullName
+                            var pageDirName = Path.GetRelativePath(_hostingEnvironment.ContentPath(),
+                                Directory.GetParent(wikiResourcePath).FullName)
                                 .Replace(_hostingEnvironment.ContentPath(), string.Empty)
                                 .Replace("\\", "/")
                                 .Trim('/');

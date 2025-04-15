@@ -6,19 +6,16 @@
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   display: grid;
-  grid-template-columns: 30vw 1fr 10px 1fr;
-  // grid-template-columns: 30vw 1fr 1fr;
-  grid-template-rows: 1fr;
-  //grid-template-areas: 
-  //  "tv tb tb"
-  //  "tv ce cv";
+  grid-template-columns: 30vw 1fr 3px 1fr;
+  grid-template-rows: auto 1fr;
   grid-template-areas: 
+    "tv mde-path mde-path mde-path"
     "tv mde-edit . mde-preview"
 }
 
 .mat-tree-node, .mat-nested-tree-node {
   color: $forecolor !important;
-  background-color: $backcolor !important;
+  
 }
 
 app-content-tree {
@@ -36,22 +33,20 @@ app-content-tree {
 #mde-edit {
   grid-area: mde-edit;
   border: 1px solid lightgray;
+  margin-top: 0;
+}
+#mde-path {
+  grid-area: mde-path;
+  margin: 0;
+  padding: 2px;
+  padding-left: 4px;
+  background-color: lightgray;
+  font-weight: bold;
 }
 #mde-preview {
   grid-area: mde-preview;
   border: 1px solid lightgray;
-}
-
-app-content-toolbar {
-  grid-area: tb;
-}
-
-app-content-editor {
-  grid-area: ce;
-}
-
-app-content-viewer {
-  grid-area: cv;
+  margin-top: 0;
 }
 
 .mat-tree-node {
@@ -77,16 +72,4 @@ app-content-viewer {
   
 .content-tree .mat-nested-tree-node div[role=group] {
   padding-left: 25px;
-}
-
-.content-toolbar {
-  background-color: aquamarine;
-}
-
-.content-editor {
-  background-color: cadetblue;
-}
-
-.content-viewer {
-  background-color: darkcyan;
 }

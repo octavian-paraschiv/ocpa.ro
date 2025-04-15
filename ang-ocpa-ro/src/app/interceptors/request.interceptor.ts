@@ -22,7 +22,7 @@ export class RequestInterceptor implements HttpInterceptor {
             });
         }
 
-        let headers = request.headers.set('X-Language', navigator.language ?? 'en');
+        let headers = request.headers;
         
         if (!environment.production) {
             headers = headers.set('Access-Control-Allow-Origin', '*');

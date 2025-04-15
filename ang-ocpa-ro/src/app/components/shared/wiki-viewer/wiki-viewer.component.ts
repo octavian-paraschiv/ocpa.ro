@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
@@ -14,9 +14,9 @@ export class WikiViewerComponent {
     private readonly translate = inject(TranslateService);
     private readonly contentService = inject(ContentApiService);
 
-    public displayLocation(location: string) {
+    public displayLocation(location: string, renderTranslated: boolean) {
         this.contentService
-            .renderContent(location)
+            .renderContent(location, renderTranslated)
             .pipe(first(), untilDestroyed(this))
             .subscribe({
                 next: res => this.content = res ?? this.translate.instant('wiki.default-content'),

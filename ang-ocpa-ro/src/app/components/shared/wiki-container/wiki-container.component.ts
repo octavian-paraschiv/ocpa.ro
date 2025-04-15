@@ -25,7 +25,7 @@ export class WikiContainerComponent implements OnInit {
       let location = url.map(s => s.path).join('/').replace('wiki-container/', '');
       if (!location.endsWith('.md'))
         location = location + '/index.md';
-      this.dataBrowser?.displayLocation(`wiki/${location}`);
+      this.dataBrowser?.displayLocation(`wiki/${location}`, true);
     }                
     catch { }
   }
