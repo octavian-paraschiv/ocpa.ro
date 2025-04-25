@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Geography;
@@ -27,12 +28,14 @@ public interface IGeographyHelper
     CityDetail GetCity(string regionName, string subregionName, string cityName);
     GridCoordinates GetGridCoordinates(string regionName, string subregionName, string cityName);
     Task<GeoLocation> GetGeoLocation(string ipAddress);
+    City SaveCity(City city, out bool inserted);
+    int DeleteCity(int cityId);
 }
 
 public class GeographyHelper : BaseHelper, IGeographyHelper
 {
     #region Private members
-    private readonly GeographyDB _db;
+    private readonly SQLiteConnection _db;
     private readonly HttpClient _client;
     #endregion
 
@@ -42,7 +45,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
     {
         var dataFolder = Path.Combine(hostingEnvironment.ContentPath(), "Geography");
         var dbPath = Path.Combine(dataFolder, "Geography.db3");
-        _db = new GeographyDB(dbPath, false);
+        _db = new SQLiteConnection(dbPath, SQLiteOpenFlags.ReadWrite);
 
         _client = factory.CreateClient("geolocation");
     }
@@ -52,16 +55,16 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
     public string FirstRegionCode => GetRegionCodes().FirstOrDefault()?.ToUpper();
 
     public IEnumerable<string> GetRegionCodes()
-        => _db.Regions.AsEnumerable().Select(r => r.Code);
+        => _db.Table<Region>().AsEnumerable().Select(r => r.Code);
 
     public IEnumerable<string> GetRegionNames()
-        => _db.Regions.AsEnumerable().Select(r => r.Name);
+        => _db.Table<Region>().AsEnumerable().Select(r => r.Name);
 
     public IEnumerable<string> GetSubregionNames(string regionName)
     {
         var region = GetRegion(regionName);
 
-        return _db.Cities
+        return _db.Table<City>()
             .Where(c => c.RegionId == region.Id)
             .OrderBy(c => c.Subregion)
             .AsEnumerable()
@@ -74,7 +77,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
         var region = GetRegion(regionName);
         ValidateSubregion(regionName, subregionName);
 
-        return _db.Cities
+        return _db.Table<City>()
             .Where(c => c.RegionId == region.Id && c.Subregion.ToUpper() == subregionName.ToUpper())
             .OrderByDescending(c => c.Default)
             .ThenBy(c => c.Name)
@@ -85,7 +88,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
 
     public IEnumerable<CityDetail> GetAllCities()
     {
-        return _db.Cities
+        return _db.Table<City>()
             .OrderBy(c => c.Name)
             .AsEnumerable()
             .Select(c => new CityDetail
@@ -108,7 +111,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
         var region = GetRegion(regionName);
         ValidateSubregion(regionName, subregionName);
 
-        var city = _db.Cities
+        var city = _db.Table<City>()
             .Where(c => c.RegionId == region.Id && c.Subregion.ToUpper() == subregionName.ToUpper() && c.Name.ToUpper() == cityName.ToUpper())
             .Select(c => new CityDetail
             {
@@ -132,7 +135,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
     public Region GetRegion(string regionName)
     {
         regionName ??= "";
-        Region region2 = _db.Regions.Where(rgn => rgn.Name.ToUpper() == regionName.ToUpper()).FirstOrDefault();
+        Region region2 = _db.Find<Region>(rgn => rgn.Name.ToUpper() == regionName.ToUpper());
         return region2 ?? throw new ExtendedException($"Could not find any region named '{regionName}'");
     }
 
@@ -179,8 +182,107 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
         }
     }
 
+    public City SaveCity(City city, out bool inserted)
+    {
+        City dbu = null;
+        inserted = false;
+
+        try
+        {
+            var id = city.Id;
+
+            dbu = _db.Find<City>(a => id == a.Id);
+
+            bool newEntry = (dbu == null);
+
+            dbu ??= new City();
+
+            dbu.Subregion = city.Subregion;
+            dbu.RegionId = city.RegionId;
+            dbu.Name = city.Name;
+            dbu.Lat = city.Lat;
+            dbu.Lon = city.Lon;
+
+            if (newEntry)
+            {
+                dbu.Default = false;
+                dbu.Id = (_db.Table<City>().OrderByDescending(u => u.Id).FirstOrDefault()?.Id ?? 0) + 1;
+
+                if (_db.Insert(dbu) > 0)
+                    inserted = true;
+                else
+                    dbu = null;
+            }
+            else
+            {
+                try
+                {
+                    _db.BeginTransaction();
+                    if (city.Default && !dbu.Default)
+                    {
+                        // we want to mark this city as default for the supplied region/subregion
+                        // the first step is to reset the default flag for all cities in the supplied region/subregion
+                        var query = $"UPDATE City SET \"Default\"=0 WHERE RegionId={dbu.RegionId} AND Subregion='{dbu.Subregion}'";
+                        _db.Execute(query);
+
+                        // the second step is save the city as default. which means we need to set it as such here.
+                        dbu.Default = true;
+                    }
+
+                    if (_db.Update(dbu) <= 0)
+                        dbu = null;
+
+                    _db.Commit();
+                }
+                catch
+                {
+                    _db.Rollback();
+                    throw;
+                }
+            }
+        }
+        catch (ExtendedException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
+            dbu = null;
+        }
+
+        return dbu;
+    }
+
+    public int DeleteCity(int cityId)
+    {
+
+        try
+        {
+            var dbu = _db.Find<City>(c => c.Id == cityId);
+            if (dbu == null)
+                return StatusCodes.Status404NotFound;
+
+            if (dbu.Default)
+                throw new ExtendedException("ERR_DELETE_DEFAULT_CITY");
+
+            if (_db.Delete(dbu) > 0)
+                return StatusCodes.Status200OK;
+        }
+        catch (ExtendedException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
+        }
+
+        return StatusCodes.Status400BadRequest;
+    }
+
     #endregion
 
     private Region GetRegion(int regionId)
-        => _db.Regions.Where(r => r.Id == regionId).FirstOrDefault();
+        => _db.Find<Region>(r => r.Id == regionId);
 }

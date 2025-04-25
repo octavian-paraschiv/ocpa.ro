@@ -16,6 +16,7 @@
 		<PackageReference Include="Markdig" Version="0.40.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.8.0" />
+		<PackageReference Include="PlantUml.Net" Version="1.4.80" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.1.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.8.0" />

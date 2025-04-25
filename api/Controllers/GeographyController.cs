@@ -157,6 +157,49 @@ namespace ocpa.ro.api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("city/save")]
+        [ProducesResponseType(typeof(City), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(City), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "SaveCity")]
+        public IActionResult SaveApplication([FromBody] City city)
+        {
+            try
+            {
+                var dbu = _geographyHelper.SaveCity(city, out bool inserted);
+                if (dbu != null)
+                    return inserted ?
+                        StatusCode(StatusCodes.Status201Created, dbu) :
+                        Ok(dbu);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost("city/delete/{cityId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "DeleteCity")]
+        public IActionResult DeleteApplication([FromRoute] int cityId)
+        {
+            try
+            {
+                return StatusCode(_geographyHelper.DeleteCity(cityId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         #endregion
     }
 }

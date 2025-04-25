@@ -1,9 +1,12 @@
 ﻿using Markdig;
 using Microsoft.AspNetCore.Hosting;
 using ocpa.ro.api.Extensions;
+using ocpa.ro.api.Helpers.Wiki.CustomRenderers;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,9 +20,16 @@ namespace ocpa.ro.api.Helpers.Wiki
 
     public class WikiHelper : BaseHelper, IWikiHelper
     {
+        private List<CustomRendererBase> _renderers;
+
         public WikiHelper(IWebHostEnvironment hostingEnvironment, ILogger logger)
             : base(hostingEnvironment, logger)
         {
+            _renderers = typeof(WikiHelper).Assembly
+                .GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(CustomRendererBase)))
+                .Select(t => Activator.CreateInstance(t) as CustomRendererBase)
+                .ToList();
         }
 
         public async Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
@@ -61,7 +71,12 @@ namespace ocpa.ro.api.Helpers.Wiki
                                 .Replace("\\", "/")
                                 .Trim('/');
 
-                            string body = markdown;
+                            string body = await RenderCustomCodeBlocks(markdown);
+
+                            body = body
+                                .Replace("%root%", $"{reqRoot.TrimEnd('/')}/Content/render")
+                                .Replace("%wiki%", $"{reqRoot.TrimEnd('/')}/Content/render/wiki")
+                                .Replace("%page%", $"{reqRoot.TrimEnd('/')}/Content/render/{pageDirName}");
 
                             if (renderAsHtml)
                             {
@@ -74,11 +89,6 @@ namespace ocpa.ro.api.Helpers.Wiki
 
                                 body = Markdown.ToHtml(markdown, pipeline);
                             }
-
-                            body = body
-                                .Replace("%root%", $"{reqRoot.TrimEnd('/')}/Content/render")
-                                .Replace("%wiki%", $"{reqRoot.TrimEnd('/')}/Content/render/wiki")
-                                .Replace("%page%", $"{reqRoot.TrimEnd('/')}/Content/render/{pageDirName}");
 
                             StringBuilder sb = new();
 
@@ -112,6 +122,24 @@ namespace ocpa.ro.api.Helpers.Wiki
             }
 
             return data;
+        }
+
+        private async Task<string> RenderCustomCodeBlocks(string body)
+        {
+            try
+            {
+                if (_renderers?.Count > 0)
+                {
+                    foreach (var renderer in _renderers)
+                        body = await renderer.RenderBody(body);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return body;
         }
     }
 }
