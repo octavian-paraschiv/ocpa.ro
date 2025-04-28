@@ -5,6 +5,11 @@ using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Models.Geography
 {
+    public class RegionDetail : Region
+    {
+        public IEnumerable<string> Subregions { get; set; }
+    }
+
     public class CityDetail : City
     {
         public string RegionName { get; set; }

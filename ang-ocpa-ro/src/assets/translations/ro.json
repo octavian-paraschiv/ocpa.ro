@@ -30,6 +30,8 @@
     "ERR_FAIL_DELETE_APPS_FOR_USER": "Nu s-au putut șterge aplicațiile pentru utilizatorul '{{loginId}}'",
     "ERR_FAIL_CLEAR_APPS_FOR_USER": "Nu s-au putut elimina vechile aplicații pentru utilizatorul '{{loginId}}'",
 
+    "ERR_DELETE_DEFAULT_CITY": "Localitatea '{{name}}' este setată ca implicită pt. subregiunea '{{subregion}}' și nu poate fi ștearsă",
+
     "title": {
         "meteo": "Prognoza Meteo după OcPa",
         "protone": "ProTONE Player",
@@ -48,7 +50,8 @@
             "users": "Gestionare Utilizatori",
             "meteo-database": "Gestionare Baze de Date Meteo",
             "content": "Gestionare Conținut Site",
-            "apps-menus": "Aplicații & Meniuri"
+            "apps-menus": "Aplicații & Meniuri",
+            "geography": "Geografie"
         },
         "otp": "Introduceți codul de conectare",
         "confirm": "Confirmare"
@@ -69,7 +72,8 @@
             "users": "Utilizatori",
             "meteo-database": "Baze De Date Meteo",
             "content": "Conținut Site",
-            "apps-menus": "Aplicații & Meniuri"
+            "apps-menus": "Aplicații & Meniuri",
+            "geography": "Geografie"
         }
     },
 
@@ -295,5 +299,40 @@
         "url-required": "URL-ul trebuie să aibă între 3 și 128 de caractere, să înceapă cu o bară oblică (/) și să conțină doar litere, cifre, bare oblice (/), cratime (-) și sublinieri (_).",
         "display-mode": "Mod de afișare",
         "menu-icon": "Pictogramă meniu"
+    },
+
+    "geography": {
+        "city-list": "Listă localități",
+        "add-city": "Adaugă localitate",
+        "edit-city": "Editează localitatea '{{name}}'",
+        "del-city": "Șterge localitatea '{{name}}'",
+        "name": "Nume",
+        "region": "Regiune",
+        "subregion": "Subregiune",
+        "latitude": "Latitudine",
+        "longitude": "Longitudine",
+        "default": "Implicit pt. subregiune",
+        "delete-city": "Ești sigur că vrei să ștergi localitatea '{{name}}'?",
+        "success-delete-city": "Localitatea '{{name}}' a fost ștearsă cu succes",
+        "success-save-city": "Localitatea '{{name}}' a fost salvată cu succes",
+        "error-save-city": "Salvarea localității '{{name}}' a eșuat",
+        "cities-filter": "Tastează pentru căutare localitate"
+    },
+
+    "city-dialog": {
+        "edit": "Editează localitatea <b>{{name}}</b>",
+        "create": "Creează localitate nouă",
+        "name": "Nume localitate",
+        "name-required": "Numele localității este obligatoriu",
+        "region": "Regiune",
+        "region-required": "Regiunea este obligatorie",
+        "subregion": "Subregiune",
+        "subregion-required": "Subregiunea este obligatorie",
+        "latitude": "Latitudine",
+        "latitude-range": "Latitudinea trebuie să fie între {{min}} si {{max}}",
+        "longitude": "Longitudine",
+        "longitude-range": "Longitudinea trebuie să fie între {{min}} si {{max}}",
+        "default": "Localitate implicită pt. subregiune",
+        "city-filter": "Text căutare"
     }
 }

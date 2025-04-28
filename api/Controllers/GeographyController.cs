@@ -88,6 +88,24 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
+
+        [HttpGet("regions/all")]
+        [ProducesResponseType(typeof(IEnumerable<RegionDetail>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(OperationId = "GetAllRegions")]
+        public IActionResult GetAllRegions()
+        {
+            try
+            {
+                return Ok(_geographyHelper.GetAllRegions());
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("cities/all")]
         [ProducesResponseType(typeof(List<CityDetail>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -159,12 +177,13 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpPost("city/save")]
-        [ProducesResponseType(typeof(City), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(City), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CityDetail), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(CityDetail), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [IgnoreWhenNotInDev]
+        [Authorize(Roles = "ADM")]
         [SwaggerOperation(OperationId = "SaveCity")]
-        public IActionResult SaveApplication([FromBody] City city)
+        public IActionResult SaveApplication([FromBody] CityDetail city)
         {
             try
             {
@@ -187,6 +206,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [IgnoreWhenNotInDev]
+        [Authorize(Roles = "ADM")]
         [SwaggerOperation(OperationId = "DeleteCity")]
         public IActionResult DeleteApplication([FromRoute] int cityId)
         {

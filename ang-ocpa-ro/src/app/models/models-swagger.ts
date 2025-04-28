@@ -211,6 +211,18 @@ export interface Person {
     comment?: string | undefined;
 }
 
+export interface RegionDetail {
+    id?: number;
+    name?: string | undefined;
+    code?: string | undefined;
+    minLon?: number;
+    maxLon?: number;
+    minLat?: number;
+    maxLat?: number;
+    gridResolution?: number;
+    subregions?: string[] | undefined;
+}
+
 export interface RegisteredDevice {
     id?: number;
     deviceId?: string | undefined;

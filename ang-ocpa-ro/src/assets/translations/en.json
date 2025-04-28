@@ -30,6 +30,8 @@
     "ERR_FAIL_DELETE_APPS_FOR_USER": "Failed to delete applications for user '{{loginId}}'",
     "ERR_FAIL_CLEAR_APPS_FOR_USER": "Failed to clear old applications for user '{{loginId}}'",
 
+    "ERR_DELETE_DEFAULT_CITY": "The city '{{name}}' is set as default for subregion '{{subregion}}' and cannot be deleted",
+
     "title": {
         "meteo": "OcPa's Weather Forecast",
         "protone": "ProTONE Player",
@@ -48,10 +50,11 @@
             "users": "Manage Users",
             "meteo-database": "Manage Meteo Database",
             "content": "Manage Site Content",
-            "apps-menus": "Apps & Menus"
+            "apps-menus": "Apps & Menus",
+            "geography": "Geography"
         },
         "otp": "Enter the login code",
-        "confirm": "Confirm"        
+        "confirm": "Confirm"
     },
 
     "menu": {
@@ -69,7 +72,8 @@
             "users": "Manage Users",
             "meteo-database": "Manage Meteo Database",
             "content": "Manage Site Content",
-            "apps-menus": "Apps & Menus"
+            "apps-menus": "Apps & Menus",
+            "geography": "Geography"
         }
     },
 
@@ -254,7 +258,7 @@
         "delete-menu": "Are you sure you want to delete the menu '{{name}}'?",
         "delete-app": "Are you sure you want to delete the application '{{name}}'?",
         "success-save-menu": "Successfully saved menu '{{name}}'",
-        "success-delete-menu": "Successfully deleted ved menu '{{name}}'",
+        "success-delete-menu": "Successfully deleted menu '{{name}}'",
         "error-save-menu": "Failed to save the menu",
         "success-save-app": "Successfully saved application '{{name}}'",
         "success-delete-app": "Successfully deleted application '{{name}}'",
@@ -295,5 +299,39 @@
         "url-required": "URL must have 3..128 chars, must start with a slash (/) and must only have letters, digits, slashes (/), dashes (-) and underscores (_).",
         "display-mode": "Display mode",
         "menu-icon": "Menu icon"
+    },
+
+    "geography": {
+        "city-list": "List of cities:",
+        "add-city": "Add city",
+        "edit-city": "Edit city '{{name}}'",
+        "del-city": "Delete city '{{name}}'",
+        "name": "Name",
+        "region": "Region",
+        "subregion": "Subregion",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "default": "Subregion Default",
+        "delete-city": "Are you sure you want to delete the city '{{name}}'?",
+        "success-delete-city": "Succesfully deleted city '{{name}}'",
+        "success-save-city": "Succesfully saved city '{{name}}'",
+        "error-save-city": "Error saving city '{{name}}'",
+        "cities-filter": "Type to search city"
+    },
+
+    "city-dialog": {
+        "edit": "Edit city '{{name}}'",
+        "create": "Add new city",
+        "name": "City name",
+        "name-required": "City name is required",
+        "region": "Region",
+        "region-required": "Region is required",
+        "subregion": "Subregion",
+        "subregion-required": "Subregion is required",
+        "latitude": "Latitude",
+        "latitude-range": "Latitude must be between {{min}} and {{max}}",
+        "longitude": "Longitude",
+        "longitude-range": "Longitude must be between {{min}} and {{max}}",
+        "default": "Default subregion city"
     }
 }

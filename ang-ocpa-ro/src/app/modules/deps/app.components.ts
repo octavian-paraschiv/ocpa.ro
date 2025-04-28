@@ -3,6 +3,8 @@ import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialo
 import { AppsMenusComponent } from 'src/app/components/auth/apps-menus/apps-menus.component';
 import { MenuDialogComponent } from 'src/app/components/auth/apps-menus/menu-dialog/menu-dialog.component';
 import { ContentBrowserComponent } from 'src/app/components/auth/content-browser/content-browser.component';
+import { CityDialogComponent } from 'src/app/components/auth/geography/city-dialog/city-dialog.component';
+import { GeographyComponent } from 'src/app/components/auth/geography/geography.component';
 import { LoginComponent } from 'src/app/components/auth/login/login.component';
 import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
@@ -62,5 +64,9 @@ export const components = [
 
     // Content management
     ContentBrowserComponent,
-    ContentTreeComponent
+    ContentTreeComponent,
+
+    // Geography
+    GeographyComponent,
+    CityDialogComponent
 ];

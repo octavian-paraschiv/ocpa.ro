@@ -225,7 +225,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
           this.onSmartCityChanged();
 
         } else {
-          this.geoApi.getRegions()
+          this.geoApi.getRegionNames()
           .pipe(take(1), untilDestroyed(this))
           .subscribe(regions => {
             this.regions = regions;
@@ -277,33 +277,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
 
   private filterCities() {
     const allCities = this.allCities ?? [];
-    if (allCities.length > 5) {
-      if (this.searchTerm?.length > 0) {
-        const terms = this.searchTerm.toLocaleUpperCase().split(' ').filter(t => t?.length > 0);
-        this.filteredCities = GeographyApiService.SortCities(terms, allCities.filter(city => {
-          let match = true;
-          // All search terms must match
-          for (let tt of terms) {
-            let termMatch = false;
-            termMatch ||= (city?.name ?? '').toLocaleUpperCase().includes(tt);
-            termMatch ||= (city?.subregion ?? '').toLocaleUpperCase().startsWith(tt);
-            termMatch ||= (city?.regionName ?? '').toLocaleUpperCase().startsWith(tt);
-            match &&= termMatch;
-            if (!match) break;
-          }
-          return match;
-        }));
-  
-      } else {
-        // no filter specified => no filtering needed
-        this.filteredCities = allCities;
-      }
-
-    } else {
-      // Less than 5 cities to show => no filtering needed
-      this.filteredCities = allCities;
-    }
-
+    this.filteredCities = GeographyApiService.FilterCities(this.searchTerm, allCities);
     this.citiesBuffer = (this.filteredCities.length > 5) ?
       this.filteredCities.slice(0, 5) : this.filteredCities;
   }

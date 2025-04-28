@@ -28,8 +28,10 @@ public interface IGeographyHelper
     CityDetail GetCity(string regionName, string subregionName, string cityName);
     GridCoordinates GetGridCoordinates(string regionName, string subregionName, string cityName);
     Task<GeoLocation> GetGeoLocation(string ipAddress);
-    City SaveCity(City city, out bool inserted);
+    CityDetail SaveCity(CityDetail city, out bool inserted);
     int DeleteCity(int cityId);
+
+    IEnumerable<RegionDetail> GetAllRegions();
 }
 
 public class GeographyHelper : BaseHelper, IGeographyHelper
@@ -53,6 +55,26 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
 
     #region IGeographyHelper implementation
     public string FirstRegionCode => GetRegionCodes().FirstOrDefault()?.ToUpper();
+    public int FirstRegionId => _db.Table<Region>().FirstOrDefault().Id;
+
+    public IEnumerable<RegionDetail> GetAllRegions()
+    {
+        var x = _db.Table<Region>().ToList()
+            .Select(r => new RegionDetail
+            {
+                Code = r.Code,
+                GridResolution = r.GridResolution,
+                Id = r.Id,
+                MaxLat = r.MaxLat,
+                MaxLon = r.MaxLon,
+                MinLat = r.MinLat,
+                MinLon = r.MinLon,
+                Name = r.Name,
+                Subregions = GetSubregionNames(r.Name)
+            }).ToList();
+
+        return x;
+    }
 
     public IEnumerable<string> GetRegionCodes()
         => _db.Table<Region>().AsEnumerable().Select(r => r.Code);
@@ -91,19 +113,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
         return _db.Table<City>()
             .OrderBy(c => c.Name)
             .AsEnumerable()
-            .Select(c => new CityDetail
-            {
-                Default = c.Default,
-                Id = c.Id,
-                Lat = c.Lat,
-                Lon = c.Lon,
-                Name = c.Name,
-                RegionName = GetRegion(c.RegionId).Name,
-                RegionCode = GetRegion(c.RegionId).Code,
-                Subregion = c.Subregion,
-                RegionId = c.RegionId,
-            });
-
+            .Select(GetCityDetail);
     }
 
     public CityDetail GetCity(string regionName, string subregionName, string cityName)
@@ -113,18 +123,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
 
         var city = _db.Table<City>()
             .Where(c => c.RegionId == region.Id && c.Subregion.ToUpper() == subregionName.ToUpper() && c.Name.ToUpper() == cityName.ToUpper())
-            .Select(c => new CityDetail
-            {
-                Default = c.Default,
-                Id = c.Id,
-                Lat = c.Lat,
-                Lon = c.Lon,
-                Name = c.Name,
-                RegionName = GetRegion(c.RegionId).Name,
-                RegionCode = GetRegion(c.RegionId).Code,
-                Subregion = c.Subregion,
-                RegionId = c.RegionId,
-            })
+            .Select(GetCityDetail)
             .FirstOrDefault();
 
         return city ??
@@ -182,7 +181,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
         }
     }
 
-    public City SaveCity(City city, out bool inserted)
+    public CityDetail SaveCity(CityDetail city, out bool inserted)
     {
         City dbu = null;
         inserted = false;
@@ -198,10 +197,14 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
             dbu ??= new City();
 
             dbu.Subregion = city.Subregion;
-            dbu.RegionId = city.RegionId;
             dbu.Name = city.Name;
             dbu.Lat = city.Lat;
             dbu.Lon = city.Lon;
+
+            if (city.RegionId > 0)
+                dbu.RegionId = city.RegionId;
+            else
+                dbu.RegionId = GetRegion(city.RegionName)?.Id ?? FirstRegionId;
 
             if (newEntry)
             {
@@ -251,7 +254,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
             dbu = null;
         }
 
-        return dbu;
+        return GetCityDetail(dbu);
     }
 
     public int DeleteCity(int cityId)
@@ -285,4 +288,17 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
 
     private Region GetRegion(int regionId)
         => _db.Find<Region>(r => r.Id == regionId);
+
+    private CityDetail GetCityDetail(City c) => new CityDetail
+    {
+        Default = c.Default,
+        Id = c.Id,
+        Lat = c.Lat,
+        Lon = c.Lon,
+        Name = c.Name,
+        RegionName = GetRegion(c.RegionId).Name,
+        RegionCode = GetRegion(c.RegionId).Code,
+        Subregion = c.Subregion,
+        RegionId = c.RegionId,
+    };
 }

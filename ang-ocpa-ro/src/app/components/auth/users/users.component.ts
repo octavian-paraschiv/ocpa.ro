@@ -13,8 +13,6 @@ import { AppMenuManagementService } from 'src/app/services/api/app-menu-manageme
 import { RegisteredDeviceService } from 'src/app/services/api/registered-device.service';
 import { UserTypeService } from 'src/app/services/api/user-type.service';
 import { UserService } from 'src/app/services/api/user.service';
-import { MessagePopupService } from 'src/app/services/message-popup.service';
-
 
 @UntilDestroy()
 @Component({

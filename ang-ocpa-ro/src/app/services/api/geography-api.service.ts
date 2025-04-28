@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { CityDetail, GridCoordinates } from 'src/app/models/models-swagger';
+import { CityDetail, GridCoordinates, RegionDetail } from 'src/app/models/models-swagger';
 import { environment } from 'src/environments/environment';
 
 @UntilDestroy()
@@ -33,18 +33,23 @@ export class GeographyApiService {
             
     }
 
-    public getRegions(): Observable<string[]> {
-        const uri = `${environment.apiUrl}/geography/regions`;
+    public getAllRegions(): Observable<RegionDetail[]> {
+        const uri = `${environment.apiUrl}/geography/regions/all`;
+        return this.httpClient.get<RegionDetail[]>(uri);
+    }
+
+    public getRegionNames(): Observable<string[]> {
+        const uri = `${environment.apiUrl}/geography/regions/names`;
         return this.httpClient.get<string[]>(uri);
     }
 
-    public getSubregions(region: string): Observable<string[]> {
-        const uri = `${environment.apiUrl}/geography/subregions?region=${region}`;
+    public getSubregionNames(region: string): Observable<string[]> {
+        const uri = `${environment.apiUrl}/geography/subregions/names?region=${region}`;
         return this.httpClient.get<string[]>(uri);
     }
 
-    public getCities(region: string, subregion: string): Observable<string[]> {
-        const uri = `${environment.apiUrl}/geography/cities?region=${region}&subregion=${subregion}`;
+    public getCityNames(region: string, subregion: string): Observable<string[]> {
+        const uri = `${environment.apiUrl}/geography/cities/names?region=${region}&subregion=${subregion}`;
         return this.httpClient.get<string[]>(uri);
     }
 
@@ -60,6 +65,46 @@ export class GeographyApiService {
 
     public get cities(): CityDetail[] {
         return GeographyApiService.SortCities([], this._cities);
+    }
+
+    public saveCity(city: CityDetail): Observable<CityDetail> {
+        return this.httpClient.post<CityDetail>(`${environment.apiUrl}/geography/city/save`, city);
+    }
+
+    public deleteCity(id: number): Observable<Object> {
+        return this.httpClient.post(`${environment.apiUrl}/geography/city/delete/${id}`, undefined);
+    }
+
+    public static FilterCities(searchTerm: string, cities: CityDetail[]): CityDetail[] {
+        const allCities = cities ?? [];
+        let filteredCities: CityDetail[] = [];
+        if (allCities.length > 5) {
+            if (searchTerm?.length > 0) {
+                const terms = searchTerm.toLocaleUpperCase().split(' ').filter(t => t?.length > 0);
+                filteredCities = GeographyApiService.SortCities(terms, allCities.filter(city => {
+                let match = true;
+                // All search terms must match
+                for (let tt of terms) {
+                    let termMatch = false;
+                    termMatch ||= (city?.name ?? '').toLocaleUpperCase().includes(tt);
+                    termMatch ||= (city?.subregion ?? '').toLocaleUpperCase().startsWith(tt);
+                    termMatch ||= (city?.regionName ?? '').toLocaleUpperCase().startsWith(tt);
+                    match &&= termMatch;
+                    if (!match) break;
+                }
+                return match;
+                }));
+        
+            } else {
+                // no filter specified => no filtering needed
+                filteredCities = allCities;
+            }
+        } else {
+            // Less than 5 cities to show => no filtering needed
+            filteredCities = allCities;
+        }
+        
+        return filteredCities;
     }
 
     public static SortCities(terms: string[], cities: CityDetail[]): CityDetail[] {

@@ -3,6 +3,7 @@ import { CanActivateFn, ResolveFn, Route, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AppsMenusComponent } from 'src/app/components/auth/apps-menus/apps-menus.component';
 import { ContentBrowserComponent } from 'src/app/components/auth/content-browser/content-browser.component';
+import { GeographyComponent } from 'src/app/components/auth/geography/geography.component';
 import { LoginComponent } from 'src/app/components/auth/login/login.component';
 import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
@@ -74,6 +75,7 @@ export const routes = [
     { path: 'admin/meteo-database', component: MeteoDatabaseComponent, canActivate: [authGuard], title: titleResolver } as Route,
     { path: 'admin/apps-menus', component: AppsMenusComponent, canActivate: [authGuard], title: titleResolver } as Route,
     { path: 'admin/content', component: ContentBrowserComponent, canActivate: [authGuard], title: titleResolver } as Route,
+    { path: 'admin/geography', component: GeographyComponent, canActivate: [authGuard], title: titleResolver } as Route,
   
     { path: 'wiki-container/:a', component: WikiContainerComponent, canActivate: [authGuard], title: titleResolver } as Route,
     { path: 'wiki-container/:a/:b', component: WikiContainerComponent, canActivate: [authGuard], title: titleResolver } as Route,

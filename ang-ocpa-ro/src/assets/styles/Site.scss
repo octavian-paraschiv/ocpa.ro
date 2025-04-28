@@ -13,9 +13,15 @@
 @import './meteo-database.scss';
 @import './apps-menus.scss';
 @import './content-browser.scss';
+@import './geography.scss';
 
 html {
+    --mat-table-header-container-height: 0.8rem !important;
     --mat-table-row-item-container-height: auto !important;
+}
+
+.mat-mdc-header-row {
+    height: 0.8rem !important;
 }
 
 body, :root {

@@ -1,0 +1,65 @@
+<mat-card class="mat-user-card">
+    <mat-card-header style="padding: 0; padding-left: 0.1rem; padding-top: 0.1rem; padding-bottom: 0.1rem;">
+        <mat-card-subtitle [innerHtml]="title | translate: {name: city?.name}"></mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider style="margin: 0;"></mat-divider>
+    <mat-card-content class="mat-user-card-content" style="padding: 0;">
+        <form mat-dialog-content class="user-dialog-form" [formGroup]="cityForm" (ngSubmit)="onOk()" style="padding: 1rem;">
+            <div style="display: grid;">
+                <mat-form-field appearance="outline" class="user-form-control">
+                    <mat-label>{{'city-dialog.name' | translate}}</mat-label>
+                    <input formControlName="name" matInput [(value)]="city.name">
+                    <mat-error *ngIf="f?.name?.errors">{{'city-dialog.name-required' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="user-form-control" >
+                    <mat-label>{{'city-dialog.region' | translate}}</mat-label>
+                    <mat-select formControlName="region" [(value)]="selectedRegion" (selectionChange)="onRegionChanged()">
+                        <mat-option *ngFor="let r of regions;" [value]="r" >
+                          {{r.name}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="f?.region?.errors">{{'city-dialog.region-required' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="user-form-control" >
+                    <mat-label>{{'city-dialog.subregion' | translate}}</mat-label>
+                    <mat-select formControlName="subregion" [(value)]="selectedSubregion">
+                        <mat-option *ngFor="let sr of (selectedRegion?.subregions ?? []);" [value]="sr">
+                          {{sr}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="f?.subregion?.errors">{{'city-dialog.subregion-required' | translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="user-form-control" >
+                    <mat-label>{{'city-dialog.latitude' | translate}}</mat-label>
+                    <input matInput type="number" formControlName="latitude" [(value)]="city.lat"
+                        min="selectedRegion.minLat" min="selectedRegion.maxLat">
+                    <mat-error *ngIf="f?.latitude?.errors">
+                        {{'city-dialog.latitude-range' | translate: {min: selectedRegion.minLat, max: selectedRegion.maxLat} }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="user-form-control" >
+                    <mat-label>{{'city-dialog.longitude' | translate}}</mat-label>
+                    <input matInput type="number" formControlName="longitude" [(value)]="city.lon"
+                        min="selectedRegion.minLon" min="selectedRegion.maxLon">
+                    <mat-error *ngIf="f?.longitude?.errors">
+                        {{'city-dialog.longitude-range' | translate: {min: selectedRegion.minLon, max: selectedRegion.maxLon} }}
+                    </mat-error>
+                </mat-form-field>
+                <div class="user-form-control" *ngIf="this.editMode">
+                    <mat-label>{{'city-dialog.default' | translate}}</mat-label>
+                    <mat-checkbox [color]="'primary'"
+                        [checked]="city.default" (change)="city.default = ($event.checked)">
+                    </mat-checkbox>
+                </div>
+                <div mat-dialog-actions class="user-form-control">
+                    <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>
+                        {{'OK' | translate}}
+                    </button>
+                    <button style="margin: 0; padding: 0; " mat-raised-button (click)="onCancel()">
+                        {{'Cancel' | translate}}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
