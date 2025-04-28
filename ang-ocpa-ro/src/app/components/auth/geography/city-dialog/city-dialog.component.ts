@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { Component, OnInit, Inject, ViewChild, AfterViewInit } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { GeographyApiService } from 'src/app/services/api/geography-api.service'
     selector: 'city-dialog.component',
     templateUrl: './city-dialog.component.html'
 })
-export class CityDialogComponent implements OnInit {
+export class CityDialogComponent implements OnInit, AfterViewInit {
     cityForm: UntypedFormGroup;
     hide = true;
     editMode = false;
@@ -20,6 +20,9 @@ export class CityDialogComponent implements OnInit {
     selectedRegion: RegionDetail = { minLat: 0, maxLat: 0, minLon: 0, maxLon: 0 };
     selectedSubregion: string = undefined;
     regions: RegionDetail[] = [];
+
+    center: google.maps.LatLngLiteral = {lat: 24, lng: 12};
+    zoom = 12;
 
     get subregions(): string[] {
         const regionName = this.f?.region?.value;
@@ -32,6 +35,14 @@ export class CityDialogComponent implements OnInit {
         public dialogRef: MatDialogRef<CityDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public city: CityDetail
     ) {
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            const map = document.getElementById("map");
+            const x = map.querySelector("div > div:nth-child(2) > table > tr > td:nth-child(2) > button");
+            (x as HTMLButtonElement)?.click();
+        }, 500);
     }
 
     ngOnInit() {
@@ -64,15 +75,19 @@ export class CityDialogComponent implements OnInit {
 
                     this.selectedSubregion = 
                         this.selectedRegion.subregions.find(sr => sr === this.city.subregion) ??
-                        this.selectedRegion.subregions[0];
+                        (this.selectedRegion?.code === 'EU' ? 'Poland' : 'Brasov');
+
+                    this.zoom = this.selectedRegion?.code === 'EU' ? 10 : 12;
 
                 } else {
                     this.selectedRegion = this.regions[0];
-                    this.selectedSubregion = this.selectedRegion.subregions[0];
-                    this.city.lat = this.selectedRegion.minLat;
-                    this.city.lon = this.selectedRegion.minLon;
+                    this.selectedSubregion = this.selectedRegion?.code === 'EU' ? 'Poland' : 'Brasov';
+                    this.city.lat = 0.5 * this.selectedRegion.minLat + 0.5 * this.selectedRegion.maxLat;
+                    this.city.lon = 0.5 * this.selectedRegion.minLon + 0.5 * this.selectedRegion.maxLon;
+                    this.zoom = this.selectedRegion?.code === 'EU' ? 4 : 6;
                 }
 
+                this.center = { lat: this.city.lat, lng: this.city.lon };
                 this.attachLatLonValidators();
             });
     }
@@ -88,6 +103,27 @@ export class CityDialogComponent implements OnInit {
 
     onRegionChanged() {
         this.selectedSubregion = this.selectedRegion.subregions[0];
+        this.attachLatLonValidators();
+    }
+
+    onClickMap(event: google.maps.MapMouseEvent) {
+        this.f.latitude.setValue(parseFloat(event.latLng.lat().toFixed(2)));
+        this.f.longitude.setValue(parseFloat(event.latLng.lng().toFixed(2)));
+        event.stop();
+    }
+
+    updateZoom() {
+        if (this.editMode) {
+            this.zoom = this.selectedRegion?.code === 'EU' ? 10 : 12;
+
+        } else {
+            this.selectedSubregion = this.selectedRegion?.code === 'EU' ? 'Poland' : 'Brasov';
+            this.city.lat = 0.5 * this.selectedRegion.minLat + 0.5 * this.selectedRegion.maxLat;
+            this.city.lon = 0.5 * this.selectedRegion.minLon + 0.5 * this.selectedRegion.maxLon;
+            this.zoom = this.selectedRegion?.code === 'EU' ? 4 : 6;
+        }
+
+        this.center = { lat: this.city.lat, lng: this.city.lon };
     }
 
     attachLatLonValidators() {
@@ -97,6 +133,8 @@ export class CityDialogComponent implements OnInit {
             Validators.min(this.selectedRegion.minLat), Validators.max(this.selectedRegion.maxLat) ]);
         this.f.longitude.addValidators([ Validators.required,
             Validators.min(this.selectedRegion.minLon), Validators.max(this.selectedRegion.maxLon) ]);
+
+        this.updateZoom();
     }
 
     onCancel(): void {

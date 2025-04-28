@@ -1,5 +1,6 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { GoogleMapsModule } from '@angular/google-maps';
 import { BrowserModule } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
@@ -34,5 +35,6 @@ export const modules = [
     NgSelectModule,
     MaterialModule,
     NgChartsModule,
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    GoogleMapsModule,
 ];
