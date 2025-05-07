@@ -41,4 +41,12 @@ export class Helper {
         return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i)
                 .test(navigator?.userAgent);
     }
+
+    public static getHeaderChars(s: string): string {
+        const header = (s?.substring(0, Math.min(s.length - 1, 10)) ?? '');
+        return header
+            .split('')
+            .map(char => char.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0'))
+            .join(' ');
+    }
 }

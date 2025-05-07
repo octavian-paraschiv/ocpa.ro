@@ -8,6 +8,7 @@ import { Helper } from 'src/app/helpers/helper';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { MenuService } from 'src/app/services/api/menu.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
+import { OverlayService } from 'src/app/services/overlay.service';
 
 @UntilDestroy()
 @Component({ selector: 'base-component', template: '' })
@@ -18,6 +19,7 @@ export abstract class BaseComponent {
     protected readonly router = inject(Router);   
     protected readonly popup = inject(MessagePopupService);
     protected readonly menuService = inject(MenuService);
+    protected readonly overlay = inject(OverlayService);
 
     protected redirectToDefaultPage() {
         setTimeout(() => {

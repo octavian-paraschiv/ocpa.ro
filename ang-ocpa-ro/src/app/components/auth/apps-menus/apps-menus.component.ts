@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { fas, faSquarePlus, faSquarePen, faSquareMinus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { of, forkJoin } from 'rxjs';
+import { of, forkJoin, Observable } from 'rxjs';
 import { first, tap, switchMap } from 'rxjs/operators';
 import { AppDialogComponent } from 'src/app/components/auth/apps-menus/app-dialog/app-dialog.component';
 import { MenuDialogComponent } from 'src/app/components/auth/apps-menus/menu-dialog/menu-dialog.component';
@@ -66,9 +66,11 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
             keyErr = 'apps-menus.menu-assoc-remove-err';
         }
         
+        this.overlay.show();
+
         obs.pipe(first(), untilDestroyed(this)).subscribe({
             next: () => this.popup.showSuccess(key),
-            error: () => this.popup.showError(keyErr),
+            error: () => this.popup.showError(keyErr)
         });
     }
 
@@ -109,19 +111,25 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
                 tap(appsMenus => this.appsMenus = appsMenus), 
                 untilDestroyed(this));
 
+        this.overlay.show();
+
         forkJoin([o1, o2, o3])
             .pipe(untilDestroyed(this))
-            .subscribe(() => {
-                this.appMenuData = this.menus.map(menu => ({
-                    menuId: menu.id,
-                    menuName: menu.name,
-                    appData: this.apps.map(app => ({
-                        appId: app.id,
-                        appName: app.name,
-                        active: this.appsMenus.find(am => am.applicationId === app.id && am.menuId === menu.id)?.id > 0
-                    }) as AppData)
-                }) as AppMenuData);
-            });
+            .subscribe({
+                next: () => {
+                    this.overlay.hide();
+                    this.appMenuData = this.menus.map(menu => ({
+                        menuId: menu.id,
+                        menuName: menu.name,
+                        appData: this.apps.map(app => ({
+                            appId: app.id,
+                            appName: app.name,
+                            active: this.appsMenus.find(am => am.applicationId === app.id && am.menuId === menu.id)?.id > 0
+                        }) as AppData)
+                    }) as AppMenuData);
+                },
+                error: () => this.overlay.hide()
+        });
     }
 
     displayMode(displayModeId: number) {
@@ -136,6 +144,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
+                this.overlay.show();
                 this.appMenuService.deleteMenu(menu.id)
                 .pipe(untilDestroyed(this))
                 .subscribe({
@@ -143,7 +152,9 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
                         this.onInit();
                         this.popup.showSuccess('apps-menus.success-delete-menu', { name: menu.name });
                     },
-                    error: err => this.popup.showError(err.toString(), { name: menu.name })
+                    error: err => {
+                        this.popup.showError(err.toString(), { name: menu.name });
+                    }
                 });
             }
         });
@@ -157,6 +168,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
+                this.overlay.show();
                 this.appMenuService.deleteApp(app.id)
                 .pipe(untilDestroyed(this))
                 .subscribe({
@@ -164,7 +176,9 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
                         this.onInit();
                         this.popup.showSuccess('apps-menus.success-delete-app', { name: app.name });
                     },
-                    error: err => this.popup.showError(err.toString(), { name: app.name })
+                    error: err => {
+                        this.popup.showError(err.toString(), { name: app.name });
+                    }
                 });
             }
         });
@@ -174,7 +188,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
         MenuDialogComponent.showDialog(this.dialog, menu)
         .pipe(
             untilDestroyed(this),
-            switchMap(menu => menu?.id === -1 ? of(menu) : this.appMenuService.saveMenu(menu))            
+            switchMap(menu => menu?.id === -1 ? of(menu) : this._saveMenu(menu))            
         ).subscribe({
             next: menu => {
                 if (menu) {
@@ -186,15 +200,22 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
                     this.popup.showError('apps-menus.error-save-menu');
                 }
             },
-            error: err => this.popup.showError(err.toString(), { name: menu.name })
+            error: err => {
+                this.popup.showError(err.toString(), { name: menu.name });
+            }
         });
+    }
+
+    _saveMenu(menu: Menu): Observable<Menu> {
+        this.overlay.show();
+        return this.appMenuService.saveMenu(menu);
     }
 
     saveApp(app: Application = undefined) {
         AppDialogComponent.showDialog(this.dialog, app)
         .pipe(
             untilDestroyed(this),
-            switchMap(app => app?.id === -1 ? of(app) : this.appMenuService.saveApp(app))
+            switchMap(app => app?.id === -1 ? of(app) : this._saveApp(app))
         ).subscribe({
             next: app => {
                 if (app) {
@@ -206,7 +227,14 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
                     this.popup.showError('apps-menus.error-save-app');
                 }
             },
-            error: err => this.popup.showError(err.toString(), { name: app.name })
+            error: err => {
+                this.popup.showError(err.toString(), { name: app.name });
+            }
         });
+    }
+
+    _saveApp(app: Application): Observable<Application> {
+        this.overlay.show();
+        return this.appMenuService.saveApp(app);
     }
 }

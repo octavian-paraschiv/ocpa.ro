@@ -3,4 +3,6 @@
     <label mat-small id="mde-path">{{contentPath}}</label>
     <textarea id="mde-edit" [(ngModel)]="content" (keydown)="onKeyDown()" [disabled]="!editable" ></textarea>
     <app-wiki-viewer id="mde-preview" #viewer [ngStyle]="previewStyle"></app-wiki-viewer>
+    <img *ngIf="image" id="mde-preview" src="{{image}}" />
+    <textarea *ngIf="!editable && !image" id="mde-preview" [(ngModel)]="binary" disabled="true"></textarea>
 </div>

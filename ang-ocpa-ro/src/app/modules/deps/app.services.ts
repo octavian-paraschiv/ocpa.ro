@@ -12,6 +12,7 @@ import { UtilityService } from 'src/app/services/api/utility.service';
 import { FingerprintService } from 'src/app/services/fingerprint.service';
 import { Iso3166HelperService } from 'src/app/services/iso3166-helper.service';
 import { MessagePopupService } from 'src/app/services/message-popup.service';
+import { OverlayService } from 'src/app/services/overlay.service';
 import { SessionInformationService } from 'src/app/services/session-information.service';
 import { TranslationInitService } from 'src/app/services/translation-init.service';
 
@@ -32,5 +33,6 @@ export const services = [
      ContentApiService,
      AppMenuManagementService,
      MessagePopupService,
-     UtilityService
+     UtilityService,
+     OverlayService
 ];

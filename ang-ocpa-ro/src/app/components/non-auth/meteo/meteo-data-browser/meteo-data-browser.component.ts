@@ -14,6 +14,7 @@ import { MeteoApiService } from 'src/app/services/api/meteo-api.service';
 import { TempPipe, VolumePipe, DistancePipe } from 'src/app/services/unit-transform-pipe';
 import { Chart, ChartConfiguration, ChartOptions, TooltipItem } from "chart.js";
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
+import { OverlayService } from 'src/app/services/overlay.service';
 
 Chart.register(annotationPlugin);
 
@@ -41,7 +42,6 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
   hint = '';
 
   initialized = false;
-  isFetching = false;
   fetchEvent$ = new Subject();
 
   regions: string[];
@@ -134,8 +134,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
   }
 
   get dataHint(): string {
-    const key = this.isFetching ? 'meteo.data-hint-fetching' :
-      (this.meteoData?.length > 0) ? 'meteo.data-hint' : 
+    const key = (this.meteoData?.length > 0) ? 'meteo.data-hint' : 
         'meteo.data-hint-fetching-alt';
 
     return this.translate.instant(key, { 
@@ -249,19 +248,23 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
 
   private doFetch() {
     this.meteoData = [];
-    this.isFetching = true;
     this.fetchEvent$.next();
+    this.overlay.show();
 
     this.meteoApi.getData(this.dbi, this.lookupRegion, this.lookupSubregion, this.lookupCity, 0, 0)
       .pipe(takeUntil(this.fetchEvent$), take(1), untilDestroyed(this))
-      .subscribe(meteoApiData => {
+      .subscribe({
+        next: meteoApiData => {
           this.hint = this.defaultHint ?
             this.translate.instant('meteo.default-hint') : 
             this.translate.instant('meteo.alt-hint', 
               { name: meteoApiData?.name, length: meteoApiData?.dataCount ?? 0 });
 
-        this.processApiData(meteoApiData);
-        this.isFetching = false;
+            this.processApiData(meteoApiData);
+            this.overlay.hide();
+          },
+
+        error: () => this.overlay.hide()
       });
   }
 

@@ -158,12 +158,8 @@
 
         </ng-container>
 
-        <ng-container *ngIf="!isFetching && meteoData?.length === 0" >
+        <ng-container *ngIf="meteoData?.length === 0" >
             <label mat-small class="meteo-data-grid-empty">{{'meteo.empty-db' | translate }}</label>
-        </ng-container>
-
-        <ng-container *ngIf="isFetching" >
-            <img class="meteo-data-grid-empty" src="assets/images/spinner.gif" style="height: 10rem; color: transparent;" />
         </ng-container>
     </div>
 

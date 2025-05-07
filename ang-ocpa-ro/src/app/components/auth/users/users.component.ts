@@ -56,6 +56,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
+                this.overlay.show();
                 this.userService.deleteUser(loginId)
                 .pipe(untilDestroyed(this))
                 .subscribe({
@@ -85,7 +86,9 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
                     this.popup.showError('users.error-save');
                 }
             },
-            error: err => this.popup.showError(err.toString(), { loginId: user.loginId })
+            error: err => {
+                this.popup.showError(err.toString(), { loginId: user.loginId });
+            }
         });
     }
 
@@ -93,6 +96,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
         if (ui.enabled)
             ui.loginAttemptsRemaining = 5;
 
+        this.overlay.show();
         return this.userService.saveUser(ui).pipe(
             first(),
             tap(u => {

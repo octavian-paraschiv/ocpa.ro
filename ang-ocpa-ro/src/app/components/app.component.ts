@@ -1,31 +1,41 @@
-import { Component, OnInit, NgZone, inject, HostListener } from '@angular/core';
+import { Component, OnInit, NgZone, inject, HostListener, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BehaviorSubject } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
+import { OverlayComponent } from 'src/app/components/shared/overlay/overlay.component';
 import { Helper } from 'src/app/helpers/helper';
 import { MessageBoxOptions } from 'src/app/models/models-local';
 import { UtilityService } from 'src/app/services/api/utility.service';
+import { OverlayService } from 'src/app/services/overlay.service';
 
 @UntilDestroy()
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent extends BaseComponent implements OnInit {
+export class AppComponent extends BaseComponent implements OnInit, AfterViewInit {
+  @ViewChild(OverlayComponent) overlayComponent: OverlayComponent;
+  
   private dialogTimeout: any = undefined;
   private dialogRef: MatDialogRef<MessageBoxComponent> = undefined;
 
   private readonly ngZone = inject(NgZone);
   private readonly utility = inject(UtilityService);
+  private readonly overlayService = inject(OverlayService);
 
   private refreshTokenPending$ = new BehaviorSubject<boolean>(false);
 
   version = 'n/a';
 
+  ngAfterViewInit(): void {
+    this.overlayService.setOverlayComponent(this.overlayComponent);
+  }
+
   ngOnInit() {
+
     this.utility.getBackendVersion()
       .pipe(untilDestroyed(this))
       .subscribe(res => this.version = (res ?? '').replace(/"/g, ''));

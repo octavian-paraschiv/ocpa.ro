@@ -2,6 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
+import { BaseComponent } from 'src/app/components/base/BaseComponent';
 import { ContentApiService } from 'src/app/services/api/content-api.service';
 
 @UntilDestroy()
@@ -9,18 +10,24 @@ import { ContentApiService } from 'src/app/services/api/content-api.service';
     selector: 'app-wiki-viewer',
     template: '<markdown katex emoji [data]="content"></markdown>'
 })
-export class WikiViewerComponent {
+export class WikiViewerComponent extends BaseComponent {
     content = 'n/a';
-    private readonly translate = inject(TranslateService);
     private readonly contentService = inject(ContentApiService);
 
     public displayLocation(location: string, renderTranslated: boolean) {
+        this.overlay.show();
         this.contentService
             .renderContent(location, renderTranslated)
             .pipe(first(), untilDestroyed(this))
             .subscribe({
-                next: res => this.content = res ?? this.translate.instant('wiki.default-content'),
-                error: err => this.content = err.toString(),
+                next: res => { 
+                    this.overlay.hide();
+                    this.content = res ?? this.translate.instant('wiki.default-content');
+                },
+                error: err => {
+                    this.overlay.hide();
+                    this.content = err.toString();
+                }
             });
     }
 

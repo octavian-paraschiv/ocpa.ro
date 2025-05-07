@@ -51,7 +51,7 @@ export class GeographyComponent extends BaseAuthComponent implements AfterViewIn
         CityDialogComponent.showDialog(this.dialog, city).pipe(
             first(),
             untilDestroyed(this),
-            switchMap(cd => cd?.id === -1 ? of(cd) : this.geographyService.saveCity(cd))                
+            switchMap(cd => cd?.id === -1 ? of(cd) : this._saveCity(cd))                
         ).subscribe({
             next: (cd) => {
                 if (cd) {
@@ -60,14 +60,22 @@ export class GeographyComponent extends BaseAuthComponent implements AfterViewIn
                             .init()
                             .pipe(untilDestroyed(this), filter(res => !!res))
                             .subscribe(() => this.searchCities(this.searchTerm));
+
                         this.popup.showSuccess('geography.success-save-city', { name: cd.name });
                     }
                 } else {
                     this.popup.showError('users.error-save-city');
                 }
             },
-            error: err => this.popup.showError(err.toString(), { name: city.name })
+            error: err => {
+                this.popup.showError(err.toString(), { name: city.name });
+            }
         });
+    }
+
+    _saveCity(city: CityDetail) {
+        this.overlay.show();
+        return this.geographyService.saveCity(city);
     }
 
     onDelete(city: CityDetail) {
@@ -78,6 +86,7 @@ export class GeographyComponent extends BaseAuthComponent implements AfterViewIn
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
+                this.overlay.show();
                 this.geographyService.deleteCity(city.id)
                 .pipe(untilDestroyed(this))
                 .subscribe({
@@ -86,10 +95,13 @@ export class GeographyComponent extends BaseAuthComponent implements AfterViewIn
                             .init()
                             .pipe(untilDestroyed(this), filter(res => !!res))
                             .subscribe(() => this.searchCities(this.searchTerm));
+
                         this.popup.showSuccess('geography.success-delete-city', { name: city.name });
                     },
-                    error: err => this.popup.showError(err.toString(), { name: city.name, 
-                        subregion: `${city.regionName} > ${city.subregion}` })
+                    error: err => {
+                        this.popup.showError(err.toString(), { name: city.name, 
+                            subregion: `${city.regionName} > ${city.subregion}` });
+                        }
                 });
             }
         });

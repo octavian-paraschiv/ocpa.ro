@@ -51,6 +51,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
+                this.overlay.show();
                 this.fileOpen((data: ArrayBuffer) => {
                     this.meteoApi.upload(db.dbi ?? 0, data)
                         .pipe(untilDestroyed(this))
@@ -84,6 +85,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
         .pipe(untilDestroyed(this))
         .subscribe(res => {
             if (res) {
+                this.overlay.show();
                 this.meteoApi.promote(db.dbi ?? 0)
                     .pipe(untilDestroyed(this))
                     .subscribe({
@@ -118,9 +120,10 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
         var input = document.createElement('input');
         input.type = 'file';
         input.accept = ".db3";
-        input.onchange = function () {
-            input.files[0].arrayBuffer().then(callback);
-        }
+        input.onchange = () => input.files[0].arrayBuffer().then(callback);
+        input.onabort = () => this.overlay.hide();
+        input.oncancel = () => this.overlay.hide();
+        input.onclose = () => this.overlay.hide();
         input.click();
     }
 }
