@@ -14,6 +14,10 @@ export class WikiViewerComponent extends BaseComponent {
     content = 'n/a';
     private readonly contentService = inject(ContentApiService);
 
+    public reset() {
+        this.content = 'n/a';
+    }
+
     public displayLocation(location: string, renderTranslated: boolean) {
         this.overlay.show();
         this.contentService

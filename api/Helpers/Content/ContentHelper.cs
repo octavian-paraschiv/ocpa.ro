@@ -17,6 +17,10 @@ namespace ocpa.ro.api.Helpers.Content
 
         public ContentUnit ListContent(string contentPath, int? level, string filter);
 
+        public UpdatedContentUnit MoveContent(string contentPath, string newPath);
+
+        public UpdatedContentUnit CreateNewFolder(string contentPath);
+
         public Task<UpdatedContentUnit> CreateOrUpdateContent(string contentPath, byte[] contentBytes);
 
         public HttpStatusCode DeleteContent(string contentPath);
@@ -49,6 +53,37 @@ namespace ocpa.ro.api.Helpers.Content
             return data;
         }
 
+        public UpdatedContentUnit CreateNewFolder(string contentPath)
+        {
+            var unit = ListContent(contentPath, 0, null);
+
+            UpdatedContentUnit ucu = new()
+            {
+                Children = unit?.Children,
+                Path = Path.GetDirectoryName(contentPath),
+                Name = Path.GetFileName(contentPath),
+                Type = unit?.Type ?? ContentUnitType.None,
+                StatusCode = HttpStatusCode.NotFound
+            };
+
+            var unitType = unit?.Type ?? ContentUnitType.None;
+
+            if (unitType == ContentUnitType.None)
+            {
+                if (CreateFolder(contentPath))
+                    ucu.StatusCode = HttpStatusCode.Created;
+                else
+                    ucu.StatusCode = HttpStatusCode.InternalServerError;
+            }
+            else if (unitType == ContentUnitType.None)
+                ucu.StatusCode = HttpStatusCode.OK; // Already exists, report success
+            else
+                // The entry is a file
+                ucu.StatusCode = HttpStatusCode.Conflict;
+
+            return ucu;
+        }
+
         public async Task<UpdatedContentUnit> CreateOrUpdateContent(string contentPath, byte[] contentBytes)
         {
             var unit = ListContent(contentPath, 0, null);
@@ -56,7 +91,8 @@ namespace ocpa.ro.api.Helpers.Content
             UpdatedContentUnit ucu = new()
             {
                 Children = unit?.Children,
-                Path = contentPath,
+                Path = Path.GetDirectoryName(contentPath),
+                Name = Path.GetFileName(contentPath),
                 Type = unit?.Type ?? ContentUnitType.None,
                 StatusCode = HttpStatusCode.NotFound
             };
@@ -117,6 +153,42 @@ namespace ocpa.ro.api.Helpers.Content
             return HttpStatusCode.OK;
         }
 
+        public UpdatedContentUnit MoveContent(string contentPath, string newPath)
+        {
+            var unit = ListContent(contentPath, 0, null);
+
+            UpdatedContentUnit ucu = new()
+            {
+                Children = unit?.Children,
+                Path = Path.GetDirectoryName(contentPath),
+                Name = Path.GetFileName(contentPath),
+                Type = unit?.Type ?? ContentUnitType.None,
+                StatusCode = HttpStatusCode.NotFound
+            };
+
+
+            if (unit.Type == ContentUnitType.Folder)
+            {
+                string path1 = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
+                string path2 = Path.Combine(_hostingEnvironment.ContentPath(), $"{newPath}");
+                Directory.Move(path1, path2);
+
+                ucu.StatusCode = HttpStatusCode.OK;
+                ucu.Name = Path.GetFileName(path2);
+            }
+            else if (unit.Type == ContentUnitType.File)
+            {
+                string path1 = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
+                string path2 = Path.Combine(_hostingEnvironment.ContentPath(), $"{newPath}");
+                File.Move(path1, path2);
+
+                ucu.StatusCode = HttpStatusCode.OK;
+                ucu.Name = Path.GetFileName(path2);
+            }
+
+            return ucu;
+        }
+
         public ContentUnit ListContent(string contentPath, int? level, string filter)
         {
             string path = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
@@ -149,8 +221,8 @@ namespace ocpa.ro.api.Helpers.Content
                 if (!level.HasValue || level > 0)
                 {
                     var dirs = dirInfo.GetDirectories()?
-                        .Select(d => ExplorePath(d.FullName, level - 1, filter))
-                        .Where(c => c?.Children?.Count > 0);
+                        .Select(d => ExplorePath(d.FullName, level - 1, filter));
+                    //.Where(c => c?.Children?.Count > 0);
 
                     var files = GetFilesWithComposedFilter(dirInfo, filter)
                         .Select(f => ExplorePath(f.FullName, level - 1, filter))
@@ -198,6 +270,22 @@ namespace ocpa.ro.api.Helpers.Content
                 string path = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 await File.WriteAllBytesAsync(path, contentBytes);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return false;
+        }
+
+        private bool CreateFolder(string contentPath)
+        {
+            try
+            {
+                string path = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
+                Directory.CreateDirectory(path);
                 return true;
             }
             catch (Exception ex)

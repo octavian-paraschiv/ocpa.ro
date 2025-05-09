@@ -29,6 +29,8 @@ namespace ocpa.ro.api.Models.Content
         public long Size { get; set; } = 0;
 
         public List<ContentUnit> Children { get; set; }
+
+        public bool Selected { get; set; }
     }
 
     public class UpdatedContentUnit : ContentUnit

@@ -28,10 +28,10 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     size = "grow-6";
 
     users: User[] = [];
-    usersColumns: string[] = [ 'user-add', 'user-edit', 'user-delete', 'user-loginId', 'user-email', 'user-type', 'user-otp', 'user-attempts', 'user-disabled', 'filler' ];
+    usersColumns: string[] = ['user-add', 'user-edit', 'user-delete', 'user-loginId', 'user-email', 'user-type', 'user-otp', 'user-attempts', 'user-disabled', 'filler'];
 
     devices: RegisteredDevice[] = [];
-    devicesColumns: string[] = [ 'device-view', 'device-delete', 'device-deviceId', 'device-loginId', 'device-timestamp', 'device-ipaddress', 'filler' ];
+    devicesColumns: string[] = ['device-view', 'device-delete', 'device-deviceId', 'device-loginId', 'device-timestamp', 'device-ipaddress', 'filler'];
 
     private readonly appMenuService = inject(AppMenuManagementService);
     private readonly userService = inject(UserService);
@@ -53,28 +53,28 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
             title: this.translate.instant('title.confirm'),
             message: this.translate.instant('users.delete-user', { loginId })
         } as MessageBoxOptions)
-        .pipe(untilDestroyed(this))
-        .subscribe(res => {
-            if (res) {
-                this.overlay.show();
-                this.userService.deleteUser(loginId)
-                .pipe(untilDestroyed(this))
-                .subscribe({
-                    next: () => {
-                        this.ngOnInit();
-                        this.popup.showSuccess('users.success-delete', { loginId });
-                    },
-                    error: err => this.popup.showError(err.toString(), { loginId })
-                });
-            }
-        });
+            .pipe(untilDestroyed(this))
+            .subscribe(res => {
+                if (res) {
+                    this.overlay.show();
+                    this.userService.deleteUser(loginId)
+                        .pipe(untilDestroyed(this))
+                        .subscribe({
+                            next: () => {
+                                this.ngOnInit();
+                                this.popup.showSuccess('users.success-delete', { loginId });
+                            },
+                            error: err => this.popup.showError(err.toString(), { loginId })
+                        });
+                }
+            });
     }
 
     saveUser(user: User = undefined) {
         UserDialogComponent.showDialog(this.dialog, user).pipe(
             first(),
             untilDestroyed(this),
-            switchMap(ui => ui?.id === -1 ? of(ui) : this._saveUser(ui))                
+            switchMap(ui => ui?.id === -1 ? of(ui) : this._saveUser(ui))
         ).subscribe({
             next: (usr) => {
                 if (usr) {
@@ -106,7 +106,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
                     this.appMenuService.saveAppsForUser(u.id, ui.appsForUser)
                         .pipe(first(), untilDestroyed(this))
                         .subscribe({
-                            next: () => {},
+                            next: () => { },
                             error: err => throwError(err)
                         });
                 }
@@ -119,22 +119,22 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     get currentLoginId() {
-        return this.authService.userLoginState$.getValue();
+        return this.authService.currentLoginId;
     }
 
     onDeleteDevice(deviceId: string) {
         MessageBoxComponent.show(this.dialog, {
             title: this.translate.instant('title.confirm'),
-            message: this.translate.instant('users.delete-device', { deviceId : deviceId })
+            message: this.translate.instant('users.delete-device', { deviceId: deviceId })
         } as MessageBoxOptions)
-        .pipe(untilDestroyed(this))
-        .subscribe(res => {
-            if (res) {
-                this.regDeviceService.deleteRegisteredDevice(deviceId)
-                .pipe(untilDestroyed(this))
-                .subscribe(() => this.ngOnInit());
-            }
-        });
+            .pipe(untilDestroyed(this))
+            .subscribe(res => {
+                if (res) {
+                    this.regDeviceService.deleteRegisteredDevice(deviceId)
+                        .pipe(untilDestroyed(this))
+                        .subscribe(() => this.ngOnInit());
+                }
+            });
     }
 
     onViewDevice(device: RegisteredDevice) {

@@ -1,39 +1,85 @@
 .content-browser {
   color: $forecolor !important;
   background-color: $backcolor !important;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: 30vw 1fr 3px 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-columns: 30vw 1fr 1fr;
+  grid-template-rows: 25px 1fr;
   grid-template-areas: 
-    "tv mde-path mde-path mde-path"
-    "tv mde-edit . mde-preview"
+    "buttons mde-path mde-path"
+    "tv mde-edit mde-preview"
+}
+.content-browser-buttons {
+  display: flex;
+  flex-direction: row;
+  background-color: lightgray;
+  padding-left: 5px;
+  align-items: center;
+}
+.content-browser-button {
+  text-decoration: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.content-browser-button-folder {
+  @extend .content-browser-button;
+  color: navy;
+}
+.content-browser-button-file {
+  @extend .content-browser-button;
+  color: blue;
+}
+.content-browser-button-upload {
+  @extend .content-browser-button;
+  color: green;
+}
+.content-browser-button-delete {
+  @extend .content-browser-button;
+  color: red;
+}
+.content-browser-button-rename {
+  @extend .content-browser-button;
+  color: orange;
+}
+.content-browser-button-disabled {
+  @extend .content-browser-button;
+  color: lightgray;
 }
 
 .mat-tree-node, .mat-nested-tree-node {
   color: $forecolor !important;
-  
 }
 
 app-content-tree {
   grid-area: tv;
   border: 2px solid $forecolor;
   color: $forecolor;
-  min-height: 90vh;  
-  max-height: 90vh;
+  min-width: calc(30vw - 0.5rem);
+  max-width: calc(30vw - 0.5rem);
+  min-height: 85vh;  
+  max-height: 85vh;
   margin: 0;
-  margin-right: 0.5rem;
   overflow-y: auto;
   overflow-x: auto;
 }
 
 #mde-edit {
   grid-area: mde-edit;
-  border: 1px solid lightgray;
-  margin-top: 0;
+  font-size: 0.7rem;
+  border: 2px solid $forecolor;
+  margin: 0;
+  //margin-left: 3px;
+  //min-width: calc(33vw - 0.5rem);
+  //max-width: calc(33vw - 0.5rem);
+  min-height: 85vh;  
+  max-height: 85vh;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 #mde-path {
   grid-area: mde-path;
@@ -45,8 +91,23 @@ app-content-tree {
 }
 #mde-preview {
   grid-area: mde-preview;
+  border: 2px solid $forecolor;
+  margin: 0;
+  margin-left: 3px;
+  min-width: calc(33vw - 0.5rem);
+  max-width: calc(33vw - 0.5rem);
+  min-height: 85vh;  
+  max-height: 85vh;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+#mde-preview-image {
+  grid-area: mde-preview;
   border: 1px solid lightgray;
-  margin-top: 0;
+  margin: 0;
+  margin-left: 3px;
+  min-width: calc(33vw - 0.5rem);
+  max-width: calc(33vw - 0.5rem);
 }
 
 .mat-tree-node {
@@ -72,4 +133,14 @@ app-content-tree {
   
 .content-tree .mat-nested-tree-node div[role=group] {
   padding-left: 25px;
+}
+
+.selected {
+  background-color: lightblue;
+}  
+
+.node-name-form-control {
+    margin: 0;
+    padding: 0;
+    width: 42rem;
 }

@@ -1,10 +1,9 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { faFileText } from '@fortawesome/free-regular-svg-icons';
 import { faFolderOpen, faFolderClosed, faFileImage, faFile, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslateService } from '@ngx-translate/core';
 import { ContentUnit, ContentUnitType } from 'src/app/models/models-swagger';
 import { ContentApiService } from 'src/app/services/api/content-api.service';
 
@@ -26,43 +25,85 @@ export class ContentTreeComponent implements OnInit {
   otherFile = faFile;
   unknown = faQuestion;
 
-  size = "shrink-6";
+  size = "grow-2";
 
   treeControl = new NestedTreeControl<ContentUnit>(node => node.children);
   dataSource = new MatTreeNestedDataSource<ContentUnit>();
 
-  selectedNode: ContentUnit = undefined;
-
-  constructor(private translate: TranslateService,
-    private contentService: ContentApiService
+  constructor(private contentService: ContentApiService,
+    private cdr: ChangeDetectorRef
   ) {
   }
 
   ngOnInit(): void {
+    this.reloadAndSelect(undefined);
+  }
+
+  reloadAndSelect(path: string) {
     this.contentService.listContent(this.path, this.level, this.filter)
       .pipe(untilDestroyed(this))
-      .subscribe(res => this.dataSource.data = res.children);
+      .subscribe(res => {
+        this.dataSource.data = res.children;
+        const nodes = this.flattenTree(res.children);
+        const node = nodes.find(node => `${node.path}/${node.name}` === path) ?? nodes[0];
+        this.selectAndExpandNode(node);
+      });
   }
 
   select(node: ContentUnit) {
-    if (node === this.selectedNode)
-      this.selectedNode = undefined;
-    else {
-      this.selectedNode = node;
-      this.nodeSelected.emit(node);
+    this.flattenTree(this.dataSource.data).forEach(node => node.selected = false);
+    if (node) {
+      node.selected = true;
+    }
+    this.nodeSelected.emit(node);
+  }
+  
+  flattenTree(nodes: ContentUnit[]): ContentUnit[] {
+    let flatArray: ContentUnit[] = [];
+  
+    function traverse(node: ContentUnit) {
+      flatArray.push(node);
+      if (node.children) {
+        node.children.forEach(child => traverse(child));
+      }
+    }
+  
+    nodes.forEach(node => traverse(node));
+    return flatArray.sort((n1, n2) => n1?.path?.localeCompare(n2?.path));
+  }  
+  
+  selectAndExpandNode(node: ContentUnit) {
+    this.flattenTree(this.dataSource.data).forEach(node => node.selected = false);
+    if (node) {
+      const path = this.findNode(this.dataSource.data, node);
+      if (path) {
+        path.forEach(n => this.treeControl.expand(n));
+        node.selected = true;
+        this.nodeSelected.emit(node);
+        this.cdr.detectChanges(); // Ensure change detection picks up the changes
+      }
     }
   }
+  
+  findNode(nodes: ContentUnit[], targetNode: ContentUnit, path: ContentUnit[] = []): ContentUnit[] | null {
+    for (let node of nodes) {
+      const currentPath = [...path, node];
+      if (node === targetNode) {
+        return currentPath;
+      }
+      if (node.children) {
+        const found = this.findNode(node.children, targetNode, currentPath);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
+  }
 
-  isSelected = (node: ContentUnit) => 
-    node?.name === this.selectedNode?.name && 
-    node?.path === this.selectedNode?.path;
+  hasChild = (_: number, node: ContentUnit) => node?.children?.length > 0;
 
-  class = (node: ContentUnit) => this.isSelected(node) ? 'mat-tree-node warmer' : 'mat-tree-node'
-
-  hasChild = (_: number, node: ContentUnit) => 
-    node?.children?.length > 0;
-
-    icon(node: ContentUnit) {
+  icon(node: ContentUnit) {
     switch(node?.type) {
       case ContentUnitType.Folder:
         return this.treeControl.isExpanded(node) ? this.folderExpanded : this.folder;

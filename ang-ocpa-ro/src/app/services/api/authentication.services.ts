@@ -137,7 +137,14 @@ export class AuthenticationService {
             return new Date(userSessionInfo.tokenExpiration) < now;
         }
         
-        return false;
+        return true;
+    }
+
+    get currentLoginId(): string {
+        if (!this.isSessionExpired()) {
+            return this.sessionInfo.getUserSessionInformation().loginId;
+        }
+        return undefined;
     }
 
     isSessionExpirationPending(): boolean {
@@ -154,7 +161,7 @@ export class AuthenticationService {
 
     isUserLoggedIn(): boolean {
         const loggedInUser = this.sessionInfo.getUserSessionInformation()?.loginId;
-        return (loggedInUser?.length > 0 && !this.isSessionExpired() && this.userLoginState$.getValue());
+        return (loggedInUser?.length > 0 && !this.isSessionExpired()/* && this.userLoginState$.getValue()*/);
     }
 
     public refreshAuthentication(): Observable<string> {

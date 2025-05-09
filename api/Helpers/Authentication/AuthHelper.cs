@@ -256,7 +256,8 @@ namespace ocpa.ro.api.Helpers.Authentication
                     var userType = _db.Table<UserType>().Where(ut => ut.Id == user.Type).First();
 
                     return _db.Table<AppMenu>()
-                        .Where(am => (am.UserId == user.Id) || (am.UserId == null && userType.Code == "ADM"));
+                        .Where(am => (am.UserId == user.Id) || (am.UserId == null && userType.Code == "ADM"))
+                        .DistinctBy(am => am.Id);
                 }
             }
             catch (Exception ex)
@@ -361,3 +362,4 @@ namespace ocpa.ro.api.Helpers.Authentication
         }
     }
 }
+

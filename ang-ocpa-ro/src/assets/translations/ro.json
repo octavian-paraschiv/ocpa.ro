@@ -329,10 +329,34 @@
         "subregion": "Subregiune",
         "subregion-required": "Subregiunea este obligatorie",
         "latitude": "Latitudine",
-        "latitude-range": "Latitudinea trebuie să fie între {{min}} si {{max}}",
+        "latitude-range": "Latitudinea trebuie să fie între {{min}} și {{max}}",
         "longitude": "Longitudine",
-        "longitude-range": "Longitudinea trebuie să fie între {{min}} si {{max}}",
+        "longitude-range": "Longitudinea trebuie să fie între {{min}} și {{max}}",
         "default": "Localitate implicită pt. subregiune",
         "city-filter": "Text căutare"
+    },
+
+    "content-browser": {
+        "new-folder-success": "Folderul '{{name}}' a fost creat cu succes",
+        "new-folder-error": "Nu s-a putut crea un folder nou sub '{{name}}'",
+        "new-file-success": "Fișierul '{{name}}' a fost creat cu succes",
+        "new-file-error": "Nu s-a putut crea un fișier nou sub '{{name}}'",
+        "rename-success": "Redenumit cu succes ca '{{name}}'",
+        "rename-error": "Nu s-a putut efectua redenumirea ca '{{name}}'",
+        "upload-success": "Fișierul a fost încărcat cu succes sub '{{name}}'",
+        "upload-error": "Nu s-a putut încărca fișierul sub '{{name}}'",
+        "delete-node": "Sunteți sigur că doriți să ștergeți '{{name}}'?<br><br>Dacă continuați, acesta nu va putea fi recuperat.",
+        "delete-success": "'{{name}}' a fost șters cu succes.",
+        "delete-error": "Nu s-a putut șterge '{{name}}'"
+    },
+
+    "node-name-dialog": {
+        "create-as": "Creează ca:",
+        "rename-as": "Redenumește ca:",
+        "name-required": "Numele trebuie să aibă între 2..64 caractere și să conțină doar litere, cifre, spații, puncte (.), cratime (-) și sublinieri (_).",
+        "rename-file": "Redenumește fișierul '{{name}}'",
+        "rename-folder": "Redenumește folderul '{{name}}'",
+        "new-file": "Creează fișier nou sub '{{name}}'",
+        "new-folder": "Creează folder nou sub '{{name}}'"
     }
 }

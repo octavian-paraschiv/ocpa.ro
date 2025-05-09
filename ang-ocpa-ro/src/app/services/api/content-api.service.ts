@@ -35,7 +35,17 @@ export class ContentApiService {
         });
     }
 
-    public uploadContent(path: string, content: ArrayBuffer, contentType: string): Observable<any> {
+    public createFolder(path: string): Observable<ContentUnit> {
+        const uri = `${environment.apiUrl}/Content/folder/${path}`;
+        return this.httpClient.post(uri, undefined);
+    }
+
+    public deleteContent(path: string): Observable<any> {
+        const uri = `${environment.apiUrl}/Content/delete/${path}`;
+        return this.httpClient.post(uri, undefined);
+    }
+
+    public uploadContent(path: string, content: ArrayBuffer, contentType: string): Observable<ContentUnit> {
         const uri = `${environment.apiUrl}/Content/upload/${path}`;
         const formData = new FormData();
         const signature = CryptoJS.HmacSHA1(CryptoJS.lib.WordArray.create(content), path);
@@ -45,6 +55,11 @@ export class ContentApiService {
         formData.append("data", blob, path);
 
         return this.httpClient.post(uri, formData);
+    }
+
+    public moveContent(path: string, newPath: string): Observable<ContentUnit> {
+        const uri = `${environment.apiUrl}/Content/move/${path}?newPath=${newPath}`;
+        return this.httpClient.post(uri, undefined);
     }
 
     public listContent(path: string = undefined, 

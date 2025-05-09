@@ -89,6 +89,7 @@ export interface ContentUnit {
     path?: string | undefined;
     size?: number;
     children?: ContentUnit[] | undefined;
+    selected?: boolean;
 }
 
 export enum ContentUnitType {

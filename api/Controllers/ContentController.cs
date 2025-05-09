@@ -92,6 +92,30 @@ namespace ocpa.ro.api.Controllers
             return result;
         }
 
+        [HttpPost("folder/{*contentPath}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+        [SwaggerOperation(OperationId = "CreateNewFolder")]
+        public IActionResult CreateNewFolder([FromRoute] string contentPath)
+        {
+            try
+            {
+                var ucu = _contentHelper.CreateNewFolder(contentPath);
+                if (ucu == null)
+                    return NotFound(contentPath);
+
+                return StatusCode((int)ucu.StatusCode, ucu.StatusCode.IsSuccess() ? ucu : contentPath);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return Conflict(contentPath);
+            }
+        }
+
         [HttpPost("upload/{*contentPath}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -133,6 +157,29 @@ namespace ocpa.ro.api.Controllers
             {
                 var status = _contentHelper.DeleteContent(contentPath);
                 return StatusCode((int)status, contentPath);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return Conflict(contentPath);
+            }
+        }
+
+        [HttpPost("move/{*contentPath}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+        [SwaggerOperation(OperationId = "MoveContent")]
+        public IActionResult RenameContent([FromRoute] string contentPath, [FromQuery] string newPath)
+        {
+            try
+            {
+                var ucu = _contentHelper.MoveContent(contentPath, newPath);
+                if (ucu == null)
+                    return NotFound(contentPath);
+
+                return StatusCode((int)ucu.StatusCode, ucu.StatusCode.IsSuccess() ? ucu : contentPath);
             }
             catch (Exception ex)
             {

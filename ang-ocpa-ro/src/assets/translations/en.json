@@ -333,5 +333,29 @@
         "longitude": "Longitude",
         "longitude-range": "Longitude must be between {{min}} and {{max}}",
         "default": "Default subregion city"
+    },
+
+    "content-browser": {
+        "new-folder-success": "Folder '{{name}}' succesfully created",
+        "new-folder-error": "Could not create new folder under '{{name}}'",
+        "new-file-success": "File '{{name}}' succesfully created",
+        "new-file-error": "Could not create new file under '{{name}}'",
+        "rename-success": "Succesfully renamed as '{{name}}'",
+        "rename-error": "Could not rename as '{{name}}'",
+        "upload-success": "Succesfully uploaded file under '{{name}}'",
+        "upload-error": "Could not upload file under '{{name}}'",
+        "delete-node": "Are you sure you want to delete '{{name}}'?<br><br>If you proceed, you will not be able to recover it.",
+        "delete-success": "Succesfully deleted '{{name}}'",
+        "delete-error": "Could not delete '{{name}}'"
+    },
+
+    "node-name-dialog": {
+        "create-as": "Create as:",
+        "rename-as": "Rename as:",
+        "name-required": "The name must have 2..64 chars and must only have letters, digits, spaces, dots (.), dashes (-) and underscores (_).",
+        "rename-file": "Rename file '{{name}}'",
+        "rename-folder": "Rename folder '{{name}}'",
+        "new-file": "Create new file under '{{name}}'",
+        "new-folder": "Create new folder under '{{name}}'"
     }
 }
