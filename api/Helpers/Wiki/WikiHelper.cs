@@ -14,7 +14,7 @@ namespace ocpa.ro.api.Helpers.Wiki
 {
     public interface IWikiHelper
     {
-        Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
+        Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
             bool fullHtml);
     }
 
@@ -32,7 +32,7 @@ namespace ocpa.ro.api.Helpers.Wiki
                 .ToList();
         }
 
-        public async Task<byte[]> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
+        public async Task<(byte[], bool)> ProcessWikiResource(string wikiResourcePath, string reqRoot, string language,
             bool renderAsHtml)
         {
             byte[] data = null;
@@ -71,7 +71,7 @@ namespace ocpa.ro.api.Helpers.Wiki
                                 .Replace("\\", "/")
                                 .Trim('/');
 
-                            string body = await RenderCustomCodeBlocks(markdown);
+                            string body = RenderCustomCodeBlocks(markdown);
 
                             body = body
                                 .Replace("%root%", $"{reqRoot.TrimEnd('/')}/Content/render")
@@ -87,17 +87,17 @@ namespace ocpa.ro.api.Helpers.Wiki
                                    .UseAdvancedExtensions()
                                    .Build();
 
-                                body = Markdown.ToHtml(markdown, pipeline);
+                                body = Markdown.ToHtml(body, pipeline);
                             }
 
                             StringBuilder sb = new();
 
                             if (renderAsHtml)
                             {
-                                sb.AppendLine("<html><head><meta charset=\"utf-8\"><meta http-equiv=\"cache-control\" content=\"no-cache\">");
+                                sb.AppendLine("<html><head><meta charset='utf-8'><meta http-equiv='cache-control' content='no-cache'>");
                                 sb.AppendLine("<style>.markdown-body {{ font-family: Arial; font-size: 12px; line-height: 1.3; word-wrap: break-word; }}</style>");
                                 sb.AppendLine("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG' defer></script>");
-                                sb.AppendLine("</head><body><div class=\"markdown-body\">");
+                                sb.AppendLine("</head><body><div class='markdown-body'>");
                             }
 
                             sb.AppendLine(body);
@@ -105,33 +105,33 @@ namespace ocpa.ro.api.Helpers.Wiki
                             if (renderAsHtml)
                                 sb.AppendLine("</div></body><html>");
 
-                            return Encoding.UTF8.GetBytes(sb.ToString());
+                            return (Encoding.UTF8.GetBytes(sb.ToString()), false);
                         }
                     }
                     else
                     {
                         // Static content file
                         data = await File.ReadAllBytesAsync(wikiResourcePath).ConfigureAwait(false);
+                        return (data, true);
                     }
                 }
             }
             catch (Exception ex)
             {
                 LogException(ex);
-                data = null;
             }
 
-            return data;
+            return (null, false);
         }
 
-        private async Task<string> RenderCustomCodeBlocks(string body)
+        private string RenderCustomCodeBlocks(string body)
         {
             try
             {
                 if (_renderers?.Count > 0)
                 {
                     foreach (var renderer in _renderers)
-                        body = await renderer.RenderBody(body);
+                        body = renderer.RenderBody(body);
                 }
             }
             catch (Exception ex)

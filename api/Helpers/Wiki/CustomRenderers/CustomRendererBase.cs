@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Helpers.Wiki.CustomRenderers;
 
@@ -10,11 +9,11 @@ public abstract class CustomRendererBase
 
     public abstract string BlockType { get; }
 
-    public virtual async Task<string> RenderBody(string body, Action<Exception> exceptionHandler = null)
+    public virtual string RenderBody(string body, Action<Exception> exceptionHandler = null)
     {
         try
         {
-            int idx = 0, si = 0, ei = 0;
+            int currentPos = 0, si = 0, ei = 0;
 
             string start = delim + BlockType;
 
@@ -22,25 +21,41 @@ public abstract class CustomRendererBase
 
             do
             {
-                si = body.IndexOf(start, idx);
+                si = body.IndexOf(start, currentPos);
                 if (si > 0)
                 {
-                    blocks.Add(body.Substring(idx, si - idx));
+                    blocks.Add(body.Substring(currentPos, si - currentPos));
                     ei = body.IndexOf(delim, si + start.Length);
                     if (ei > 0)
                     {
                         var rawBlock = body.Substring(si + start.Length, ei - si - start.Length - 1);
-                        var renderedBlock = await RenderBlock(rawBlock);
+                        string renderedBlock = null;
 
-                        blocks.Add(renderedBlock);
+                        try
+                        {
+                            renderedBlock = RenderBlock(rawBlock);
+                        }
+                        catch (Exception ex)
+                        {
+                            exceptionHandler?.Invoke(ex);
+                            renderedBlock = null;
+                        }
 
-                        idx = ei + delim.Length;
+                        if (renderedBlock?.Length > 0)
+                            blocks.Add(renderedBlock ?? rawBlock);
+                        else
+                            blocks.Add(rawBlock);
+
+                        currentPos = ei + delim.Length;
                     }
                 }
                 else
                     break;
             }
-            while (idx < body.Length);
+            while (currentPos < body.Length);
+
+            if (currentPos < body.Length)
+                blocks.Add(body.Substring(currentPos, body.Length - currentPos));
 
             if (blocks.Count > 0)
                 return string.Join("", blocks);
@@ -53,5 +68,5 @@ public abstract class CustomRendererBase
         return body;
     }
 
-    protected abstract Task<string> RenderBlock(string block);
+    protected abstract string RenderBlock(string block);
 }

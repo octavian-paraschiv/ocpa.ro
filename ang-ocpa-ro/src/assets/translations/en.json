@@ -10,6 +10,7 @@
     "unauthorized-access": "You are not authorized to view this page: '{{url}}'",
     "not-found": "This page does not exist: '{{url}}'",
     "app-version": "Application version: {{version}}",
+    "click-to-enlarge": "Click to enlarge image",
 
     "ERR_BAD_CREDENTIALS": "Incorrect user name or password.<br>Remaining attempts: <b>{{retries}}<b>",
     "ERR_BAD_OTP": "Incorrect login code.<br>Please try again, or click 'Regenerate' to receive a new code on your email.",

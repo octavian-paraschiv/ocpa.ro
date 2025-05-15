@@ -9,7 +9,8 @@
     "day-short": "z",
     "unauthorized-access": "Nu sunteți autorizat să accesați această pagină: '{{url}}'",
     "not-found": "Această pagină nu există: '{{url}}'",
-    "app-version": "Versiune aplicatie: {{version}}",
+    "app-version": "Versiune aplicație: {{version}}",
+    "click-to-enlarge": "Dați click pt. a mări imaginea",
 
     "ERR_BAD_CREDENTIALS": "Nume de utilizator și/sau parolă incorectă.<br>Încercări rămase: <b>{{retries}}</b>",
     "ERR_BAD_OTP": "Cod de conectare incorect.<br>Încercați din nou, sau apăsați 'Regenerează' pentru a primi un nou cod pe email.",

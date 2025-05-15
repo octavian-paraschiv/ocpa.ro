@@ -13,6 +13,7 @@ using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ocpa.ro.api.Controllers
@@ -189,6 +190,7 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("render/{*resourcePath}")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK, "text/html")]
         [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK, "application/octet-stream")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "RenderContent")]
@@ -207,11 +209,17 @@ namespace ocpa.ro.api.Controllers
                 var ext = Path.GetExtension(resourcePath);
                 if (ext?.Length > 0)
                 {
-                    var data = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot,
+                    var (data, isBinary) = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot,
                         RequestLanguage, renderAsHtml).ConfigureAwait(false);
 
                     if (data?.Length > 0)
-                        return File(data, "application/octet-stream");
+                    {
+                        IActionResult res = (renderAsHtml && !isBinary) ?
+                            Content(Encoding.UTF8.GetString(data), "text/html") :
+                            File(data, "application/octet-stream");
+
+                        return res;
+                    }
                 }
             }
             catch (Exception ex)
