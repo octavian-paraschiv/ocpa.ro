@@ -12,6 +12,7 @@ import { UsersComponent } from 'src/app/components/auth/users/users.component';
 import { MeteoComponent } from 'src/app/components/non-auth/meteo/meteo.component';
 import { ProTONEComponent } from 'src/app/components/non-auth/protone/protone.component';
 import { UnavailablePageComponent, UnavailablePageKind } from 'src/app/components/non-auth/unavailable-page/unavailable-page.component';
+import { WikiBrowserComponent } from 'src/app/components/shared/wiki-browser/wiki-browser.component';
 import { WikiContainerComponent } from 'src/app/components/shared/wiki-container/wiki-container.component';
 import { Helper } from 'src/app/helpers/helper';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
@@ -35,7 +36,7 @@ const authGuard: CanActivateFn = (_, state) => {
     const router = inject(Router);
     const url = (state?.url ?? '/').toLowerCase();
   
-    if (url !== '/' && !url.startsWith('/wiki-container')) {
+    if (url !== '/' && !url.startsWith('/wiki-container') && !url.startsWith('/wiki-browser')) {
       const matchingRoutes = routes.filter(r => `/${r.path.toLowerCase()}` === url);
       if (!(matchingRoutes?.length > 0)) {
         router.navigate(['/unavailable'], 
@@ -84,6 +85,13 @@ export const routes = [
     { path: 'wiki-container/:a/:b/:c/:d/:e', component: WikiContainerComponent, canActivate: [authGuard], title: titleResolver } as Route,
     { path: 'wiki-container/:a/:b/:c/:d/:e/:f', component: WikiContainerComponent, canActivate: [authGuard], title: titleResolver } as Route,
   
+    { path: 'wiki-browser/:a', component: WikiBrowserComponent, canActivate: [authGuard], title: titleResolver } as Route,
+    { path: 'wiki-browser/:a/:b', component: WikiBrowserComponent, canActivate: [authGuard], title: titleResolver } as Route,
+    { path: 'wiki-browser/:a/:b/:c', component: WikiBrowserComponent, canActivate: [authGuard], title: titleResolver } as Route,
+    { path: 'wiki-browser/:a/:b/:c/:d', component: WikiBrowserComponent, canActivate: [authGuard], title: titleResolver } as Route,
+    { path: 'wiki-browser/:a/:b/:c/:d/:e', component: WikiBrowserComponent, canActivate: [authGuard], title: titleResolver } as Route,
+    { path: 'wiki-browser/:a/:b/:c/:d/:e/:f', component: WikiBrowserComponent, canActivate: [authGuard], title: titleResolver } as Route,
+
     { path: '', redirectTo: '/meteo', pathMatch: 'full' } as Route,
 
     { path: '**', component: UnavailablePageComponent, title: titleResolver } as Route,

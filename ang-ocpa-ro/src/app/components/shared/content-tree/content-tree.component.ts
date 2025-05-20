@@ -16,6 +16,7 @@ export class ContentTreeComponent implements OnInit {
   @Input() path?: string = '.';
   @Input() filter?: string = undefined;
   @Input() level?: number = undefined;
+  @Input() initialLoad = true;
   @Output() nodeSelected = new EventEmitter<ContentUnit>();
 
   folder = faFolderClosed;
@@ -36,7 +37,9 @@ export class ContentTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.reloadAndSelect(undefined);
+    if (!!this.initialLoad) {
+      this.reloadAndSelect(undefined);
+    }
   }
 
   reloadAndSelect(path: string) {

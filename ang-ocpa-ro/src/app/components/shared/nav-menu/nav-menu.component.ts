@@ -35,8 +35,13 @@ export class NavMenuComponent extends BaseComponent implements OnInit {
             this.menuService.menus.appMenus ?? [] :
             this.menuService.menus.publicMenus ?? [];
 
-          for(const m of menus)
-            m.name = this.translate.instant(`menu${m.url}`.replace(/\//g, '.'));
+          for(const m of menus) {
+            const key = `menu${m.url}`.replace(/\//g, '.');
+            const translatedName = this.translate.instant(key);
+            if (translatedName?.length > 0 && translatedName !== key) {
+              m.name = translatedName;
+            }
+          }
 
           this.menus = menus;
           this.singleMenuApp = this.menuService.singleMenuApp$.getValue();

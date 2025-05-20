@@ -3,6 +3,8 @@
     margin: 0;
     list-style-type: none;
     text-align: start;
+    display: table;
+    table-layout: fixed;
 }
 
 .nav-item {

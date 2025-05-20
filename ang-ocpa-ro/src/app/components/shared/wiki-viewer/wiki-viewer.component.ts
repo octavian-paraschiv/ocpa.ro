@@ -1,6 +1,5 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
 import { Helper } from 'src/app/helpers/helper';
@@ -65,23 +64,4 @@ export class WikiViewerComponent extends BaseComponent {
             }
         };
     }
-
-    getText(base64: string): string {
-        try {
-          // Decode the Base64 string
-          const decodedBytes = window.atob(base64);
-   
-          if (decodedBytes?.length > 0 && decodedBytes.length < 1024 * 1024) {
-           // Convert the decoded bytes to a string
-           const decodedString = new TextDecoder().decode(new Uint8Array(decodedBytes.split('').map(char => char.charCodeAt(0))));
-          
-           // Check if the string contains valid UTF-8 characters
-           if (/^[\x00-\x7F]*$/.test(decodedString))
-             return decodedString;
-         }
-        } catch {
-          // If decoding fails, it's likely binary data
-        }
-        return undefined;
-     }  
 }

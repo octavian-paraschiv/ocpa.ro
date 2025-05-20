@@ -23,6 +23,7 @@ import { ContentTreeComponent } from 'src/app/components/shared/content-tree/con
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
 import { NavMenuComponent } from 'src/app/components/shared/nav-menu/nav-menu.component';
 import { OverlayComponent } from 'src/app/components/shared/overlay/overlay.component';
+import { WikiBrowserComponent } from 'src/app/components/shared/wiki-browser/wiki-browser.component';
 import { WikiContainerComponent } from 'src/app/components/shared/wiki-container/wiki-container.component';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 
@@ -64,6 +65,7 @@ export const components = [
     // Wiki pages (public)
     WikiViewerComponent,
     WikiContainerComponent,
+    WikiBrowserComponent,
 
     // Content management
     ContentBrowserComponent,
