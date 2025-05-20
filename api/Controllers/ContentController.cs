@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Extensions;
+using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Content;
 using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Helpers.Wiki;
@@ -33,9 +34,9 @@ namespace ocpa.ro.api.Controllers
         #endregion
 
         #region Constructor (DI)
-        public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger,
+        public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger, IAuthHelper authHelper,
             IContentHelper contentHelper, IWikiHelper wikiHelper, IMultipartRequestHelper multipartHelper)
-            : base(hostingEnvironment, logger, null)
+            : base(hostingEnvironment, logger, authHelper)
         {
             _contentHelper = contentHelper ?? throw new ArgumentNullException(nameof(contentHelper));
             _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
@@ -73,9 +74,12 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "ListContent")]
+        [AllowAnonymous]
         public IActionResult ListContent([FromRoute] string contentPath, [FromQuery] int? level = null,
             [FromQuery] string filter = null)
         {
+            _authHelper.GuardContentPath(HttpContext.User?.Identity, contentPath);
+
             IActionResult result = NotFound(contentPath);
 
             try
@@ -198,6 +202,8 @@ namespace ocpa.ro.api.Controllers
         public async Task<IActionResult> RenderContent([FromRoute] string resourcePath,
            [FromHeader(Name = "X-RenderAsHtml")] string renderAsHtmlStr)
         {
+            _authHelper.GuardContentPath(HttpContext.User?.Identity, resourcePath);
+
             try
             {
                 string reqUrl = Request.GetDisplayUrl();

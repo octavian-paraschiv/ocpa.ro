@@ -35,7 +35,12 @@ namespace ocpa.ro.api.Middlewares
 
             const string contentType = "application/problem+json";
             context.Response.ContentType = contentType;
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+            context.Response.StatusCode = exception switch
+            {
+                UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+                _ => StatusCodes.Status400BadRequest
+            };
 
             await context.Response.WriteAsync(exception.Message);
         }

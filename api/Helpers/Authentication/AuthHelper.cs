@@ -42,6 +42,7 @@ namespace ocpa.ro.api.Helpers.Authentication
         RegisteredDevice GetRegisteredDevice(string deviceId);
         Task RegisterDevice(string deviceId, string ipAddress, string loginId);
         int DeleteRegisteredDevice(string deviceId);
+        void GuardContentPath(IIdentity identity, string contentPath);
     }
 
     public partial class AuthHelper : BaseHelper
@@ -359,6 +360,57 @@ namespace ocpa.ro.api.Helpers.Authentication
 
             found = (device != null);
             return device;
+        }
+
+        public void GuardContentPath(IIdentity identity, string contentPath)
+        {
+            contentPath = contentPath ?? string.Empty;
+
+            try
+            {
+                if (identity is ClaimsIdentity claimsIdentity && claimsIdentity.IsAuthenticated)
+                {
+                    var uid = claimsIdentity.Claims
+                       .Where(c => c.Type == "uid")
+                       .Select(c => int.TryParse(c.Value, out int v) ? v : 0)
+                       .FirstOrDefault();
+
+                    var user = _db.Table<User>().Where(u => u.Id == uid).First();
+                    var userType = _db.Table<UserType>().Where(ut => ut.Id == user.Type).First();
+
+                    switch (userType.Code)
+                    {
+                        case "API":
+                            throw new UnauthorizedAccessException();
+
+                        case "APP":
+                            {
+                                var appMenus = _db.Table<AppMenu>().Where(am => am.UserId == user.Id).ToList();
+                                if (appMenus?.Any(menu => menu.Url?.Length > 1 && contentPath.StartsWith(BuildWikiUrl(menu.Url), StringComparison.OrdinalIgnoreCase)) ?? false)
+                                    return;
+                            }
+                            break;
+
+                        case "ADM":
+                            return;
+                    }
+                }
+
+                var publicMenus = _db.Table<PublicMenu>().ToList();
+                if (publicMenus?.Any(menu => menu.Url?.Length > 1 && contentPath.StartsWith(BuildWikiUrl(menu.Url), StringComparison.OrdinalIgnoreCase)) ?? false)
+                    return;
+            }
+            catch { }
+
+            throw new UnauthorizedAccessException();
+        }
+
+        private static string BuildWikiUrl(string menuUrl)
+        {
+            return menuUrl
+                .TrimStart('/')
+                .Replace("wiki-container", "wiki")
+                .Replace("wiki-browser", "wiki");
         }
     }
 }
