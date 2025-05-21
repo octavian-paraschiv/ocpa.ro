@@ -95,6 +95,7 @@ export interface ContentUnit {
 export enum ContentUnitType {
     None = "None",
     Folder = "Folder",
+    MarkdownIndexFolder = "MarkdownIndexFolder",
     File = "File",
 }
 

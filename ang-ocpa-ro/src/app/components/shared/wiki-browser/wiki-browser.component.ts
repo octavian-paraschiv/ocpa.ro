@@ -46,7 +46,10 @@ export class WikiBrowserComponent extends BaseComponent implements OnInit {
     if (node?.path?.length > 0 && node?.name?.length > 0) {
       this.contentPath = `${node.path}/${node.name}`;
       if (node?.type === ContentUnitType.File) {
-        this.wikiViewer?.displayLocation(this.contentPath, false);
+        this.wikiViewer?.displayLocation(this.contentPath, true);
+        rendered = true;
+      } else if (node?.type === ContentUnitType.MarkdownIndexFolder) {
+        this.wikiViewer?.displayLocation(`${this.contentPath}/index.md`, true);
         rendered = true;
       }
     }

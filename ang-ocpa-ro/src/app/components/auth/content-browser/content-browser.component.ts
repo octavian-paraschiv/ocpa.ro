@@ -137,7 +137,7 @@ export class ContentBrowserComponent extends BaseComponent {
       case 'folder':
       case 'file':
       case 'upload':
-        return this.currentNode?.type === ContentUnitType.Folder;
+        return this.currentNode?.type === ContentUnitType.Folder || this.currentNode?.type === ContentUnitType.MarkdownIndexFolder;
 
       case 'rename':
         return this.currentNode?.path?.length > 0;

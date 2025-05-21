@@ -15,7 +15,7 @@ namespace ocpa.ro.api.Helpers.Content
     {
         public Task<byte[]> GetContent(string contentPath);
 
-        public ContentUnit ListContent(string contentPath, int? level, string filter);
+        public ContentUnit ListContent(string contentPath, int? level, string filter, bool markdownView);
 
         public UpdatedContentUnit MoveContent(string contentPath, string newPath);
 
@@ -55,7 +55,7 @@ namespace ocpa.ro.api.Helpers.Content
 
         public UpdatedContentUnit CreateNewFolder(string contentPath)
         {
-            var unit = ListContent(contentPath, 0, null);
+            var unit = _ListContent(contentPath, 0, null);
 
             UpdatedContentUnit ucu = new()
             {
@@ -86,7 +86,7 @@ namespace ocpa.ro.api.Helpers.Content
 
         public async Task<UpdatedContentUnit> CreateOrUpdateContent(string contentPath, byte[] contentBytes)
         {
-            var unit = ListContent(contentPath, 0, null);
+            var unit = _ListContent(contentPath, 0, null);
 
             UpdatedContentUnit ucu = new()
             {
@@ -123,7 +123,7 @@ namespace ocpa.ro.api.Helpers.Content
             if (contentOnly)
                 contentPath = contentPath.TrimEnd("/*".ToCharArray());
 
-            var unit = ListContent(contentPath, 0, null);
+            var unit = _ListContent(contentPath, 0, null);
             var unitType = unit?.Type ?? ContentUnitType.None;
 
             string path = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
@@ -131,7 +131,7 @@ namespace ocpa.ro.api.Helpers.Content
             if (unitType == ContentUnitType.None)
                 return HttpStatusCode.NotFound;
 
-            if (unitType == ContentUnitType.Folder)
+            if (unitType == ContentUnitType.Folder || unitType == ContentUnitType.MarkdownIndexFolder)
             {
                 if (contentOnly)
                 {
@@ -155,7 +155,7 @@ namespace ocpa.ro.api.Helpers.Content
 
         public UpdatedContentUnit MoveContent(string contentPath, string newPath)
         {
-            var unit = ListContent(contentPath, 0, null);
+            var unit = _ListContent(contentPath, 0, null);
 
             UpdatedContentUnit ucu = new()
             {
@@ -167,7 +167,7 @@ namespace ocpa.ro.api.Helpers.Content
             };
 
 
-            if (unit.Type == ContentUnitType.Folder)
+            if (unit.Type == ContentUnitType.Folder || unit.Type == ContentUnitType.MarkdownIndexFolder)
             {
                 string path1 = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
                 string path2 = Path.Combine(_hostingEnvironment.ContentPath(), $"{newPath}");
@@ -189,7 +189,29 @@ namespace ocpa.ro.api.Helpers.Content
             return ucu;
         }
 
-        public ContentUnit ListContent(string contentPath, int? level, string filter)
+        public ContentUnit ListContent(string contentPath, int? level, string filter, bool markdownView)
+        {
+            if (markdownView)
+                filter = "*.md";
+
+            var content = _ListContent(contentPath, level, filter);
+
+            if (markdownView)
+                StripMarkdownIndexFiles(content);
+
+            return content;
+        }
+
+        private void StripMarkdownIndexFiles(ContentUnit content)
+        {
+            if (content.Type == ContentUnitType.MarkdownIndexFolder)
+                content.Children = null;
+
+            if (content.Children?.Count > 0)
+                content.Children.ForEach(child => StripMarkdownIndexFiles(child));
+        }
+
+        private ContentUnit _ListContent(string contentPath, int? level, string filter)
         {
             string path = Path.Combine(_hostingEnvironment.ContentPath(), $"{contentPath}");
             return ExplorePath(path, level, filter);
@@ -222,7 +244,6 @@ namespace ocpa.ro.api.Helpers.Content
                 {
                     var dirs = dirInfo.GetDirectories()?
                         .Select(d => ExplorePath(d.FullName, level - 1, filter));
-                    //.Where(c => c?.Children?.Count > 0);
 
                     var files = GetFilesWithComposedFilter(dirInfo, filter)
                         .Select(f => ExplorePath(f.FullName, level - 1, filter))
@@ -232,6 +253,16 @@ namespace ocpa.ro.api.Helpers.Content
 
                     if ((dirs?.Any() ?? false) || (files?.Any() ?? false))
                     {
+                        if (files?.Any() ?? false)
+                        {
+                            var markdownIndexFiles = files.Where(f => f.Name.StartsWith("index") && f.Name.EndsWith(".md"));
+                            if (markdownIndexFiles?.Any() ?? false)
+                            {
+                                cu.Type = ContentUnitType.MarkdownIndexFolder;
+                                files = files.Where(f => !markdownIndexFiles.Contains(f));
+                            }
+                        }
+
                         list.AddRange(dirs);
                         list.AddRange(files);
                         cu.Children = list;

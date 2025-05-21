@@ -144,3 +144,16 @@
     padding: 0;
     width: 42rem;
 }
+
+.node-File {
+  color: black;
+}
+.node-MarkdownIndexFolder {
+  color: darkred;
+}
+.node-Folder {
+  color: darkblue;
+}
+.node-None {
+  color: transparent;
+}

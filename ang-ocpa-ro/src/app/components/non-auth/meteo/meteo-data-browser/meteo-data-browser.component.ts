@@ -248,7 +248,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
 
   private doFetch() {
     this.meteoData = [];
-    this.fetchEvent$.next();
+    this.fetchEvent$.next(undefined);
     this.overlay.show();
 
     this.meteoApi.getData(this.dbi, this.lookupRegion, this.lookupSubregion, this.lookupCity, 0, 0)

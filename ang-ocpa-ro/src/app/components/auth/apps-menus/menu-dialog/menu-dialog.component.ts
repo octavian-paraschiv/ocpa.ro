@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { MatOptionSelectionChange } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy } from '@ngneat/until-destroy';
@@ -22,6 +21,9 @@ export class MenuDialogComponent implements OnInit {
     size = "grow-3";
     selIcon: string = undefined;
 
+    filterValue = '';
+    filteredIcons = this.menuIcons.slice();
+
     constructor(
         private formBuilder: UntypedFormBuilder,
         public dialogRef: MatDialogRef<MenuDialogComponent>,
@@ -29,24 +31,24 @@ export class MenuDialogComponent implements OnInit {
     ) {
     }
 
-     // convenience getter for easy access to form fields
-     get f() { return this.menuForm?.controls; }
+    // convenience getter for easy access to form fields
+    get f() { return this.menuForm?.controls; }
 
-     get title(): string {
-         return (this.editMode) ? 
-             'menu-dialog.edit' :
-             'menu-dialog.create';
-     }
+    get title(): string {
+        return (this.editMode) ?
+            'menu-dialog.edit' :
+            'menu-dialog.create';
+    }
 
-    ngOnInit(){
+    ngOnInit() {
         this.editMode = this.menu?.id > 0;
 
         if (!this.menu)
             this.menu = {
-               name: '',
-               url: '',
-               menuIcon: this.menuIcons[this.menuIcons.length - 1],
-               displayModeId: Object.keys(EMenuDisplayMode).indexOf(EMenuDisplayMode.AlwaysHide)
+                name: '',
+                url: '',
+                menuIcon: this.menuIcons[this.menuIcons.length - 1],
+                displayModeId: Object.keys(EMenuDisplayMode).indexOf(EMenuDisplayMode.AlwaysHide)
             } as Menu;
 
         // Should not happen, but anyways
@@ -56,10 +58,10 @@ export class MenuDialogComponent implements OnInit {
         this.selIcon = this.menu.menuIcon;
 
         this.menuForm = this.formBuilder.group({
-            name: [ this.menu.name, [ Validators.required, Validators.pattern('^.{3,24}$') ] ],
-            url: [ this.menu.url, [ Validators.required, Validators.pattern('^\/[a-zA-Z0-9/._-]{2,127}$') ] ],
-            displayMode: [ Object.keys(EMenuDisplayMode)[this.menu.displayModeId] ],
-            menuIcon: [ this.selIcon ]
+            name: [this.menu.name, [Validators.required, Validators.pattern('^.{3,24}$')]],
+            url: [this.menu.url, [Validators.required, Validators.pattern('^\/[a-zA-Z0-9/._-]{2,127}$')]],
+            displayMode: [Object.keys(EMenuDisplayMode)[this.menu.displayModeId]],
+            menuIcon: [this.selIcon]
         });
     }
 
@@ -72,7 +74,7 @@ export class MenuDialogComponent implements OnInit {
         if (this.menuForm.invalid)
             return;
 
-        this.dialogRef.close({  
+        this.dialogRef.close({
             id: this.menu.id,
             name: this.f?.name?.value,
             url: this.f?.url?.value,
@@ -82,14 +84,8 @@ export class MenuDialogComponent implements OnInit {
         } as Menu);
     }
 
-    onIconChanged(event: MatOptionSelectionChange) {
-        if (event.isUserInput) {
-            this.selIcon = event.source.value;
-        }
-      }
-
     static showDialog(dialog: MatDialog, menu: Menu = undefined): Observable<Menu> {
         const dialogRef = dialog?.open(MenuDialogComponent, { data: menu, width: '600px' });
-        return dialogRef.afterClosed().pipe(map(result => (result ?? {id: -1}) as Menu));
+        return dialogRef.afterClosed().pipe(map(result => (result ?? { id: -1 }) as Menu));
     }
 }

@@ -36,5 +36,5 @@ export const modules = [
     MaterialModule,
     NgChartsModule,
     MarkdownModule.forRoot(),
-    GoogleMapsModule,
+    GoogleMapsModule
 ];

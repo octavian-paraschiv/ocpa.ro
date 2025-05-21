@@ -8,6 +8,7 @@ namespace ocpa.ro.api.Models.Content
     {
         None = 0,
         Folder,
+        MarkdownIndexFolder,
         File
     }
 

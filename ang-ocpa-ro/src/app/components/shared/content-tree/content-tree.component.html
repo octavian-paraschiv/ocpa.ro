@@ -3,7 +3,7 @@
       <div class="mat-tree-node" [class.selected]="node.selected" (click)="select(node)">
         &nbsp;
         <a (click)="select(node)" matTreeNodeToggle>
-          <fa-icon [icon]="icon(node)" [transform]="size"></fa-icon>
+          <fa-icon [icon]="icon(node)" [transform]="size" class="node-{{node.type}}"></fa-icon>
         </a>
         <label matTreeNodeToggle class="mat-body" (click)="select(node)" style="cursor: pointer;">
           &nbsp;{{node.name}}
@@ -13,7 +13,7 @@
   <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
     <div class="mat-tree-node" [class.selected]="node.selected">
       &nbsp;
-      <fa-icon matTreeNodeToggle [icon]="icon(node)" [transform]="size"></fa-icon>
+      <fa-icon matTreeNodeToggle [icon]="icon(node)" [transform]="size" class="node-{{node.type}}"></fa-icon>
       <label matTreeNodeToggle class="mat-body" (click)="select(node)" style="cursor: pointer;">
         &nbsp;{{node.name}}
       </label>        

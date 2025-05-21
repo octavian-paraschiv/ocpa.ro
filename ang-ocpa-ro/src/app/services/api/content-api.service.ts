@@ -62,9 +62,7 @@ export class ContentApiService {
         return this.httpClient.post(uri, undefined);
     }
 
-    public listContent(path: string = undefined, 
-        level: number = 0, 
-        filter: string = undefined): Observable<ContentUnit> {
+    public listContent(path: string, level: number, filter: string, markdownView: boolean): Observable<ContentUnit> {
 
         if (!(path?.length > 0))
             path = '.';
@@ -75,6 +73,8 @@ export class ContentApiService {
             uri.searchParams.append('level', `${level}`);
         if (filter?.length > 0)
             uri.searchParams.append('filter', filter);
+        if (!!markdownView)
+            uri.searchParams.append('markdownView', `${markdownView}`);
 
         return this.httpClient.get<ContentUnit>(uri.toString());
     }

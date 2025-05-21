@@ -75,8 +75,10 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "ListContent")]
         [AllowAnonymous]
-        public IActionResult ListContent([FromRoute] string contentPath, [FromQuery] int? level = null,
-            [FromQuery] string filter = null)
+        public IActionResult ListContent([FromRoute] string contentPath,
+            [FromQuery] int? level = null,
+            [FromQuery] string filter = null,
+            [FromQuery] bool? markdownView = null)
         {
             _authHelper.GuardContentPath(HttpContext.User?.Identity, contentPath);
 
@@ -84,7 +86,7 @@ namespace ocpa.ro.api.Controllers
 
             try
             {
-                var content = _contentHelper.ListContent(contentPath, level, filter);
+                var content = _contentHelper.ListContent(contentPath, level, filter, markdownView ?? false);
                 if ((content?.Type ?? ContentUnitType.None) != ContentUnitType.None)
                     result = Ok(content);
             }

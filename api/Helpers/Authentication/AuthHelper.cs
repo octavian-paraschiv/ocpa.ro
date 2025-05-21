@@ -410,7 +410,8 @@ namespace ocpa.ro.api.Helpers.Authentication
             return menuUrl
                 .TrimStart('/')
                 .Replace("wiki-container", "wiki")
-                .Replace("wiki-browser", "wiki");
+                .Replace("wiki-browser", "wiki")
+                .TrimEnd('.');
         }
     }
 }

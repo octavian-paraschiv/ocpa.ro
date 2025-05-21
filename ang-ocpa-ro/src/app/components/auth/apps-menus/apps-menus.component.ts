@@ -49,10 +49,10 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
     }
 
     onAppMenuChange(appMenu: AppMenuData, appName: string, checked: boolean) {
-        const menuId = appMenu.     menuId;
+        const menuId = appMenu.menuId;
         const appId = appMenu.appData.find(ad => ad.appName === appName)?.appId;
         
-        let obs = of();
+        let obs: Observable<any> = of();
         let key = '';
         let keyErr = '';
             

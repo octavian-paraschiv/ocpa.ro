@@ -26,12 +26,14 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="menu-form-control" >
                     <mat-label>{{'menu-dialog.menu-icon' | translate}}</mat-label>
-                    <mat-select formControlName="menuIcon">
+                    <mat-select [disableOptionCentering]="true" formControlName="menuIcon" #menuIcon [(value)]="selIcon">
                         <mat-select-trigger>
                             <fa-icon [icon]="allIcons[selIcon]" [transform]="size"></fa-icon>
                             <label>&nbsp;&nbsp;[{{selIcon}}]</label>
-                          </mat-select-trigger>
-                        <mat-option *ngFor="let mi of menuIcons;" [value]="mi" (onSelectionChange)="onIconChanged($event)">
+                        </mat-select-trigger>
+                        <mat-select-filter *ngIf="menuIcon.focused" [array]="menuIcons" (filteredReturn)="filteredIcons = $event">
+                        </mat-select-filter>
+                        <mat-option *ngFor="let mi of filteredIcons;" [value]="mi" >
                             <fa-icon [icon]="allIcons[mi]" [transform]="size"></fa-icon>
                             <label>&nbsp;&nbsp;[{{mi}}]</label>
                         </mat-option>
