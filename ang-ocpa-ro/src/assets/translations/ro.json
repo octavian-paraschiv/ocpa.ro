@@ -43,10 +43,12 @@
         "unavailable": "Pagina indisponibila",
         "wiki-container": {
             "meteo-animated": "Prognoza Animată",
-            "electronics": "Blog Electronică",
             "daily-cat": "Mâța zilei",
-            "live-webcam": "Camera Web Live"
+            "live-webcam": "Cameră Web Live"
         },
+		"wiki-browser": {
+            "electronics": "Blog Electronică"
+        },			
         "admin": {
             "users": "Gestionare Utilizatori",
             "meteo-database": "Gestionare Baze de Date Meteo",
@@ -65,9 +67,11 @@
         "logout": "Deconectare",
         "wiki-container": {
             "meteo-animated": "Prognoza Animată",
-            "electronics": "Blog Electronică",
             "daily-cat": "Mâța zilei",
-            "live-webcam": "Camera Web Live"
+            "live-webcam": "Cameră Web Live"
+        },
+		"wiki-browser": {
+            "electronics": "Blog Electronică"
         },
         "admin": {
             "users": "Utilizatori",

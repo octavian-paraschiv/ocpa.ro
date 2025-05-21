@@ -43,9 +43,11 @@
         "unavailable": "Page not available",
         "wiki-container": {
             "meteo-animated": "OcPa's Animated Forecast",
-            "electronics": "Electronics Blog",
             "daily-cat": "Daily Cat",
             "live-webcam": "Live Webcam"
+        },
+		"wiki-browser": {
+            "electronics": "Electronics Blog"
         },
         "admin": {
             "users": "Manage Users",
@@ -65,9 +67,11 @@
         "logout": "Logout",
         "wiki-container": {
             "meteo-animated": "Animated Forecast",
-            "electronics": "Electronics Blog",
             "daily-cat": "Daily Cat",
             "live-webcam": "Live Webcam"
+        },
+        "wiki-browser": {
+            "electronics": "Electronics Blog"
         },
         "admin": {
             "users": "Manage Users",
