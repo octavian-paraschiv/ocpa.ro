@@ -4,6 +4,6 @@
     {
         public static readonly string SectionName = "CaaS";
         public string BaseUrl { get; set; } = "";
-        public int RefreshPeriod { get; set; } = 30;
+        public int CachePeriod { get; set; } = 30;
     }
 }

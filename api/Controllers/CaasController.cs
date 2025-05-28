@@ -28,11 +28,11 @@ namespace ocpa.ro.api.Controllers
         [HttpGet("{*resourcePath}")]
         [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK, "image/gif")]
         [SwaggerOperation(OperationId = "GetNewCat")]
-        public async Task<IActionResult> GetNewCat([FromRoute] string resourcePath)
+        public async Task<IActionResult> GetNewCat([FromRoute] string resourcePath, [FromQuery] bool? refreshCat)
         {
             try
             {
-                var data = await _helper.GetNewCat(resourcePath, Request.QueryString.Value);
+                var data = await _helper.GetNewCat(resourcePath, Request.QueryString.Value, refreshCat ?? false);
                 if (data?.Length > 0)
                     return File(data, "image/gif");
             }
