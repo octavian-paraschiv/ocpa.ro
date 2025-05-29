@@ -223,10 +223,11 @@ namespace ocpa.ro.api.Controllers
 
                 bool renderAsHtml = !string.Equals(renderAsHtmlStr, "FALSE", StringComparison.OrdinalIgnoreCase);
                 bool useCache = !string.Equals(useCacheStr, "FALSE", StringComparison.OrdinalIgnoreCase);
+                string cacheKey = $"{RequestLanguage ?? string.Empty}:{resourcePath}".TrimStart(':');
 
                 if (useCache)
                 {
-                    var rawData = await _cache.GetAsync(resourcePath);
+                    var rawData = await _cache.GetAsync(cacheKey);
                     if (rawData?.Length > 1)
                     {
                         isBinary = rawData[0] != 0;
@@ -253,14 +254,14 @@ namespace ocpa.ro.api.Controllers
                                 byte[] start = [Convert.ToByte(isBinary)];
                                 byte[] cacheData = [.. start, .. data];
 
-                                await _cache.SetAsync(resourcePath, cacheData, new DistributedCacheEntryOptions
+                                await _cache.SetAsync(cacheKey, cacheData, new DistributedCacheEntryOptions
                                 {
                                     AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_config.CachePeriod)
                                 });
                             }
                             else
                             {
-                                await _cache.RemoveAsync(resourcePath);
+                                await _cache.RemoveAsync(cacheKey);
                             }
                         }
                     }
