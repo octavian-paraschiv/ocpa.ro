@@ -26,7 +26,8 @@ html {
     height: 0.8rem !important;
 }
 
-body, :root {
+body,
+:root {
     color: $forecolor;
     background-color: $backcolor;
     font-family: $font-family;
@@ -81,10 +82,10 @@ app-root {
 
 input::-ms-reveal,
 input::-ms-clear {
-  display: none;
+    display: none;
 }
 
-.domHide[domHide=true]  {
+.domHide[domHide=true] {
     display: none;
     visibility: hidden;
 }
@@ -95,6 +96,7 @@ input::-ms-clear {
     max-width: 16px;
     margin: 0;
 }
+
 .mat-mdc-header-cell {
     background-color: $forecolor !important;
     color: $backcolor !important;
@@ -113,14 +115,15 @@ input::-ms-clear {
 .tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
-    background-color: black;    
+    background-color: black;
     color: #fff;
     text-align: center;
     border-radius: 5px;
     padding: 5px;
     position: absolute;
     z-index: 1;
-    bottom: 125%; /* Position the tooltip above the icon */
+    bottom: 125%;
+    /* Position the tooltip above the icon */
     left: 50%;
     margin-left: -60px;
     opacity: 0;
@@ -138,10 +141,12 @@ input::-ms-clear {
     grid-template-columns: auto 1fr auto;
     grid-template-areas: "lf . rf";
 }
+
 .two-fields-zone-left {
     align-self: center;
     grid-area: lf;
 }
+
 .two-fields-zone-right {
     align-self: center;
     grid-area: rf;
@@ -176,7 +181,7 @@ input::-ms-clear {
 }
 
 /* Style for the image modal background */
- .img-modal {
+.img-modal {
     display: none;
     position: fixed;
     z-index: 1000;
@@ -186,19 +191,19 @@ input::-ms-clear {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.8);
- }
+    background-color: rgba(0, 0, 0, 0.8);
+}
 
- /* Style for the image modal content (image) */
- .img-modal-content {
+/* Style for the image modal content (image) */
+.img-modal-content {
     margin: auto;
     display: block;
     max-width: 80%;
     max-height: 80%;
- }
+}
 
- /* image modal Close button */
- .img-modal-close {
+/* image modal Close button */
+.img-modal-close {
     position: absolute;
     top: 30px;
     right: 35px;
@@ -206,8 +211,16 @@ input::-ms-clear {
     font-size: 40px;
     font-weight: bold;
     cursor: pointer;
- }
+}
 
+img[loading="lazy"] {
+    filter: blur(10px);
+    transition: filter 0.3s;
+}
+
+img[loading="lazy"]:not([src=""]) {
+    filter: blur(0);
+}
 
 /* MOBILE
 ----------------------------------------------------------*/
