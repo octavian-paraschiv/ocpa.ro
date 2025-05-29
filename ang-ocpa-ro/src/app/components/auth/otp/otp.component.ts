@@ -1,5 +1,6 @@
 ﻿import { Component, inject } from '@angular/core';
 import { UntypedFormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { first } from 'rxjs/operators';
 import { BaseFormComponent } from 'src/app/components/base/BaseComponent';
@@ -18,13 +19,21 @@ export class OtpComponent extends BaseFormComponent {
     error = '';
     hide = true;
     otpGenerated = false;
+    redirectUrl: string = undefined;
 
-    private sessionInfo = inject(SessionInformationService);
+    private readonly sessionInfo = inject(SessionInformationService);
+    private readonly route = inject(ActivatedRoute);
+
+    ngOnInit() {
+        this.route.queryParams.subscribe(params => {
+            this.redirectUrl = params['url'];
+
+            if (this.authService.isUserLoggedIn())
+                this.performRedirect(this.redirectUrl);
+        });
+    }
 
     protected createForm(): UntypedFormGroup {
-        if (this.authService.isUserLoggedIn())
-            this.redirectToDefaultPage();
-
         this.onGenerateOtp();
 
         return this.formBuilder.group({
@@ -51,7 +60,7 @@ export class OtpComponent extends BaseFormComponent {
         this.authService.validateOtp(this.f.otp.value)
             .pipe(first(), untilDestroyed(this))
             .subscribe({
-                next: msg => (msg?.length > 0) ? this.handleError(msg) : this.redirectToDefaultPage(),
+                next: msg => (msg?.length > 0) ? this.handleError(msg) : this.performRedirect(this.redirectUrl),
                 error: err => this.handleError(err)
             });
     }

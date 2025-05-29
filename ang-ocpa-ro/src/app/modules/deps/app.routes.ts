@@ -40,17 +40,16 @@ const authGuard: CanActivateFn = (_, state) => {
       const matchingRoutes = routes.filter(r => `/${r.path.toLowerCase()}` === url);
       if (!(matchingRoutes?.length > 0)) {
         router.navigate(['/unavailable'], 
-          { queryParams: { kind: UnavailablePageKind.Unauthorized, url }});
+          { queryParams: { kind: UnavailablePageKind.NotFound, url }});
         return false;
       }
     }
   
-    const urlKind = menuService.getUrlKind(state.url);
+    const urlKind = menuService.getUrlKind(url);
   
     switch(urlKind) {
       case UrlKind.Unavailable:
-        router.navigate(['/unavailable'], 
-          { queryParams: { kind: UnavailablePageKind.Unauthorized, url }});
+        router.navigate(['/login'], { queryParams: { url } });
         return false;
   
       case UrlKind.App:

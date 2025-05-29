@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { UnavailablePageKind } from 'src/app/components/non-auth/unavailable-page/unavailable-page.component';
 import { Helper } from 'src/app/helpers/helper';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { MenuService } from 'src/app/services/api/menu.service';
@@ -21,15 +22,24 @@ export abstract class BaseComponent {
     protected readonly menuService = inject(MenuService);
     protected readonly overlay = inject(OverlayService);
 
-    protected redirectToDefaultPage() {
+    protected performRedirect(redirectUrl: string) {
         setTimeout(() => {
-            const defaultPage = 
-            (this.menuService?.menus?.appMenus?.length > 0) ? 
-                this.menuService.menus.appMenus[0].url :
-                (this.menuService?.menus?.publicMenus?.length > 0) ? 
-                    this.menuService.menus.publicMenus[0].url : '/';
+            const allMenus = (this.menuService?.menus?.appMenus ?? [])
+                .concat(this.menuService?.menus?.publicMenus ?? []);
 
+            if (redirectUrl?.length > 0) {
+                if (allMenus.find(menu => menu.url === redirectUrl))
+                    this.router.navigate([ redirectUrl ]);
+                else
+                    this.router.navigate(['/unavailable'], 
+                        { queryParams: { kind: UnavailablePageKind.Unauthorized, url: redirectUrl }});
+
+                return;
+            }
+                
+            const defaultPage = (allMenus.length > 0) ? allMenus[0].url : '/';
             this.router.navigate([ defaultPage ]);
+
         }, 300);
     }
 }
