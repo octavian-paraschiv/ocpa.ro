@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ocpa.ro.api.Helpers.Wiki.CustomRenderers;
+namespace ocpa.ro.api.Helpers.Content.CustomRenderers;
 
 public abstract class CustomRendererBase
 {

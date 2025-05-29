@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ocpa.ro.api.Helpers.Wiki
+namespace ocpa.ro.api.Helpers.Content
 {
     public interface ICaasHelper
     {
@@ -22,7 +22,7 @@ namespace ocpa.ro.api.Helpers.Wiki
     {
         private const string CatCacheKey = "cat";
 
-        private const string DefaultCatImagePath = "Helpers/Wiki/loadcat.gif";
+        private const string DefaultCatImagePath = "Helpers/Content/loadcat.gif";
 
         private readonly CaasConfig _config;
         private readonly HttpClient _client;

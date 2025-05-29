@@ -1,4 +1,4 @@
-﻿namespace ocpa.ro.api.Helpers.Wiki.CustomRenderers;
+﻿namespace ocpa.ro.api.Helpers.Content.CustomRenderers;
 
 public class PlantUmlRenderer : CustomRendererBase
 {

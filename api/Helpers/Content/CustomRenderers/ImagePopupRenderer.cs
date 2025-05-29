@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ocpa.ro.api.Helpers.Wiki.CustomRenderers;
+namespace ocpa.ro.api.Helpers.Content.CustomRenderers;
 
 public class ImagePopupDetails
 {

@@ -3,17 +3,20 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Helpers.Content;
 using ocpa.ro.api.Helpers.Generic;
-using ocpa.ro.api.Helpers.Wiki;
+using ocpa.ro.api.Models.Configuration;
 using ocpa.ro.api.Models.Content;
 using ocpa.ro.api.Policies;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,17 +33,23 @@ namespace ocpa.ro.api.Controllers
         #region Private members
         private readonly IContentHelper _contentHelper;
         private readonly IMultipartRequestHelper _multipartHelper;
-        private readonly IWikiHelper _wikiHelper;
+        private readonly IContentRenderer _contentRenderer;
+        private readonly IDistributedCache _cache;
+        private readonly CaasConfig _config;
         #endregion
 
         #region Constructor (DI)
         public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger, IAuthHelper authHelper,
-            IContentHelper contentHelper, IWikiHelper wikiHelper, IMultipartRequestHelper multipartHelper)
+            IContentHelper contentHelper, IContentRenderer wikiHelper, IMultipartRequestHelper multipartHelper,
+            IDistributedCache cache, IOptions<CaasConfig> config)
             : base(hostingEnvironment, logger, authHelper)
         {
             _contentHelper = contentHelper ?? throw new ArgumentNullException(nameof(contentHelper));
             _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
-            _wikiHelper = wikiHelper ?? throw new ArgumentNullException(nameof(wikiHelper));
+            _contentRenderer = wikiHelper ?? throw new ArgumentNullException(nameof(wikiHelper));
+
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+            _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
         }
         #endregion
 
@@ -202,32 +211,68 @@ namespace ocpa.ro.api.Controllers
         [SwaggerOperation(OperationId = "RenderContent")]
         [AllowAnonymous]
         public async Task<IActionResult> RenderContent([FromRoute] string resourcePath,
-           [FromHeader(Name = "X-RenderAsHtml")] string renderAsHtmlStr)
+           [FromHeader(Name = "X-RenderAsHtml")] string renderAsHtmlStr,
+           [FromHeader(Name = "X-UseCache")] string useCacheStr)
         {
             _authHelper.GuardContentPath(HttpContext.User?.Identity, resourcePath);
 
             try
             {
-                string reqUrl = Request.GetDisplayUrl();
-                string reqPath = Request.Path;
-                string reqRoot = reqUrl.Replace(reqPath, string.Empty);
+                byte[] data = [];
+                bool isBinary = false;
 
                 bool renderAsHtml = !string.Equals(renderAsHtmlStr, "FALSE", StringComparison.OrdinalIgnoreCase);
+                bool useCache = !string.Equals(useCacheStr, "FALSE", StringComparison.OrdinalIgnoreCase);
 
-                var ext = Path.GetExtension(resourcePath);
-                if (ext?.Length > 0)
+                if (useCache)
                 {
-                    var (data, isBinary) = await _wikiHelper.ProcessWikiResource(resourcePath, reqRoot,
-                        RequestLanguage, renderAsHtml).ConfigureAwait(false);
-
-                    if (data?.Length > 0)
+                    var rawData = await _cache.GetAsync(resourcePath);
+                    if (rawData?.Length > 1)
                     {
-                        IActionResult res = (renderAsHtml && !isBinary) ?
-                            Content(Encoding.UTF8.GetString(data), "text/html") :
-                            File(data, "application/octet-stream");
-
-                        return res;
+                        isBinary = rawData[0] != 0;
+                        data = rawData.Skip(1).ToArray();
                     }
+                }
+
+                if (!(data?.Length > 0))
+                {
+                    string reqUrl = Request.GetDisplayUrl();
+                    string reqPath = Request.Path;
+                    string reqRoot = reqUrl.Replace(reqPath, string.Empty);
+
+                    var ext = Path.GetExtension(resourcePath);
+                    if (ext?.Length > 0)
+                    {
+                        (data, isBinary) = await _contentRenderer.RenderContent(resourcePath, reqRoot,
+                            RequestLanguage, renderAsHtml).ConfigureAwait(false);
+
+                        if (useCache)
+                        {
+                            if (data?.Length > 0)
+                            {
+                                byte[] start = [Convert.ToByte(isBinary)];
+                                byte[] cacheData = [.. start, .. data];
+
+                                await _cache.SetAsync(resourcePath, cacheData, new DistributedCacheEntryOptions
+                                {
+                                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_config.CachePeriod)
+                                });
+                            }
+                            else
+                            {
+                                await _cache.RemoveAsync(resourcePath);
+                            }
+                        }
+                    }
+                }
+
+                if (data?.Length > 0)
+                {
+                    IActionResult res = (renderAsHtml && !isBinary) ?
+                        Content(Encoding.UTF8.GetString(data), "text/html") :
+                        File(data, "application/octet-stream");
+
+                    return res;
                 }
             }
             catch (Exception ex)

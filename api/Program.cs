@@ -14,7 +14,6 @@ using ocpa.ro.api.Helpers.Generic;
 using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Helpers.Meteo;
-using ocpa.ro.api.Helpers.Wiki;
 using ocpa.ro.api.Middlewares;
 using ocpa.ro.api.Models.Configuration;
 using ocpa.ro.api.Policies;
@@ -93,7 +92,7 @@ builder.Services.AddSingleton<ICaasHelper, CaasHelper>();
 builder.Services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
 
 builder.Services.AddTransient<IMultipartRequestHelper, MultipartRequestHelper>();
-builder.Services.AddTransient<IWikiHelper, WikiHelper>();
+builder.Services.AddTransient<IContentRenderer, ContentRenderer>();
 builder.Services.AddTransient<IEmailHelper, EmailHelper>();
 
 builder.Services.AddDistributedMemoryCache();

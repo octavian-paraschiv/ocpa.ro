@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Helpers.Wiki;
+using ocpa.ro.api.Helpers.Content;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
