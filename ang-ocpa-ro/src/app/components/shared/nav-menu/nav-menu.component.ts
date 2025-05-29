@@ -17,7 +17,6 @@ export class NavMenuComponent extends BaseComponent implements OnInit {
     faEarth = faEarth;
     title = 'OcPa\'s Web Site';
     menus: Menu[] = [];
-    singleMenuApp = false;
 
     ngOnInit(): void {
         this.router.events
@@ -44,7 +43,6 @@ export class NavMenuComponent extends BaseComponent implements OnInit {
           }
 
           this.menus = menus;
-          this.singleMenuApp = this.menuService.singleMenuApp$.getValue();
         });
     }
 

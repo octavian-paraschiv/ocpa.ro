@@ -35,18 +35,19 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
   }
 
   ngOnInit() {
-
     this.utility.getBackendVersion()
       .pipe(untilDestroyed(this))
       .subscribe(res => this.version = (res ?? '').replace(/"/g, ''));
 
+    this.onWindowResized(undefined);
+    this.startRefreshAuthTimer();
+
     this.menuService.singleMenuApp$
       .pipe(untilDestroyed(this))
-      .subscribe(res => this.setSingleMenuApp(res));
+      .subscribe(res => document
+        .getElementById('app-nav-menu')
+        .setAttribute('single-menu-app', !!res ? 'true' : 'false'));
 
-    this.onWindowResized(undefined);
-    this.setSingleMenuApp(this.menuService.singleMenuApp$.getValue());
-    this.startRefreshAuthTimer();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -54,11 +55,6 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
     const root = document.documentElement;
     root.setAttribute('mobile', Helper.isMobile() ? 'true' : 'false');
     root.setAttribute('display-mode', Helper.displayMode());
-  }
-
-  private setSingleMenuApp(singleMenuApp: boolean) {
-    const root = document.documentElement;
-    root.setAttribute('single-menu-app', singleMenuApp ? 'true' : 'false');
   }
 
   private startRefreshAuthTimer() {

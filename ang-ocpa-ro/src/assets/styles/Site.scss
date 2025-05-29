@@ -50,9 +50,13 @@ app-root {
 }
 
 #app-nav-menu {
+    display: block;
     grid-area: anm;
     color: $nav-forecolor;
     background-color: $nav-backcolor;
+}
+#app-nav-menu[single-menu-app="true"] {
+    display: none;
 }
 
 .app-version-info {
