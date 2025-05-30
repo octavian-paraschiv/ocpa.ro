@@ -26,22 +26,22 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("{*resourcePath}")]
-        [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK, "image/gif")]
-        [SwaggerOperation(OperationId = "GetNewCat")]
-        public async Task<IActionResult> GetNewCat([FromRoute] string resourcePath, [FromQuery] bool? refreshCat)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(OperationId = "RefreshCat")]
+        public async Task<IActionResult> RefreshCat([FromRoute] string resourcePath)
         {
             try
             {
-                var data = await _helper.GetNewCat(resourcePath, Request.QueryString.Value, refreshCat ?? false);
-                if (data?.Length > 0)
-                    return File(data, "image/gif");
+                await _helper.RefreshCat(resourcePath, Request.QueryString.Value);
+                return Ok();
             }
             catch (Exception ex)
             {
                 LogException(ex);
             }
 
-            return NotFound($"Resource not found: {resourcePath}");
+            return BadRequest($"Cannot refresh cat from resource: {resourcePath}");
         }
     }
 }

@@ -35,13 +35,13 @@ namespace ocpa.ro.api.Controllers
         private readonly IMultipartRequestHelper _multipartHelper;
         private readonly IContentRenderer _contentRenderer;
         private readonly IDistributedCache _cache;
-        private readonly CaasConfig _config;
+        private readonly CacheConfig _config;
         #endregion
 
         #region Constructor (DI)
         public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger, IAuthHelper authHelper,
             IContentHelper contentHelper, IContentRenderer wikiHelper, IMultipartRequestHelper multipartHelper,
-            IDistributedCache cache, IOptions<CaasConfig> config)
+            IDistributedCache cache, IOptions<CacheConfig> config)
             : base(hostingEnvironment, logger, authHelper)
         {
             _contentHelper = contentHelper ?? throw new ArgumentNullException(nameof(contentHelper));

@@ -40,6 +40,7 @@ Environment.SetEnvironmentVariable("LOGDIR", logDir);
 builder.Configuration.ResolveConfiguration(builder.Services, AuthConfig.SectionName, out AuthConfig authConfig);
 builder.Configuration.ResolveConfiguration(builder.Services, GeoLocationConfig.SectionName, out GeoLocationConfig _);
 builder.Configuration.ResolveConfiguration(builder.Services, CaasConfig.SectionName, out CaasConfig _);
+builder.Configuration.ResolveConfiguration(builder.Services, CacheConfig.SectionName, out CacheConfig _);
 builder.Configuration.ResolveConfiguration(builder.Services, EmailConfig.SectionName, out EmailConfig emailConfig);
 #endregion
 
