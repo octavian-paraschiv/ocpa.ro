@@ -35,7 +35,7 @@ namespace ocpa.ro.api.Helpers.Content
                 _logger.Information($"[CAAS] Fetching new image ...");
 
                 var data = await _client.GetByteArrayAsync($"{resourcePath}{queryString}");
-                if (!(data?.Length > 0))
+                if (data?.Length > 0)
                 {
                     var imagePath = Path.Combine(_hostingEnvironment.ContentPath(), DefaultCatImagePath);
 
