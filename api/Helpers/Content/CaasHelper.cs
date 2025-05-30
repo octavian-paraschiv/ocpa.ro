@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Configuration;
 using Serilog;
 using System;
@@ -17,7 +18,7 @@ namespace ocpa.ro.api.Helpers.Content
 
     public class CaasHelper : BaseHelper, ICaasHelper
     {
-        private const string DefaultCatImagePath = "wiki/daily-cat/loadcat.gif";
+        private const string DefaultCatImagePath = "wiki/daily-cat/daily-cat.gif";
         private readonly HttpClient _client;
 
         public CaasHelper(IWebHostEnvironment hostingEnvironment, ILogger logger,
@@ -36,8 +37,8 @@ namespace ocpa.ro.api.Helpers.Content
                 var data = await _client.GetByteArrayAsync($"{resourcePath}{queryString}");
                 if (!(data?.Length > 0))
                 {
-                    _logger.Debug($"[CAAS] New image fetched OK, caching it to disk ...");
-                    await File.WriteAllBytesAsync(DefaultCatImagePath, data);
+                    var imagePath = Path.Combine(_hostingEnvironment.ContentPath(), DefaultCatImagePath);
+                    await File.WriteAllBytesAsync(imagePath, data);
 
                     _logger.Debug($"[CAAS] All fetching OK");
                 }

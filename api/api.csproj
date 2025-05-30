@@ -29,9 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Helpers\Content\loadcat.gif">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 		<None Update="Template.db3">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
