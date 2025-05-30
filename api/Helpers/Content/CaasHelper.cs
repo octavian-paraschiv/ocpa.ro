@@ -32,15 +32,17 @@ namespace ocpa.ro.api.Helpers.Content
         {
             try
             {
-                _logger.Debug($"[CAAS] Fetching new image ...");
+                _logger.Information($"[CAAS] Fetching new image ...");
 
                 var data = await _client.GetByteArrayAsync($"{resourcePath}{queryString}");
                 if (!(data?.Length > 0))
                 {
                     var imagePath = Path.Combine(_hostingEnvironment.ContentPath(), DefaultCatImagePath);
+
+                    _logger.Information($"[CAAS] Writing new image to {imagePath}");
                     await File.WriteAllBytesAsync(imagePath, data);
 
-                    _logger.Debug($"[CAAS] All fetching OK");
+                    _logger.Information($"[CAAS] All fetching OK");
                 }
             }
             catch (Exception ex)
