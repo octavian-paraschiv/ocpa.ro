@@ -249,7 +249,7 @@ namespace ocpa.ro.api.Controllers
 
                         if (useCache)
                         {
-                            if (data?.Length > 0)
+                            if (data?.Length > (_config.MinSizeKB * 1024)) // only cache "large" content
                             {
                                 byte[] start = [Convert.ToByte(isBinary)];
                                 byte[] cacheData = [.. start, .. data];
