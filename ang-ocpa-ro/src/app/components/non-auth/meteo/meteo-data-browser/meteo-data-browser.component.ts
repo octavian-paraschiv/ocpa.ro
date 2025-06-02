@@ -549,19 +549,21 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
       return 'left-cell-selected';
     return 'left-cell-normal';
   }
+
   centerCellClass(md: MeteoDailyData): string {
     if (Helper.today.localeCompare(md?.date) === 0)
-      return 'center-cell-today';
+      return `center-cell-today ${md.tempFeel ?? ''}`;    
     if (this.selectedDate.localeCompare(md?.date) === 0)
-      return 'center-cell-selected';
-    return 'center-cell-normal';
+      return `center-cell-selected ${md.tempFeel ?? ''}`;    
+    return `center-cell-normal ${md.tempFeel ?? ''}`;
   }
+
   rightCellClass(md: MeteoDailyData): string {
     if (Helper.today.localeCompare(md?.date) === 0)
-      return 'right-cell-today';
+      return `right-cell-today ${md.tempFeel ?? ''}`;
     if (this.selectedDate.localeCompare(md?.date) === 0)
-      return 'right-cell-selected';
-    return 'right-cell-normal';
+      return `right-cell-selected ${md.tempFeel ?? ''}`;
+    return `right-cell-normal ${md.tempFeel ?? ''}`;
   }
 
   summary(md: MeteoDailyData): string {

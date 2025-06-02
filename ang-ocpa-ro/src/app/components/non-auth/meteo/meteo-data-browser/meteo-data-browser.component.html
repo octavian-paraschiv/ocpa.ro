@@ -133,7 +133,7 @@
                             </td>
                         </ng-container>
             
-                        <tr id="day_{{md.date}}" mat-row *matRowDef="let md; columns: displayColumns;" class="{{md.tempFeel}}"></tr>
+                        <tr id="day_{{md.date}}" mat-row *matRowDef="let md; columns: displayColumns;"></tr>
                     </table>
                 </div>
                 <div class="meteo-data-other" [ngStyle]="dataGridStyle">
