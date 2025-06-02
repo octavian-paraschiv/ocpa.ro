@@ -17,12 +17,13 @@ $home-image-color: lighten($forecolor, 10%);
 $meteo-table-line-color: lighten($forecolor, 10%);
 $meteo-today-border-color: lighten(teal, 10%);
 $meteo-selected-border-color: lighten(salmon, 10%);
-$meteo-weekend-header-color: darken(maroon, 10%);
+$meteo-weekend-header-color: maroon;
 
-$meteo-border-today: 5px solid $meteo-today-border-color !important;
+$meteo-border-normal: 1px solid lighten(lightgray, 10%) !important;
+$meteo-border-today: 4px solid $meteo-today-border-color !important;
 $meteo-border-selected: 3px solid $meteo-selected-border-color !important;
 
-$meteo-normal-color: $backcolor;
+$meteo-normal-color: lighten(lightgray, 10%);
 $meteo-warmer-color: #ffffcc;
 $meteo-much-warmer-color: #ffff66;
 $meteo-hot-color: #ffcc99;

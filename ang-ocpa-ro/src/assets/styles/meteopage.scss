@@ -1,6 +1,7 @@
 @import "weather-icons.css";
 @import "weather-icons-wind.css";
 
+
 .meteo-mat-small {
     font-size: 0.73rem;
 }
@@ -149,7 +150,7 @@ app-meteo {
 // --- Temp cell ---
 .temp-low-cell {
     display: grid;
-    color: blue;
+    color: $meteo-temp-min;
     grid-template-rows: 1fr;
     grid-template-columns: 1rem 1fr 1rem 1fr;
     grid-template-areas: "sl tla tln";
@@ -158,7 +159,7 @@ app-meteo {
 }
 .temp-high-cell {
     display: grid;
-    color: red;
+    color: $meteo-temp-max;
     grid-template-rows: 1fr;
     grid-template-columns: 1rem 1fr 1rem 1fr;
     grid-template-areas: "sl tla tln";
@@ -193,7 +194,8 @@ app-meteo {
     padding: 2px !important;
 }
 .date-cell-base {
-    background-color: gray !important;
+    background-color: lightgray !important;
+    font-weight: 600 !important;
 }
 .date-cell {
     @extend .date-cell-base;
@@ -208,24 +210,23 @@ app-meteo {
     "year";
 }
 .dow-row {
-    font-weight: 500;
     grid-area: dow;
     text-transform: uppercase;
-    color: white;
 }
 .dom-row {
     grid-area: dom;
     text-transform: uppercase;
-    color: white;
 }
 .year-row {
     grid-area: year;
     text-transform: uppercase;
-    color: white;
 }
 
 .date-cell-weekend-base {
     background-color: $meteo-weekend-header-color !important;
+    font-size: 0.7rem !important;
+    font-weight: bolder !important;
+    color: white !important;
 }
 .date-cell-weekend {
     @extend .date-cell, .date-cell-weekend-base;    
@@ -236,46 +237,83 @@ app-meteo {
 #meteo-calendar {
     grid-area: mc;
     .mat-mdc-cell {
-        border-top: 1px solid transparent;
         height: auto !important;
     }
     .mat-mdc-row {
         height: auto !important;
     }
-    border: 1px solid lightgray;
-    margin-bottom: 5px;
+    border-collapse: separate;
+    border-spacing: 0 5px;
+}
+
+.raw-cell-normal {
+    border: $meteo-border-normal;
+    border-radius: 8px;
 }
 .raw-cell-today {
     border: $meteo-border-today;
+    border-radius: 8px;
 }
 .raw-cell-selected {
     border: $meteo-border-selected;
+    border-radius: 8px;
+}
+
+.left-cell-normal {
+    @extend .raw-cell-normal;
+    border-right: unset !important;
+    border-top-right-radius: unset !important;
+    border-bottom-right-radius: unset !important;
 }
 .left-cell-today {
     @extend .raw-cell-today;
     border-right: unset !important;
+    border-top-right-radius: unset !important;
+    border-bottom-right-radius: unset !important;
+}
+.left-cell-selected {
+    @extend .raw-cell-selected;
+    border-right: unset !important;
+    border-top-right-radius: unset !important;
+    border-bottom-right-radius: unset !important;
+}
+
+.center-cell-normal {
+    @extend .raw-cell-normal;
+    border-left: unset !important;
+    border-right: unset !important;
+    border-radius: unset !important;
 }
 .center-cell-today {
     @extend .raw-cell-today;
     border-left: unset !important;
     border-right: unset !important;
-}
-.right-cell-today {
-    @extend .raw-cell-today;
-    border-left: unset !important;
-}
-.left-cell-selected {
-    @extend .raw-cell-selected;
-    border-right: unset !important;
+    border-radius: unset !important;
 }
 .center-cell-selected {
     @extend .raw-cell-selected;
     border-left: unset !important;
     border-right: unset !important;
+    border-radius: unset !important;
+}
+
+.right-cell-normal {
+    @extend .raw-cell-normal;
+    border-left: unset !important;
+    border-top-left-radius: unset !important;
+    border-bottom-left-radius: unset !important;
+}
+.right-cell-today {
+    @extend .raw-cell-today;
+    border-left: unset !important;
+    border-top-left-radius: unset !important;
+    border-bottom-left-radius: unset !important;
 }
 .right-cell-selected {
     @extend .raw-cell-selected;
     border-left: unset !important;
+    border-top-left-radius: unset !important;
+    border-bottom-left-radius: unset !important;
 }
 // -------------------- 
 

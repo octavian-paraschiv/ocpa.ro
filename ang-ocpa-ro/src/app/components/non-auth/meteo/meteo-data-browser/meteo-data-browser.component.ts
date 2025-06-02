@@ -429,11 +429,14 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
       let start = Helper.isoDate(Helper.addDays(this.selectedDate, -delta));
       let end = Helper.isoDate(Helper.addDays(this.selectedDate, delta));
 
-      if (start.localeCompare(this.meteoData[0].date) < 0)
+      if (start.localeCompare(this.meteoData[0].date) < 0) {
         start = this.meteoData[0].date;
-
-      if (end.localeCompare(this.meteoData[this.meteoData.length - 1].date) > 0)
+        end = Helper.isoDate(Helper.addDays(start, 2 * delta));
+      }
+      else if (end.localeCompare(this.meteoData[this.meteoData.length - 1].date) > 0) {
         end = this.meteoData[this.meteoData.length - 1].date;
+        start = Helper.isoDate(Helper.addDays(start, -2 * delta));
+      }
 
       this.selMeteoData = this.meteoData.filter(md => 
         md.date.localeCompare(start) >= 0 && md.date.localeCompare(end) <= 0);
@@ -544,21 +547,21 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
       return 'left-cell-today';
     if (this.selectedDate.localeCompare(md?.date) === 0)
       return 'left-cell-selected';
-    return '';
+    return 'left-cell-normal';
   }
   centerCellClass(md: MeteoDailyData): string {
     if (Helper.today.localeCompare(md?.date) === 0)
       return 'center-cell-today';
     if (this.selectedDate.localeCompare(md?.date) === 0)
       return 'center-cell-selected';
-    return '';
+    return 'center-cell-normal';
   }
   rightCellClass(md: MeteoDailyData): string {
     if (Helper.today.localeCompare(md?.date) === 0)
       return 'right-cell-today';
     if (this.selectedDate.localeCompare(md?.date) === 0)
       return 'right-cell-selected';
-    return '';
+    return 'right-cell-normal';
   }
 
   summary(md: MeteoDailyData): string {

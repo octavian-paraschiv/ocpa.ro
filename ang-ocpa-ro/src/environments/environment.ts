@@ -7,10 +7,10 @@ import { Ext } from 'src/environments/environment.ext';
 export const environment = {
   production: false,
   // apiUrl: 'http://localhost:39207',
-  //translationUrl: './assets/translations/',
+  translationUrl: './assets/translations/',
 
   apiUrl: 'https://ocpa.ro/api',
-  translationUrl: 'https://ocpa.ro/api/content/render/translations/',
+  //translationUrl: 'https://ocpa.ro/api/content/render/translations/',
 
   ext: new Ext(),
 };
