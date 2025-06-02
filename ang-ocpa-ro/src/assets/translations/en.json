@@ -168,9 +168,9 @@
         "snow-new": "New Snow",
         "snow-total": "Snow Cover",
         "snow-cover": "Cover:",
-        "default-hint": "To search a city, click/tap in the drop list below, then type the city name.",
+        "default-hint": "Click/tap in the city list below, then type the desired city name.",
         "alt-hint": "Contents of {{name}} / Data length: {{length}}.<br>(Press Escape to close the window)",
-        "data-hint": "Weather in <b>{{name}}</b> from <b>{{startDate}}</b> to <b>{{endDate}}</b>. Use the +/- buttons to go the desired date.",
+        "data-hint": "Weather in <span>{{name}}</span> from <span>{{startDate}}</span> to <span>{{endDate}}</span>. Use the buttons below to go the desired date.",
         "data-hint-fetching": "Fetching data for: <b>{{name}}</b>...",
         "data-hint-fetching-alt": "Fetching data...",
         "empty-db": "The database is empty!"

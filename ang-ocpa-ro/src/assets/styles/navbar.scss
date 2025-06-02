@@ -15,6 +15,7 @@
 }
 .navbar-brand {
     border-bottom: unset;
+    color: $nav-forecolor;
 }
 
 .nav-link {
@@ -26,13 +27,12 @@
 .nav-item:hover {
     color: $nav-forecolor;
     background-color: lighten($nav-alt-backcolor, 0.5);
-    border-radius: 5px;
+    border-bottom: 3px solid $nav-underline-hover;
 }
 
 .link-active {
     color: $nav-forecolor;
-    background-color: $nav-alt-backcolor;
-    border-radius: 5px;
+    border-bottom: 3px solid $nav-underline-active;
 }
 
 .nav-link-div {

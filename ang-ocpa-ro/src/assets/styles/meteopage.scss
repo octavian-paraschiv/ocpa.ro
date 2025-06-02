@@ -5,6 +5,10 @@
     font-size: 0.73rem;
 }
 
+.forecast-range {
+    color: darkred;
+}
+
 .normal { background-color: $meteo-normal-color !important; }
 .warmer { background-color: $meteo-warmer-color !important; }
 .much_warmer { background-color: $meteo-much-warmer-color !important; }
@@ -60,6 +64,10 @@ app-meteo {
 .meteo-data-hint-label {
     @extend .meteo-mat-small;
     margin: 0;
+    > span {
+        color: darkred;
+        font-weight: bold;
+    }
 }
 
 .outer-meteo-data-grid {

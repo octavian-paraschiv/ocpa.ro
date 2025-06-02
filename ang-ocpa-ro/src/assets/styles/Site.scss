@@ -54,6 +54,7 @@ app-root {
     grid-area: anm;
     color: $nav-forecolor;
     background-color: $nav-backcolor;
+    margin-bottom: 5px;
 }
 #app-nav-menu[single-menu-app="true"] {
     display: none;

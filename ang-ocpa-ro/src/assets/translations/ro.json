@@ -168,9 +168,9 @@
         "snow-new": "Zăpadă nou depusă",
         "snow-total": "Strat de zăpadă",
         "snow-cover": "Strat:",
-        "default-hint": "Pentru a căuta o localitate, dați clic în lista de mai jos, apoi tastați numele localității.",
+        "default-hint": "Dați clic în lista de mai jos, și apoi tastați numele localității dorite.",
         "alt-hint": "Conținutul {{name}} / Lungime date: {{length}}.<br>(Apăsați Escape pt. a închide fereastra)",
-        "data-hint": "Vremea în <b>{{name}}</b> între <b>{{startDate}} și {{endDate}}</b>. Folosiți butoanele +/- pentru a ajunge la data dorită.",
+        "data-hint": "Vremea în <span>{{name}}</span> între <span>{{startDate}} și {{endDate}}</span>. Folosiți butoanele de mai jos pentru a ajunge la data dorită.",
         "data-hint-fetching": "Încărcare date pentru: <b>{{name}}</b>...",
         "data-hint-fetching-alt": "Încărcare date...",
         "empty-db": "Baza de date este goală."
