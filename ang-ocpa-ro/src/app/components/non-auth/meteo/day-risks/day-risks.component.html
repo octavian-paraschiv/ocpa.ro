@@ -1,0 +1,6 @@
+<ng-container *ngIf="risks?.length > 0">
+    <div *ngFor="let r of risks" class="riskRow">
+        <img src='assets/images/meteo/warning.png' class="img-hazard">
+        <label class="meteo-mat-small hazard"><b>{{('meteo.risk.' + r) | translate}}</b></label>
+    </div>
+</ng-container>

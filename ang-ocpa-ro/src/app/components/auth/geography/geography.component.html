@@ -1,0 +1,90 @@
+<div style="text-align: justify; margin-top: 1rem; margin-right: 0.5rem;" class="cities-page">
+    <label mat-small style="margin-bottom: 0.2rem;" class="cities-list-name">{{'geography.city-list' | translate}}</label>
+    <table mat-table [dataSource]="cities" fixedLayout class="cities-list">
+        <!-- Add Column -->
+        <ng-container matColumnDef="city-add">
+            <th mat-header-cell *matHeaderCellDef>
+                <a class="table-link" (click)="saveCity()" title="{{'geography.add-city' | translate}}">
+                    <fa-icon [icon]="faAdd" [transform]="size"></fa-icon>
+                </a>
+            </th>
+            <td mat-cell *matCellDef="let city"></td>
+        </ng-container>
+        <!-- Edit Column -->
+        <ng-container matColumnDef="city-edit">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let city">
+                <a class="table-link" (click)="saveCity(city)" 
+                    title="{{'geography.edit-city' | translate: { name: city.name } }}">
+                    <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
+                </a>
+            </td>
+        </ng-container>
+        <!-- Delete Column -->
+        <ng-container matColumnDef="city-delete">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let city">
+                <a class="table-link" (click)="onDelete(city)" *ngIf="!city.isDefault"
+                    title="{{'geography.del-city' | translate: { name: city.name } }}">
+                    <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
+                </a>
+            </td>
+        </ng-container>
+        <!-- Name Column -->
+        <ng-container matColumnDef="city-name">
+            <th mat-header-cell *matHeaderCellDef>{{'geography.name' | translate}}</th>
+            <td mat-cell *matCellDef="let city">
+                <span>{{city.name}}</span>
+            </td>
+        </ng-container>         
+        <!-- Region Column -->
+        <ng-container matColumnDef="city-region">
+            <th mat-header-cell *matHeaderCellDef>{{'geography.region' | translate}}</th>
+            <td mat-cell *matCellDef="let city">
+                <span>{{city.regionName}}</span>
+            </td>
+        </ng-container> 
+        <!-- Subregion Column -->
+        <ng-container matColumnDef="city-subregion">
+            <th mat-header-cell *matHeaderCellDef>{{'geography.subregion' | translate}}</th>
+            <td mat-cell *matCellDef="let city">
+                <span>{{city.subregion}}</span>
+            </td>
+        </ng-container> 
+        <!-- Latitude Column -->
+        <ng-container matColumnDef="city-latitude">
+            <th mat-header-cell *matHeaderCellDef>{{'geography.latitude' | translate}}</th>
+            <td mat-cell *matCellDef="let city">
+                <span>{{city.lat}}</span>
+            </td>
+        </ng-container> 
+        <!-- Longitude Column -->
+        <ng-container matColumnDef="city-longitude">
+            <th mat-header-cell *matHeaderCellDef>{{'geography.longitude' | translate}}</th>
+            <td mat-cell *matCellDef="let city">
+                <span>{{city.lon}}</span>
+            </td>
+        </ng-container> 
+        <!-- Default Column -->
+        <ng-container matColumnDef="city-default">
+            <th mat-header-cell *matHeaderCellDef>{{'geography.default' | translate}}</th>
+            <td mat-cell *matCellDef="let city">
+                <fa-icon [icon]="faCheck" [transform]="size" *ngIf="city.isDefault">
+                </fa-icon>
+            </td>
+        </ng-container>
+        <!-- Filler Column -->
+        <ng-container matColumnDef="city-filler">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let city"></td>
+        </ng-container>
+        <tr mat-header-row class="cities-header-row" *matHeaderRowDef="citiesColumns"></tr>
+        <tr mat-row class="cities-row" *matRowDef="let row; columns: citiesColumns;"></tr>
+    </table>
+    <mat-form-field appearance="outline" class="cities-search-term">
+        <mat-label>{{'geography.cities-filter' | translate}}</mat-label>
+        <input matInput [(value)]="searchTerm" (input)="searchCities($event?.target?.value)" >
+    </mat-form-field>
+    <mat-paginator [pageSizeOptions]="[30]" showFirstLastButtons class="cities-paginator">
+    </mat-paginator>
+</div>

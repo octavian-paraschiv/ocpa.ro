@@ -1,0 +1,25 @@
+<div class="content-browser">
+    <div class="content-browser-buttons">
+        <a class="{{getTreeButtonClass('folder')}}" *ngIf="isActionAllowed('folder')" (click)="onNewFolder()">
+            <fa-icon [icon]="folder" [transform]="size"></fa-icon>
+        </a>
+        <a class="{{getTreeButtonClass('file')}}" *ngIf="isActionAllowed('file')" (click)="onNewFile()">
+            <fa-icon [icon]="file" [transform]="size"></fa-icon>
+        </a>
+        <a class="{{getTreeButtonClass('upload')}}" *ngIf="isActionAllowed('upload')" (click)="onUploadFile()">
+            <fa-icon [icon]="upload" [transform]="size"></fa-icon>
+        </a>
+        <a class="{{getTreeButtonClass('rename')}}" *ngIf="isActionAllowed('rename')" (click)="onRename()">
+            <fa-icon [icon]="rename" [transform]="size"></fa-icon>
+        </a>
+        <a class="{{getTreeButtonClass('delete')}}" *ngIf="isActionAllowed('delete')" (click)="onDelete()">
+            <fa-icon [icon]="delete" [transform]="size"></fa-icon>
+        </a>
+    </div>
+    <app-content-tree #tree id="content-tree" (nodeSelected)="onNodeSelected($event)"></app-content-tree>
+    <label mat-small id="mde-path">{{contentPath}}</label>
+    <textarea id="mde-edit" [(ngModel)]="content" (keydown)="onKeyDown()" [disabled]="!editable" ></textarea>
+    <app-wiki-viewer id="mde-preview" #viewer [ngStyle]="previewStyle"></app-wiki-viewer>
+    <img *ngIf="image" id="mde-preview-image" src="{{image}}" />
+    <textarea *ngIf="!editable && !image" id="mde-preview" [(ngModel)]="binary" disabled="true"></textarea>
+</div>

@@ -1,0 +1,6 @@
+<div class="wiki-browser">
+    <app-content-tree #tree id="wiki-browser-tree" [initialLoad] = "false" [markdownView] = "true" 
+        (nodeSelected)="onNodeSelected($event)"></app-content-tree>
+        
+    <app-wiki-viewer #viewer id="wiki-browser-viewer"></app-wiki-viewer>
+</div>

@@ -1,0 +1,35 @@
+$font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Adjusted", "Segoe UI", "Liberation Sans", sans-serif;
+$site-height: 99vh;
+
+$nav-backcolor: #d8dae4;
+$nav-alt-backcolor: #bdc4cc;
+
+$forecolor: rgb(25, 35, 90);
+$backcolor: white;
+$shadow-color: #CCCCDD;
+
+$nav-forecolor: $forecolor;
+$nav-underline-active: rgb(0, 0, 218);
+$nav-underline-hover: rgb(84, 84, 252);
+
+$home-image-color: lighten($forecolor, 10%);
+
+$meteo-table-line-color: lighten($forecolor, 10%);
+$meteo-today-border-color: lighten(teal, 10%);
+$meteo-selected-border-color: lighten(salmon, 10%);
+$meteo-weekend-header-color: maroon;
+
+$meteo-border-normal: 1px solid lighten(lightgray, 10%) !important;
+$meteo-border-today: 4px solid $meteo-today-border-color !important;
+$meteo-border-selected: 3px solid $meteo-selected-border-color !important;
+
+$meteo-normal-color: lighten(lightgray, 10%);
+$meteo-warmer-color: #ffffcc;
+$meteo-much-warmer-color: #ffff66;
+$meteo-hot-color: #ffcc99;
+$meteo-colder-color: #e6f7ff;
+$meteo-much-colder-color: #e6efff;
+$meteo-frost-color: #ccdfff;
+
+$meteo-temp-min: blue;
+$meteo-temp-max: red;

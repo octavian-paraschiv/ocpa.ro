@@ -1,0 +1,366 @@
+{
+    "Loading": "Loading...",
+    "Yes": "Yes",
+    "No": "No",
+    "Close": "Close",
+    "OK": "OK",
+    "Cancel": "Cancel",
+    "Today": "Today",
+    "day-short": "d",
+    "unauthorized-access": "You are not authorized to view this page: '{{url}}'",
+    "not-found": "This page does not exist: '{{url}}'",
+    "app-version": "Application version: {{version}}",
+    "click-to-enlarge": "Click to enlarge image",
+
+    "ERR_BAD_CREDENTIALS": "Incorrect user name or password.<br>Remaining attempts: <b>{{retries}}<b>",
+    "ERR_BAD_OTP": "Incorrect login code.<br>Please try again, or click 'Regenerate' to receive a new code on your email.",
+    "ERR_ACCOUNT_DISABLED": "The account is disabled.",
+    "ERR_NO_TOKEN": "There was an error trying to log you in. Please try again.",
+
+    "ERR_EDIT_BUILT_IN_APP": "The application '{{name}}' is builtin and cannot be edited",
+    "ERR_DELETE_BUILTIN_APP": "The application '{{name}}' is builtin and cannot be deleted",
+    "ERR_DELETE_APP_MENU_ASSOCIATIONS": "The app '{{name}}' has menu associations and cannot be deleted",
+    "ERR_DELETE_APP_USER_ASSOCIATIONS": "The app '{{name}}' has user associations and cannot be deleted",
+    "ERR_EDIT_BUILTIN_MENU": "The menu '{{name}}' is builtin and cannot be edited",
+    "ERR_DELETE_BUILTIN_MENU": "The menu '{{name}}' is builtin and cannot be deleted",
+    "ERR_DELETE_MENU_APP_ASSOCIATIONS": "The menu '{{name}}' has app associations and cannot be deleted",
+    "ERR_APP_NOT_FOUND": "The application '{{name}}' was not found",
+    "ERR_MENU_NOT_FOUND": "The menu '{{name}}' was not found",
+    "ERR_USER_NOT_FOUND": "The user '{{loginId}}' was not found",
+    "ERR_FAIL_SAVE_APPS_USERS": "Failed to save applications for user '{{loginId}}'",
+    "ERR_FAIL_DELETE_APPS_FOR_USER": "Failed to delete applications for user '{{loginId}}'",
+    "ERR_FAIL_CLEAR_APPS_FOR_USER": "Failed to clear old applications for user '{{loginId}}'",
+
+    "ERR_DELETE_DEFAULT_CITY": "The city '{{name}}' is set as default for subregion '{{subregion}}' and cannot be deleted",
+
+    "title": {
+        "meteo": "OcPa's Weather Forecast",
+        "protone": "ProTONE Player",
+        "login": "Login",
+        "continue-login": "Continue",
+        "regenerate-otp": "Regenerate",
+        "logout": "Logout",
+        "unavailable": "Page not available",
+        "wiki-container": {
+            "meteo-animated": "OcPa's Animated Forecast",
+            "daily-cat": "Daily Cat",
+            "live-webcam": "Live Webcam"
+        },
+		"wiki-browser": {
+            "electronics": "Electronics Blog"
+        },
+        "admin": {
+            "users": "Manage Users",
+            "meteo-database": "Manage Meteo Database",
+            "content": "Manage Site Content",
+            "apps-menus": "Apps & Menus",
+            "geography": "Geography"
+        },
+        "otp": "Enter the login code",
+        "confirm": "Confirm"
+    },
+
+    "menu": {
+        "meteo": "Weather Forecast",
+        "protone": "ProTONE Player",
+        "login": "Login",
+        "logout": "Logout",
+        "wiki-container": {
+            "meteo-animated": "Animated Forecast",
+            "daily-cat": "Daily Cat",
+            "live-webcam": "Live Webcam"
+        },
+        "wiki-browser": {
+            "electronics": "Electronics Blog"
+        },
+        "admin": {
+            "users": "Manage Users",
+            "meteo-database": "Manage Meteo Database",
+            "content": "Manage Site Content",
+            "apps-menus": "Apps & Menus",
+            "geography": "Geography"
+        }
+    },
+
+    "wiki": {
+        "default-content": "<h5 style=\"text-align: justify;\">Nothing here for now. Please stay tuned.</h5>"
+    },
+
+    "auth": {
+        "username": "User name",
+        "username-required": "User name is required",
+        "password": "Password",
+        "repeat-password": "Repeat password",
+        "disabled-account": "Disabled account",
+        "user-apps": "User applications",
+        "password-required": "Password is required",
+        "enter-credentials": "Please enter your username and password:",
+        "invalid-credentials": "Incorrect user name or password.",
+        "enter-otp": "Please enter the login code sent to your email address ({{email}}), then press 'Continue'",
+        "otp-challenge": "(enter login code here)",
+        "otp-required": "The login code is required",
+        "login-failed-1": "User <b>{{username}}</b> cannot log in [1]",
+        "login-failed-2": "User <b>{{username}}</b> cannot log in [2]",
+        "login-failed-3": "User <b>{{username}}</b> is not associated with any application",
+        "session-expired": "Your session has expired.<br>Press Yes if you want to stay logged in, and No to log out.",
+        "logout-desc": "Press Logout if this is your intention. If you want to stay logged in, simply select other menu."
+    },
+    
+    "meteo": {
+        "feels-like": {
+            "normal": "Seasonable",
+            "warmer": "Warmer",
+            "much_warmer": "Very warm",
+            "hot": "Hot",
+            "colder": "Colder",
+            "much_colder": "Very cold",
+            "frost": "Frost"
+        },
+        "weather-type": {
+            "00": "Sunny",
+            "01_wind": "Light wind",
+            "01_rain": "Showers",
+            "01_inst": "T-Showers",
+            "01_snow": "Snow showers",
+            "01_mix":  "Sleet showers",
+            "01_fog":  "Morning Fog",
+            "01_ice":  "Icy drizzle",
+            "02_rain": "Rain",
+            "02_inst": "T-Storm",
+            "02_snow": "Snow",
+            "02_mix":  "Sleet",
+            "02_fog":  "Fog",
+            "02_ice":  "Icy rain",
+            "02_wind": "Windy",
+            "03_rain": "Intense rain",
+            "03_inst": "Intense T-storm",
+            "03_snow": "Intense snow",
+            "03_mix":  "Intense sleet",
+            "03_fog":  "Thick fog",
+            "03_ice":  "Strong icy rain",
+            "03_wind": "Strong wind",
+            "04_rain": "Heavy rain",
+            "04_inst": "Severe T-storm",
+            "04_snow": "Heavy snow",
+            "04_mix":  "Heavy sleet",
+            "04_fog":  "Very thick fog",
+            "04_ice":  "Heavy icy rain",
+            "04_wind": "Heavy wind"
+        },
+        "risk": {
+            "intense_rain": "Intense rain",
+            "intense_snow": "Intense snow",
+            "intense_sleet":  "Intense sleet",
+            "heavy_rain": "Heavy rain",
+            "heavy_snow": "Heavy snow",
+            "heavy_sleet":  "Heavy sleet",
+            "very_thick_fog": "Very thick fog",
+            "thick_fog": "Thick fog",
+            "heavy_wind": "Heavy Wind",
+            "strong_wind": "Strong Wind",
+            "squalls_hail": "Squalls / Hail",
+            "freezing_rain": "Freezing Rain"
+        },
+        "t-min": "TMin",
+        "t-max": "TMax",
+        "rain": "Rain",
+        "t-storm": "TStorm Odds",
+        "snow-new": "New Snow",
+        "snow-total": "Snow Cover",
+        "snow-cover": "Cover:",
+        "default-hint": "Click/tap in the city list below, then type the desired city name.",
+        "alt-hint": "Contents of {{name}} / Data length: {{length}}.<br>(Press Escape to close the window)",
+        "data-hint": "Weather in <span>{{name}}</span> from <span>{{startDate}}</span> to <span>{{endDate}}</span>. Use the buttons below to go the desired date.",
+        "data-hint-fetching": "Fetching data for: <b>{{name}}</b>...",
+        "data-hint-fetching-alt": "Fetching data...",
+        "empty-db": "The database is empty!"
+    },
+
+    "protone": {
+        "desc": "The recommended way to install ProTONE is to download and run the Installer. Please choose the desired version from below.",
+        "latest-release": "The latest ProTONE release is:",
+        "earlier-releases": "Earlier releases:",
+        "dev-builds": "Dev/Tester builds:",
+        "built-on": "Built on:",
+        "other-info": "Other Useful information:",
+        "link-report-bugs": "<span><label>&nbsp;*&nbsp;Link to&nbsp;</label><a target=\"new\" href=\"https://github.com/octavian-paraschiv/protone-suite/issues/new\">Report ProTONE Bugs</a></span>",
+        "link-source-code": "<span><label>&nbsp;*&nbsp;Link to&nbsp;</label><a target=\"new\" href=\"https://github.com/octavian-paraschiv/protone-suite\">Source Code (Github repo)</a></span>",
+        "dev-requirements": "<span><label>&nbsp;*&nbsp;Required for building/debugging the code:&nbsp;</label><ul><li><a target=\"new\" href=\"https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&passive=false&cid=2030\">Visual Studio 2022</a></li><li><label>.NET Development workload</label></li><li><label>.NET 4.7.2 targeting pack.</label></li></ul></span>"
+    },
+
+    "users": {
+        "list": "Users list:",
+        "add-user": "Add new user",
+        "edit-user": "Edit user '{{loginId}}'",
+        "del-user": "Delete user '{{loginId}}'",
+        "login-id": "Login ID",
+        "email": "Email address",
+        "attempts": "Remaining login attempts",
+        "logged-in": "[CONNECTED]",
+        "type": "Type",
+        "otp": "Two steps Authentication",
+        "device-list": "Registered devices:",
+        "view-device": "View device '{{deviceId}}'",
+        "del-device": "Delete '{{deviceId}}'",
+        "device-id": "Device ID",
+        "device-login-id": "Last connected user",
+        "device-login-time": "Last connection Timestamp",
+        "device-login-ipaddr": "Last connection IP address",
+        "delete-user": "Are you sure you want to delete user: <b>{{loginId}}</b>?",
+        "delete-device": "Are you sure you want to delete device: <b>{{deviceId}}</b>?",
+        "success-save": "User \"{{loginId}}\" succesfully saved.",
+        "success-delete": "User \"{{loginId}}\" succesfully deleted.",
+        "error-save": "Failed to save user"
+    },
+
+    "meteo-db": {
+        "download-studio-link": "Click <a href=\"{{url}}\">here</a> to download the latest Thorus Weather Studio.",
+        "db-list": "Database list:",
+        "db-upload": "Upload preview database",
+        "db-view": "View database",
+        "db-promote": "Promote as ONLINE",
+        "name": "Name",
+        "status": "Status",
+        "online": "ONLINE",
+        "offline": "Offline",
+        "range": "Data range",
+        "count": "Days count",
+        "upload": "Are you sure you want to upload database <b>{{name}}</b>?<br><br>If you proceed, the existing <b>{{name}}</b> database will be overwritten,<br>without any possibility to recover its current contents.",
+        "success-upload": "Succesfully uploaded database '{{name}}'",
+        "error-upload": "Error while uploading database '{{name}}': {{err}}",
+        "promote": "Are you sure you want to promote database <b>{{name}}</b> as online?<br><br>If you proceed, the current ONLINE database will be overwritten,<br>without any possibility to recover its current contents.",
+        "success-promote": "Database '{{name}}' succesfully promoted to online.",
+        "error-promote": "Error while promoting database '{{name}}': {{err}}"
+    },
+
+    "devices-dialog": {
+        "info": "Information for device <b>{{device}}</b>"
+    },  
+
+    "user-dialog": {
+        "user-type": "User Type",
+        "password-hint": "To keep the password as-is,<br>leave both password fields empty.",
+        "password-length-hint": "The password must have at least 8 characters",
+        "password-match-hint": "The two passwords must match.",
+        "email-required": "The email address must include '@', e.g 'user.address@email.server'",
+        "edit-logged-in": "Edit <b>{{loginId}}</b> user account (Logged In)",
+        "edit": "Edit <b>{{loginId}}</b> user account",
+        "create": "Create new user account"
+    },
+
+    "apps-menus": {
+        "app-list": "Application List:",
+        "menu-list": "Menu List:",
+        "app-menu-list": "Menus/Apps Associations List:",
+        "menu-name": "Name",
+        "menu-url": "URL",
+        "menu-display-mode": "Display Mode",
+        "menu-icon": "Icon",
+        "menu-builtin": "Builtin",
+        "add-menu": "Add menu",
+        "edit-menu": "Edit menu '{{desc}}'",
+        "del-menu": "Delete menu '{{desc}}'",
+        "delete-menu": "Are you sure you want to delete the menu '{{name}}'?",
+        "delete-app": "Are you sure you want to delete the application '{{name}}'?",
+        "success-save-menu": "Successfully saved menu '{{name}}'",
+        "success-delete-menu": "Successfully deleted menu '{{name}}'",
+        "error-save-menu": "Failed to save the menu",
+        "success-save-app": "Successfully saved application '{{name}}'",
+        "success-delete-app": "Successfully deleted application '{{name}}'",
+        "error-save-app": "Failed to save the application",
+        "apps-menus-header-menus": "Menus <b>&darr;</b>",
+        "apps-menus-header-apps": "Apps <b>&rarr;</b>",
+        "menu-assoc-created": "Succesfully created menu assciation",
+        "menu-assoc-create-err": "Failed to create menu assciation",
+        "menu-assoc-remove": "Succesfully removed menu assciation",
+        "menu-assoc-remove-err": "Failed to remove menu assciation",
+        "add-app": "Add application",
+        "edit-app": "Edit application '{{desc}}'", 
+        "del-app": "Delete application '{{desc}}'", 
+        "app-name": "Name",
+        "app-code": "Code",
+        "app-login-required": "Requires Login",
+        "app-admin-mode": "Admin Mode only",
+        "app-builtin": "Builtin"
+    },
+
+    "app-dialog": {
+        "edit": "Edit application '{{name}}'",
+        "create": "Create new application",
+        "name": "Application name",
+        "name-required": "App name must have 3..16 chars, consisting in letters and digits only",
+        "code": "Application code",
+        "code-required": "App code must have 3..5 upper case letters, w/o spaces",
+        "login-required": "Application requires login",
+        "admin-mode": "Restricted to admin mode only"
+    },
+
+    "menu-dialog": {
+        "edit": "Edit menu '{{name}}'",
+        "create": "Create new menu",
+        "name": "Menu name",
+        "name-required": "Menu name must have 3..24 chars",
+        "url": "URL",
+        "url-required": "URL must have 3..128 chars, must start with a slash (/) and must only have letters, digits, slashes (/), dashes (-) and underscores (_).",
+        "display-mode": "Display mode",
+        "menu-icon": "Menu icon"
+    },
+
+    "geography": {
+        "city-list": "List of cities:",
+        "add-city": "Add city",
+        "edit-city": "Edit city '{{name}}'",
+        "del-city": "Delete city '{{name}}'",
+        "name": "Name",
+        "region": "Region",
+        "subregion": "Subregion",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "default": "Subregion Default",
+        "delete-city": "Are you sure you want to delete the city '{{name}}'?",
+        "success-delete-city": "Succesfully deleted city '{{name}}'",
+        "success-save-city": "Succesfully saved city '{{name}}'",
+        "error-save-city": "Error saving city '{{name}}'",
+        "cities-filter": "Type to search city"
+    },
+
+    "city-dialog": {
+        "edit": "Edit city '{{name}}'",
+        "create": "Add new city",
+        "name": "City name",
+        "name-required": "City name is required",
+        "region": "Region",
+        "region-required": "Region is required",
+        "subregion": "Subregion",
+        "subregion-required": "Subregion is required",
+        "latitude": "Latitude",
+        "latitude-range": "Latitude must be between {{min}} and {{max}}",
+        "longitude": "Longitude",
+        "longitude-range": "Longitude must be between {{min}} and {{max}}",
+        "default": "Default subregion city"
+    },
+
+    "content-browser": {
+        "new-folder-success": "Folder '{{name}}' succesfully created",
+        "new-folder-error": "Could not create new folder under '{{name}}'",
+        "new-file-success": "File '{{name}}' succesfully created",
+        "new-file-error": "Could not create new file under '{{name}}'",
+        "rename-success": "Succesfully renamed as '{{name}}'",
+        "rename-error": "Could not rename as '{{name}}'",
+        "upload-success": "Succesfully uploaded file under '{{name}}'",
+        "upload-error": "Could not upload file under '{{name}}'",
+        "delete-node": "Are you sure you want to delete '{{name}}'?<br><br>If you proceed, you will not be able to recover it.",
+        "delete-success": "Succesfully deleted '{{name}}'",
+        "delete-error": "Could not delete '{{name}}'"
+    },
+
+    "node-name-dialog": {
+        "create-as": "Create as:",
+        "rename-as": "Rename as:",
+        "name-required": "The name must have 2..64 chars and must only have letters, digits, spaces, dots (.), dashes (-) and underscores (_).",
+        "rename-file": "Rename file '{{name}}'",
+        "rename-folder": "Rename folder '{{name}}'",
+        "new-file": "Create new file under '{{name}}'",
+        "new-folder": "Create new folder under '{{name}}'"
+    }
+}

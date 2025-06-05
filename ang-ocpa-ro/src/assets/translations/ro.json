@@ -1,0 +1,367 @@
+{
+    "Loading": "Încărcare...",
+    "Yes": "Da",
+    "No": "Nu",
+    "Close": "Închide",
+    "OK": "OK",
+    "Cancel": "Anulare",
+    "Today": "Astăzi",
+    "day-short": "z",
+    "unauthorized-access": "Nu sunteți autorizat să accesați această pagină: '{{url}}'",
+    "not-found": "Această pagină nu există: '{{url}}'",
+    "app-version": "Versiune aplicație: {{version}}",
+    "click-to-enlarge": "Dați click pt. a mări imaginea",
+
+    "ERR_BAD_CREDENTIALS": "Nume de utilizator și/sau parolă incorectă.<br>Încercări rămase: <b>{{retries}}</b>",
+    "ERR_BAD_OTP": "Cod de conectare incorect.<br>Încercați din nou, sau apăsați 'Regenerează' pentru a primi un nou cod pe email.",
+    "ERR_ACCOUNT_DISABLED": "Contul este dezactivat.",
+    "ERR_NO_TOKEN": "Autentificarea a eșuat",
+
+    "ERR_EDIT_BUILT_IN_APP": "Aplicația '{{name}}' este integrată și nu poate fi editată",
+    "ERR_DELETE_BUILTIN_APP": "Aplicația '{{name}}' este integrată și nu poate fi ștearsă",
+    "ERR_DELETE_APP_MENU_ASSOCIATIONS": "Aplicația '{{name}}' are asocieri de meniuri și nu poate fi ștearsă",
+    "ERR_DELETE_APP_USER_ASSOCIATIONS": "Aplicația '{{name}}' are asocieri de utilizatori și nu poate fi ștearsă",
+    "ERR_EDIT_BUILTIN_MENU": "Meniul '{{name}}' este integrat și nu poate fi editat",
+    "ERR_DELETE_BUILTIN_MENU": "Meniul '{{name}}' este integrat și nu poate fi șters",
+    "ERR_DELETE_MENU_APP_ASSOCIATIONS": "Meniul '{{name}}' are asocieri de aplicații și nu poate fi șters",
+    "ERR_APP_NOT_FOUND": "Aplicația '{{name}}' nu a fost găsită",
+    "ERR_MENU_NOT_FOUND": "Meniul '{{name}}' nu a fost găsit",
+    "ERR_USER_NOT_FOUND": "Utilizatorul '{{loginId}}' nu a fost găsit",
+    "ERR_FAIL_SAVE_APPS_USERS": "Nu s-au putut salva aplicațiile pentru utilizatorul '{{loginId}}'",
+    "ERR_FAIL_DELETE_APPS_FOR_USER": "Nu s-au putut șterge aplicațiile pentru utilizatorul '{{loginId}}'",
+    "ERR_FAIL_CLEAR_APPS_FOR_USER": "Nu s-au putut elimina vechile aplicații pentru utilizatorul '{{loginId}}'",
+
+    "ERR_DELETE_DEFAULT_CITY": "Localitatea '{{name}}' este setată ca implicită pt. subregiunea '{{subregion}}' și nu poate fi ștearsă",
+
+    "title": {
+        "meteo": "Prognoza Meteo după OcPa",
+        "protone": "ProTONE Player",
+        "login": "Autentificare",
+        "continue-login": "Continuare",
+        "regenerate-otp": "Regenerează",
+        "logout": "Deconectare",
+        "unavailable": "Pagina indisponibila",
+        "wiki-container": {
+            "meteo-animated": "Prognoza Animată",
+            "daily-cat": "Mâța zilei",
+            "live-webcam": "Cameră Web Live"
+        },
+		"wiki-browser": {
+            "electronics": "Blog Electronică"
+        },			
+        "admin": {
+            "users": "Gestionare Utilizatori",
+            "meteo-database": "Gestionare Baze de Date Meteo",
+            "content": "Gestionare Conținut Site",
+            "apps-menus": "Aplicații & Meniuri",
+            "geography": "Geografie"
+        },
+        "otp": "Introduceți codul de conectare",
+        "confirm": "Confirmare"
+    },
+
+   "menu": {
+        "meteo": "Prognoza Meteo",
+        "protone": "ProTONE Player",
+        "login": "Autentificare",
+        "logout": "Deconectare",
+        "wiki-container": {
+            "meteo-animated": "Prognoza Animată",
+            "daily-cat": "Mâța zilei",
+            "live-webcam": "Cameră Web Live"
+        },
+		"wiki-browser": {
+            "electronics": "Blog Electronică"
+        },
+        "admin": {
+            "users": "Utilizatori",
+            "meteo-database": "Baze De Date Meteo",
+            "content": "Conținut Site",
+            "apps-menus": "Aplicații & Meniuri",
+            "geography": "Geografie"
+        }
+    },
+
+    "wiki": {
+        "default-content": "<h5 style=\"text-align: justify;\">Nimic de văzut aici, pentru moment. Poate mai târziu...</h5>"
+    },
+
+    "auth": {
+        "username": "Nume utilizator",
+        "username-required": "Numele de utilizator este obligatoriu.",
+        "password": "Parolă",
+        "repeat-password": "Repetă parola",
+        "disabled-account": "Cont dezactivat",
+        "user-apps": "Aplicațiile utilizatorului",
+        "password-required": "Parola este obligatorie",
+        "enter-credentials": "Introduceți Numele de utilizator și Parola:",
+        "invalid-credentials": "Nume de utilizator sau Parolă incorectă.",
+        "enter-otp": "Introduceți codul de conectare trimis la adresa dvs. de email ({{email}}), apoi apăsați 'Continuare'",
+        "otp-challenge": "(introduceți codul de conectare)",
+        "otp-required": "Codul de conectare este obligatoriu",
+        "login-failed-1": "Utilizatorul <b>{{username}}</b> nu se poate conecta [1]",
+        "login-failed-2": "Utilizatorul <b>{{username}}</b> nu se poate conecta [2]",
+        "login-failed-3": "Utilizatorul <b>{{username}}</b> nu e asociat cu nicio aplicație",
+        "session-expired": "Sesiunea dvs. a expirat.<br>Apăsați Da pt. a rămâne conectat, și Nu pt a vă deconecta.",
+        "logout-desc": "Apăsați butonul Deconectare dacă asta intenționați. Pentru a rămâne conectat, pur și simplu selectați alt meniu."
+    },
+    
+    "meteo": {
+        "feels-like": {
+            "normal": "Temp. normală",
+            "warmer": "Mai cald",
+            "much_warmer": "Foarte cald",
+            "hot": "Caniculă",
+            "colder": "Mai rece",
+            "much_colder": "Foarte rece",
+            "frost": "Ger"
+        },
+        "weather-type": {
+            "00": "Însorit",
+            "01_wind": "Vânt slab",
+            "01_rain": "Ploaie slabă",
+            "01_inst": "Aversă slabă",
+            "01_snow": "Ninsoare slabă",
+            "01_mix":  "Lapoviță slabă",
+            "01_fog":  "Ceață matinală",
+            "01_ice":  "Burniță înghețată",
+            "02_rain": "Ploaie",
+            "02_inst": "Oraj",
+            "02_snow": "Ninsoare",
+            "02_mix":  "Lapoviță",
+            "02_fog":  "Ceață",
+            "02_ice":  "Ploaie înghețată",
+            "02_wind": "Vânt",
+            "03_rain": "Ploaie intensă",
+            "03_inst": "Oraj intens",
+            "03_snow": "Ninsoare intensă",
+            "03_mix":  "Lapoviță intensă",
+            "03_fog":  "Ceață densă",
+            "03_ice":  "Ploaie înghețată intensă",
+            "03_wind": "Vânt puternic",
+            "04_rain": "Ploaie puternică",
+            "04_inst": "Oraj sever",
+            "04_snow": "Ninsoare puternică",
+            "04_mix":  "Lapoviță puternică",
+            "04_fog":  "Ceață foarte densă",
+            "04_ice":  "Ploaie înghețată puternică",
+            "04_wind": "Vânt foarte puternic"
+        },
+        "risk": {
+            "intense_rain": "Ploaie intensă",
+            "intense_snow": "Ninsoare intensă",
+            "intense_sleet":  "Lapoviță intensă",
+            "heavy_rain": "Ploaie puternică",
+            "heavy_snow": "Ninsoare puternică",
+            "heavy_sleet":  "Lapoviță puternică",
+            "very_thick_fog": "Ceață foarte densă",
+            "thick_fog": "Ceață densă",
+            "heavy_wind": "Vânt foarte puternic",
+            "strong_wind": "Vânt puternic",
+            "squalls_hail": "Grindină / Vijelie",
+            "freezing_rain": "Polei"
+        },
+        "t-min": "TMin",
+        "t-max": "TMax",
+        "rain": "Ploaie",
+        "t-storm": "Șanse desc. electrice",
+        "snow-new": "Zăpadă nou depusă",
+        "snow-total": "Strat de zăpadă",
+        "snow-cover": "Strat:",
+        "default-hint": "Dați clic în lista de mai jos, și apoi tastați numele localității dorite.",
+        "alt-hint": "Conținutul {{name}} / Lungime date: {{length}}.<br>(Apăsați Escape pt. a închide fereastra)",
+        "data-hint": "Vremea în <span>{{name}}</span> între <span>{{startDate}} și {{endDate}}</span>. Folosiți butoanele de mai jos pentru a ajunge la data dorită.",
+        "data-hint-fetching": "Încărcare date pentru: <b>{{name}}</b>...",
+        "data-hint-fetching-alt": "Încărcare date...",
+        "empty-db": "Baza de date este goală."
+    },
+
+    "protone": {
+        "desc": "Modul de instalare recomandat pentru ProTONE este să descărcați și să rulați utilitarul de instalare. Vă rugăm, alegeți versiunea dorită de mai jos.",
+        "latest-release": "Ultima versiune ProTONE este:",
+        "earlier-releases": "Versiuni mai vechi:",
+        "dev-builds": "Versiuni de testare:",
+        "built-on": "Compilat pe:",
+        "other-info": "Alte informații utile:",
+        "link-report-bugs": "<span><label>&nbsp;*&nbsp;Adresă&nbsp;</label><a target=\"new\" href=\"https://github.com/octavian-paraschiv/protone-suite/issues/new\">Raportare buguri</a></span>",
+        "link-source-code": "<span><label>&nbsp;*&nbsp;Adresă&nbsp;</label><a target=\"new\" href=\"https://github.com/octavian-paraschiv/protone-suite\">Cod sursă (repo Github)</a></span>",
+        "dev-requirements": "<span><label>&nbsp;*&nbsp;Cerințe pt. a compila/depana codul:&nbsp;</label><ul><li><a target=\"new\" href=\"https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&passive=false&cid=2030\">Visual Studio 2022</a></li><li><label>.NET Development workload</label></li><li><label>.NET 4.7.2 targeting pack.</label></li></ul></span>"
+    },
+
+    "users": {
+        "list": "Lista utilizatori:",
+        "add-user": "Adaugă utilizator",
+        "edit-user": "Modifică utilizatorul '{{loginId}}'",
+        "del-user": "Șterge utilizatorul '{{loginId}}'",
+        "login-id": "ID utilizator",
+        "email": "Adresă Email",
+        "attempts": "Încercări autentificare rămase",
+        "logged-in": "[CONECTAT]",
+        "type": "Tip",
+        "otp": "Autentificare în 2 pași",
+        "device-list": "Lista dispozitive înregistrate:",
+        "view-device": "Afișează informații dispozitiv '{{deviceId}}'",
+        "del-device": "Șterge dispozitivul '{{deviceId}}'",
+        "device-id": "ID dispozitiv",
+        "device-login-id": "Ultimul utilizator conectat",
+        "device-login-time": "Data/ora ultimei conectări",
+        "device-login-ipaddr": "Ultima adresă IP de conectare",
+        "delete-user": "Sunteți sigur că doriți să ștergeți utilizatorul: <b>{{loginId}}</b>?",
+        "delete-device": "Sunteți sigur că doriți să ștergeți dispozitivul: <b>{{deviceId}}</b>?",
+        "success-save": "Utilizatorul \"{{loginId}}\" a fost salvat cu succes",
+        "success-delete": "Utilizatorul \"{{loginId}}\" a fost șters cu succes",
+        "error-save": "Ștergerea utilizatorului a eșuat"
+    },
+
+    "meteo-db": {
+        "download-studio-link": "Apăsați <a href=\"{{url}}\">aici</a> pentru a descărca ultima versiune de Thorus Weather Studio.",
+        "db-list": "Lista baze de date:",
+        "db-upload": "Încărcare bază de date",
+        "db-view": "Vizualizare bază de date",
+        "db-promote": "Promovează baza de date ca ACTIVĂ",
+        "name": "Nume",
+        "status": "Stare",
+        "online": "ACTIVĂ",
+        "offline": "inactivă",
+        "range": "Interval date",
+        "count": "Număr de zile",
+        "upload": "Sunteți sigur că doriți să încărcați o nouă bază de date <b>{{name}}</b>?<br><br>Continuând, baza de date <b>{{name}}</b> existentă va fi suprascrisă,<br>fără posibilitate de recuperare.",
+        "success-upload": "Baza de date '{{name}}' a fost încărcată cu succes.",
+        "error-upload": "Eroare la încărcarea bazei de date '{{name}}': {{err}}",
+        "promote": "Sunteți sigur că vreți să promovați <b>{{name}}</b> ca ACTIVĂ?<br><br>Continuând, baza de date curent ACTIVĂ va fi suprascrisă,<br>fără posibilitate de recuperare",
+        "success-promote": "Baza de date '{{name}}' promovată cu succes ca ACTIVĂ.",
+        "error-promote": "Eroare la promovarea bazei de date '{{name}}': {{err}}"
+    },
+
+    "devices-dialog": {
+        "info": "Informații pt. dispozitivul <b>{{device}}</b>"
+    },
+
+    "user-dialog": {
+        "user-type": "Tip utilizator",
+        "password-hint": "Pentru a păstra parola existentă,<br>lăsați ambele câmpuri Parola goale.",
+        "password-length-hint": "Parola trebuie să aibă cel puțin 8 caractere",
+        "password-match-hint": "Cele două parole trebuie să fie identice",
+        "email-required": "Adresa email trebuie să includă '@' - de ex. 'user.address@email.server'",
+        "edit-logged-in": "Editează utilizatorul <b>{{loginId}}</b> (Conectat)",
+        "edit": "Editează utilizatorul <b>{{loginId}}</b>",
+        "create": "Creează utilizator nou"
+    },
+
+    "apps-menus": {
+        "app-list": "Lista aplicațiilor:",
+        "menu-list": "Lista meniurilor:",
+        "app-menu-list": "Lista asocierilor meniuri/aplicații:",
+        "menu-name": "Nume",
+        "menu-url": "URL",
+        "menu-display-mode": "Mod de afișare",
+        "menu-icon": "Pictogramă",
+        "menu-builtin": "Integrat",
+        "add-menu": "Adaugă meniu",
+        "edit-menu": "Editează meniul '{{desc}}'",
+        "del-menu": "Șterge meniul '{{desc}}'",
+        "delete-menu": "Ești sigur că vrei să ștergi meniul '{{name}}'?",
+        "delete-app": "Ești sigur că vrei să ștergi aplicația '{{name}}'?",
+        "success-save-menu": "Meniul '{{name}}' a fost salvat cu succes",
+        "success-delete-menu": "Meniul '{{name}}' a fost șters cu succes",
+        "error-save-menu": "Salvarea meniului a eșuat",
+        "success-save-app": "Aplicația '{{name}}' a fost salvată cu succes",
+        "success-delete-app": "Aplicația '{{name}}' a fost ștearsă cu succes",
+        "error-save-app": "Salvarea aplicației a eșuat",
+        "apps-menus-header-menus": "Menus<b>&darr;</b>&nbsp;",
+        "apps-menus-header-apps": "Apps<b>&rarr;</b>",
+        "menu-assoc-created": "Asocierea meniului a fost creată cu succes",
+        "menu-assoc-create-err": "Crearea asocierii meniului a eșuat",
+        "menu-assoc-remove": "Asocierea meniului a fost eliminată cu succes",
+        "menu-assoc-remove-err": "Eliminarea asocierii meniului a eșuat",
+        "add-app": "Adaugă aplicație",
+        "edit-app": "Editează aplicația '{{desc}}'",
+        "del-app": "Șterge aplicația '{{desc}}'",
+        "app-name": "Nume",
+        "app-code": "Cod",
+        "app-login-required": "Necesită autentificare",
+        "app-admin-mode": "Doar în modul admin",
+        "app-builtin": "Integrat"
+    },
+
+    "app-dialog": {
+        "edit": "Editează aplicația '{{name}}'",
+        "create": "Creează aplicație nouă",
+        "name": "Numele aplicației",
+        "name-required": "Numele aplicației trebuie să aibă între 3 și 16 caractere, constând doar din litere și cifre",
+        "code": "Codul aplicației",
+        "code-required": "Codul aplicației trebuie să aibă între 3 și 5 litere mari, fără spații",
+        "login-required": "Aplicația necesită autentificare",
+        "admin-mode": "Restricționat doar la modul admin"
+    },
+
+    "menu-dialog": {
+        "edit": "Editează meniul '{{name}}'",   
+        "create": "Creează meniu nou",
+        "name": "Numele meniului",
+        "name-required": "Numele meniului trebuie să aibă între 3 și 24 de caractere",
+        "url": "URL",
+        "url-required": "URL-ul trebuie să aibă între 3 și 128 de caractere, să înceapă cu o bară oblică (/) și să conțină doar litere, cifre, bare oblice (/), cratime (-) și sublinieri (_).",
+        "display-mode": "Mod de afișare",
+        "menu-icon": "Pictogramă meniu"
+    },
+
+    "geography": {
+        "city-list": "Listă localități",
+        "add-city": "Adaugă localitate",
+        "edit-city": "Editează localitatea '{{name}}'",
+        "del-city": "Șterge localitatea '{{name}}'",
+        "name": "Nume",
+        "region": "Regiune",
+        "subregion": "Subregiune",
+        "latitude": "Latitudine",
+        "longitude": "Longitudine",
+        "default": "Implicit pt. subregiune",
+        "delete-city": "Ești sigur că vrei să ștergi localitatea '{{name}}'?",
+        "success-delete-city": "Localitatea '{{name}}' a fost ștearsă cu succes",
+        "success-save-city": "Localitatea '{{name}}' a fost salvată cu succes",
+        "error-save-city": "Salvarea localității '{{name}}' a eșuat",
+        "cities-filter": "Tastează pentru căutare localitate"
+    },
+
+    "city-dialog": {
+        "edit": "Editează localitatea <b>{{name}}</b>",
+        "create": "Creează localitate nouă",
+        "name": "Nume localitate",
+        "name-required": "Numele localității este obligatoriu",
+        "region": "Regiune",
+        "region-required": "Regiunea este obligatorie",
+        "subregion": "Subregiune",
+        "subregion-required": "Subregiunea este obligatorie",
+        "latitude": "Latitudine",
+        "latitude-range": "Latitudinea trebuie să fie între {{min}} și {{max}}",
+        "longitude": "Longitudine",
+        "longitude-range": "Longitudinea trebuie să fie între {{min}} și {{max}}",
+        "default": "Localitate implicită pt. subregiune",
+        "city-filter": "Text căutare"
+    },
+
+    "content-browser": {
+        "new-folder-success": "Folderul '{{name}}' a fost creat cu succes",
+        "new-folder-error": "Nu s-a putut crea un folder nou sub '{{name}}'",
+        "new-file-success": "Fișierul '{{name}}' a fost creat cu succes",
+        "new-file-error": "Nu s-a putut crea un fișier nou sub '{{name}}'",
+        "rename-success": "Redenumit cu succes ca '{{name}}'",
+        "rename-error": "Nu s-a putut efectua redenumirea ca '{{name}}'",
+        "upload-success": "Fișierul a fost încărcat cu succes sub '{{name}}'",
+        "upload-error": "Nu s-a putut încărca fișierul sub '{{name}}'",
+        "delete-node": "Sunteți sigur că doriți să ștergeți '{{name}}'?<br><br>Dacă continuați, acesta nu va putea fi recuperat.",
+        "delete-success": "'{{name}}' a fost șters cu succes.",
+        "delete-error": "Nu s-a putut șterge '{{name}}'"
+    },
+
+    "node-name-dialog": {
+        "create-as": "Creează ca:",
+        "rename-as": "Redenumește ca:",
+        "name-required": "Numele trebuie să aibă între 2..64 caractere și să conțină doar litere, cifre, spații, puncte (.), cratime (-) și sublinieri (_).",
+        "rename-file": "Redenumește fișierul '{{name}}'",
+        "rename-folder": "Redenumește folderul '{{name}}'",
+        "new-file": "Creează fișier nou sub '{{name}}'",
+        "new-folder": "Creează folder nou sub '{{name}}'"
+    }
+}

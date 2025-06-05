@@ -1,0 +1,23 @@
+.meteo-photo-grid {
+    display: flex;
+    flex-direction: column;
+}
+.meteo-single-photo {
+    display: flex;
+    flex-direction: column;
+}
+.meteo-single-image {
+    width: 30vw;
+    height: auto;
+}
+.meteo-single-text {
+    text-align: justify;
+    margin-top: 1rem;
+}
+// ----------------------------------------------------------------
+// mobile devices
+:root[mobile="true"] {
+    .meteo-single-image {
+        width: 80vw;
+    }
+}

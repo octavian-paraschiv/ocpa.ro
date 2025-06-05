@@ -1,0 +1,51 @@
+{
+	"folders": [
+	  {
+		"path": "."
+	  }
+	],
+	"extensions": {
+	  "recommendations": [
+		"DavidAnson.vscode-markdownlint",
+		"EditorConfig.EditorConfig",
+		"streetsidesoftware.code-spell-checker",
+		"dbaeumer.vscode-eslint",
+		"janjoerke.jenkins-pipeline-linter-connector"
+	  ]
+	},
+	"settings": {
+	  "typescript.enablePromptUseWorkspaceTsdk": true,
+	  "typescript.tsdk": "./node_modules/typescript/lib",
+	  "debug.javascript.usePreview": false,
+	  "javascript.preferences.quoteStyle": "single",
+	  "typescript.preferences.quoteStyle": "single",
+	  "typescript.preferences.importModuleSpecifier": "non-relative",
+	  "files.exclude": {
+		".vscode": true,
+		"coverage": true
+	  },
+	  "eslint.validate": [
+		"typescript",
+		"javascript",
+		"html"
+	  ],
+	  "cSpell.ignorePaths": [
+		"angular.json",
+		"*.code-workspace"
+	  ],
+	  "workbench.tree.indent": 16,
+	  "cSpell.words": [ ]
+	},
+	"launch": {
+	  "configurations": [  
+		{
+			"name": "Launch browser",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:4200",
+			"webRoot": "${workspaceFolder}",
+		}
+	  ]
+	}
+  }
+  

@@ -1,0 +1,27 @@
+<mat-card class="mat-user-card">
+    <mat-card-header style="padding: 0; padding-left: 0.1rem; padding-top: 0.1rem; padding-bottom: 0.1rem;">
+        <mat-card-subtitle [innerHtml]="title | translate: { name: titleName }"></mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider style="margin: 0;"></mat-divider>
+    <mat-card-content class="mat-user-card-content" style="padding: 0;">
+        <form mat-dialog-content class="node-name-dialog-form" [formGroup]="form" (ngSubmit)="onOk()" style="padding: 1rem;">
+            <div style="display: grid;">
+                <div class="node-name-form-control">
+                    <mat-form-field appearance="outline" class="node-name-form-control">
+                        <mat-label>{{nameLabel | translate}}</mat-label>
+                        <input formControlName="name" matInput [(value)]="data.node.name">
+                        <mat-error *ngIf="f?.name?.errors">{{'node-name-dialog.name-required' | translate}}</mat-error>
+                    </mat-form-field>
+                </div>
+                <div mat-dialog-actions class="node-name-form-control extra-space-above">
+                    <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>
+                        {{'OK' | translate}}
+                    </button>
+                    <button style="margin: 0; padding: 0; " mat-raised-button (click)="onCancel()">
+                        {{'Cancel' | translate}}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,13 @@
+﻿<mat-card class="mat-card-login">
+    <mat-card-header>
+        <mat-card-subtitle>{{'auth.logout-desc' | translate}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider style="margin-bottom: 20px;"></mat-divider>
+    <mat-card-content>
+        <form class="login-form" [formGroup]="formGroup" (ngSubmit)="doLogout()">            
+            <button mat-raised-button type="submit" color="primary" class="login-form-control" style="margin-bottom: 10px;">
+                {{'title.logout' | translate}}
+            </button>
+          </form>
+    </mat-card-content>
+</mat-card>

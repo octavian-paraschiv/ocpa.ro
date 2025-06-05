@@ -1,0 +1,22 @@
+<mat-card class="mat-user-card">
+    <mat-card-header style="padding: 0; padding-left: 0.1rem; padding-top: 0.1rem; padding-bottom: 0.1rem;">
+        <mat-card-subtitle [innerHtml]="'devices-dialog.info' | translate: { device: device?.deviceId} "></mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider style="margin: 0;"></mat-divider>
+    <mat-card-content class="mat-user-card-content" style="padding: 0;">
+        <div style="display: grid;">
+            <ul class="no-bullets">
+                <li *ngFor="let item of deviceInfo | keyvalue">
+                    <span>
+                        <label>&nbsp;&nbsp;<b>{{item.key}}:</b>&nbsp;{{item.value}}</label>
+                    </span>
+                </li>
+            </ul>
+            <div mat-dialog-actions class="user-form-control">
+                <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onClose()"cdkFocusInitial>
+                    {{'Close' | translate}}
+                </button>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
