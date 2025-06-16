@@ -1,8 +1,4 @@
 .smart-city-card {
-    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
-    border: 0;
-    border-radius: 4px;
-    margin: 5px;
     margin-inline-start: 0.1vw;
     margin-bottom: 0;
 }
@@ -14,6 +10,17 @@
     }
     > div > div > div.ng-input > input[type=text] {
         font-size: 1.25em;
+    }
+    > ng-dropdown-panel > .ng-dropdown-panel-items > .scrollable-content > .ng-option {
+        padding: 0;
+        padding-left: 8px;
+    }
+
+    height: 4vh;
+    border: 2px solid #6d7e94;
+
+    > input {
+        border: unset;
     }
 }
 

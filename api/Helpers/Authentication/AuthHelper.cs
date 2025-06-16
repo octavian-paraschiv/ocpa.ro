@@ -200,6 +200,7 @@ namespace ocpa.ro.api.Helpers.Authentication
                 LoginAttemptsRemaining = u.LoginAttemptsRemaining,
 
                 PasswordHash = null,
+                Enabled = u.Enabled && u.LoginAttemptsRemaining > 0,
 
             })];
         }
