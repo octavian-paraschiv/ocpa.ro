@@ -52,6 +52,12 @@ export class WikiViewerComponent extends BaseComponent implements OnDestroy {
     }
 
     setUpImageModals() {
+        const pageTitle = this.buildWikiPageTitle();
+        if (pageTitle?.length > 0) {
+            document.title = pageTitle;
+        }
+
+        const modalImageTitle = document.getElementById('modalImageTitle') as HTMLSpanElement;
         const imageModal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage') as HTMLImageElement;
         const imageModalcloseBtn = document.querySelector('.img-modal-close') as HTMLSpanElement;
@@ -63,10 +69,12 @@ export class WikiViewerComponent extends BaseComponent implements OnDestroy {
         document.querySelectorAll('.modal-popup-image')?.forEach(img => {
             const image = (img as HTMLImageElement);
             if (image) {
+                const title = image.title;
                 image.title = this.translate.instant('click-to-enlarge');
                 image.addEventListener('click', () => {
-                    imageModal.style.display = 'block';
-                    modalImage.src = (img as HTMLImageElement).src;
+                    imageModal.style.display = 'grid';
+                    modalImage.src = image.src;
+                    modalImageTitle.innerText = title;
                 });
             }
         });
@@ -87,6 +95,16 @@ export class WikiViewerComponent extends BaseComponent implements OnDestroy {
         document.querySelectorAll('img')?.forEach((img: HTMLImageElement) => {
             img.src = '';
         });
+    }
+
+    buildWikiPageTitle() : string {
+        for(let i = 1; i < 5; i++) {
+            let collection = document.getElementsByTagName(`h${i}`);
+            if (collection?.length > 0) {
+                return (collection.item(0) as HTMLElement).innerText;
+            }
+        }
+        return undefined;
     }
 
 

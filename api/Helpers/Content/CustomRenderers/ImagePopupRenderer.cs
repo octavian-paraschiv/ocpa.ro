@@ -14,6 +14,9 @@ public class ImagePopupDetails
 
     [JsonPropertyName("height")]
     public string Height { get; set; }
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; }
 }
 
 public class ImagePopupRenderer : CustomRendererBase
@@ -28,6 +31,15 @@ public class ImagePopupRenderer : CustomRendererBase
 
         StringBuilder sb = new StringBuilder();
 
+        bool hasTitle = (imgPopupDetails?.Title?.Length > 0);
+
+        if (hasTitle)
+        {
+            sb.AppendLine("<table cellpadding='0' cellspacing='0'>");
+            sb.AppendLine("<tr>");
+            sb.AppendLine("<td>");
+        }
+
         sb.Append("<img ");
 
         if (imgPopupDetails?.Source?.Length > 0)
@@ -39,7 +51,24 @@ public class ImagePopupRenderer : CustomRendererBase
         if (imgPopupDetails?.Height?.Length > 0)
             sb.Append($" height='{imgPopupDetails.Height}'");
 
-        sb.Append(" class='modal-popup-image' />");
+        if (hasTitle)
+        {
+            sb.AppendLine($" class='modal-popup-image' title='{imgPopupDetails.Title}' />");
+
+
+            sb.AppendLine("</td>");
+            sb.AppendLine("</tr>");
+
+            sb.AppendLine("<tr>");
+            sb.AppendLine("<td>");
+            sb.AppendLine($"<label class='modal-popup-title'>{imgPopupDetails.Title}</h4>");
+            sb.AppendLine("</td>");
+            sb.AppendLine("</tr>");
+
+            sb.AppendLine("</table>");
+        }
+        else
+            sb.AppendLine(" class='modal-popup-image' />");
 
         return sb.ToString();
     }
