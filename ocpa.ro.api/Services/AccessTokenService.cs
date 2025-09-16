@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ocpa.ro.common.Extensions;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Authentication;
 using ocpa.ro.domain.Models.Configuration;
 using System;

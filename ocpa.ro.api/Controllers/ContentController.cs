@@ -6,7 +6,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Policies;
-using ocpa.ro.common;
+using ocpa.ro.domain;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Models.Configuration;

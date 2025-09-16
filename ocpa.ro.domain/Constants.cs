@@ -1,4 +1,4 @@
-﻿namespace ocpa.ro.common;
+﻿namespace ocpa.ro.domain;
 
 public static class Constants
 {

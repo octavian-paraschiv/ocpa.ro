@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
 using ocpa.ro.application.Services;
-using ocpa.ro.common;
+using ocpa.ro.domain;
 using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Models.Meteo;
 using Serilog;

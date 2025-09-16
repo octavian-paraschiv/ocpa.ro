@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
-using ocpa.ro.common;
-using ocpa.ro.common.Exceptions;
+using ocpa.ro.domain;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Exceptions;
 using System;
 using System.IO;
 using System.Security.Cryptography;

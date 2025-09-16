@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ocpa.ro.common.Exceptions
+namespace ocpa.ro.domain.Exceptions
 {
     public class ExtendedException : Exception
     {

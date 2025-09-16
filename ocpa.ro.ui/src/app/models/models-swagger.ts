@@ -142,13 +142,6 @@ export interface GridCoordinates {
     c?: number;
 }
 
-export interface Lab {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    comment?: string | undefined;
-}
-
 export interface Menu {
     id?: number;
     name?: string | undefined;
@@ -206,13 +199,6 @@ export interface MeteoDbInfo {
     readonly modifyable?: boolean;
 }
 
-export interface Person {
-    id?: number;
-    cnp?: string | undefined;
-    name?: string | undefined;
-    comment?: string | undefined;
-}
-
 export interface RegionDetail {
     id?: number;
     name?: string | undefined;
@@ -242,79 +228,6 @@ export interface SensorData {
 
 export interface SensorDataCollection {
     sensorData?: SensorData[] | undefined;
-}
-
-export interface Test {
-    id?: number;
-    labId?: number;
-    personId?: number;
-    testTypeId?: number;
-    date?: Date;
-    value?: number | undefined;
-    minRefOverride?: number | undefined;
-    maxRefOverride?: number | undefined;
-    description?: string | undefined;
-    comment?: string | undefined;
-}
-
-export interface TestCategory {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    comment?: string | undefined;
-}
-
-export interface TestDetail {
-    testId?: number;
-    personId?: number;
-    testTypeId?: number;
-    testCategoryId?: number;
-    labId?: number;
-    personName?: string | undefined;
-    personCode?: string | undefined;
-    personComment?: string | undefined;
-    testCategoryCode?: string | undefined;
-    testCategoryDescription?: string | undefined;
-    testTypeCode?: string | undefined;
-    testTypeDescription?: string | undefined;
-    minRef?: number;
-    maxRef?: number;
-    description?: string | undefined;
-    date?: Date;
-    value?: number | undefined;
-    minRefOverride?: number | undefined;
-    maxRefOverride?: number | undefined;
-}
-
-export interface TestSearchRequest {
-    id?: number | undefined;
-    pid?: number | undefined;
-    cnp?: string | undefined;
-    category?: string | undefined;
-    type?: string | undefined;
-    from?: Date | undefined;
-    to?: Date | undefined;
-}
-
-export interface TestType {
-    id?: number;
-    testCategoryId?: number;
-    code?: string | undefined;
-    minRef?: number;
-    maxRef?: number;
-    description?: string | undefined;
-    comment?: string | undefined;
-}
-
-export interface TestTypeDetail {
-    testTypeId?: number;
-    testCategoryId?: number;
-    testCategoryCode?: string | undefined;
-    testCategoryDescription?: string | undefined;
-    testTypeCode?: string | undefined;
-    testTypeDescription?: string | undefined;
-    minRef?: number;
-    maxRef?: number;
 }
 
 export interface User {

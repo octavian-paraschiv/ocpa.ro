@@ -24,7 +24,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ocpa.ro.application\ocpa.ro.application.csproj" />
-	  <ProjectReference Include="..\ocpa.ro.contracts\ocpa.ro.contracts.csproj" />
 	  <ProjectReference Include="..\ocpa.ro.infrastructure\ocpa.ro.infrastructure.csproj" />
 	  <ProjectReference Include="..\ocpa.ro.persistence\ocpa.ro.persistence.csproj" />
 	</ItemGroup>

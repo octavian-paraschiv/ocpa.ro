@@ -1,8 +1,8 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using ocpa.ro.common.Extensions;
 using ocpa.ro.domain.Abstractions.Gateways;
+using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Configuration;
 using Serilog;
 using System;

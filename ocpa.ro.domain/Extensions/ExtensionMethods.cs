@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
-namespace ocpa.ro.common.Extensions;
+namespace ocpa.ro.domain.Extensions;
 
 public static class ExtensionMethods
 {
@@ -15,7 +15,7 @@ public static class ExtensionMethods
         => path.Replace("\\", "/");
 
     public static string ToBase64(this string str)
-        => (str?.Length > 0) ? Convert.ToBase64String(Encoding.UTF8.GetBytes(str)) : null;
+        => str?.Length > 0 ? Convert.ToBase64String(Encoding.UTF8.GetBytes(str)) : null;
 
     public static int Round(this float input)
         => (int)Math.Round(input);
@@ -44,7 +44,7 @@ public static class JsonProcessing
 {
     public static JsonObject AsJsonObject<T>(T t) where T : class
     {
-        return (t == null) ? [] : JsonNode.Parse(JsonSerializer.Serialize(t)) as JsonObject;
+        return t == null ? [] : JsonNode.Parse(JsonSerializer.Serialize(t)) as JsonObject;
     }
 
     public static void Merge(this JsonObject target, JsonObject source)
@@ -92,6 +92,6 @@ public static class FileSystem
             t = null;
         }
 
-        return (t != null);
+        return t != null;
     }
 }

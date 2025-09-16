@@ -1,5 +1,5 @@
-﻿using ocpa.ro.common.Extensions;
-using ocpa.ro.domain.Abstractions.Services;
+﻿using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Content;
 using Serilog;
 using System;

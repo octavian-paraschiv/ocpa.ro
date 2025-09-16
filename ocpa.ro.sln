@@ -11,11 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ocpa.ro.infrastructure", "o
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ocpa.ro.persistence", "ocpa.ro.persistence\ocpa.ro.persistence.csproj", "{5B76F6C3-8BA9-44C3-98FD-4CFB33393B90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ocpa.ro.contracts", "ocpa.ro.contracts\ocpa.ro.contracts.csproj", "{09B76F17-C6D6-4408-9828-FF167EDDFD97}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ocpa.ro.api", "ocpa.ro.api\ocpa.ro.api.csproj", "{AAD8A81E-79E7-834E-7EF1-8A784B6E4A48}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ocpa.ro.common", "ocpa.ro.common\ocpa.ro.common.csproj", "{F2309C68-7AB2-0620-CE73-6BCAE3D788E3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -47,18 +43,10 @@ Global
 		{5B76F6C3-8BA9-44C3-98FD-4CFB33393B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B76F6C3-8BA9-44C3-98FD-4CFB33393B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B76F6C3-8BA9-44C3-98FD-4CFB33393B90}.Release|Any CPU.Build.0 = Release|Any CPU
-		{09B76F17-C6D6-4408-9828-FF167EDDFD97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{09B76F17-C6D6-4408-9828-FF167EDDFD97}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{09B76F17-C6D6-4408-9828-FF167EDDFD97}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{09B76F17-C6D6-4408-9828-FF167EDDFD97}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AAD8A81E-79E7-834E-7EF1-8A784B6E4A48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AAD8A81E-79E7-834E-7EF1-8A784B6E4A48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAD8A81E-79E7-834E-7EF1-8A784B6E4A48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAD8A81E-79E7-834E-7EF1-8A784B6E4A48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2309C68-7AB2-0620-CE73-6BCAE3D788E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2309C68-7AB2-0620-CE73-6BCAE3D788E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2309C68-7AB2-0620-CE73-6BCAE3D788E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2309C68-7AB2-0620-CE73-6BCAE3D788E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
