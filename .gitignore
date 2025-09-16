@@ -1,10 +1,10 @@
 packages
 .vs
-/ang-ocpa-ro/node_modules
+/ocpa.ro.ui/node_modules
 /**/bin
 /**/obj
 .angular
-ang-ocpa-ro/dist*/
+ocpa.ro.ui/dist*/
 api/api/
 *.log
 api/Properties/PublishProfiles/**

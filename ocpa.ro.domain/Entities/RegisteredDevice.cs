@@ -1,4 +1,5 @@
 ﻿using ocpa.ro.domain.Abstractions;
+using System;
 
 namespace ocpa.ro.domain.Entities;
 

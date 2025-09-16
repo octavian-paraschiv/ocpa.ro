@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ocpa.ro.domain.Abstractions;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ocpa.ro.api.BackgroundServices;
 

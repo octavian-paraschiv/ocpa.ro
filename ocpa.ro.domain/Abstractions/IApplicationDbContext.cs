@@ -1,4 +1,5 @@
 ﻿using ocpa.ro.domain.Entities;
+using System.Linq;
 
 namespace ocpa.ro.domain.Abstractions;
 

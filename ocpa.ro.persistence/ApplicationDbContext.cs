@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ocpa.ro.domain.Abstractions;
 using ocpa.ro.domain.Entities;
+using System.Linq;
 
 namespace ocpa.ro.Persistence;
 

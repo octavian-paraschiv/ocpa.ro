@@ -1,4 +1,5 @@
 ﻿using ocpa.ro.domain.Abstractions;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace ocpa.ro.domain.Entities;
