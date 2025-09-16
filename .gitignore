@@ -1,10 +1,10 @@
 packages
 .vs
-/ang-ocpa-ro/node_modules
-/api/bin
-/api/obj
+/ocpa.ro.ui/node_modules
+/**/bin
+/**/obj
 .angular
-ang-ocpa-ro/dist*/
+ocpa.ro.ui/dist*/
 api/api/
 *.log
 api/Properties/PublishProfiles/**
@@ -12,3 +12,4 @@ content/ProTONE/
 content/Meteo/
 content/auth.db
 content/wiki/
+*.user

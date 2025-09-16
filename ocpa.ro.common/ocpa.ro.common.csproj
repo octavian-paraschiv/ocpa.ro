@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <RootNamespace>ocpa.ro.common</RootNamespace>
+	  <AssemblyName>ocpa.ro.common</AssemblyName>
+	  <WarningsAsErrors>true</WarningsAsErrors>
+	  <WarningLevel>5</WarningLevel>
+	  <LangVersion>12</LangVersion>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+</Project>

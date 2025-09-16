@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <TargetFramework>net8.0</TargetFramework>
+      <RootNamespace>ocpa.ro.infrastructure</RootNamespace>
+      <AssemblyName>ocpa.ro.infrastructure</AssemblyName>
+      <WarningsAsErrors>true</WarningsAsErrors>
+      <WarningLevel>5</WarningLevel>
+      <LangVersion>12</LangVersion>
+      <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ocpa.ro.application\ocpa.ro.application.csproj" />
+  </ItemGroup>
+
+</Project>
