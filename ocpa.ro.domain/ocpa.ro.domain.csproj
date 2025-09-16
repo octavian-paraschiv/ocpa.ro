@@ -10,7 +10,12 @@
       <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
    </PropertyGroup>
 
-  <ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+        <PackageReference Include="ThorusCommon.IO" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
     <ProjectReference Include="..\ocpa.ro.common\ocpa.ro.common.csproj" />
   </ItemGroup>
 

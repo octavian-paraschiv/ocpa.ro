@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Models.Sensors;
+using ocpa.ro.domain.Models.Sensors;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -18,8 +17,8 @@ namespace ocpa.ro.api.Controllers
         private const int count = 5;
         private static readonly Random rnd = new();
 
-        public SensorsController(IWebHostEnvironment hostingEnvironment, ILogger logger)
-            : base(hostingEnvironment, logger, null)
+        public SensorsController(ILogger logger)
+            : base(logger)
         {
         }
 

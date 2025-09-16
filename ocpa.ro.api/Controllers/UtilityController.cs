@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
@@ -15,8 +14,8 @@ namespace ocpa.ro.api.Controllers
 
     public class UtilityController : ApiControllerBase
     {
-        public UtilityController(IWebHostEnvironment hostingEnvironment, ILogger logger)
-            : base(hostingEnvironment, logger, null)
+        public UtilityController(ILogger logger)
+            : base(logger)
         {
         }
 

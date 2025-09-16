@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Extensions;
-using ocpa.ro.api.Models.ProTONE;
+using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Models.ProTONE;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -24,13 +23,15 @@ namespace ocpa.ro.api.Controllers
     {
         #region Private members
         private static readonly BuildVersion transitionVersion = new("3.1.59");
+        private readonly IHostingEnvironmentService _hostingEnvironmentService;
         #endregion
 
         #region Constructor (DI)
 
-        public ProToneController(IWebHostEnvironment hostingEnvironment, ILogger logger)
-            : base(hostingEnvironment, logger, null)
+        public ProToneController(ILogger logger, IHostingEnvironmentService hostingEnvironmentService)
+            : base(logger)
         {
+            _hostingEnvironmentService = hostingEnvironmentService ?? throw new ArgumentNullException(nameof(hostingEnvironmentService));
         }
 
         #endregion
@@ -151,7 +152,7 @@ namespace ocpa.ro.api.Controllers
                     break;
             }
 
-            string path = Path.Combine(_hostingEnvironment.ContentPath(), $"ProTONE/{folder}");
+            string path = Path.Combine(_hostingEnvironmentService.ContentPath, $"ProTONE/{folder}");
 
             if (path?.Length > 0 && Directory.Exists(path))
             {

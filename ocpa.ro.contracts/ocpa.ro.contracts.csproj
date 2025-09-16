@@ -10,8 +10,14 @@
       <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
+    
   <ItemGroup>
     <ProjectReference Include="..\ocpa.ro.common\ocpa.ro.common.csproj" />
+    <ProjectReference Include="..\ocpa.ro.domain\ocpa.ro.domain.csproj" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

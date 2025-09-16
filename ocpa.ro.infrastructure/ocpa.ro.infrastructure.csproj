@@ -10,7 +10,11 @@
       <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
-  <ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="MailKit" Version="4.11.0" />
+    </ItemGroup>
+
+    <ItemGroup>
     <ProjectReference Include="..\ocpa.ro.application\ocpa.ro.application.csproj" />
   </ItemGroup>
 

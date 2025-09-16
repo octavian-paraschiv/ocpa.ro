@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using ocpa.ro.api.Extensions;
-using ocpa.ro.api.Helpers.Authentication;
-using ocpa.ro.api.Helpers.Content;
-using ocpa.ro.api.Helpers.Generic;
-using ocpa.ro.api.Models.Configuration;
-using ocpa.ro.api.Models.Content;
 using ocpa.ro.api.Policies;
 using ocpa.ro.common;
+using ocpa.ro.domain.Abstractions.Access;
+using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Models.Configuration;
+using ocpa.ro.domain.Models.Content;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -32,22 +30,28 @@ namespace ocpa.ro.api.Controllers
     public class ContentController : ApiControllerBase
     {
         #region Private members
-        private readonly IContentHelper _contentHelper;
-        private readonly IMultipartRequestHelper _multipartHelper;
-        private readonly IContentRenderer _contentRenderer;
+        private readonly IAccessService _accessService;
+        private readonly IContentService _contentService;
+        private readonly IMultipartRequestService _multipartRequestService;
+        private readonly IContentRendererService _contentRendererService;
         private readonly IDistributedCache _cache;
         private readonly CacheConfig _config;
         #endregion
 
         #region Constructor (DI)
-        public ContentController(IWebHostEnvironment hostingEnvironment, ILogger logger, IAuthHelper authHelper,
-            IContentHelper contentHelper, IContentRenderer wikiHelper, IMultipartRequestHelper multipartHelper,
-            IDistributedCache cache, IOptions<CacheConfig> config)
-            : base(hostingEnvironment, logger, authHelper)
+        public ContentController(ILogger logger,
+            IAccessService accessService,
+            IContentService contentService,
+            IContentRendererService contentRendererService,
+            IMultipartRequestService multipartRequestService,
+            IDistributedCache cache,
+            IOptions<CacheConfig> config)
+            : base(logger)
         {
-            _contentHelper = contentHelper ?? throw new ArgumentNullException(nameof(contentHelper));
-            _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
-            _contentRenderer = wikiHelper ?? throw new ArgumentNullException(nameof(wikiHelper));
+            _accessService = accessService ?? throw new ArgumentNullException(nameof(accessService));
+            _contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
+            _multipartRequestService = multipartRequestService ?? throw new ArgumentNullException(nameof(multipartRequestService));
+            _contentRendererService = contentRendererService ?? throw new ArgumentNullException(nameof(contentRendererService));
 
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
@@ -66,7 +70,7 @@ namespace ocpa.ro.api.Controllers
 
             try
             {
-                var content = await _contentHelper.GetContent(contentPath);
+                var content = await _contentService.GetContent(contentPath);
                 if (content?.Length > 0)
                     result = Ok(Convert.ToBase64String(content));
             }
@@ -90,13 +94,13 @@ namespace ocpa.ro.api.Controllers
             [FromQuery] string filter = null,
             [FromQuery] bool? markdownView = null)
         {
-            _authHelper.GuardContentPath(HttpContext.User?.Identity, contentPath);
+            _accessService.GuardContentPath(HttpContext.User?.Identity, contentPath);
 
             IActionResult result = NotFound(contentPath);
 
             try
             {
-                var content = _contentHelper.ListContent(contentPath, level, filter, markdownView ?? false);
+                var content = _contentService.ListContent(contentPath, level, filter, markdownView ?? false);
                 if ((content?.Type ?? ContentUnitType.None) != ContentUnitType.None)
                     result = Ok(content);
             }
@@ -120,7 +124,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var ucu = _contentHelper.CreateNewFolder(contentPath);
+                var ucu = _contentService.CreateNewFolder(contentPath);
                 if (ucu == null)
                     return NotFound(contentPath);
 
@@ -147,9 +151,9 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                byte[] data = await _multipartHelper.GetMultipartRequestData(Request);
+                byte[] data = await _multipartRequestService.GetMultipartRequestData(Request);
 
-                var ucu = await _contentHelper.CreateOrUpdateContent(contentPath, data);
+                var ucu = await _contentService.CreateOrUpdateContent(contentPath, data);
                 if (ucu == null)
                     return NotFound(contentPath);
 
@@ -172,7 +176,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var status = _contentHelper.DeleteContent(contentPath);
+                var status = _contentService.DeleteContent(contentPath);
                 return StatusCode((int)status, contentPath);
             }
             catch (Exception ex)
@@ -192,7 +196,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var ucu = _contentHelper.MoveContent(contentPath, newPath);
+                var ucu = _contentService.MoveContent(contentPath, newPath);
                 if (ucu == null)
                     return NotFound(contentPath);
 
@@ -215,7 +219,7 @@ namespace ocpa.ro.api.Controllers
            [FromHeader(Name = "X-RenderAsHtml")] string renderAsHtmlStr,
            [FromHeader(Name = "X-UseCache")] string useCacheStr)
         {
-            _authHelper.GuardContentPath(HttpContext.User?.Identity, resourcePath);
+            _accessService.GuardContentPath(HttpContext.User?.Identity, resourcePath);
 
             try
             {
@@ -245,7 +249,7 @@ namespace ocpa.ro.api.Controllers
                     var ext = Path.GetExtension(resourcePath);
                     if (ext?.Length > 0)
                     {
-                        (data, isBinary) = await _contentRenderer.RenderContent(resourcePath, reqRoot,
+                        (data, isBinary) = await _contentRendererService.RenderContent(resourcePath, reqRoot,
                             RequestLanguage, renderAsHtml).ConfigureAwait(false);
 
                         if (useCache)

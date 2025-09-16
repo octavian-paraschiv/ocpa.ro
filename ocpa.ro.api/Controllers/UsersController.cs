@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using ocpa.ro.api.Extensions;
-using ocpa.ro.api.Helpers.Authentication;
-using ocpa.ro.api.Models.Authentication;
-using ocpa.ro.api.Models.Configuration;
-using ocpa.ro.api.Models.Menus;
 using ocpa.ro.api.Policies;
+using ocpa.ro.common.Extensions;
+using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Models.Authentication;
+using ocpa.ro.domain.Models.Configuration;
+using ocpa.ro.domain.Models.Menus;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -28,17 +28,25 @@ namespace ocpa.ro.api.Controllers
     [Authorize(Roles = "ADM")]
     public class UsersController : ApiControllerBase
     {
-        private readonly IJwtTokenHelper _jwtTokenGenerator;
+        private readonly IOneTimePasswordService _oneTimePasswordService;
+        private readonly IAccessService _accessService;
+        private readonly IAccessManagementService _accessManagementService;
+        private readonly IAccessTokenService _accessTokenService;
         private readonly AuthConfig _config;
 
         public UsersController(IWebHostEnvironment hostingEnvironment,
-            IAuthHelper authHelper,
-            IJwtTokenHelper jwtTokenGenerator,
+            IOneTimePasswordService oneTimePasswordService,
+            IAccessService accessService,
+            IAccessTokenService accessTokenService,
+            IAccessManagementService accessManagementService,
             ILogger logger,
             IOptions<AuthConfig> config)
-            : base(hostingEnvironment, logger, authHelper)
+            : base(logger)
         {
-            _jwtTokenGenerator = jwtTokenGenerator ?? throw new ArgumentNullException(nameof(jwtTokenGenerator));
+            _oneTimePasswordService = oneTimePasswordService ?? throw new ArgumentNullException(nameof(oneTimePasswordService));
+            _accessService = accessService ?? throw new ArgumentNullException(nameof(accessService));
+            _accessTokenService = accessTokenService ?? throw new ArgumentNullException(nameof(accessTokenService));
+            _accessManagementService = accessManagementService ?? throw new ArgumentNullException(nameof(accessManagementService));
             _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
         }
 
@@ -50,11 +58,11 @@ namespace ocpa.ro.api.Controllers
         [SwaggerOperation(OperationId = "ValidateOTP")]
         public IActionResult ValidateOTP([FromForm] AuthenticateRequest model)
         {
-            var (err, user) = _authHelper.ValidateOTP(model);
+            var (err, user) = _oneTimePasswordService.ValidateOneTimePassword(model);
             if (err?.Length > 0 || user == null)
                 return Unauthorized(new FailedAuthenticationResponse(err));
 
-            var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+            var rsp = _accessTokenService.GenerateAccessToken(user);
             if (string.IsNullOrEmpty(rsp?.Token))
                 return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
 
@@ -71,7 +79,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                bool success = await _authHelper.GenerateOTP(loginId, RequestLanguage);
+                bool success = await _oneTimePasswordService.GenerateOneTimePassword(loginId, RequestLanguage);
                 return Ok(success);
             }
             catch (Exception ex)
@@ -97,11 +105,11 @@ namespace ocpa.ro.api.Controllers
                 claimedID != loginId)
                 return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
 
-            var user = _authHelper.GetUser(loginId);
+            var user = _accessService.GetUser(loginId);
             if (user == null)
                 return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
 
-            var rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+            var rsp = _accessTokenService.GenerateAccessToken(user);
             if (string.IsNullOrEmpty(rsp?.Token))
                 return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
 
@@ -117,7 +125,7 @@ namespace ocpa.ro.api.Controllers
         public async Task<IActionResult> Authenticate([FromForm] AuthenticateRequest model,
             [FromHeader(Name = "X-Device-Id")] string deviceId)
         {
-            var (user, useOTP) = _authHelper.Authenticate(model);
+            var (user, useOTP) = _accessService.Authenticate(model);
             if (user == null)
                 return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
 
@@ -142,7 +150,7 @@ namespace ocpa.ro.api.Controllers
             }
             else
             {
-                rsp = _jwtTokenGenerator.GenerateJwtToken(user);
+                rsp = _accessTokenService.GenerateAccessToken(user);
                 rsp.SendOTP = false;
 
                 if (string.IsNullOrEmpty(rsp?.Token))
@@ -153,7 +161,7 @@ namespace ocpa.ro.api.Controllers
             {
                 // If succesfully logged in, register the device used to log in
                 var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-                await _authHelper.RegisterDevice(deviceId, ipAddress, user.LoginId);
+                await _accessService.RegisterDevice(deviceId, ipAddress, user.LoginId);
             }
             catch (Exception ex)
             {
@@ -173,7 +181,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_authHelper.AllUsers());
+                return Ok(_accessService.AllUsers());
             }
             catch (Exception ex)
             {
@@ -191,7 +199,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var dbu = _authHelper.SaveUser(user, out bool inserted);
+                var dbu = _accessService.SaveUser(user, out bool inserted);
                 if (dbu != null)
                 {
                     dbu.PasswordHash = null;
@@ -219,7 +227,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return StatusCode(_authHelper.DeleteUser(loginId));
+                return StatusCode(_accessService.DeleteUser(loginId));
             }
             catch (Exception ex)
             {
@@ -239,14 +247,14 @@ namespace ocpa.ro.api.Controllers
             try
             {
                 string registeredDeviceId =
-                    _authHelper.GetRegisteredDevice(deviceId) == null ?
+                    _accessService.GetRegisteredDevice(deviceId) == null ?
                         Guid.NewGuid().ToString().Replace("-", "").ToLowerInvariant() :
                         deviceId;
 
                 return Ok(new Menus
                 {
-                    PublicMenus = _authHelper.PublicMenus(deviceId),
-                    AppMenus = _authHelper.ApplicationMenus(deviceId, HttpContext.User.Identity),
+                    PublicMenus = _accessService.PublicMenus(deviceId),
+                    AppMenus = _accessService.ApplicationMenus(deviceId, HttpContext.User.Identity),
                     DeviceId = registeredDeviceId
                 });
             }
@@ -268,7 +276,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_authHelper.GetAppsForUser(userId));
+                return Ok(_accessManagementService.GetAppsForUser(userId));
             }
             catch (Exception ex)
             {
@@ -287,7 +295,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                _authHelper.SaveAppsForUser(userId, appsForUser);
+                _accessManagementService.SaveAppsForUser(userId, appsForUser);
                 return Ok();
             }
             catch (Exception ex)

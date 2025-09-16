@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Helpers.Geography;
-using ocpa.ro.api.Models.Geography;
 using ocpa.ro.api.Policies;
+using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Models.Meteo;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -23,14 +22,14 @@ namespace ocpa.ro.api.Controllers
     public class GeographyController : ApiControllerBase
     {
         #region Private members
-        private readonly IGeographyHelper _geographyHelper;
+        private readonly IGeographyService _geographyService;
         #endregion
 
         #region Constructor (DI)
-        public GeographyController(IWebHostEnvironment hostingEnvironment, IGeographyHelper geographyHelper, ILogger logger)
-            : base(hostingEnvironment, logger, null)
+        public GeographyController(IGeographyService geographyHelper, ILogger logger)
+            : base(logger)
         {
-            _geographyHelper = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
+            _geographyService = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
         }
         #endregion
 
@@ -44,7 +43,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_geographyHelper.GetRegionNames());
+                return Ok(_geographyService.GetRegionNames());
             }
             catch (Exception ex)
             {
@@ -61,7 +60,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_geographyHelper.GetSubregionNames(region));
+                return Ok(_geographyService.GetSubregionNames(region));
             }
             catch (Exception ex)
             {
@@ -78,7 +77,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_geographyHelper.GetCityNames(region, subregion));
+                return Ok(_geographyService.GetCityNames(region, subregion));
             }
             catch (Exception ex)
             {
@@ -97,7 +96,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_geographyHelper.GetAllRegions());
+                return Ok(_geographyService.GetAllRegions());
             }
             catch (Exception ex)
             {
@@ -114,7 +113,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_geographyHelper.GetAllCities());
+                return Ok(_geographyService.GetAllCities());
             }
             catch (Exception ex)
             {
@@ -131,7 +130,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_geographyHelper.GetCity(region, subregion, city));
+                return Ok(_geographyService.GetCity(region, subregion, city));
             }
             catch (Exception ex)
             {
@@ -148,7 +147,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_geographyHelper.GetGridCoordinates(region, subregion, city));
+                return Ok(_geographyService.GetGridCoordinates(region, subregion, city));
             }
             catch (Exception ex)
             {
@@ -167,7 +166,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(await _geographyHelper.GetGeoLocation(ipAddress));
+                return Ok(await _geographyService.GetGeoLocation(ipAddress));
             }
             catch (Exception ex)
             {
@@ -187,7 +186,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var dbu = _geographyHelper.SaveCity(city, out bool inserted);
+                var dbu = _geographyService.SaveCity(city, out bool inserted);
                 if (dbu != null)
                     return inserted ?
                         StatusCode(StatusCodes.Status201Created, dbu) :
@@ -212,7 +211,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return StatusCode(_geographyHelper.DeleteCity(cityId));
+                return StatusCode(_geographyService.DeleteCity(cityId));
             }
             catch (Exception ex)
             {

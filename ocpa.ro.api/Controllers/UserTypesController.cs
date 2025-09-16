@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Helpers.Authentication;
-using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Policies;
+using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Entities;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,9 +16,12 @@ namespace ocpa.ro.api.Controllers
     [Consumes("application/json")]
     public class UserTypesController : ApiControllerBase
     {
-        public UserTypesController(IWebHostEnvironment hostingEnvironment, IAuthHelper authHelper, ILogger logger)
-            : base(hostingEnvironment, logger, authHelper)
+        private readonly IAccessManagementService _accessManagementService;
+
+        public UserTypesController(IAccessManagementService accessManagementService, ILogger logger)
+            : base(logger)
         {
+            _accessManagementService = accessManagementService ?? throw new ArgumentNullException(nameof(accessManagementService));
         }
 
         [HttpGet("all")]
@@ -32,7 +33,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_authHelper.AllUserTypes());
+                return Ok(_accessManagementService.AllUserTypes());
             }
             catch (Exception ex)
             {

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Helpers.Authentication;
 using ocpa.ro.api.Policies;
+using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Entities;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
@@ -20,9 +19,12 @@ namespace ocpa.ro.api.Controllers
     [Consumes("application/json")]
     public class RegisteredDevicesController : ApiControllerBase
     {
-        public RegisteredDevicesController(IWebHostEnvironment hostingEnvironment, IAuthHelper authHelper, ILogger logger)
-            : base(hostingEnvironment, logger, authHelper)
+        private readonly IAccessService _accessService;
+
+        public RegisteredDevicesController(IAccessService accessService, ILogger logger)
+            : base(logger)
         {
+            _accessService = accessService ?? throw new ArgumentNullException(nameof(accessService));
         }
 
         [HttpGet("all")]
@@ -34,7 +36,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return Ok(_authHelper.GetRegisteredDevices());
+                return Ok(_accessService.GetRegisteredDevices());
             }
             catch (Exception ex)
             {
@@ -52,7 +54,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                return StatusCode(_authHelper.DeleteRegisteredDevice(deviceId));
+                return StatusCode(_accessService.DeleteRegisteredDevice(deviceId));
             }
             catch (Exception ex)
             {

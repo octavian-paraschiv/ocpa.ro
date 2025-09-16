@@ -1,25 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using ocpa.ro.api.BackgroundServices;
 using ocpa.ro.api.Extensions;
-using ocpa.ro.api.Helpers.Authentication;
-using ocpa.ro.api.Helpers.Content;
-using ocpa.ro.api.Helpers.Email;
-using ocpa.ro.api.Helpers.Generic;
-using ocpa.ro.api.Helpers.Geography;
-using ocpa.ro.api.Helpers.Medical;
-using ocpa.ro.api.Helpers.Meteo;
 using ocpa.ro.api.Middlewares;
-using ocpa.ro.api.Models.Configuration;
 using ocpa.ro.api.Policies;
 using ocpa.ro.common;
+using ocpa.ro.common.Extensions;
 using ocpa.ro.domain.Abstractions;
+using ocpa.ro.domain.Models.Configuration;
 using ocpa.ro.Persistence;
 using System;
 using System.IO;
@@ -83,20 +75,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddHttpClients();
 
-builder.Services.AddScoped<IAuthHelper, AuthHelper>();
-builder.Services.AddScoped<IGeographyHelper, GeographyHelper>();
-builder.Services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
-
-builder.Services.AddScoped<IMeteoDataHelper, MeteoDataHelper>();
-builder.Services.AddScoped<IMeteoScalesHelper, MeteoScalesHelper>();
-builder.Services.AddScoped<IWeatherTypeHelper, WeatherTypeHelper>();
-builder.Services.AddScoped<IMedicalDataHelper, MedicalDataHelper>();
-builder.Services.AddScoped<IAuthorizationHandler, AuthorizePolicy>();
-builder.Services.AddScoped<IContentHelper, ContentHelper>();
-
-builder.Services.AddTransient<IMultipartRequestHelper, MultipartRequestHelper>();
-builder.Services.AddTransient<IContentRenderer, ContentRenderer>();
-builder.Services.AddTransient<IEmailHelper, EmailHelper>();
+builder.Services.AddDependencies();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -128,7 +107,7 @@ builder.Services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(optio
     options.UseMySQL(StringUtility.DecodeStrings(databaseConfig.ConnectionString).First()),
     contextLifetime: ServiceLifetime.Transient);
 
-builder.Services.AddHostedService<DatabaseCleanupService>();
+
 
 #endregion
 

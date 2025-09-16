@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using ocpa.ro.api.Models.Configuration;
+using ocpa.ro.domain.Models.Configuration;
 using System;
 using System.Net.Http;
 using System.Net.Security;

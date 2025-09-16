@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ocpa.ro.api.Helpers.Generic;
-using ocpa.ro.api.Helpers.Geography;
-using ocpa.ro.api.Helpers.Meteo;
-using ocpa.ro.api.Models.Meteo;
 using ocpa.ro.api.Policies;
+using ocpa.ro.application.Services;
 using ocpa.ro.common;
+using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Models.Meteo;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -24,20 +22,21 @@ namespace ocpa.ro.api.Controllers
     public class MeteoController : ApiControllerBase
     {
         #region Private members
-        private readonly IMeteoDataHelper _dataHelper = null;
-        private readonly IGeographyHelper _geographyHelper = null;
-        private readonly IMultipartRequestHelper _multipartHelper = null;
+        private readonly IMeteoDataService _meteoDataService = null;
+        private readonly IGeographyService _geographyService = null;
+        private readonly IMultipartRequestService _multipartRequestService = null;
         #endregion
 
         #region Constructor (DI)
-        public MeteoController(IWebHostEnvironment hostingEnvironment,
-            IMeteoDataHelper meteoDataHelper, IGeographyHelper geographyHelper,
-            IMultipartRequestHelper multipartHelper, ILogger logger)
-            : base(hostingEnvironment, logger, null)
+        public MeteoController(IMeteoDataService meteoDataService,
+            IGeographyService geographyHelper,
+            IMultipartRequestService multipartRequestService,
+            ILogger logger)
+            : base(logger)
         {
-            _dataHelper = meteoDataHelper ?? throw new ArgumentNullException(nameof(meteoDataHelper));
-            _geographyHelper = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
-            _multipartHelper = multipartHelper ?? throw new ArgumentNullException(nameof(multipartHelper));
+            _meteoDataService = meteoDataService ?? throw new ArgumentNullException(nameof(meteoDataService));
+            _geographyService = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
+            _multipartRequestService = multipartRequestService ?? throw new ArgumentNullException(nameof(multipartRequestService));
         }
         #endregion
 
@@ -52,7 +51,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var fileName = _dataHelper.LatestStudioFile;
+                var fileName = _meteoDataService.LatestStudioFile;
                 if (fileName?.Length > 0)
                     return Ok($"{Request.Scheme}://{Request.Host}/content/Meteo/current/{fileName}");
             }
@@ -88,8 +87,8 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                GridCoordinates gridCoordinates = _geographyHelper.GetGridCoordinates(region, subregion, city);
-                var data = await _dataHelper.GetMeteoData(dbi, gridCoordinates, region, skip, take);
+                GridCoordinates gridCoordinates = _geographyService.GetGridCoordinates(region, subregion, city);
+                var data = await _meteoDataService.GetMeteoData(dbi, gridCoordinates, region, skip, take);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -111,7 +110,7 @@ namespace ocpa.ro.api.Controllers
         public Task<IActionResult> UploadPreviewDatabase()
             // By convention, databases uploaded via Thorus are always uploaded as Preview3.db3,
             // ie. in the last position
-            => UploadPreviewDatabaseByDbi(MeteoDataHelper.DbCount - 2);
+            => UploadPreviewDatabaseByDbi(MeteoDataService.DbCount - 2);
 
 
         [Authorize(Roles = "ADM")]
@@ -127,8 +126,8 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                byte[] data = await _multipartHelper.GetMultipartRequestData(Request);
-                await _dataHelper.SavePreviewDatabase(dbi, data);
+                byte[] data = await _multipartRequestService.GetMultipartRequestData(Request);
+                await _meteoDataService.SavePreviewDatabase(dbi, data);
                 return Ok();
             }
             catch (Exception ex)
@@ -148,7 +147,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                await _dataHelper.PromotePreviewDatabase(dbi);
+                await _meteoDataService.PromotePreviewDatabase(dbi);
                 return Ok();
             }
             catch (Exception ex)
@@ -168,7 +167,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var info = await _dataHelper.GetDatabases();
+                var info = await _meteoDataService.GetDatabases();
                 return Ok(info);
             }
             catch (Exception ex)
