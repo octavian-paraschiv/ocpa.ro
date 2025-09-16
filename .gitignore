@@ -1,8 +1,8 @@
 packages
 .vs
 /ang-ocpa-ro/node_modules
-/api/bin
-/api/obj
+/**/bin
+/**/obj
 .angular
 ang-ocpa-ro/dist*/
 api/api/
@@ -12,3 +12,4 @@ content/ProTONE/
 content/Meteo/
 content/auth.db
 content/wiki/
+*.user

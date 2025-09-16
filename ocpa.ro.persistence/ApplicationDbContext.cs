@@ -1,48 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using ocpa.ro.api.Models.Menus;
-using System.Linq;
+using ocpa.ro.domain.Abstractions;
+using ocpa.ro.domain.Entities;
 
-namespace ocpa.ro.api.Persistence;
+namespace ocpa.ro.Persistence;
 
-public interface IDbContext
-{
-    DbSet<Application> Applications { get; set; }
-
-    DbSet<ApplicationMenu> ApplicationMenus { get; set; }
-
-    DbSet<ApplicationUser> ApplicationUsers { get; set; }
-
-    DbSet<AppMenu> AppMenus { get; set; }
-
-    DbSet<City> Cities { get; set; }
-
-    DbSet<Menu> Menus { get; set; }
-
-    DbSet<MenuDisplayMode> MenuDisplayModes { get; set; }
-
-    DbSet<OneTimePassword> OneTimePasswords { get; set; }
-
-    DbSet<PublicMenu> PublicMenus { get; set; }
-
-    DbSet<Region> Regions { get; set; }
-
-    DbSet<RegisteredDevice> RegisteredDevices { get; set; }
-
-    DbSet<User> Users { get; set; }
-
-    DbSet<UserType> UserTypes { get; set; }
-
-    DatabaseFacade Database { get; }
-
-    int Insert<T>(T entity) where T : class, IDbEntity;
-    int Update<T>(T entity) where T : class, IDbEntity;
-    int Delete<T>(T entity) where T : class, IDbEntity;
-
-
-}
-
-public partial class ApplicationDbContext : DbContext, IDbContext
+public partial class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public ApplicationDbContext()
     {
@@ -78,6 +40,71 @@ public partial class ApplicationDbContext : DbContext, IDbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserType> UserTypes { get; set; }
+
+    IQueryable<Application> IApplicationDbContext.Applications => Applications;
+
+    IQueryable<ApplicationMenu> IApplicationDbContext.ApplicationMenus => ApplicationMenus;
+
+    IQueryable<ApplicationUser> IApplicationDbContext.ApplicationUsers => ApplicationUsers;
+
+    IQueryable<AppMenu> IApplicationDbContext.AppMenus => AppMenus;
+
+    IQueryable<City> IApplicationDbContext.Cities => Cities;
+
+    IQueryable<Menu> IApplicationDbContext.Menus => Menus;
+
+    IQueryable<MenuDisplayMode> IApplicationDbContext.MenuDisplayModes => MenuDisplayModes;
+
+    IQueryable<OneTimePassword> IApplicationDbContext.OneTimePasswords => OneTimePasswords;
+
+    IQueryable<PublicMenu> IApplicationDbContext.PublicMenus => PublicMenus;
+
+    IQueryable<Region> IApplicationDbContext.Regions => Regions;
+
+    IQueryable<RegisteredDevice> IApplicationDbContext.RegisteredDevices => RegisteredDevices;
+
+    IQueryable<User> IApplicationDbContext.Users => Users;
+
+    IQueryable<UserType> IApplicationDbContext.UserTypes => UserTypes;
+
+    int IApplicationDbContext.ExecuteSqlRaw(string query, params object[] args) => Database.ExecuteSqlRaw(query, args);
+
+    int IApplicationDbContext.Delete<T>(T entity)
+    {
+        var dbSet = GetDbContext<T>();
+        if (dbSet != null)
+        {
+            dbSet.Remove(entity);
+            return SaveChanges();
+        }
+
+        return 0;
+    }
+
+    int IApplicationDbContext.Insert<T>(T entity)
+    {
+        var dbSet = GetDbContext<T>();
+        if (dbSet != null)
+        {
+            dbSet.Add(entity);
+            return SaveChanges();
+        }
+
+        return 0;
+    }
+
+
+    int IApplicationDbContext.Update<T>(T entity)
+    {
+        var dbSet = GetDbContext<T>();
+        if (dbSet != null)
+        {
+            dbSet.Update(entity);
+            return SaveChanges();
+        }
+
+        return 0;
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -428,48 +455,16 @@ public partial class ApplicationDbContext : DbContext, IDbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
-
-    public int Delete<T>(T entity) where T : class, IDbEntity
-    {
-        var dbSet = GetDbContext<T>();
-        if (dbSet != null)
-        {
-            dbSet.Remove(entity);
-            return SaveChanges();
-        }
-
-        return 0;
-    }
-
-    public int Insert<T>(T entity) where T : class, IDbEntity
-    {
-        var dbSet = GetDbContext<T>();
-        if (dbSet != null)
-        {
-            dbSet.Add(entity);
-            return SaveChanges();
-        }
-
-        return 0;
-    }
-
-
-    int IDbContext.Update<T>(T entity)
-    {
-        var dbSet = GetDbContext<T>();
-        if (dbSet != null)
-        {
-            dbSet.Update(entity);
-            return SaveChanges();
-        }
-
-        return 0;
-    }
-
     private DbSet<T> GetDbContext<T>() where T : class, IDbEntity
     {
         var dbSetType = typeof(DbSet<T>);
         var pi = GetType().GetProperties().Where(p => p.PropertyType == dbSetType).FirstOrDefault();
         return pi?.GetValue(this) as DbSet<T>;
     }
+
+    void IApplicationDbContext.BeginTransaction() => Database.BeginTransaction();
+
+    void IApplicationDbContext.CommitTransaction() => Database.CommitTransaction();
+
+    void IApplicationDbContext.RollbackTransaction() => Database.RollbackTransaction();
 }

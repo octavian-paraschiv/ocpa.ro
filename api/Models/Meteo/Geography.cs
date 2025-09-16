@@ -1,4 +1,4 @@
-﻿using ocpa.ro.api.Persistence;
+﻿using ocpa.ro.domain.Entities;
 using System.Collections.Generic;
 
 namespace ocpa.ro.api.Models.Geography

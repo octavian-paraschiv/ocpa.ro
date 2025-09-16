@@ -18,8 +18,9 @@ using ocpa.ro.api.Helpers.Medical;
 using ocpa.ro.api.Helpers.Meteo;
 using ocpa.ro.api.Middlewares;
 using ocpa.ro.api.Models.Configuration;
-using ocpa.ro.api.Persistence;
 using ocpa.ro.api.Policies;
+using ocpa.ro.domain.Abstractions;
+using ocpa.ro.Persistence;
 using System;
 using System.IO;
 using System.Linq;
@@ -123,7 +124,7 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 
-builder.Services.AddDbContext<IDbContext, ApplicationDbContext>(options =>
+builder.Services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
     options.UseMySQL(StringUtility.DecodeStrings(databaseConfig.ConnectionString).First()),
     contextLifetime: ServiceLifetime.Transient);
 

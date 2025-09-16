@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using ocpa.ro.api.Exceptions;
 using ocpa.ro.api.Models.Geography;
-using ocpa.ro.api.Persistence;
+using ocpa.ro.domain.Abstractions;
+using ocpa.ro.domain.Entities;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -37,7 +37,7 @@ public interface IGeographyHelper
 public class GeographyHelper : BaseHelper, IGeographyHelper
 {
     #region Private members
-    private readonly IDbContext _dbContext = null;
+    private readonly IApplicationDbContext _dbContext = null;
     private readonly HttpClient _client;
     #endregion
 
@@ -45,7 +45,7 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
     public GeographyHelper(IWebHostEnvironment hostingEnvironment,
         ILogger logger,
         IHttpClientFactory factory,
-        IDbContext dbContext)
+        IApplicationDbContext dbContext)
        : base(hostingEnvironment, logger)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
@@ -219,14 +219,14 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
             {
                 try
                 {
-                    _dbContext.Database.BeginTransaction();
+                    _dbContext.BeginTransaction();
 
                     if (city.IsDefault && !dbu.IsDefault)
                     {
                         // we want to mark this city as default for the supplied region/subregion
                         // the first step is to reset the default flag for all cities in the supplied region/subregion
                         var query = $"UPDATE City SET IsDefault=0 WHERE RegionId={dbu.RegionId} AND Subregion='{dbu.Subregion}'";
-                        _dbContext.Database.ExecuteSqlRaw(query);
+                        _dbContext.ExecuteSqlRaw(query);
 
                         // the second step is save the city as default. which means we need to set it as such here.
                         dbu.IsDefault = true;
@@ -235,11 +235,11 @@ public class GeographyHelper : BaseHelper, IGeographyHelper
                     if (_dbContext.Update(dbu) <= 0)
                         dbu = null;
 
-                    _dbContext.Database.CommitTransaction();
+                    _dbContext.CommitTransaction();
                 }
                 catch
                 {
-                    _dbContext.Database.RollbackTransaction();
+                    _dbContext.RollbackTransaction();
                     throw;
                 }
             }

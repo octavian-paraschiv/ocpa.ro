@@ -1,5 +1,5 @@
 ﻿using ocpa.ro.api.Models.Authentication;
-using ocpa.ro.api.Persistence;
+using ocpa.ro.domain.Entities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

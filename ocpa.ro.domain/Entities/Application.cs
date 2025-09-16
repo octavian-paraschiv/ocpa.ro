@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using ocpa.ro.domain.Abstractions;
 using System.Text.Json.Serialization;
 
-namespace ocpa.ro.api.Persistence;
+namespace ocpa.ro.domain.Entities;
 
-public interface IDbEntity
-{
-    int Id { get; set; }
-}
+
 
 public partial class Application : IDbEntity
 {

@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Models.Configuration;
-using ocpa.ro.api.Persistence;
+using ocpa.ro.domain.Entities;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;

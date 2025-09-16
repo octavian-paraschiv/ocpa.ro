@@ -1,10 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ocpa.ro.api.Persistence;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using ocpa.ro.domain.Abstractions;
 
 namespace ocpa.ro.api.BackgroundServices;
 
@@ -25,9 +21,9 @@ public class DatabaseCleanupService : BackgroundService
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>();
+                var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
                 var query = $"DELETE FROM OneTimePassword WHERE Expiration <= '{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}'";
-                dbContext.Database.ExecuteSqlRaw(query);
+                dbContext.ExecuteSqlRaw(query);
             }
 
             await Task.Delay(TimeSpan.FromMinutes(PERIODICITY), stoppingToken);

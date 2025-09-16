@@ -6,8 +6,8 @@ using ocpa.ro.api.Helpers.Email;
 using ocpa.ro.api.Helpers.Geography;
 using ocpa.ro.api.Models.Authentication;
 using ocpa.ro.api.Models.Configuration;
-using ocpa.ro.api.Models.Menus;
-using ocpa.ro.api.Persistence;
+using ocpa.ro.domain.Abstractions;
+using ocpa.ro.domain.Entities;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -45,7 +45,7 @@ namespace ocpa.ro.api.Helpers.Authentication
 
     public partial class AuthHelper : BaseHelper
     {
-        private readonly IDbContext _dbContext = null;
+        private readonly IApplicationDbContext _dbContext = null;
         private readonly IGeographyHelper _geographyHelper = null;
         private readonly IEmailHelper _emailHelper;
         private readonly AuthConfig _config;
@@ -55,7 +55,7 @@ namespace ocpa.ro.api.Helpers.Authentication
             IGeographyHelper geographyHelper,
             IEmailHelper emailHelper,
             IOptions<AuthConfig> config,
-            IDbContext dbContext)
+            IApplicationDbContext dbContext)
             : base(hostingEnvironment, logger)
         {
             _geographyHelper = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));

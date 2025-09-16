@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using ocpa.ro.api.Exceptions;
-using ocpa.ro.api.Persistence;
+using ocpa.ro.domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -340,7 +339,7 @@ namespace ocpa.ro.api.Helpers.Authentication
             try
             {
                 var query = $"DELETE from ApplicationUser WHERE UserId={userId}";
-                _dbContext.Database.ExecuteSqlRaw(query);
+                _dbContext.ExecuteSqlRaw(query);
             }
             catch
             {

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ocpa.ro.domain.Abstractions;
 
-namespace ocpa.ro.api.Persistence;
+namespace ocpa.ro.domain.Entities;
 
 public partial class RegisteredDevice : IDbEntity
 {
