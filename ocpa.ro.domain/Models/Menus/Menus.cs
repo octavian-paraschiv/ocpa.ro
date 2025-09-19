@@ -1,4 +1,4 @@
-﻿using ocpa.ro.domain.Entities;
+﻿using ocpa.ro.domain.Entities.Application;
 using System.Collections.Generic;
 
 namespace ocpa.ro.domain.Models.Menus;

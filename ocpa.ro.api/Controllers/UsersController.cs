@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using ocpa.ro.api.Policies;
 using ocpa.ro.domain.Abstractions.Access;
-using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Authentication;
 using ocpa.ro.domain.Models.Configuration;
@@ -26,6 +26,7 @@ namespace ocpa.ro.api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(Roles = "ADM")]
+    [ApiExplorerSettings(GroupName = "Users")]
     public class UsersController : ApiControllerBase
     {
         private readonly IOneTimePasswordService _oneTimePasswordService;

@@ -1,4 +1,4 @@
-﻿namespace ocpa.ro.domain.Abstractions;
+﻿namespace ocpa.ro.domain.Abstractions.Database;
 
 public interface IDbEntity
 {

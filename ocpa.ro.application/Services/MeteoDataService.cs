@@ -53,34 +53,11 @@ namespace ocpa.ro.application.Services
                 using var db = MeteoDB.OpenOrCreate(_dbPaths[i], false);
                 _ = db.GetData(take: 1);
             }
-
-            _weatherTypeService = weatherTypeService;
         }
 
         #endregion
 
         #region IMeteoDataHelper implementation
-
-        public string LatestStudioFile
-        {
-            get
-            {
-                string path = Path.Combine(_dataFolder, $"current");
-                if (path?.Length > 0 && Directory.Exists(path))
-                {
-                    var files = Directory.GetFiles(path, "Thorus Weather Studio *.exe");
-                    if (files?.Length > 0)
-                    {
-                        return files
-                            .Select(f => Path.GetFileName(f))
-                            .OrderByDescending(f => new Version(f.Replace("Thorus Weather Studio", "").Replace(".exe", "").Trim()))
-                            .FirstOrDefault();
-                    }
-                }
-
-                return null;
-            }
-        }
 
         public async Task SavePreviewDatabase(int dbi, byte[] data)
         {
@@ -148,12 +125,19 @@ namespace ocpa.ro.application.Services
                 {
                     using var db = MeteoDB.OpenOrCreate(_dbPaths[i], false);
                     var range = GetCalendarRange(db, 0);
+                    var name = Path.GetFileName(_dbPaths[i]);
+                    var online = string.Equals(name, "Snapshot.db3", System.StringComparison.OrdinalIgnoreCase);
+                    var modifyable = !online && !string.Equals(name, "Preview3.db3", System.StringComparison.OrdinalIgnoreCase);
+
                     MeteoDbInfo info = new()
                     {
                         CalendarRange = range,
                         Dbi = i - 1,
-                        Name = Path.GetFileName(_dbPaths[i])
+                        Name = name,
+                        Online = online,
+                        Modifyable = modifyable
                     };
+
                     dbInfos.Add(info);
                 }
             }
@@ -289,7 +273,7 @@ namespace ocpa.ro.application.Services
 
         private IEnumerable<Data> GetData(MeteoDB database, string regionName, GridCoordinates gc, int skip, int take)
         {
-            var rgn = _geographyService.GetRegion(regionName);
+            var rgn = _geographyService.GetRegionByName(regionName);
             return database.GetData(rgn.Code.ToUpper(), gc, skip, take);
         }
 

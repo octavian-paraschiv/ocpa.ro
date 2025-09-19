@@ -1,9 +1,9 @@
-﻿using ocpa.ro.domain.Abstractions;
+﻿using ocpa.ro.domain.Abstractions.Database;
 using System.Text.Json.Serialization;
 
-namespace ocpa.ro.domain.Entities;
+namespace ocpa.ro.domain.Entities.Application;
 
-public partial class OneTimePassword : IDbEntity
+public class OneTimePassword : IDbEntity
 {
     public int Id { get; set; }
 

@@ -27,6 +27,7 @@ namespace ocpa.ro.api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(Roles = "ADM")]
+    [ApiExplorerSettings(GroupName = "Content")]
     public class ContentController : ApiControllerBase
     {
         #region Private members

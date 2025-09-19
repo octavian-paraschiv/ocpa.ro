@@ -19,6 +19,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [ApiExplorerSettings(GroupName = "ProTONE")]
     public class ProToneController : ApiControllerBase
     {
         #region Private members

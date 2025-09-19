@@ -1,4 +1,4 @@
-﻿using ocpa.ro.domain.Entities;
+﻿using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Models.Meteo;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,7 +14,8 @@ public interface IGeographyService
     IEnumerable<string> GetSubregionNames(string regionName);
     IEnumerable<string> GetCityNames(string regionName, string subregionName);
     IEnumerable<CityDetail> GetAllCities();
-    Region GetRegion(string regionName);
+    Region GetRegionByName(string regionName);
+    Region GetRegionByCode(string regionCode);
     void ValidateSubregion(string regionName, string subregionName);
     CityDetail GetCity(string regionName, string subregionName, string cityName);
     TCS.GridCoordinates GetGridCoordinates(string regionName, string subregionName, string cityName);

@@ -18,6 +18,27 @@ public class ContentService : BaseService, IContentService
     {
     }
 
+    public string LatestThorusStudioFile
+    {
+        get
+        {
+            string path = Path.Combine(_hostingEnvironment.ContentPath, $"Meteo/current");
+            if (path?.Length > 0 && Directory.Exists(path))
+            {
+                var files = Directory.GetFiles(path, "Thorus Weather Studio *.exe");
+                if (files?.Length > 0)
+                {
+                    return files
+                        .Select(f => Path.GetFileName(f))
+                        .OrderByDescending(f => new Version(f.Replace("Thorus Weather Studio", "").Replace(".exe", "").Trim()))
+                        .FirstOrDefault();
+                }
+            }
+
+            return null;
+        }
+    }
+
     public async Task<byte[]> GetContent(string contentPath)
     {
         byte[] data = null;

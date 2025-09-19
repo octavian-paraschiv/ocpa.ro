@@ -1,8 +1,8 @@
-﻿using ocpa.ro.domain.Abstractions;
+﻿using ocpa.ro.domain.Abstractions.Database;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace ocpa.ro.domain.Entities;
+namespace ocpa.ro.domain.Entities.Application;
 
 public enum EMenuDisplayMode
 {
@@ -12,7 +12,7 @@ public enum EMenuDisplayMode
     ShowOnMobile,
 };
 
-public partial class Menu : IDbEntity
+public class Menu : IDbEntity
 {
     public int Id { get; set; }
 

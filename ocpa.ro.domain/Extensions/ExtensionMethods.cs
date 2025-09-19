@@ -19,15 +19,28 @@ public static class ExtensionMethods
 
     public static int Round(this float input)
         => (int)Math.Round(input);
+
+    public static T GetEnumValue<T>(string value, T defaultValue = default)
+    {
+        return (from ev in (T[])Enum.GetValues(typeof(T))
+                where string.Equals(ev.ToString(), value, StringComparison.OrdinalIgnoreCase)
+                select ev).FirstOrCustomValue(defaultValue);
+    }
+
+    public static T FirstOrCustomValue<T>(this IEnumerable<T> collection, T customValue)
+       => collection.EmptyIfNull().DefaultIfEmpty(customValue).First();
+
+    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> collection)
+      => collection ?? new List<T>();
 }
 
 public static class StringUtility
 {
     public static string EncodeStrings(IEnumerable<string> strings)
-        => Encode(new string(string.Join(' ', strings?.Select(s => Encode(s)))?.Trim()?.Reverse()?.ToArray() ?? []));
+        => Encode(new string(string.Join(' ', strings?.Select(Encode))?.Trim()?.Reverse()?.ToArray() ?? []));
 
     public static IEnumerable<string> DecodeStrings(string str)
-        => new string(Decode(str)?.Reverse()?.ToArray() ?? [])?.Split(' ')?.Select(s => Decode(s));
+        => new string(Decode(str)?.Reverse()?.ToArray() ?? [])?.Split(' ')?.Select(Decode);
 
     private static string Encode(string str)
         => Convert.ToBase64String(Encoding.ASCII.GetBytes(str));

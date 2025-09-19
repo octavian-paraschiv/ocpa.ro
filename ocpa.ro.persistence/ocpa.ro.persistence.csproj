@@ -11,8 +11,8 @@
   </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.14" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.14">
+        <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.17" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.17">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -20,6 +20,10 @@
     
   <ItemGroup>
     <ProjectReference Include="..\ocpa.ro.application\ocpa.ro.application.csproj" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <Folder Include="x\" />
   </ItemGroup>
 
 </Project>

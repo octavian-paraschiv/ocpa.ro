@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
-using ocpa.ro.domain.Abstractions;
 using ocpa.ro.domain.Abstractions.Access;
+using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Services;
-using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Models.Authentication;
 using ocpa.ro.domain.Models.Configuration;
 using Serilog;

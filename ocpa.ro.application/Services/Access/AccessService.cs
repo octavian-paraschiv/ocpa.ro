@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using ocpa.ro.domain.Abstractions;
 using ocpa.ro.domain.Abstractions.Access;
+using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Services;
-using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Exceptions;
 using ocpa.ro.domain.Models.Authentication;
 using ocpa.ro.domain.Models.Configuration;
@@ -21,7 +21,7 @@ namespace ocpa.ro.application.Services.Access;
 
 
 
-public partial class AccessService : BaseService, IAccessService
+public class AccessService : BaseService, IAccessService
 {
     private readonly IApplicationDbContext _dbContext = null;
     private readonly IGeographyService _geographyService = null;

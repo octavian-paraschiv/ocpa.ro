@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ocpa.ro.domain.Abstractions;
+using ocpa.ro.domain.Abstractions.Database;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

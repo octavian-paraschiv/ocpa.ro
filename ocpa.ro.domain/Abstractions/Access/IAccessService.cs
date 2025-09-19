@@ -1,4 +1,4 @@
-﻿using ocpa.ro.domain.Entities;
+﻿using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Models.Authentication;
 using System.Collections.Generic;
 using System.Security.Principal;

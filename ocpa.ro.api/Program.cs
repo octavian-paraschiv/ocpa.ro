@@ -4,15 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Middlewares;
-using ocpa.ro.api.Policies;
-using ocpa.ro.domain;
-using ocpa.ro.domain.Abstractions;
+using ocpa.ro.api.Swagger;
+using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Configuration;
-using ocpa.ro.Persistence;
+using ocpa.ro.persistence.ApplicationDb;
+using ocpa.ro.persistence.MeteoDb;
 using System;
 using System.IO;
 using System.Linq;
@@ -85,28 +84,19 @@ builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddSwaggerGen(option =>
-{
-    option.EnableAnnotations();
-    option.DocumentFilter<IgnoreWhenNotInDevFilter>();
-
-    option.SwaggerDoc(Constants.ApiVersion,
-        new OpenApiInfo
-        {
-            Title = Constants.AppName,
-            Version = Constants.ApiVersion
-        });
-});
-
+builder.Services.AddOpenApiDesc();
 
 builder.Services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
     options.UseMySQL(StringUtility.DecodeStrings(databaseConfig.ConnectionString).First()),
     contextLifetime: ServiceLifetime.Transient);
 
+builder.Services.AddDbContext<IMeteoDbContext, MeteoDbContext>(options =>
+    options.UseMySQL(StringUtility.DecodeStrings(databaseConfig.MeteoConnectionString).First()),
+    contextLifetime: ServiceLifetime.Transient);
 
 
 #endregion
@@ -137,8 +127,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseOpenApiDesc();
 
 await app.RunAsync();
 #endregion

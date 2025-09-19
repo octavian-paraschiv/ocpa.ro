@@ -53,6 +53,7 @@ public class MeteoDailyData
 
 public class MeteoData : MeteoDbInfo
 {
+    public string Region { get; set; }
     public GridCoordinates GridCoordinates { get; set; }
     public Dictionary<string, MeteoDailyData> Data { get; set; }
 }
@@ -64,8 +65,7 @@ public class MeteoDbInfo
     public CalendarRange CalendarRange { get; set; }
     public int DataCount => CalendarRange?.Length ?? 0;
 
-    public bool Online => string.Equals(Name, "Snapshot.db3", System.StringComparison.OrdinalIgnoreCase);
+    public bool Online { get; set; }
 
-    // By convention, databases uploaded via Thorus (which we can't override) are always uploaded as Preview3.db3
-    public bool Modifyable => !Online && !string.Equals(Name, "Preview3.db3", System.StringComparison.OrdinalIgnoreCase);
+    public bool Modifyable { get; set; }
 }

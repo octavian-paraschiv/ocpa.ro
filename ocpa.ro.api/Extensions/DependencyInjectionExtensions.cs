@@ -5,6 +5,7 @@ using ocpa.ro.api.BackgroundServices;
 using ocpa.ro.api.Services;
 using ocpa.ro.application.Services;
 using ocpa.ro.application.Services.Access;
+using ocpa.ro.application.Services.Meteo;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Gateways;
 using ocpa.ro.domain.Abstractions.Services;
@@ -48,9 +49,14 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IContentService, ContentService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IGeographyService, GeographyService>();
+
         services.AddScoped<IMeteoDataService, MeteoDataService>();
+        services.AddScoped<IMeteoDataService2, MeteoDataService2>();
+
         services.AddScoped<IMeteoScalesService, MeteoScalesService>();
         services.AddScoped<IWeatherTypeService, WeatherTypeService>();
+
+        services.AddScoped<ISystemSettingsService, SystemSettingService>();
 
         services.AddSingleton<IHostingEnvironmentService, HostingEnvironmentService>();
 

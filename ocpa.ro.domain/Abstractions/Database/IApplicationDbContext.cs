@@ -1,9 +1,9 @@
-﻿using ocpa.ro.domain.Entities;
+﻿using ocpa.ro.domain.Entities.Application;
 using System.Linq;
 
-namespace ocpa.ro.domain.Abstractions;
+namespace ocpa.ro.domain.Abstractions.Database;
 
-public interface IApplicationDbContext
+public interface IApplicationDbContext : IBaseDbContext
 {
     IQueryable<Application> Applications { get; }
 
@@ -31,14 +31,5 @@ public interface IApplicationDbContext
 
     IQueryable<UserType> UserTypes { get; }
 
-
-    int Insert<T>(T entity) where T : class, IDbEntity;
-    int Update<T>(T entity) where T : class, IDbEntity;
-    int Delete<T>(T entity) where T : class, IDbEntity;
-
-    int ExecuteSqlRaw(string query, params object[] args);
-
-    void BeginTransaction();
-    void CommitTransaction();
-    void RollbackTransaction();
+    IQueryable<SystemSetting> SystemSettings { get; }
 }
