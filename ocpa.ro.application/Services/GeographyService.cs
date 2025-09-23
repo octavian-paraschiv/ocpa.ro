@@ -36,8 +36,7 @@ public class GeographyService : BaseService, IGeographyService
     #endregion
 
     #region IGeographyHelper implementation
-    public string FirstRegionCode => GetRegionCodes().FirstOrDefault()?.ToUpper();
-    public int FirstRegionId => _dbContext.Regions.FirstOrDefault().Id;
+    public Region FirstRegion => _dbContext.Regions.FirstOrDefault();
 
     public IEnumerable<RegionDetail> GetAllRegions()
     {
@@ -182,7 +181,7 @@ public class GeographyService : BaseService, IGeographyService
             if (city.RegionId > 0)
                 dbu.RegionId = city.RegionId;
             else
-                dbu.RegionId = GetRegionByName(city.RegionName)?.Id ?? FirstRegionId;
+                dbu.RegionId = GetRegionByName(city.RegionName)?.Id ?? FirstRegion.Id;
 
             if (newEntry)
             {

@@ -8,7 +8,7 @@ namespace ocpa.ro.domain.Abstractions.Services;
 
 public interface IGeographyService
 {
-    string FirstRegionCode { get; }
+    Region FirstRegion { get; }
     IEnumerable<string> GetRegionCodes();
     IEnumerable<string> GetRegionNames();
     IEnumerable<string> GetSubregionNames(string regionName);

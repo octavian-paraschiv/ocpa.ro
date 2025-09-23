@@ -35,6 +35,19 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
         _systemSettingsService = systemSettingsService ?? throw new ArgumentNullException(nameof(systemSettingsService));
     }
 
+    public IEnumerable<int> GetDbiList()
+    {
+        var activeDbi = _systemSettingsService.ReadSetting("ActiveMeteoDbi", (int)0);
+
+        var dbis = _dbContext.Data
+            .Select(d => d.Dbi)
+            .Distinct()
+            .Where(dbi => dbi != activeDbi)
+            .AsEnumerable();
+
+        return [activeDbi, .. dbis];
+    }
+
     public IEnumerable<MeteoDbInfo> GetDatabases()
     {
         try
@@ -68,9 +81,12 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
     {
         try
         {
-            ValidateDbi(dbi, false);
-
             var activeDbi = _systemSettingsService.ReadSetting("ActiveMeteoDbi", (int)0);
+
+            if (dbi < 0)
+                dbi = activeDbi;
+            else
+                ValidateDbi(dbi, false);
 
             var data = FetchMeteoData(dbi, gc, region, skip, take);
 
@@ -99,7 +115,7 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
             throw new ExtendedException("ERR_MAKE_ACTIVE_FAILED");
     }
 
-    public void SaveMeteoData(IEnumerable<MeteoDbData> data, bool deleteExistingRecords)
+    public void SaveMeteoData(IEnumerable<MeteoDbData> data, bool purgeDbiRecords)
     {
         var first = data?.FirstOrDefault();
         if (first == null)
@@ -113,11 +129,8 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
         if (data.DistinctBy(d => d.RegionCode).Count() > 1)
             throw new ExtendedException("ERR_NOT_SAME_REGION_CODE");
 
-        if (data.DistinctBy(d => d.R).Count() > 1)
-            throw new ExtendedException("ERR_NOT_SAME_GRID_ROW");
-
-        if (data.DistinctBy(d => d.C).Count() > 1)
-            throw new ExtendedException("ERR_NOT_SAME_GRID_COLUMN");
+        if (data.DistinctBy(d => d.Timestamp).Count() > 1)
+            throw new ExtendedException("ERR_NOT_SAME_TIMESTAMP");
 
         var rgn = _geographyService.GetRegionByCode(first.RegionCode); // Validate region code...
 
@@ -129,55 +142,31 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
             first.C > (int)((rgn.MaxLon - rgn.MinLon) / rgn.GridResolution))
             throw new ExtendedException("ERR_INVALID_GRID_COLUMN");
 
-        _dbContext.BeginTransaction();
+        if (purgeDbiRecords)
+            _dbContext.BeginTransaction();
 
         try
         {
-            if (deleteExistingRecords)
+            if (purgeDbiRecords)
             {
-                var query = $"DELETE FROM MeteoData WHERE Dbi={first.Dbi} and RegionCode={first.RegionCode}" +
-                    $" and R={first.R} and C={first.C}";
-
+                var query = $"DELETE FROM MeteoData WHERE Dbi={first.Dbi} and RegionCode='{first.RegionCode}'";
                 _dbContext.ExecuteSqlRaw(query);
             }
 
-            _dbContext.InsertRange(data.Select(d => new MeteoDbData
-            {
-                Dbi = d.Dbi,
-                C = d.C,
-                R = d.R,
-                RegionCode = d.RegionCode,
-                Timestamp = d.Timestamp,
+            _dbContext.InsertRange(data);
 
-                C_00 = (d.C_00 * 100f).Round(),
-                F_SI = (d.F_SI * 100f).Round(),
-                L_00 = (d.L_00 * 100f).Round(),
-                N_00 = (d.N_00 * 100f).Round(),
-                N_DD = (d.N_DD * 100f).Round(),
-                P_00 = (d.P_00 * 100f).Round(),
-                P_01 = (d.P_01 * 100f).Round(),
-                R_00 = (d.R_00 * 100f).Round(),
-                R_DD = (d.R_DD * 100f).Round(),
-                T_01 = (d.T_01 * 100f).Round(),
-                T_NH = (d.T_NH * 100f).Round(),
-                T_NL = (d.T_NL * 100f).Round(),
-                T_SH = (d.T_SH * 100f).Round(),
-                T_SL = (d.T_SL * 100f).Round(),
-                T_TE = (d.T_TE * 100f).Round(),
-                T_TS = (d.T_TS * 100f).Round(),
-                W_00 = (d.W_00 * 100f).Round(),
-                W_01 = (d.W_01 * 100f).Round(),
-                W_10 = (d.W_10 * 100f).Round(),
-                W_11 = (d.W_11 * 100f).Round(),
+            if (purgeDbiRecords)
+                _dbContext.CommitTransaction();
 
-            }));
-
-            _dbContext.CommitTransaction();
+            Console.WriteLine($"Inserted data for dbi={first.Dbi} region={first.RegionCode} Timestamp={first.Timestamp}");
         }
         catch (Exception ex)
         {
-            _dbContext.RollbackTransaction();
+            if (purgeDbiRecords)
+                _dbContext.RollbackTransaction();
+
             LogException(ex);
+            throw;
         }
     }
 
@@ -186,7 +175,7 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
     {
         CalendarRange result = new();
 
-        region ??= _geographyService.FirstRegionCode;
+        region ??= _geographyService.FirstRegion.Name;
 
         var rgn = _geographyService.GetRegionByName(region);
 
@@ -336,8 +325,6 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
     private void ValidateDbi(int dbi, bool forSave)
     {
         var dbis = _dbContext.Data.Select(d => d.Dbi).Distinct().AsEnumerable();
-        if (!dbis.Contains((sbyte)dbi))
-            throw new ExtendedException("ERR_INVALID_DBI");
 
         if (forSave)
         {
@@ -345,6 +332,8 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
             if (dbi == activeDbi)
                 throw new ExtendedException("ERR_CANNOT_SAVE_ACTIVE");
         }
+        else if (!dbis.Contains((sbyte)dbi))
+            throw new ExtendedException("ERR_INVALID_DBI");
     }
 
 }

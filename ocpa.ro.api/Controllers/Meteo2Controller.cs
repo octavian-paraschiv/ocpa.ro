@@ -45,9 +45,10 @@ namespace ocpa.ro.api.Controllers
 
 
 
-        [Authorize(Roles = "ADM")]
+        [Authorize(Roles = "API,ADM")]
         [HttpGet("databases/all")]
         [ProducesResponseType(typeof(MeteoDbInfo[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
         [SwaggerOperation(OperationId = "GetAllDatabases", Description = "Get a list with all databases")]
@@ -65,11 +66,36 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
+        [HttpGet("data")]
+        [AllowAnonymous]
+        [IgnoreWhenNotInDev]
+        [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [SwaggerOperation(OperationId = "GetActiveMeteoData", Description = "Get Active Meteo Data")]
+        public IActionResult GetActiveMeteoData(
+            [FromQuery] string region, [FromQuery] string subregion, [FromQuery] string city,
+            [FromQuery] int skip = 0, [FromQuery] int take = 10)
+        {
+            try
+            {
+                GridCoordinates gridCoordinates = _geographyService.GetGridCoordinates(region, subregion, city);
+                var data = _meteoDataService2.GetMeteoData(-1, gridCoordinates, region, skip, take);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("data/{dbi}")]
         [Authorize(Roles = "ADM")]
         [IgnoreWhenNotInDev]
         [ProducesResponseType(typeof(MeteoData), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [SwaggerOperation(OperationId = "GetMeteoData", Description = "Get Meteo Data")]
         public IActionResult GetMeteoData(
             [FromRoute] int dbi,
@@ -92,6 +118,7 @@ namespace ocpa.ro.api.Controllers
         [Authorize(Roles = "ADM")]
         [HttpPost("database/activate/{dbi}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
         [SwaggerOperation(OperationId = "ActivateDatabaseSnapshot", Description = "Activate Database Snapshot")]
@@ -109,18 +136,20 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        [Authorize(Roles = "ADM")]
+        [Authorize(Roles = "API,ADM")]
         [HttpPost("data")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
         [SwaggerOperation(OperationId = "SaveMeteoData", Description = "Save Meteo Data")]
-        public IActionResult SaveMeteoData([FromBody] IEnumerable<MeteoDbData> data,
-            [FromQuery] bool? deleteExistingRecords)
+        public IActionResult SaveMeteoData(
+            [FromBody] IEnumerable<MeteoDbData> data,
+            [FromQuery] bool? purgeDbiRecords)
         {
             try
             {
-                _meteoDataService2.SaveMeteoData(data, deleteExistingRecords ?? false);
+                _meteoDataService2.SaveMeteoData(data, purgeDbiRecords ?? false);
                 return Ok();
             }
             catch (Exception ex)

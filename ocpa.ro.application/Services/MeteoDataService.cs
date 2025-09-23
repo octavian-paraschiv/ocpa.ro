@@ -241,7 +241,7 @@ namespace ocpa.ro.application.Services
             try
             {
                 var x = database
-                    .GetData(_geographyService.FirstRegionCode)
+                    .GetData(_geographyService.FirstRegion.Code)
                     .OrderBy(d => d.Timestamp)
                     .Distinct();
 
