@@ -10,15 +10,9 @@ using System.Text.Json;
 
 namespace ocpa.ro.application.Services;
 
-public class SystemSettingService : BaseService, ISystemSettingsService
+public class SystemSettingsService : BaseService, ISystemSettingsService
 {
     private readonly IApplicationDbContext _dbContext;
-
-    int ISystemSettingsService.ActiveMeteoDbi
-    {
-        get => ReadSetting<int>(nameof(ISystemSettingsService.ActiveMeteoDbi));
-        set => SaveSetting(nameof(ISystemSettingsService.ActiveMeteoDbi), value);
-    }
 
     AuthConfig ISystemSettingsService.AuthenticationSettings
     {
@@ -54,7 +48,7 @@ public class SystemSettingService : BaseService, ISystemSettingsService
     }
 
 
-    public SystemSettingService(IHostingEnvironmentService hostingEnvironment,
+    public SystemSettingsService(IHostingEnvironmentService hostingEnvironment,
         IApplicationDbContext dbContext,
         ILogger logger)
         : base(hostingEnvironment, logger)

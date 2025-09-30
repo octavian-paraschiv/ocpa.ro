@@ -8,8 +8,6 @@ public interface ISystemSettingsService
 
     //int SaveSetting<T>(string key, T val);
 
-    int ActiveMeteoDbi { get; set; }
-
     AuthConfig AuthenticationSettings { get; set; }
 
     CacheConfig CacheSettings { get; set; }

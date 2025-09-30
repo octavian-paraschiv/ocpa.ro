@@ -8,7 +8,6 @@ using ocpa.ro.api.BackgroundServices;
 using ocpa.ro.api.Services;
 using ocpa.ro.application.Services;
 using ocpa.ro.application.Services.Access;
-using ocpa.ro.application.Services.Meteo;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Gateways;
@@ -17,7 +16,6 @@ using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Configuration;
 using ocpa.ro.infrastructure.Gateways;
 using ocpa.ro.persistence.ApplicationDb;
-using ocpa.ro.persistence.MeteoDb;
 using Serilog;
 using System.Linq;
 
@@ -54,10 +52,6 @@ public static class DependencyInjectionExtensions
     {
         services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
             options.UseMySQL(StringUtility.DecodeStrings(databaseConfig.ConnectionString).First()),
-            contextLifetime: ServiceLifetime.Transient);
-
-        services.AddDbContext<IMeteoDbContext, MeteoDbContext>(options =>
-            options.UseMySQL(StringUtility.DecodeStrings(databaseConfig.MeteoConnectionString).First()),
             contextLifetime: ServiceLifetime.Transient);
 
         return services;
@@ -111,14 +105,11 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IContentService, ContentService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IGeographyService, GeographyService>();
-
         services.AddScoped<IMeteoDataService, MeteoDataService>();
-        services.AddScoped<IMeteoDataService2, MeteoDataService2>();
-
         services.AddScoped<IMeteoScalesService, MeteoScalesService>();
         services.AddScoped<IWeatherTypeService, WeatherTypeService>();
 
-        services.AddScoped<ISystemSettingsService, SystemSettingService>();
+        services.AddScoped<ISystemSettingsService, SystemSettingsService>();
 
         services.AddSingleton<IHostingEnvironmentService, HostingEnvironmentService>();
 
