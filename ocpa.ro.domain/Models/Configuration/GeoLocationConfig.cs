@@ -2,8 +2,6 @@
 {
     public class GeoLocationConfig
     {
-        public static readonly string SectionName = "GeoLocation";
-
-        public string BaseUrl { get; set; } = "";
+        public string BaseUrl { get; set; } = "http://ip-api.com/json/";
     }
 }

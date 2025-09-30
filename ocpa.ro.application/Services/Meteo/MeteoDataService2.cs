@@ -37,7 +37,7 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
 
     public IEnumerable<int> GetDbiList()
     {
-        var activeDbi = _systemSettingsService.ReadSetting("ActiveMeteoDbi", (int)0);
+        var activeDbi = _systemSettingsService.ActiveMeteoDbi;
 
         var dbis = _dbContext.Data
             .Select(d => d.Dbi)
@@ -52,7 +52,7 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
     {
         try
         {
-            var activeDbi = _systemSettingsService.ReadSetting("ActiveMeteoDbi", (int)0);
+            var activeDbi = _systemSettingsService.ActiveMeteoDbi;
 
             var data = _dbContext.Data.AsQueryable()
                 .Select(d => d.Dbi)
@@ -81,7 +81,7 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
     {
         try
         {
-            var activeDbi = _systemSettingsService.ReadSetting("ActiveMeteoDbi", (int)0);
+            var activeDbi = _systemSettingsService.ActiveMeteoDbi;
 
             if (dbi < 0)
                 dbi = activeDbi;
@@ -109,8 +109,8 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
     {
         ValidateDbi(dbi, false);
 
-        _systemSettingsService.SaveSetting("ActiveMeteoDbi", dbi);
-        var activeDbi = _systemSettingsService.ReadSetting("ActiveMeteoDbi", (int)0);
+        _systemSettingsService.ActiveMeteoDbi = dbi;
+        var activeDbi = _systemSettingsService.ActiveMeteoDbi;
         if (dbi != activeDbi)
             throw new ExtendedException("ERR_MAKE_ACTIVE_FAILED");
     }
@@ -328,7 +328,7 @@ public class MeteoDataService2 : BaseService, IMeteoDataService2
 
         if (forSave)
         {
-            var activeDbi = _systemSettingsService.ReadSetting("ActiveMeteoDbi", (int)0);
+            var activeDbi = _systemSettingsService.ActiveMeteoDbi;
             if (dbi == activeDbi)
                 throw new ExtendedException("ERR_CANNOT_SAVE_ACTIVE");
         }

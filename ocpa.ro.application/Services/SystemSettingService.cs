@@ -2,6 +2,7 @@
 using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Extensions;
+using ocpa.ro.domain.Models.Configuration;
 using Serilog;
 using System;
 using System.Linq;
@@ -12,6 +13,46 @@ namespace ocpa.ro.application.Services;
 public class SystemSettingService : BaseService, ISystemSettingsService
 {
     private readonly IApplicationDbContext _dbContext;
+
+    int ISystemSettingsService.ActiveMeteoDbi
+    {
+        get => ReadSetting<int>(nameof(ISystemSettingsService.ActiveMeteoDbi));
+        set => SaveSetting(nameof(ISystemSettingsService.ActiveMeteoDbi), value);
+    }
+
+    AuthConfig ISystemSettingsService.AuthenticationSettings
+    {
+        get => ReadSetting<AuthConfig>(nameof(ISystemSettingsService.AuthenticationSettings), new());
+        set => SaveSetting(nameof(ISystemSettingsService.AuthenticationSettings), value);
+    }
+
+    CacheConfig ISystemSettingsService.CacheSettings
+    {
+        get => ReadSetting<CacheConfig>(nameof(ISystemSettingsService.CacheSettings), new());
+        set => SaveSetting(nameof(ISystemSettingsService.CacheSettings), value);
+    }
+
+    EmailConfig ISystemSettingsService.EmailSettings
+    {
+        get => ReadSetting<EmailConfig>(nameof(ISystemSettingsService.EmailSettings), new());
+        set => SaveSetting(nameof(ISystemSettingsService.EmailSettings), value);
+    }
+
+    GeoLocationConfig ISystemSettingsService.GeoLocationSettings
+    {
+        get => ReadSetting<GeoLocationConfig>(nameof(ISystemSettingsService.GeoLocationSettings), new());
+        set => SaveSetting(nameof(ISystemSettingsService.GeoLocationSettings), value);
+    }
+
+    void ISystemSettingsService.SeedSettings()
+    {
+        typeof(ISystemSettingsService).GetProperties().ToList().ForEach(prop =>
+        {
+            var propVal = prop.GetValue(this);
+            prop.SetValue(this, propVal);
+        });
+    }
+
 
     public SystemSettingService(IHostingEnvironmentService hostingEnvironment,
         IApplicationDbContext dbContext,
@@ -124,4 +165,5 @@ public class SystemSettingService : BaseService, ISystemSettingsService
 
         return defaultValue;
     }
+
 }

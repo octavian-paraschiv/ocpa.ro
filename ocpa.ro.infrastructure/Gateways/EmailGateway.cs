@@ -1,7 +1,7 @@
 ﻿using MailKit.Net.Smtp;
-using Microsoft.Extensions.Options;
 using MimeKit;
 using ocpa.ro.domain.Abstractions.Gateways;
+using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Configuration;
 using Serilog;
@@ -17,9 +17,9 @@ public class EmailGateway : IEmailGateway
     private readonly ILogger _logger;
     private readonly EmailConfig _config;
 
-    public EmailGateway(ILogger logger, IOptions<EmailConfig> config)
+    public EmailGateway(ILogger logger, ISystemSettingsService settingsService)
     {
-        _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
+        _config = settingsService.EmailSettings;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 

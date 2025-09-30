@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Policies;
 using ocpa.ro.domain;
@@ -46,7 +45,7 @@ namespace ocpa.ro.api.Controllers
             IContentRendererService contentRendererService,
             IMultipartRequestService multipartRequestService,
             IDistributedCache cache,
-            IOptions<CacheConfig> config)
+            ISystemSettingsService settingsService)
             : base(logger)
         {
             _accessService = accessService ?? throw new ArgumentNullException(nameof(accessService));
@@ -55,7 +54,7 @@ namespace ocpa.ro.api.Controllers
             _contentRendererService = contentRendererService ?? throw new ArgumentNullException(nameof(contentRendererService));
 
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-            _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
+            _config = settingsService.CacheSettings;
         }
         #endregion
 
