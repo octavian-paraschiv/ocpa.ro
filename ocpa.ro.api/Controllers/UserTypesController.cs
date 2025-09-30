@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
 using ocpa.ro.domain.Abstractions.Access;
-using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Entities.Application;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -14,6 +14,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [ApiExplorerSettings(GroupName = "Users")]
     public class UserTypesController : ApiControllerBase
     {
         private readonly IAccessManagementService _accessManagementService;

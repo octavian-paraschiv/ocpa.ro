@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using ocpa.ro.api.Policies;
 using ocpa.ro.domain.Abstractions.Access;
-using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Authentication;
 using ocpa.ro.domain.Models.Configuration;
@@ -26,6 +26,7 @@ namespace ocpa.ro.api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(Roles = "ADM")]
+    [ApiExplorerSettings(GroupName = "Users")]
     public class UsersController : ApiControllerBase
     {
         private readonly IOneTimePasswordService _oneTimePasswordService;
@@ -40,14 +41,14 @@ namespace ocpa.ro.api.Controllers
             IAccessTokenService accessTokenService,
             IAccessManagementService accessManagementService,
             ILogger logger,
-            IOptions<AuthConfig> config)
+            ISystemSettingsService settingsService)
             : base(logger)
         {
             _oneTimePasswordService = oneTimePasswordService ?? throw new ArgumentNullException(nameof(oneTimePasswordService));
             _accessService = accessService ?? throw new ArgumentNullException(nameof(accessService));
             _accessTokenService = accessTokenService ?? throw new ArgumentNullException(nameof(accessTokenService));
             _accessManagementService = accessManagementService ?? throw new ArgumentNullException(nameof(accessManagementService));
-            _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
+            _config = settingsService.AuthenticationSettings;
         }
 
         [HttpPost("validate-otp")]

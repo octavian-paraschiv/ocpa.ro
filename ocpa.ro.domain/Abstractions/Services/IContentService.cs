@@ -17,4 +17,6 @@ public interface IContentService
     public Task<UpdatedContentUnit> CreateOrUpdateContent(string contentPath, byte[] contentBytes);
 
     public HttpStatusCode DeleteContent(string contentPath);
+
+    public string LatestThorusStudioFile { get; }
 }

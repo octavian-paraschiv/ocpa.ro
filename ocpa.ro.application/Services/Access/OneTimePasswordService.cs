@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.Options;
-using ocpa.ro.domain.Abstractions;
-using ocpa.ro.domain.Abstractions.Access;
+﻿using ocpa.ro.domain.Abstractions.Access;
+using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Services;
-using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Models.Authentication;
 using ocpa.ro.domain.Models.Configuration;
 using Serilog;
@@ -24,13 +23,13 @@ public class OneTimePasswordService : BaseService, IOneTimePasswordService
     public OneTimePasswordService(IHostingEnvironmentService hostingEnvironment,
            ILogger logger,
            IEmailService emailService,
-           IOptions<AuthConfig> config,
+           ISystemSettingsService settingsService,
            IApplicationDbContext dbContext)
            : base(hostingEnvironment, logger)
     {
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
+        _config = settingsService.AuthenticationSettings;
     }
 
     public (string err, User user) ValidateOneTimePassword(AuthenticateRequest req)

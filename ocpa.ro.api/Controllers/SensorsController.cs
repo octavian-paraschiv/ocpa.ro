@@ -12,6 +12,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [ApiExplorerSettings(GroupName = "Experimental")]
     public class SensorsController : ApiControllerBase
     {
         private const int count = 5;

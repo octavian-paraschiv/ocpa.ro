@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using ocpa.ro.domain.Models.Configuration;
+using ocpa.ro.domain.Abstractions.Services;
 using System;
 using System.Net.Http;
 using System.Net.Security;
@@ -15,10 +14,13 @@ namespace ocpa.ro.api.Extensions
         {
             services.AddHttpClient("geolocation", (serviceProvider, client) =>
             {
-                var settings = serviceProvider.GetRequiredService<IOptions<GeoLocationConfig>>().Value;
-                var uriBuilder = new UriBuilder(settings.BaseUrl);
-                client.BaseAddress = uriBuilder.Uri;
-                client.DefaultRequestHeaders.TryAddWithoutValidation("Cache-Control", "no-cache");
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var settings = scope.ServiceProvider.GetRequiredService<ISystemSettingsService>().GeoLocationSettings;
+                    var uriBuilder = new UriBuilder(settings.BaseUrl);
+                    client.BaseAddress = uriBuilder.Uri;
+                    client.DefaultRequestHeaders.TryAddWithoutValidation("Cache-Control", "no-cache");
+                }
 
             }).HandleCertificateErrors();
 

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using ocpa.ro.domain.Abstractions;
 using ocpa.ro.domain.Abstractions.Access;
+using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Services;
-using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Exceptions;
 using ocpa.ro.domain.Models.Authentication;
 using ocpa.ro.domain.Models.Configuration;
@@ -21,7 +20,7 @@ namespace ocpa.ro.application.Services.Access;
 
 
 
-public partial class AccessService : BaseService, IAccessService
+public class AccessService : BaseService, IAccessService
 {
     private readonly IApplicationDbContext _dbContext = null;
     private readonly IGeographyService _geographyService = null;
@@ -34,15 +33,15 @@ public partial class AccessService : BaseService, IAccessService
         ILogger logger,
         IGeographyService geographyHelper,
         IEmailService emailService,
-        IOptions<AuthConfig> config,
+        ISystemSettingsService settingsService,
         IApplicationDbContext dbContext)
         : base(hostingEnvironment, logger)
     {
         _accessManagementService = accessManagementService ?? throw new ArgumentNullException(nameof(accessManagementService));
         _geographyService = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-        _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _config = settingsService.AuthenticationSettings;
     }
 
     public (User user, bool useOTP) Authenticate(AuthenticateRequest req)

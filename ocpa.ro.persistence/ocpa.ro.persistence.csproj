@@ -10,9 +10,15 @@
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="x\**" />
+    <EmbeddedResource Remove="x\**" />
+    <None Remove="x\**" />
+  </ItemGroup>
+
     <ItemGroup>
-        <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.14" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.14">
+        <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.17" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.17">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

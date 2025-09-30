@@ -13,21 +13,17 @@ namespace ocpa.ro.domain.Models.Configuration
            .Concat(Guid.NewGuid().ToByteArray())
            .ToList().AsReadOnly();
 
-        public string Issuer { get; set; }
-        public string Audience { get; set; }
-        public int Validity { get; set; }
+        public string Issuer { get; set; } = "ocpa.ro";
+        public string Audience { get; set; } = "ocpa.ro";
+        public int Validity { get; set; } = 900;
     }
 
     public class AuthConfig
     {
-        public static readonly string SectionName = "Authentication";
-
         public bool Disabled { get; set; } = false;
-
-        public JwtConfig Jwt { get; set; }
-
+        public JwtConfig Jwt { get; set; } = new();
         public bool UseOTP { get; set; } = false;
-        public int OTPDuration { get; set; } = 180;
+        public int OTPDuration { get; set; } = 3;
         public int PasswordHistoryLength { get; set; } = 5;
         public int MaxPasswordAge { get; set; } = 90;
         public int MaxLoginRetries { get; set; } = 5;

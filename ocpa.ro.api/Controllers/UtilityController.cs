@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ocpa.ro.api.Policies;
+using ocpa.ro.domain.Extensions;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Diagnostics;
@@ -11,7 +13,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-
+    [ApiExplorerSettings(GroupName = "Utility")]
     public class UtilityController : ApiControllerBase
     {
         public UtilityController(ILogger logger)
@@ -36,5 +38,19 @@ namespace ocpa.ro.api.Controllers
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(location);
             return Ok(fvi.FileVersion);
         }
+
+        [HttpPost("encode")]
+        [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
+        [SwaggerOperation(OperationId = "Encode")]
+        [IgnoreWhenNotInDev]
+        public IActionResult Encode([FromBody] string[] data)
+            => Ok(StringUtility.EncodeStrings(data ?? []));
+
+        [HttpPost("decode")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [SwaggerOperation(OperationId = "Decode")]
+        [IgnoreWhenNotInDev]
+        public IActionResult Decode([FromBody] string data)
+           => Ok(StringUtility.DecodeStrings(data));
     }
 }

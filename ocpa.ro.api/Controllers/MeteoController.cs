@@ -19,9 +19,11 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [ApiExplorerSettings(GroupName = "Meteo")]
     public class MeteoController : ApiControllerBase
     {
         #region Private members
+        private readonly IContentService _contentService = null;
         private readonly IMeteoDataService _meteoDataService = null;
         private readonly IGeographyService _geographyService = null;
         private readonly IMultipartRequestService _multipartRequestService = null;
@@ -31,12 +33,14 @@ namespace ocpa.ro.api.Controllers
         public MeteoController(IMeteoDataService meteoDataService,
             IGeographyService geographyHelper,
             IMultipartRequestService multipartRequestService,
+            IContentService contentService,
             ILogger logger)
             : base(logger)
         {
             _meteoDataService = meteoDataService ?? throw new ArgumentNullException(nameof(meteoDataService));
             _geographyService = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
             _multipartRequestService = multipartRequestService ?? throw new ArgumentNullException(nameof(multipartRequestService));
+            _contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
         }
         #endregion
 
@@ -51,7 +55,7 @@ namespace ocpa.ro.api.Controllers
         {
             try
             {
-                var fileName = _meteoDataService.LatestStudioFile;
+                var fileName = _contentService.LatestThorusStudioFile;
                 if (fileName?.Length > 0)
                     return Ok($"{Request.Scheme}://{Request.Host}/content/Meteo/current/{fileName}");
             }

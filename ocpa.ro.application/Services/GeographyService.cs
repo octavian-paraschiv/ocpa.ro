@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
-using ocpa.ro.domain.Abstractions;
+using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Gateways;
 using ocpa.ro.domain.Abstractions.Services;
-using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Exceptions;
 using ocpa.ro.domain.Models.Meteo;
 using Serilog;
@@ -36,8 +36,7 @@ public class GeographyService : BaseService, IGeographyService
     #endregion
 
     #region IGeographyHelper implementation
-    public string FirstRegionCode => GetRegionCodes().FirstOrDefault()?.ToUpper();
-    public int FirstRegionId => _dbContext.Regions.FirstOrDefault().Id;
+    public Region FirstRegion => _dbContext.Regions.FirstOrDefault();
 
     public IEnumerable<RegionDetail> GetAllRegions()
     {
@@ -67,7 +66,7 @@ public class GeographyService : BaseService, IGeographyService
 
     public IEnumerable<string> GetSubregionNames(string regionName)
     {
-        var region = GetRegion(regionName);
+        var region = GetRegionByName(regionName);
 
         return [.._dbContext.Cities
             .Where(c => c.RegionId == region.Id)
@@ -78,7 +77,7 @@ public class GeographyService : BaseService, IGeographyService
 
     public IEnumerable<string> GetCityNames(string regionName, string subregionName)
     {
-        var region = GetRegion(regionName);
+        var region = GetRegionByName(regionName);
         ValidateSubregion(regionName, subregionName);
 
         return [.. _dbContext.Cities
@@ -100,7 +99,7 @@ public class GeographyService : BaseService, IGeographyService
 
     public CityDetail GetCity(string regionName, string subregionName, string cityName)
     {
-        var region = GetRegion(regionName);
+        var region = GetRegionByName(regionName);
         ValidateSubregion(regionName, subregionName);
 
         var city = _dbContext.Cities
@@ -113,16 +112,23 @@ public class GeographyService : BaseService, IGeographyService
         return GetCityDetail(city);
     }
 
-    public Region GetRegion(string regionName)
+    public Region GetRegionByName(string regionName)
     {
         regionName ??= "";
         Region region2 = _dbContext.Regions.FirstOrDefault(rgn => rgn.Name.ToUpper() == regionName.ToUpper());
         return region2 ?? throw new ExtendedException($"Could not find any region named '{regionName}'");
     }
 
+    public Region GetRegionByCode(string regionCode)
+    {
+        regionCode ??= "";
+        Region region2 = _dbContext.Regions.FirstOrDefault(rgn => rgn.Code.ToUpper() == regionCode.ToUpper());
+        return region2 ?? throw new ExtendedException($"Could not find any region woth code '{regionCode}'");
+    }
+
     public TCS.GridCoordinates GetGridCoordinates(string regionName, string subregionName, string cityName)
     {
-        Region region2 = GetRegion(regionName);
+        Region region2 = GetRegionByName(regionName);
         City city2 = GetCity(regionName, subregionName, cityName);
 
         if (region2.MinLat >= city2.Lat || city2.Lat >= region2.MaxLat)
@@ -175,7 +181,7 @@ public class GeographyService : BaseService, IGeographyService
             if (city.RegionId > 0)
                 dbu.RegionId = city.RegionId;
             else
-                dbu.RegionId = GetRegion(city.RegionName)?.Id ?? FirstRegionId;
+                dbu.RegionId = GetRegionByName(city.RegionName)?.Id ?? FirstRegion.Id;
 
             if (newEntry)
             {
@@ -188,10 +194,10 @@ public class GeographyService : BaseService, IGeographyService
             }
             else
             {
+                _dbContext.BeginTransaction();
+
                 try
                 {
-                    _dbContext.BeginTransaction();
-
                     if (city.IsDefault && !dbu.IsDefault)
                     {
                         // we want to mark this city as default for the supplied region/subregion

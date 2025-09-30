@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using ocpa.ro.domain.Abstractions.Access;
-using ocpa.ro.domain.Entities;
+using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Authentication;
 using ocpa.ro.domain.Models.Configuration;
@@ -18,12 +18,10 @@ namespace ocpa.ro.api.Services
     {
         private readonly AuthConfig _config;
 
-        public AccessTokenService(IOptions<AuthConfig> config)
+        public AccessTokenService(ISystemSettingsService settingsService)
         {
-            _config = config?.Value ?? throw new ArgumentNullException(nameof(config));
+            _config = settingsService.AuthenticationSettings;
         }
-
-
 
         public AuthenticationResponse GenerateAccessToken(User user)
         {

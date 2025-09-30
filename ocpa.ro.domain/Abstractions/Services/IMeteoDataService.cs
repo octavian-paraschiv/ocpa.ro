@@ -11,5 +11,4 @@ public interface IMeteoDataService
     Task PromotePreviewDatabase(int dbi);
     Task<MeteoData> GetMeteoData(int dbi, GridCoordinates gc, string region, int skip, int take);
     Task<IEnumerable<MeteoDbInfo>> GetDatabases();
-    string LatestStudioFile { get; }
 }

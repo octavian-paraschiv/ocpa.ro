@@ -14,7 +14,7 @@
 	<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.9" />
 	<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.9" />
 	<PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
-	<PackageReference Include="OPMFileUploader" Version="2.1.0" />
+	<PackageReference Include="OPMFileUploader" Version="3.0.4" />
 	  <PackageReference Include="Markdig" Version="0.40.0" />
 	  <PackageReference Include="PlantUml.Net" Version="1.4.80" />
 

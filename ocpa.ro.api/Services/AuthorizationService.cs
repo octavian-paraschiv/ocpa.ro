@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using ocpa.ro.domain.Abstractions.Access;
+using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Models.Configuration;
 using System;
 using System.Linq;
@@ -17,16 +17,16 @@ namespace ocpa.ro.api.Services
         private readonly IWebHostEnvironment _hostingEnvironment = null;
         private readonly AuthConfig _authConfig;
 
-        public AuthorizationService(IAccessService accessService, IWebHostEnvironment hostingEnvironment, IOptions<AuthConfig> authConfigOptions)
+        public AuthorizationService(IAccessService accessService, IWebHostEnvironment hostingEnvironment, ISystemSettingsService settingsService)
         {
             _accessService = accessService;
             _hostingEnvironment = hostingEnvironment;
-            _authConfig = authConfigOptions.Value;
+            _authConfig = settingsService.AuthenticationSettings;
         }
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RolesAuthorizationRequirement requirement)
         {
-            bool allow = (_hostingEnvironment?.IsDevelopment() ?? false) && (_authConfig?.Disabled ?? false);
+            bool allow = (_hostingEnvironment?.IsDevelopment() ?? false) || (_authConfig?.Disabled ?? false);
 
             if (!allow)
             {

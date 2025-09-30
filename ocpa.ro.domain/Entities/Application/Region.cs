@@ -1,10 +1,10 @@
-﻿using ocpa.ro.domain.Abstractions;
+﻿using ocpa.ro.domain.Abstractions.Database;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace ocpa.ro.domain.Entities;
+namespace ocpa.ro.domain.Entities.Application;
 
-public partial class Region : IDbEntity
+public class Region : IDbEntity
 {
     public int Id { get; set; }
 
