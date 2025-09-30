@@ -9,6 +9,10 @@ using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text.Json;
+using System.Threading.Tasks;
 using ThorusCommon.SQLite;
 
 namespace ocpa.ro.api.Controllers
@@ -143,12 +147,26 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
         [SwaggerOperation(OperationId = "SaveMeteoData", Description = "Save Meteo Data")]
-        public IActionResult SaveMeteoData(
-            [FromBody] IEnumerable<MeteoDbData> data,
-            [FromQuery] bool? purgeDbiRecords)
+        public async Task<IActionResult> SaveMeteoData([FromQuery] bool? purgeDbiRecords, [FromQuery] bool? useCompression)
         {
             try
             {
+                string jsonBody;
+
+                if (useCompression ?? false)
+                {
+                    using var brotli = new BrotliStream(Request.Body, CompressionMode.Decompress);
+                    using var sr = new StreamReader(brotli);
+                    jsonBody = await sr.ReadToEndAsync();
+                }
+                else
+                {
+                    using var sr = new StreamReader(Request.Body);
+                    jsonBody = await sr.ReadToEndAsync();
+                }
+
+
+                var data = JsonSerializer.Deserialize<IEnumerable<MeteoDbData>>(jsonBody);
                 _meteoDataService2.SaveMeteoData(data, purgeDbiRecords ?? false);
                 return Ok();
             }
