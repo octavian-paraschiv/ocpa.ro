@@ -12,7 +12,7 @@
         <ng-container matColumnDef="db-upload">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db">
-                <a *ngIf="db.modifyable"
+                <a *ngIf="db.status !== MeteoDbStatus.Online"
                     class="table-link" (click)="upload(db)" title="{{'meteo-db.db-upload' | translate}}">
                     <fa-icon [icon]="faUpload" [transform]="size"></fa-icon>
                 </a>
@@ -23,7 +23,7 @@
         <ng-container matColumnDef="db-view">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db">
-                <a *ngIf="db.dataCount > 0"
+                <a *ngIf="db.status !== MeteoDbStatus.Absent && db.dataCount > 0"
                     class="table-link" (click)="view(db)" title="{{'meteo-db.db-view' | translate}}">
                     <fa-icon [icon]="faEye" [transform]="size"></fa-icon>
                 </a>
@@ -34,9 +34,20 @@
         <ng-container matColumnDef="db-promote">
             <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let db">
-                <a *ngIf="!db.online && db.dataCount > 0"
+                <a *ngIf="db.status === MeteoDbStatus.Offline && db.dataCount > 0"
                     class="table-link" (click)="promote(db)" title="{{'meteo-db.db-promote' | translate}}">
                     <fa-icon [icon]="faPromote" [transform]="size"></fa-icon>
+                </a>
+            </td>
+        </ng-container>
+
+         <!-- Delete Column -->
+        <ng-container matColumnDef="db-delete">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let db">
+                <a *ngIf="db.status === MeteoDbStatus.Offline"
+                    class="table-link" (click)="delete(db)" title="{{'meteo-db.db-delete' | translate}}">
+                    <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
                 </a>
             </td>
         </ng-container>
@@ -50,7 +61,7 @@
          <!-- Status Column -->
          <ng-container matColumnDef="db-status">
             <th mat-header-cell *matHeaderCellDef>{{'meteo-db.status' | translate}}</th>
-            <td mat-cell *matCellDef="let db">{{ (db.online ? 'meteo-db.online' : 'meteo-db.offline') | translate }}</td>
+            <td mat-cell *matCellDef="let db">{{ status(db) }}</td>
         </ng-container>
 
          <!-- Range Column -->

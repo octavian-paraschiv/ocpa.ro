@@ -34,12 +34,12 @@ export class MeteoApiService {
     }
 
     public promote(dbi: number): Observable<any> {
-        const uri = `${environment.apiUrl}/Meteo/database/preview/promote/${dbi}`;
+        const uri = `${environment.apiUrl}/Meteo/database/promote/${dbi}`;
         return this.httpClient.post(uri, {});
     }
 
     public upload(dbi: number, data: ArrayBuffer): Observable<any> {
-        const uri = `${environment.apiUrl}/Meteo/database/preview/${dbi}`;
+        const uri = `${environment.apiUrl}/Meteo/database/upload/${dbi}`;
         const formData = new FormData();
         const fileName = `Preview${dbi}.db3`;
         const compressed = pako.gzip(new Uint8Array(data));
@@ -50,5 +50,10 @@ export class MeteoApiService {
         formData.append("data", blob, fileName);
 
         return this.httpClient.post(uri, formData);
+    }
+
+    public delete(dbi: number): Observable<any> {
+        const uri = `${environment.apiUrl}/Meteo/database/delete/${dbi}`;
+        return this.httpClient.post(uri, {});
     }
 }

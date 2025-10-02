@@ -19,7 +19,7 @@ namespace ocpa.ro.application.Services
     public class MeteoDataService : BaseService, IMeteoDataService
     {
         #region Constants
-        public const int DbCount = 5;
+        public const int DbCount = 10;
         #endregion
 
         #region Private members
@@ -58,6 +58,21 @@ namespace ocpa.ro.application.Services
         #endregion
 
         #region IMeteoDataHelper implementation
+        public async Task DropPreviewDatabase(int dbi)
+        {
+            int idx = DbiToIdx(dbi, false);
+
+            try
+            {
+                await _lock.WaitAsync();
+                if (File.Exists(_dbPaths[idx]))
+                    File.Delete(_dbPaths[idx]);
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
 
         public async Task SavePreviewDatabase(int dbi, byte[] data)
         {
@@ -134,8 +149,9 @@ namespace ocpa.ro.application.Services
                         CalendarRange = range,
                         Dbi = i - 1,
                         Name = name,
-                        Online = online,
-                        Modifyable = modifyable
+                        Status = online ?
+                            MeteoDbStatus.Online : range.Length > 0 ?
+                                MeteoDbStatus.Offline : MeteoDbStatus.Absent,
                     };
 
                     dbInfos.Add(info);

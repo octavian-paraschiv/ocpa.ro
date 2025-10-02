@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
-using ocpa.ro.application.Services;
 using ocpa.ro.domain;
 using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Models.Meteo;
@@ -102,23 +101,8 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        [Authorize(Roles = "API")]
-        [HttpPost("database/preview")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
-        [IgnoreWhenNotInDev]
-        [DisableFormValueModelBinding]
-        [RequestSizeLimit(Constants.MaxMultipartRequestSize)]
-        [Consumes("multipart/form-data")]
-        [SwaggerOperation(OperationId = "UploadPreviewDatabase", Description = "Upload Preview Database - for Thorus")]
-        public Task<IActionResult> UploadPreviewDatabase()
-            // By convention, databases uploaded via Thorus are always uploaded as Preview3.db3,
-            // ie. in the last position
-            => UploadPreviewDatabaseByDbi(MeteoDataService.DbCount - 2);
-
-
-        [Authorize(Roles = "ADM")]
-        [HttpPost("database/preview/{dbi}")]
+        [Authorize(Roles = "API,ADM")]
+        [HttpPost("database/upload/{dbi}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
@@ -142,7 +126,27 @@ namespace ocpa.ro.api.Controllers
         }
 
         [Authorize(Roles = "ADM")]
-        [HttpPost("database/preview/promote/{dbi}")]
+        [HttpPost("database/delete/{dbi}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [IgnoreWhenNotInDev]
+        [SwaggerOperation(OperationId = "DeletePreviewDatabaseByIndex", Description = "Delete a Preview Database (by index)")]
+        public async Task<IActionResult> DeletePreviewDatabaseByIndex([FromRoute] int dbi)
+        {
+            try
+            {
+                await _meteoDataService.DropPreviewDatabase(dbi);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "ADM")]
+        [HttpPost("database/promote/{dbi}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
@@ -161,7 +165,7 @@ namespace ocpa.ro.api.Controllers
             }
         }
 
-        [Authorize(Roles = "ADM")]
+        [Authorize(Roles = "API,ADM")]
         [HttpGet("databases/all")]
         [ProducesResponseType(typeof(MeteoDbInfo[]), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]

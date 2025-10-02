@@ -7,7 +7,7 @@ import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-data
 import { BaseAuthComponent } from 'src/app/components/base/BaseComponent';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
 import { MessageBoxOptions } from 'src/app/models/models-local';
-import { MeteoDbInfo } from 'src/app/models/models-swagger';
+import { MeteoDbInfo, MeteoDbStatus } from 'src/app/models/models-swagger';
 import { MeteoApiService } from 'src/app/services/api/meteo-api.service';
 
 @UntilDestroy()
@@ -22,12 +22,14 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
     faPromote = faUpRightFromSquare;
     faUpload = faUpload;
     faRemove = faSquareMinus;
-    size = "grow-4";
+    size = "grow-6";
+
+    MeteoDbStatus = MeteoDbStatus;
 
     selectedDatabase: MeteoDbInfo = {};
     databases: MeteoDbInfo[] = [];
     displayedColumns: string[] = [ 
-        'db-view', 'db-upload', 'db-promote', 
+        'db-view', 'db-upload',  'db-delete', 'db-promote',
         'db-name', 'db-status', 'db-range', 'db-length', 
         'db-filler' ];
 
@@ -41,6 +43,31 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
         this.meteoApi.getDatabases()
             .pipe(take(1), untilDestroyed(this))
             .subscribe(res => this.databases = res);
+    }
+
+    delete(db: MeteoDbInfo) {
+        MessageBoxComponent.show(this.dialog, {
+            title: this.translate.instant('title.confirm'),
+            message: this.translate.instant('meteo-db.delete', { name: db.name })
+        } as MessageBoxOptions)
+        .pipe(untilDestroyed(this))
+        .subscribe(res => {
+            if (res) {
+                this.overlay.show();
+                this.meteoApi.delete(db.dbi ?? 1)
+                    .pipe(untilDestroyed(this))
+                    .subscribe({
+                        next: () => {
+                            this.ngOnInit();
+                            this.popup.showSuccess('meteo-db.success-delete', { name: db.name });
+                        },
+                        error: err => {
+                            this.ngOnInit();
+                            this.popup.showError('meteo-db.error-delete', {name: db.name, err});
+                        }
+                    });
+            }
+        });
     }
 
     upload(db: MeteoDbInfo) {
@@ -114,6 +141,10 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
             return `${start} -> ${end}`;
 
         return 'n/a';
+    }
+
+    status(db: MeteoDbInfo): string {
+        return this.translate.instant(`meteo-db.${db.status}`.toLocaleLowerCase());
     }
 
     private fileOpen(callback: (ArrayBuffer) => void) {

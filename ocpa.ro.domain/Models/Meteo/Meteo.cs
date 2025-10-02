@@ -58,14 +58,18 @@ public class MeteoData : MeteoDbInfo
     public Dictionary<string, MeteoDailyData> Data { get; set; }
 }
 
+public enum MeteoDbStatus
+{
+    Absent,
+    Offline,
+    Online
+}
+
 public class MeteoDbInfo
 {
     public string Name { get; set; }
     public int Dbi { get; set; }
     public CalendarRange CalendarRange { get; set; }
     public int DataCount => CalendarRange?.Length ?? 0;
-
-    public bool Online { get; set; }
-
-    public bool Modifyable { get; set; }
+    public MeteoDbStatus Status { get; set; }
 }

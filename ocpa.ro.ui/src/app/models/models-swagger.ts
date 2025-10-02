@@ -190,13 +190,17 @@ export interface MeteoData {
     data?: { [key: string]: MeteoDailyData; } | undefined;
 }
 
+export enum MeteoDbStatus {
+    Absent = "Absent",
+    Offline = "Offline",
+    Online = "Online"
+}
 export interface MeteoDbInfo {
     name?: string | undefined;
     dbi?: number;
     calendarRange?: CalendarRange;
     readonly dataCount?: number;
-    readonly online?: boolean;
-    readonly modifyable?: boolean;
+    readonly status?: MeteoDbStatus;
 }
 
 export interface RegionDetail {

@@ -5,6 +5,7 @@
     height: 2.5rem !important;
 }
 .mat-column-db-view {
+    @extend .mat-column-crud;
     width: 50px;
     max-width: 50px;
     color: navy;
