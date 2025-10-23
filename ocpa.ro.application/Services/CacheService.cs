@@ -18,14 +18,14 @@ public class CacheService : ICacheService
         _cacheSettings = systemSettings.CacheSettings;
     }
 
-    async Task<T> ICacheService.ReadCachedData<T>(string key, Func<Task<T>> fallback) where T : class
+    async Task<T> ICacheService.ReadCachedData<T>(string key, Func<Task<T>> fallback, DistributedCacheEntryOptions options) where T : class
     {
         var t = await (this as ICacheService).Read<T>(key);
 
         if (t == default)
             t = await fallback?.Invoke();
 
-        await (this as ICacheService).Save(key, t);
+        await (this as ICacheService).Save(key, t, options);
 
         return t;
     }

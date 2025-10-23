@@ -7,7 +7,7 @@
         <form class="login-form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">            
             <mat-form-field appearance="outline" class="login-form-control">
                 <mat-label>{{'auth.username' | translate}}</mat-label>
-                <input matInput formControlName="username">
+                <input matInput formControlName="username" autofocus>
                 <mat-error *ngIf="f?.username?.errors?.required">{{'auth.username-required' | translate}}</mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline" class="login-form-control">

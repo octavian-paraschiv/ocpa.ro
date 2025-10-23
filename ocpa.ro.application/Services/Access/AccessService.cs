@@ -24,7 +24,6 @@ public class AccessService : BaseService, IAccessService
 {
     private readonly IApplicationDbContext _dbContext = null;
     private readonly IGeographyService _geographyService = null;
-    private readonly IEmailService _emailService;
     private readonly IAccessManagementService _accessManagementService;
     private readonly AuthConfig _config;
 
@@ -32,14 +31,12 @@ public class AccessService : BaseService, IAccessService
         IAccessManagementService accessManagementService,
         ILogger logger,
         IGeographyService geographyHelper,
-        IEmailService emailService,
         ISystemSettingsService settingsService,
         IApplicationDbContext dbContext)
         : base(hostingEnvironment, logger)
     {
         _accessManagementService = accessManagementService ?? throw new ArgumentNullException(nameof(accessManagementService));
         _geographyService = geographyHelper ?? throw new ArgumentNullException(nameof(geographyHelper));
-        _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _config = settingsService.AuthenticationSettings;
     }
@@ -381,7 +378,10 @@ public class AccessService : BaseService, IAccessService
             if (publicMenus?.Any(menu => menu.Url?.Length > 1 && contentPath.StartsWith(BuildWikiUrl(menu.Url), StringComparison.OrdinalIgnoreCase)) ?? false)
                 return;
         }
-        catch { }
+        catch (Exception ex)
+        {
+            LogException(ex);
+        }
 
         throw new UnauthorizedAccessException();
     }

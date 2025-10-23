@@ -6,7 +6,8 @@ namespace ocpa.ro.domain.Abstractions.Services;
 
 public interface ICacheService
 {
-    Task<T> ReadCachedData<T>(string key, Func<Task<T>> fallback = null) where T : class;
+    Task<T> ReadCachedData<T>(string key, Func<Task<T>> fallback = null, DistributedCacheEntryOptions options = null) where T : class;
+
     Task<T> Read<T>(string key) where T : class;
 
     Task Save<T>(string key, T data) where T : class;

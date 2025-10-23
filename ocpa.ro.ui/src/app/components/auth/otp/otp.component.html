@@ -7,7 +7,7 @@
         <form class="login-form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">            
             <mat-form-field appearance="outline" class="login-form-control">
                 <mat-label>{{'auth.otp-challenge' | translate}}</mat-label>
-                <input matInput formControlName="otp">
+                <input matInput formControlName="otp" inputMaskFormat maxlength="9" placeholder="AAAA-AAAA" autofocus>
                 <mat-error *ngIf="f?.otp?.errors?.required">{{'auth.otp-required' | translate}}</mat-error>
             </mat-form-field>
             <button mat-raised-button 

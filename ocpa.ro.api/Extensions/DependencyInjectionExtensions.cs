@@ -108,7 +108,7 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IMeteoDataService, MeteoDataService>();
         services.AddScoped<IMeteoScalesService, MeteoScalesService>();
         services.AddScoped<IWeatherTypeService, WeatherTypeService>();
-
+        services.AddScoped<ICacheService, CacheService>();
         services.AddScoped<ISystemSettingsService, SystemSettingsService>();
 
         services.AddSingleton<IHostingEnvironmentService, HostingEnvironmentService>();

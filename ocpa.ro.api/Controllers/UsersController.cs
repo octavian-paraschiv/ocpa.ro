@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using ocpa.ro.api.Policies;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Services;
@@ -29,10 +30,13 @@ namespace ocpa.ro.api.Controllers
     [ApiExplorerSettings(GroupName = "Users")]
     public class UsersController : ApiControllerBase
     {
+        class LoginRetryInfo { public int LoginAttemptsRemaining { get; set; } }
+
         private readonly IOneTimePasswordService _oneTimePasswordService;
         private readonly IAccessService _accessService;
         private readonly IAccessManagementService _accessManagementService;
         private readonly IAccessTokenService _accessTokenService;
+        private readonly ICacheService _cacheService;
         private readonly AuthConfig _config;
 
         public UsersController(IWebHostEnvironment hostingEnvironment,
@@ -41,13 +45,15 @@ namespace ocpa.ro.api.Controllers
             IAccessTokenService accessTokenService,
             IAccessManagementService accessManagementService,
             ILogger logger,
-            ISystemSettingsService settingsService)
+            ISystemSettingsService settingsService,
+            ICacheService cacheService)
             : base(logger)
         {
             _oneTimePasswordService = oneTimePasswordService ?? throw new ArgumentNullException(nameof(oneTimePasswordService));
             _accessService = accessService ?? throw new ArgumentNullException(nameof(accessService));
             _accessTokenService = accessTokenService ?? throw new ArgumentNullException(nameof(accessTokenService));
             _accessManagementService = accessManagementService ?? throw new ArgumentNullException(nameof(accessManagementService));
+            _cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
             _config = settingsService.AuthenticationSettings;
         }
 
@@ -128,7 +134,23 @@ namespace ocpa.ro.api.Controllers
         {
             var (user, useOTP) = _accessService.Authenticate(model);
             if (user == null)
-                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
+            {
+                var key = $"retryInfo_{model.LoginId}";
+                var opt = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1) };
+
+                var retryInfo = await _cacheService.ReadCachedData(key,
+                    () => Task.FromResult(new LoginRetryInfo { LoginAttemptsRemaining = _config.MaxLoginRetries }),
+                    opt);
+
+                retryInfo.LoginAttemptsRemaining--;
+
+                await _cacheService.Save(key, retryInfo, opt);
+
+                if (retryInfo.LoginAttemptsRemaining > 0)
+                    return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS", retryInfo.LoginAttemptsRemaining));
+
+                return Unauthorized(new FailedAuthenticationResponse("ERR_ACCOUNT_DISABLED"));
+            }
 
             if (!user.Enabled)
                 return Unauthorized(new FailedAuthenticationResponse("ERR_ACCOUNT_DISABLED"));

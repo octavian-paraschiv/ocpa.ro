@@ -48,12 +48,13 @@ export class LoginComponent extends BaseFormComponent implements OnInit {
         if (err === 'auth.sendOTP') {
             // redirect to otp page
             setTimeout(() => this.router.navigate(['/otp'], { queryParams: { url: this.redirectUrl } }), 300);
-
         } else {
             const far = err as FailedAuthenticationResponse;
             this.error = far ?
-                this.translate.instant(far.errorMessage, { username: this.f.username.value, retries: far.loginAttemptsRemaining }) :
-                this.translate.instant(err, { username: this.f.username.value });
+                (far.loginAttemptsRemaining > 0) ? 
+                    this.translate.instant('ERR_BAD_CREDENTIALS', { retries: far.loginAttemptsRemaining }) :
+                    this.translate.instant('ERR_ACCOUNT_DISABLED') :
+                this.translate.instant('ERR_NO_TOKEN');
         }
 
         this.loading = false;
