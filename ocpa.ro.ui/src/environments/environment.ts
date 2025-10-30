@@ -6,10 +6,10 @@ import { Ext } from 'src/environments/environment.ext';
 // The list of file replacements can be found in `angular.json`.
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:39207',
+  //apiUrl: 'http://localhost:39207',
   translationUrl: './assets/translations/',
 
-  //apiUrl: 'https://ocpa.ro/api',
+  apiUrl: 'https://ocpa.ro/api',
   //translationUrl: 'https://ocpa.ro/api/content/render/translations/',
 
   ext: new Ext(),

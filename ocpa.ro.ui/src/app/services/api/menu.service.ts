@@ -51,8 +51,7 @@ export class MenuService {
                 if (fingerprint === menus?.deviceId) {
                     publicMenus = publicMenus.concat({
                         url: '/login',
-                        name: 'Login',
-                        code: 'LIN',
+                        name: 'login',
                         menuIcon: 'faRightToBracket',
                         displayMode: EMenuDisplayMode.AlwaysShow
                     } as Menu);
@@ -62,8 +61,7 @@ export class MenuService {
                 this._menus.appMenus = (menus?.appMenus ?? [])
                 .concat({
                     url: '/logout',
-                    name: 'Logout',
-                    code: 'LOUT',
+                    name: 'logout',
                     menuIcon: 'faRightFromBracket',
                     displayMode: EMenuDisplayMode.AlwaysShow
                 } as Menu)
@@ -102,6 +100,16 @@ export class MenuService {
                 return Helper.isMobile();
             case EMenuDisplayMode.AlwaysHide:
             default:
+                return false;
+        }
+    }
+
+    public static isAuthMenu(m: Menu): boolean {
+        switch(m?.url?.toLowerCase()) {
+            case '/login':
+            case '/logout':
+                return true;
+            default: 
                 return false;
         }
     }

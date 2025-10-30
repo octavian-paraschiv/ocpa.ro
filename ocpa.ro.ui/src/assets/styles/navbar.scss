@@ -10,12 +10,15 @@
 .nav-item {
     display: table-cell;
     width: auto;
-    text-align: center;
+    text-align: left;
     margin-left: 0.5rem;
 }
-.navbar-brand {
-    border-bottom: unset;
-    color: $nav-forecolor;
+
+.nav-auth-item {
+    display: table-cell;
+    width: auto;
+    margin-right: 1rem;
+    text-align: right;
 }
 
 .nav-link {
@@ -24,7 +27,8 @@
     display: contents;
     cursor: pointer;
 }
-.nav-item:hover {
+
+.nav-item:hover, .nav-auth-item:hover {
     color: $nav-forecolor;
     background-color: lighten($nav-alt-backcolor, 0.5);
     border-bottom: 3px solid $nav-underline-hover;
@@ -38,8 +42,15 @@
 .nav-link-div {
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 2rem 1fr;
+    grid-template-columns: auto 1fr;
     grid-template-areas: "img txt";
+    padding: 6px;
+}
+.nav-link-div-auth {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "txt img";
     padding: 6px;
 }
 
@@ -49,35 +60,62 @@
     cursor: pointer;
     align-content: center;
 }
-
+.nav-link-auth {
+    grid-area: img;
+    margin: 0;
+    cursor: pointer;
+    align-content: center;
+}
 .nav-link-txt {
     grid-area: txt;
     margin: 0;
     align-content: center;
     cursor: pointer;
+    margin: 0;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    word-wrap: normal;
 }
 
+#navbar {
+    margin: 0;
+    margin-bottom: 0;
+    width: 100%;
+    padding: 0;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    font-size: 0.72rem;
+}
 #navbarContainer {
     display: grid;
     grid-template-rows: auto;
-    grid-template-columns: auto auto 1fr;
-    grid-template-areas: "b . m";
+    grid-template-columns: auto auto 1fr auto;
+    grid-template-areas: "nb nm . nam";
+    width: 100%;
 }
 
-#navbarMenu {
-    grid-area: m;
-    align-self: center;
+.navbarMenu {
+    grid-area: nm;
+    margin: 0;
+    padding: 0;
 }
-
-.navbar-brand {
+.navbarAuthMenu {
+    grid-area: nam;
+    margin: 0;
+    padding: 0;
+    margin-right: 0.5rem;
+}
+.navbarBrand {
+    border-bottom: unset;
+    color: $nav-forecolor;
     display: grid;
-    grid-area: b;
+    grid-area: nb;
     grid-template-columns: 2em 1fr;
     grid-template-rows: 1fr;
     grid-template-areas: "i t";
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    margin-right: 1.5rem;
+    margin: 0;
+    margin-right: 1rem;
+    padding: 0;
 }
 
 .navbar-title {
@@ -95,7 +133,7 @@
 .navbar-image {
     grid-area: i;
     align-content: center;
-    margin-left: 0.5em;
+    margin-left: 0.5rem;
 }
 
 .navbar-alt-image-color {
@@ -104,7 +142,7 @@
 
 /* MOBILE
 ----------------------------------------------------------*/
-:root[mobile="true"] {
+/*:root[mobile="true"] {
     .navbar-nav {
         padding: 0;
         margin: 0;
@@ -112,4 +150,4 @@
         display: table;
         table-layout: fixed;
     }
-}
+}*/

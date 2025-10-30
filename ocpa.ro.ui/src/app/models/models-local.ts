@@ -54,6 +54,7 @@ export interface MessageBoxOptions {
     noTimeout?: number;
     yesTimeout?: number;
     isSessionTimeoutMessage?: boolean;
+    panelClass?: string;
 }
 
 export interface UserSessionInformation {

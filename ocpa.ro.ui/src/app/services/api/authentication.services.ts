@@ -101,7 +101,7 @@ export class AuthenticationService {
 
         if (rsp?.type === this.apiUserType?.id)
             return 'login-failed-3';
-        
+
         const tokenExpiration = new Date();
         tokenExpiration.setSeconds(tokenExpiration.getSeconds() + rsp.validity);
 

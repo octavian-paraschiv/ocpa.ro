@@ -150,7 +150,6 @@ export interface Menu {
     menuIcon?: string | undefined;
     builtin?: boolean;
 }
-
 export interface Menus {
     publicMenus?: VMenu[] | undefined;
     appMenus?: AppMenu[] | undefined;

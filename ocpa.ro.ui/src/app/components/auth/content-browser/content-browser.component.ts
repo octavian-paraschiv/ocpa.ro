@@ -258,7 +258,7 @@ export class ContentBrowserComponent extends BaseComponent {
     if (!this.isActionAllowed('delete'))
       return;
 
-    MessageBoxComponent.show(this.dialog, {
+    MessageBoxComponent.show(this.dialogBS, {
       title: this.translate.instant('title.confirm'),
       message: this.translate.instant('content-browser.delete-node', { name: this.currentNode?.name })
     } as MessageBoxOptions)

@@ -5,7 +5,6 @@ import { AppsMenusComponent } from 'src/app/components/auth/apps-menus/apps-menu
 import { ContentBrowserComponent } from 'src/app/components/auth/content-browser/content-browser.component';
 import { GeographyComponent } from 'src/app/components/auth/geography/geography.component';
 import { LoginComponent } from 'src/app/components/auth/login/login.component';
-import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
 import { OtpComponent } from 'src/app/components/auth/otp/otp.component';
 import { UsersComponent } from 'src/app/components/auth/users/users.component';
@@ -68,7 +67,6 @@ export const routes = [
     { path: 'protone', component: ProTONEComponent, title: titleResolver } as Route,    
     { path: 'login', component: LoginComponent, title: titleResolver } as Route,    
     { path: 'otp', component: OtpComponent, canActivate: [otpGuard], title: titleResolver } as Route,    
-    { path: 'logout', component: LogoutComponent, title: titleResolver } as Route,    
     { path: 'unavailable-page', component: UnavailablePageComponent, title: titleResolver } as Route,
   
     { path: 'admin/users', component: UsersComponent, canActivate: [authGuard], title: titleResolver } as Route,

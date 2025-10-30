@@ -1,53 +1,64 @@
-<mat-card class="mat-menu-card">
-    <mat-card-header style="padding: 0; padding-left: 0.1rem; padding-top: 0.1rem; padding-bottom: 0.1rem;">
-        <mat-card-subtitle [innerHtml]="title | translate: {name: menu?.name}"></mat-card-subtitle>
-    </mat-card-header>
-    <mat-divider style="margin: 0;"></mat-divider>
-    <mat-card-content class="mat-menu-card-content" style="padding: 0;">
-        <form mat-dialog-content class="menu-dialog-form" [formGroup]="menuForm" (ngSubmit)="onOk()" style="padding: 1rem;">
-            <div style="display: grid;">
-                <mat-form-field appearance="outline" class="menu-form-control">
-                    <mat-label>{{'menu-dialog.name' | translate}}</mat-label>
-                    <input formControlName="name" matInput>
-                    <mat-error *ngIf="f?.name?.errors">{{'menu-dialog.name-required' | translate}}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="menu-form-control">
-                    <mat-label>{{'menu-dialog.url' | translate}}</mat-label>
-                    <input formControlName="url" matInput>
-                    <mat-error *ngIf="f?.url?.errors">{{'menu-dialog.url-required' | translate}}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="menu-form-control extra-space-above" >
-                    <mat-label>{{'menu-dialog.display-mode' | translate}}</mat-label>
-                    <mat-select formControlName="displayMode">
-                        <mat-option *ngFor="let dm of displayModes;" [value]="dm">
-                          {{dm}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="menu-form-control" >
-                    <mat-label>{{'menu-dialog.menu-icon' | translate}}</mat-label>
-                    <mat-select [disableOptionCentering]="true" formControlName="menuIcon" #menuIcon [(value)]="selIcon">
-                        <mat-select-trigger>
-                            <fa-icon [icon]="allIcons[selIcon]" [transform]="size"></fa-icon>
-                            <label>&nbsp;&nbsp;[{{selIcon}}]</label>
-                        </mat-select-trigger>
-                        <mat-select-filter *ngIf="menuIcon.focused" [array]="menuIcons" (filteredReturn)="filteredIcons = $event">
-                        </mat-select-filter>
-                        <mat-option *ngFor="let mi of filteredIcons;" [value]="mi" >
-                            <fa-icon [icon]="allIcons[mi]" [transform]="size"></fa-icon>
-                            <label>&nbsp;&nbsp;[{{mi}}]</label>
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <div mat-dialog-actions class="menu-form-control">
-                    <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>
-                        {{'OK' | translate}}
-                    </button>
-                    <button style="margin: 0; padding: 0; " mat-raised-button (click)="onCancel()">
-                        {{'Cancel' | translate}}
-                    </button>
-                </div>
-            </div>
-        </form>
-    </mat-card-content>
-</mat-card>
+<div class="card mat-menu-card">
+  <div class="card-header py-1 px-2">
+    <label class="card-subtitle mb-0" [innerHtml]="title | translate: {name: menu?.name}"></label>
+  </div>
+  <hr class="my-0" />
+  <div class="card-body mat-menu-card-content p-0">
+    <form [formGroup]="menuForm" (ngSubmit)="onOk()" class="menu-dialog-form p-3">
+      <div class="d-grid gap-2">
+        <div class="form-group menu-form-control">
+          <label>{{'menu-dialog.name' | translate}}</label>
+          <input type="text" class="form-control" formControlName="name" />
+          <div *ngIf="f?.name?.errors" class="text-danger">
+            {{'menu-dialog.name-required' | translate}}
+          </div>
+        </div>
+
+        <div class="form-group menu-form-control">
+          <label>{{'menu-dialog.url' | translate}}</label>
+          <input type="text" class="form-control" formControlName="url" />
+          <div *ngIf="f?.url?.errors" class="text-danger">
+            {{'menu-dialog.url-required' | translate}}
+          </div>
+        </div>
+
+        <div class="form-group menu-form-control">
+          <label>{{'menu-dialog.display-mode' | translate}}</label>
+          <select class="form-select" formControlName="displayMode">
+            <option *ngFor="let dm of displayModes" [value]="dm">{{dm}}</option>
+          </select>
+        </div>
+
+        <div class="form-group menu-form-control">
+          <label>{{'menu-dialog.menu-icon' | translate}}</label>
+          <ng-select [items]="filteredIcons" bindLabel="label" bindValue="value" [(ngModel)]="selIcon"
+            formControlName="menuIcon" [searchable]="true" [clearable]="false" (focus)="onDropDownFocused(true)"
+            (blur)="onDropDownFocused(false)">
+            <!-- Template for dropdown options -->
+            <ng-template ng-option-tmp let-item="item">
+              <fa-icon [icon]="allIcons[item]" [transform]="size"></fa-icon>
+              &nbsp;&nbsp;[{{item}}]
+            </ng-template>
+
+            <!-- Template for selected item -->
+            <ng-template ng-label-tmp let-item="item">
+              <fa-icon [icon]="allIcons[item]" [transform]="size" [attr.dd-focused]="dropDownFocused"></fa-icon>
+              &nbsp;&nbsp;[{{item}}]
+            </ng-template>
+
+          </ng-select>
+        </div>
+
+
+        <div class="menu-form-control mt-3">
+          <button type="submit" class="btn btn-primary me-2" (click)="onOk()">
+            {{'OK' | translate}}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            {{'Cancel' | translate}}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

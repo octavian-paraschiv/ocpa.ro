@@ -103,7 +103,7 @@
         "login-failed-2": "User <b>{{username}}</b> cannot log in [2]",
         "login-failed-3": "User <b>{{username}}</b> is not associated with any application",
         "session-expired": "Your session has expired.<br>Press Yes if you want to stay logged in, and No to log out.",
-        "logout-desc": "Press Logout if this is your intention. If you want to stay logged in, simply select other menu."
+        "logout-desc": "Are you sure you want to log out?<br>Press No if you want to stay logged in, and Yes to log out."
     },
     
     "meteo": {

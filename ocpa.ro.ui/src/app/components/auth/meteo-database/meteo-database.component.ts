@@ -46,7 +46,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
     }
 
     delete(db: MeteoDbInfo) {
-        MessageBoxComponent.show(this.dialog, {
+        MessageBoxComponent.show(this.dialogBS, {
             title: this.translate.instant('title.confirm'),
             message: this.translate.instant('meteo-db.delete', { name: db.name })
         } as MessageBoxOptions)
@@ -71,7 +71,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
     }
 
     upload(db: MeteoDbInfo) {
-        MessageBoxComponent.show(this.dialog, {
+        MessageBoxComponent.show(this.dialogBS, {
             title: this.translate.instant('title.confirm'),
             message: this.translate.instant('meteo-db.upload', { name: db.name })
         } as MessageBoxOptions)
@@ -105,7 +105,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
 }
 
     promote(db: MeteoDbInfo) {
-        MessageBoxComponent.show(this.dialog, {
+        MessageBoxComponent.show(this.dialogBS, {
             title: this.translate.instant('title.confirm'),
             message: this.translate.instant('meteo-db.promote', { name: db.name })
         } as MessageBoxOptions)

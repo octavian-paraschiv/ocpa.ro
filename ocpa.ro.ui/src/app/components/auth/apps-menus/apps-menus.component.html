@@ -1,174 +1,149 @@
-<div class="apps-menus-layout">
-    <div class="menus-list">
-        <label mat-small style="margin-bottom: 0.2rem;">{{'apps-menus.menu-list' | translate}}</label>
-        <table mat-table [dataSource]="menus" >
-            <!-- Add Column -->
-            <ng-container matColumnDef="menu-add">
-                <th mat-header-cell *matHeaderCellDef>
-                    <a class="table-link" (click)="saveMenu()" title="{{'apps-menus.add-menu' | translate}}">
-                        <fa-icon [icon]="faAdd" [transform]="size"></fa-icon>
-                    </a>
-                </th>
-                <td mat-cell *matCellDef="let menu"></td>
-            </ng-container>
-            <!-- Edit Column -->
-            <ng-container matColumnDef="menu-edit">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let menu">
-                    <a class="table-link" (click)="saveMenu(menu)" *ngIf="!menu.builtin"
-                        title="{{'apps-menus.edit-menu' | translate: { desc: menu.name } }}">
-                        <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
-                    </a>
-                </td>
-            </ng-container>
-            <!-- Delete Column -->
-            <ng-container matColumnDef="menu-delete">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let menu">
-                    <a class="table-link" (click)="deleteMenu(menu)" *ngIf="!menu.builtin"
-                        title="{{'apps-menus.del-menu' | translate: { desc: menu.name } }}">
-                        <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
-                    </a>
-                </td>
-            </ng-container>
-            <!-- Name Column -->
-            <ng-container matColumnDef="menu-name">
-                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.menu-name' | translate}}</th>
-                <td mat-cell *matCellDef="let menu">{{menu.name}}</td>
-            </ng-container>
-            <!-- URL Column -->
-            <ng-container matColumnDef="menu-url">
-                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.menu-url' | translate}}</th>
-                <td mat-cell *matCellDef="let menu">{{menu.url}}</td>
-            </ng-container>
-            <!-- DisplayMode Column -->
-            <ng-container matColumnDef="menu-display-mode">
-                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.menu-display-mode' | translate}}</th>
-                <td mat-cell *matCellDef="let menu">{{displayMode(menu.displayModeId)}}</td>
-            </ng-container>
-            <!-- Icon Column -->
-            <ng-container matColumnDef="menu-icon">
-                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.menu-icon' | translate}}</th>
-                <td mat-cell *matCellDef="let menu">
-                    <fa-icon [icon]="icons[menu.menuIcon]" [transform]="size" title="{{menu.menuIcon}}"></fa-icon>
-                </td>
-            </ng-container>
-            <!-- Builtin Column -->
-            <ng-container matColumnDef="menu-builtin">
-                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.menu-builtin' | translate}}</th>
-                <td mat-cell *matCellDef="let menu">
-                    <fa-icon [icon]="faCheck" [transform]="size" *ngIf="menu.builtin">
-                    </fa-icon>
-                </td>
-            </ng-container>           
-            <!-- Filler Column -->
-            <ng-container matColumnDef="menu-filler">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let user"></td>
-            </ng-container>
-            <tr mat-header-row class="menu-header-row" *matHeaderRowDef="menusColumns"></tr>
-            <tr mat-row class="menu-row" *matRowDef="let row; columns: menusColumns;"></tr>
-        </table>    
-    </div>
+<div class="apps-menus-layout app-colors">
 
-    <div class="apps-menus-list">
-        <label mat-small style="margin-bottom: 0.2rem;">{{'apps-menus.app-menu-list' | translate}}</label>
-        <table mat-table [dataSource]="appMenuData">
-            <ng-container matColumnDef="app-menu-name">
-              <th mat-header-cell *matHeaderCellDef class="two-fields-zone">
-                <div class="two-fields-zone-left" [innerHtml]="'apps-menus.apps-menus-header-menus' | translate"></div>
-                <div class="two-fields-zone-right" [innerHtml]="'apps-menus.apps-menus-header-apps' | translate"></div>
-              </th>
-              <td mat-cell *matCellDef="let appMenu">{{appMenu.menuName}}</td> 
-            </ng-container>
-            <ng-container *ngFor="let appName of appNames" matColumnDef="app-menu-{{appName}}">
-              <th mat-header-cell *matHeaderCellDef>{{appName}}</th>
-              <td mat-cell *matCellDef="let appMenu">   
-                <mat-checkbox
-                    [color]="'primary'"
-                    [checked]="state(appMenu, appName)"
-                    (change)="onAppMenuChange(appMenu, appName, $event.checked)">
-                </mat-checkbox>
-              </td>     
-            </ng-container>
-            <tr mat-header-row class="app-menu-header-row" *matHeaderRowDef="appsMenusColumns"></tr>
-            <tr mat-row class="app-menu-row" *matRowDef="let row; columns: appsMenusColumns;"></tr>
-          </table>
-    </div>
-
+    <!-- Applications list -->
     <div class="apps-list">
-        <label mat-small style="margin-bottom: 0.2rem;">{{'apps-menus.app-list' | translate}}</label>
-        <table mat-table [dataSource]="apps">
-            <!-- Add Column -->
-            <ng-container matColumnDef="app-add">
-                <th mat-header-cell *matHeaderCellDef>
-                    <a class="table-link" (click)="saveApp()" title="{{'apps-menus.add-app' | translate}}">
-                        <fa-icon [icon]="faAdd" [transform]="size"></fa-icon>
-                    </a>
+        <label class="card-subtitle">{{ 'apps-menus.app-list' | translate }}</label>
+        <table class="table table-bordered table-hover table-sm app-colors">
+        <thead>
+            <tr class="mat-mdc-header-cell">
+                <th *ngFor="let col of appsColumns, index as idx" class="{{ 'mat-column-' + col }}">
+                    <ng-container *ngIf="idx === 0">
+                        <button class="btn-crud mat-column-menu-add" (click)="saveApp()">
+                            <fa-icon [icon]="faAdd" [transform]="size" style="background-color: white; font-weight: bold;"></fa-icon>
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="idx > 2">
+                        {{ 'apps-menus.' + col | translate }}
+                    </ng-container>
                 </th>
-                <td mat-cell *matCellDef="let app"></td>
-            </ng-container>
-            <!-- Edit Column -->
-            <ng-container matColumnDef="app-edit">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let app">
-                    <a class="table-link" (click)="saveApp(app)" *ngIf="!app.builtin"
-                        title="{{'apps-menus.edit-app' | translate: { desc: app.name } }}">
-                        <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
-                    </a>
-                </td>
-            </ng-container>
-            <!-- Delete Column -->
-            <ng-container matColumnDef="app-delete">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let app">
-                    <a class="table-link" (click)="deleteApp(app)" *ngIf="!app.builtin"
-                        title="{{'apps-menus.del-app' | translate: { desc: app.name } }}">
-                        <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
-                    </a>
-                </td>
-            </ng-container>
-            <!-- Name Column -->
-            <ng-container matColumnDef="app-name">
-                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-name' | translate}}</th>
-                <td mat-cell *matCellDef="let app">{{app.name}}</td>
-            </ng-container>
-            <!-- Code Column -->
-            <ng-container matColumnDef="app-code">
-                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-code' | translate}}</th>
-                <td mat-cell *matCellDef="let app">{{app.code}}</td>
-            </ng-container>
-            <!-- LoginRequired Column -->
-            <ng-container matColumnDef="app-login-required">
-                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-login-required' | translate}}</th>
-                <td mat-cell *matCellDef="let app">
-                    <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.loginRequired">
-                    </fa-icon>
-                </td>
-            </ng-container>           
-            <!-- Admin Mode Column -->
-            <ng-container matColumnDef="app-admin-mode">
-            <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-admin-mode' | translate}}</th>
-            <td mat-cell *matCellDef="let app">
-                <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.adminMode">
-                </fa-icon>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let app of apps">
+            <td *ngFor="let col of appsColumns">
+                <ng-container [ngSwitch]="col">
+                    <ng-container *ngSwitchCase="'app-name'">{{ app.name }}</ng-container>
+                    <ng-container *ngSwitchCase="'app-code'">{{ app.code }}</ng-container>
+                    <ng-container *ngSwitchCase="'app-login-required'">
+                        <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.loginRequired"></fa-icon>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'app-admin-mode'">
+                        <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.adminMode"></fa-icon>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'app-builtin'">
+                        <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.builtin"></fa-icon>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'app-add'" class="mat-column-crud">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'app-edit'">
+                        <ng-container *ngIf="!app.builtin">
+                            <button class="btn-crud {{ 'mat-column-' + col }}" (click)="saveApp(app)">
+                            <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
+                            </button>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'app-delete'">
+                        <ng-container *ngIf="!app.builtin">
+                            <button class="btn-crud {{ 'mat-column-' + col }}" (click)="deleteApp(app)">
+                            <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
+                            </button>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
             </td>
-            </ng-container>   
-            <!-- Builtin Column -->
-            <ng-container matColumnDef="app-builtin">
-                <th mat-header-cell *matHeaderCellDef>{{'apps-menus.app-builtin' | translate}}</th>
-                <td mat-cell *matCellDef="let app">
-                    <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.builtin">
-                    </fa-icon>
-                </td>
-            </ng-container>   
-            <!-- Filler Column -->
-            <ng-container matColumnDef="app-filler">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let user"></td>
-            </ng-container>
-            <tr mat-header-row class="app-header-row" *matHeaderRowDef="appsColumns"></tr>
-            <tr mat-row class="app-row" *matRowDef="let row; columns: appsColumns;"></tr>
-        </table>  
+            </tr>
+        </tbody>
+        </table>
+    </div>    
+
+    <!-- Menus list -->
+    <div class="menus-list">
+        <label class="card-subtitle">{{ 'apps-menus.menu-list' | translate }}</label>
+        <table class="table table-bordered table-hover table-sm app-colors">
+        <thead>
+            <tr class="mat-mdc-header-cell">
+                <th *ngFor="let col of menusColumns, index as idx" class="{{ 'mat-column-' + col }}">
+                    <ng-container *ngIf="idx === 0">
+                        <button class="btn-crud mat-column-menu-add" (click)="saveMenu()">
+                            <fa-icon [icon]="faAdd" [transform]="size" style="background-color: white; font-weight: bold;"></fa-icon>
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="idx > 2">
+                        {{ 'apps-menus.' + col | translate }}
+                    </ng-container>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let menu of menus">
+            <td *ngFor="let col of menusColumns">
+                <ng-container [ngSwitch]="col">
+                    <ng-container *ngSwitchCase="'menu-name'">{{ menu.name }}</ng-container>
+                    <ng-container *ngSwitchCase="'menu-url'">{{ menu.url }}</ng-container>
+                    <ng-container *ngSwitchCase="'menu-display-mode'">{{ displayMode(menu.displayModeId) }}</ng-container>
+                    <ng-container *ngSwitchCase="'menu-icon'">
+                        <fa-icon [icon]="icons[menu.menuIcon]" [transform]="size"></fa-icon>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'menu-builtin'">
+                        <fa-icon [icon]="faCheck" [transform]="size" *ngIf="menu.builtin"></fa-icon>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'menu-add'" class="mat-column-crud">
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'menu-edit'">
+                        <ng-container *ngIf="!menu.builtin">
+                            <button class="btn-crud {{ 'mat-column-' + col }}" (click)="saveMenu(menu)">
+                            <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
+                            </button>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'menu-delete'">
+                        <ng-container *ngIf="!menu.builtin">
+                            <button class="btn-crud {{ 'mat-column-' + col }}" (click)="deleteMenu(menu)">
+                            <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
+                            </button>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </td>
+            </tr>
+        </tbody>
+        </table> 
     </div>
+
+    <!-- Applications/Menus associations list -->
+    <div class="apps-menus-list">
+        <label class="card-subtitle">{{ 'apps-menus.app-menu-list' | translate }}</label>
+        <table class="table table-bordered table-hover table-sm app-colors">
+        <thead>
+            <tr class="mat-mdc-header-cell">
+                <th class="two-fields-zone">
+                    <div class="two-fields-zone-left" [innerHtml]="'apps-menus.apps-menus-header-menus' | translate"></div>
+                    <div class="two-fields-zone-right" [innerHtml]="'apps-menus.apps-menus-header-apps' | translate"></div>
+                </th>
+                <th *ngFor="let col of appsMenusColumns.slice(1)" class="two-field-zone">
+                    {{ col.replace('app-menu-', '') }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let appMenu of appMenuData">
+                <td *ngFor="let col of appsMenusColumns">
+                    <ng-container [ngSwitch]="col">
+                        <ng-container *ngSwitchCase="'app-menu-name'">{{ appMenu.menuName }}</ng-container>
+                        <ng-container *ngSwitchDefault>
+                            <ng-container *ngFor="let app of appMenu.appData">
+                                <ng-container *ngIf="'app-menu-' + app.appName === col">
+                                    <app-custom-checkbox [checked]="app.active" 
+                                        (checkedChange)="onAppMenuChange(appMenu, app.appName, $event)">
+                                    </app-custom-checkbox>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+
 </div>

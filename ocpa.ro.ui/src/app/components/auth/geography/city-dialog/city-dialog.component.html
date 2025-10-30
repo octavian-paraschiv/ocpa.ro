@@ -1,72 +1,84 @@
-<mat-card class="mat-user-card">
-    <mat-card-header style="padding: 0; padding-left: 0.1rem; padding-top: 0.1rem; padding-bottom: 0.1rem;">
-        <mat-card-subtitle [innerHtml]="title | translate: {name: city?.name}"></mat-card-subtitle>
-    </mat-card-header>
-    <mat-divider style="margin: 0;"></mat-divider>
-    <mat-card-content class="mat-user-card-content" style="padding: 0;">
-        <form mat-dialog-content class="user-dialog-form" [formGroup]="cityForm" (ngSubmit)="onOk()" style="padding: 1rem;">
-            <div class="form">
-                <div class="left">
-                    <mat-form-field appearance="outline" class="user-form-control">
-                        <mat-label>{{'city-dialog.name' | translate}}</mat-label>
-                        <input formControlName="name" matInput [(value)]="city.name">
-                        <mat-error *ngIf="f?.name?.errors">{{'city-dialog.name-required' | translate}}</mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="user-form-control" >
-                        <mat-label>{{'city-dialog.region' | translate}}</mat-label>
-                        <mat-select formControlName="region" [(value)]="selectedRegion" (selectionChange)="onRegionChanged()">
-                            <mat-option *ngFor="let r of regions;" [value]="r" >
-                            {{r.name}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="f?.region?.errors">{{'city-dialog.region-required' | translate}}</mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="user-form-control" >
-                        <mat-label>{{'city-dialog.subregion' | translate}}</mat-label>
-                        <mat-select formControlName="subregion" [(value)]="selectedSubregion">
-                            <mat-option *ngFor="let sr of (selectedRegion?.subregions ?? []);" [value]="sr">
-                            {{sr}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="f?.subregion?.errors">{{'city-dialog.subregion-required' | translate}}</mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="user-form-control" >
-                        <mat-label>{{'city-dialog.latitude' | translate}}</mat-label>
-                        <input matInput type="number" formControlName="latitude" [(value)]="city.lat"
-                            [readonly]="true" min="selectedRegion.minLat" min="selectedRegion.maxLat">
-                        <mat-error *ngIf="f?.latitude?.errors">
-                            {{'city-dialog.latitude-range' | translate: {min: selectedRegion.minLat, max: selectedRegion.maxLat} }}
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="user-form-control" >
-                        <mat-label>{{'city-dialog.longitude' | translate}}</mat-label>
-                        <input matInput type="number" formControlName="longitude" [(value)]="city.lon" 
-                            [readonly]="true" min="selectedRegion.minLon" min="selectedRegion.maxLon">
-                        <mat-error *ngIf="f?.longitude?.errors">
-                            {{'city-dialog.longitude-range' | translate: {min: selectedRegion.minLon, max: selectedRegion.maxLon} }}
-                        </mat-error>
-                    </mat-form-field>
-                    <div class="user-form-control" *ngIf="this.editMode">
-                        <mat-label>{{'city-dialog.default' | translate}}</mat-label>
-                        <mat-checkbox [color]="'primary'"
-                            [checked]="city.isDefault" (change)="city.isDefault = ($event.checked)">
-                        </mat-checkbox>
+<div class="card mat-user-card">
+    <div class="card-header py-1 px-2">
+        <label class="card-subtitle mb-0" [innerHtml]="title | translate: {name: city?.name}"></label>
+    </div>
+    <hr class="my-0" />
+    <div class="card-body p-0 mat-user-card-content">
+        <form [formGroup]="cityForm" (ngSubmit)="onOk()" class="user-dialog-form p-3">
+            <div class="form d-flex">
+                <div class="left flex-grow-1 me-3">
+                    <div class="mb-3 user-form-control">
+                        <label class="form-label">{{'city-dialog.name' | translate}}</label>
+                        <input type="text" class="form-control" formControlName="name" [(ngModel)]="city.name" />
+                        <div *ngIf="f?.name?.errors" class="invalid-feedback d-block">
+                            {{'city-dialog.name-required' | translate}}
+                        </div>
                     </div>
-                    <div mat-dialog-actions class="user-form-control">
-                        <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>
+
+                    <div class="mb-3 user-form-control">
+                        <label class="form-label">{{'city-dialog.region' | translate}}</label>
+                        <select class="form-select" formControlName="region" [(ngModel)]="selectedRegion"
+                            (change)="onRegionChanged()">
+                            <option *ngFor="let r of regions" [ngValue]="r">{{r.name}}</option>
+                        </select>
+                        <div *ngIf="f?.region?.errors" class="invalid-feedback d-block">
+                            {{'city-dialog.region-required' | translate}}
+                        </div>
+                    </div>
+
+                    <div class="mb-3 user-form-control">
+                        <label class="form-label">{{'city-dialog.subregion' | translate}}</label>
+                        <select class="form-select" formControlName="subregion" [(ngModel)]="selectedSubregion">
+                            <option *ngFor="let sr of (selectedRegion?.subregions ?? [])" [ngValue]="sr">{{sr}}</option>
+                        </select>
+                        <div *ngIf="f?.subregion?.errors" class="invalid-feedback d-block">
+                            {{'city-dialog.subregion-required' | translate}}
+                        </div>
+                    </div>
+
+                    <div class="mb-3 user-form-control">
+                        <label class="form-label">{{'city-dialog.latitude' | translate}}</label>
+                        <input type="number" class="form-control" formControlName="latitude" [(ngModel)]="city.lat"
+                            [readonly]="true" [min]="selectedRegion.minLat" [max]="selectedRegion.maxLat" />
+                        <div *ngIf="f?.latitude?.errors" class="invalid-feedback d-block">
+                            {{'city-dialog.latitude-range' | translate: {min: selectedRegion.minLat, max:
+                            selectedRegion.maxLat} }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3 user-form-control">
+                        <label class="form-label">{{'city-dialog.longitude' | translate}}</label>
+                        <input type="number" class="form-control" formControlName="longitude" [(ngModel)]="city.lon"
+                            [readonly]="true" [min]="selectedRegion.minLon" [max]="selectedRegion.maxLon" />
+                        <div *ngIf="f?.longitude?.errors" class="invalid-feedback d-block">
+                            {{'city-dialog.longitude-range' | translate: {min: selectedRegion.minLon, max:
+                            selectedRegion.maxLon} }}
+                        </div>
+                    </div>
+
+                    <div class="form-check user-form-control" *ngIf="editMode">
+                        <app-custom-checkbox [label]="'city-dialog.default' | translate"
+                            [checked]="city.isDefault"
+                            (checkedChange)="city.isDefault = $event"
+                            ></app-custom-checkbox>
+                    </div>
+
+                    <div class="user-form-control mt-3">
+                        <button type="submit" class="btn btn-primary me-2">
                             {{'OK' | translate}}
                         </button>
-                        <button style="margin: 0; padding: 0; " mat-raised-button (click)="onCancel()">
+                        <button type="button" class="btn btn-secondary" (click)="onCancel()">
                             {{'Cancel' | translate}}
                         </button>
                     </div>
                 </div>
+
                 <div class="right">
-                    <google-map height="400px" width="400px" id="map"
-                    [center]="center" [zoom]="zoom"
-                    (mapClick)="onClickMap($event)" />
+                    <google-map height="400px" width="400px" id="map" [center]="center" [zoom]="zoom"
+                        (mapClick)="onClickMap($event)">
+                    </google-map>
                 </div>
             </div>
         </form>
-    </mat-card-content>
-</mat-card>
+    </div>
+</div>

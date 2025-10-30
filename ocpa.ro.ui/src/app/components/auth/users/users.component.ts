@@ -49,7 +49,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     onDelete(loginId: string) {
-        MessageBoxComponent.show(this.dialog, {
+        MessageBoxComponent.show(this.dialogBS, {
             title: this.translate.instant('title.confirm'),
             message: this.translate.instant('users.delete-user', { loginId })
         } as MessageBoxOptions)
@@ -123,7 +123,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     onDeleteDevice(deviceId: string) {
-        MessageBoxComponent.show(this.dialog, {
+        MessageBoxComponent.show(this.dialogBS, {
             title: this.translate.instant('title.confirm'),
             message: this.translate.instant('users.delete-device', { deviceId: deviceId })
         } as MessageBoxOptions)

@@ -1,35 +1,40 @@
-﻿<mat-card class="mat-card-login">
-    <mat-card-header>
-        <mat-card-subtitle>{{'auth.enter-credentials' | translate}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-divider style="margin-bottom: 20px;"></mat-divider>
-    <mat-card-content>
-        <form class="login-form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">            
-            <mat-form-field appearance="outline" class="login-form-control">
-                <mat-label>{{'auth.username' | translate}}</mat-label>
-                <input matInput formControlName="username" autofocus>
-                <mat-error *ngIf="f?.username?.errors?.required">{{'auth.username-required' | translate}}</mat-error>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="login-form-control">
-                <mat-label>{{'auth.password' | translate}}</mat-label>
-                <input input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+﻿<div class="card mat-card-login">
+    <div class="card-header py-1 px-2">
+        <label class="card-subtitle mb-0" [innerHtml]="'auth.enter-credentials' | translate"></label>
+    </div>
+    <hr class="my-0" />
+    <div class="card-body p-0">
+        <form class="login-form p-3" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+            <div class="mb-3 login-form-control">
+                <label class="form-label">{{'auth.username' | translate}}</label>
+                <input type="text" class="form-control" formControlName="username" autofocus (input)="error = undefined" />
+                <div *ngIf="f?.username?.errors?.required" class="invalid-feedback d-block">
+                    {{'auth.username-required' | translate}}
+                </div>
+            </div>
+            <div class="mb-3 login-form-control position-relative">
+                <label class="form-label">{{'auth.password' | translate}}</label>
+                <input type="{{hide ? 'password' : 'text'}}" class="form-control" formControlName="password" (input)="error = undefined" />
                 <div class="password-hide-icon"
-                    matSuffix
                     tabindex="-1"
                     (click)="hide = !hide"  
                     [attr.aria-label]="'Hide password'"
                     [attr.aria-pressed]="hide">
-                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                  </div>
-                <mat-error *ngIf="f?.password?.errors?.required">{{'auth.password-required' | translate}}</mat-error>
-            </mat-form-field>
-            <button mat-raised-button color="primary" [disabled]="loading" class="login-form-control" style="margin-bottom: 10px;">
+                        <fa-icon [icon]="hide ? faEye : faEyeSlash" [transform]="size"></fa-icon>
+                </div>
+                <div *ngIf="f?.password?.errors?.required" class="invalid-feedback d-block">
+                    {{'auth.password-required' | translate}}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 login-form-control mb-3" [disabled]="loading">
                 {{'title.login' | translate}}
             </button>
-          </form>
-    </mat-card-content>
-    <mat-card-footer>
-        <mat-progress-bar *ngIf="loading" mode="buffer"></mat-progress-bar>
-        <mat-error *ngIf="error" [innerHtml]="error" class="login-form-control"></mat-error>        
-    </mat-card-footer>
-</mat-card>
+        </form>
+    </div>
+    <div class="card-footer" *ngIf="loading || error">
+        <div *ngIf="loading" class="progress mb-2">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+        </div>
+        <div *ngIf="error" class="text-danger login-form-control" [innerHtml]="error"></div>
+    </div>
+</div>

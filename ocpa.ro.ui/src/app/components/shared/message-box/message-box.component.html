@@ -1,18 +1,25 @@
-<mat-card class="mat-user-card">
-    <mat-card-header *ngIf="options?.title?.length > 0" style="padding: 0; padding-left: 1rem; padding-top: 0.2rem; padding-bottom: 0.1rem;">
-        <mat-card-subtitle [innerHtml]="options?.title"></mat-card-subtitle>
-    </mat-card-header>
-    <mat-divider style="margin: 0;"></mat-divider>
-    <mat-card-content class="mat-user-card-content" style="padding: 0;">
-        <mat-card-subtitle style="padding: 0; padding-left: 1rem; padding-right: 1rem; padding-top: 0.2rem; padding-bottom: 0.1rem;"
-            *ngIf="options?.message?.length > 0" [innerHtml]="options?.message"></mat-card-subtitle>
-        <div mat-dialog-actions class="user-form-control">
-            <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onYes()"cdkFocusInitial>
-                {{(options?.yesButtonText?.length > 0 ? options?.yesButtonText : "Yes") | translate}}
-            </button>
-            <button style="margin: 0; padding: 0;" mat-raised-button (click)="onNo()">
-                {{(options?.noButtonText?.length > 0 ? options?.noButtonText : "No") | translate}}
-            </button>
-        </div>
-    </mat-card-content>
-</mat-card>
+<div class="card mat-user-card">
+  <!-- Card Header -->
+  <div class="card-header p-1 ps-3 pt-2 pb-1" *ngIf="options?.title?.length > 0">
+    <label class="card-subtitle" [innerHtml]="options?.title"></label>
+  </div>
+
+  <!-- Divider -->
+  <hr class="m-0" />
+
+  <!-- Card Content -->
+  <div class="card-body mat-user-card-content p-0">
+    <!-- Message -->
+    <label class="px-3 pt-2 pb-1" *ngIf="options?.message?.length > 0" [innerHtml]="options?.message"></label>
+
+    <!-- Actions -->
+    <div class="user-form-control mt-3 px-3 mb-3">
+      <button type="button" class="btn btn-primary me-3" (click)="onYes()" autofocus>
+        {{ (options?.yesButtonText?.length > 0 ? options?.yesButtonText : 'Yes') | translate }}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="onNo()">
+        {{ (options?.noButtonText?.length > 0 ? options?.noButtonText : 'No') | translate }}
+      </button>
+    </div>
+  </div>
+</div>

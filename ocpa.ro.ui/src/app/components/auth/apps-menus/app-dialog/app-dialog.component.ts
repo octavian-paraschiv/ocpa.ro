@@ -1,82 +1,91 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { Observable } from 'rxjs';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CustomCheckboxComponent } from 'src/app/components/shared/custom-checkbox/custom-checkbox.component';
+import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 import { Application } from 'src/app/models/models-swagger';
 
 @UntilDestroy()
 @Component({
-    selector: 'app-dialog',
-    templateUrl: './app-dialog.component.html'
+  selector: 'app-dialog',
+  templateUrl: './app-dialog.component.html'
 })
 export class AppDialogComponent implements OnInit {
-    appForm: UntypedFormGroup;
-    editMode = false;
+  appForm: UntypedFormGroup;
+  editMode = false;
+  app: Application;
+  result$: Subject<Application> = new Subject<Application>();
 
-    constructor(
-        private formBuilder: UntypedFormBuilder,
-        public dialogRef: MatDialogRef<AppDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public app: Application
-    ) {
+  @ViewChild('loginRequired', { static: true }) loginRequired: CustomCheckboxComponent;
+  @ViewChild('adminMode', { static: true }) adminMode: CustomCheckboxComponent;
+
+  constructor(
+    private formBuilder: UntypedFormBuilder,
+    public bsModalRef: BsModalRef
+  ) {}
+
+  get f() {
+    return this.appForm?.controls;
+  }
+
+  get title(): string {
+    return this.editMode ? 'app-dialog.edit' : 'app-dialog.create';
+  }
+
+  ngOnInit(): void {
+    this.editMode = this.app?.id > 0;
+
+    if (!this.app) {
+      this.app = {
+        name: '',
+        code: '',
+        loginRequired: false,
+        adminMode: false,
+        builtin: false
+      } as Application;
     }
 
-    // convenience getter for easy access to form fields
-    get f() { return this.appForm?.controls; }
+    if (this.app.builtin) return;
 
-    get title(): string {
-        return (this.editMode) ? 
-            'app-dialog.edit' :
-            'app-dialog.create';
-    }
+    this.appForm = this.formBuilder.group({
+      name: [this.app.name, [Validators.required, Validators.pattern('^[a-zA-Z0-9]{3,16}$')]],
+      code: [this.app.code, [Validators.required, Validators.pattern('^[A-Z]{3,5}$')]]
+    });
 
+    this.loginRequired.checked = this.app.loginRequired;
+    this.adminMode.checked = this.app.adminMode;
+  }
 
-    ngOnInit(){
-        this.editMode = this.app?.id > 0;
+  onCancel(): void {
+    this.bsModalRef.hide();
+    this.result$.next({ id: -1 } as Application);
+    this.result$.complete();
+  }
 
-        if (!this.app)
-            this.app = {
-                name: '',
-                code: '',
-                loginRequired: false,
-                adminMode: false,
-                builtin: false
-            } as Application;
+  onOk(): void {
+    if (this.appForm.invalid) return;
 
-        // Should not happen, but anyways
-        if (this.app.builtin)
-            return;            
-        
-        this.appForm = this.formBuilder.group({
-            name: [ this.app.name, [ Validators.required, Validators.pattern('^[a-zA-Z0-9]{3,16}$') ] ],
-            code: [ this.app.code, [ Validators.required, Validators.pattern('^[A-Z]{3,5}$') ] ],
-            loginRequired: [ this.app.loginRequired ?? false ],
-            adminMode: [ this.app.adminMode ?? false ]
-        });
-    }
+    this.bsModalRef.hide();
+    this.result$.next({
+      id: this.app.id,
+      name: this.f?.name?.value,
+      code: this.f?.code?.value,
+      adminMode: this.adminMode.checked,
+      loginRequired: this.loginRequired.checked,
+      builtin: false
+    } as Application);
+    this.result$.complete();
+  }
 
-    onCancel(): void {
-        this.dialogRef.close();
-    }
+  static showDialog(modalService: BsModalService, app?: Application): Observable<Application> {
+    const bsModalRef: BsModalRef<AppDialogComponent> = modalService.show(AppDialogComponent, {
+      initialState: { app },
+      class: 'bs-modal'      
+    });
 
-    onOk(): void {
-        // stop here if form is invalid
-        if (this.appForm.invalid)
-            return;
-
-        this.dialogRef.close({
-            id: this.app.id,
-            name: this.f?.name?.value,
-            code: this.f?.code?.value,
-            adminMode: this.f?.adminMode?.value ?? false,
-            loginRequired: this.f?.loginRequired?.value ?? false,
-            builtin: false
-        } as Application);
-    }
-
-    static showDialog(dialog: MatDialog, app: Application = undefined): Observable<Application> {
-        const dialogRef = dialog?.open(AppDialogComponent, { data: app, width: '500px' });
-        return dialogRef.afterClosed().pipe(map(result => (result ?? {id: -1}) as Application));
-    }
+    return bsModalRef.content.result$.pipe(map(result => result ?? { id: -1 } as Application));
+  }
 }

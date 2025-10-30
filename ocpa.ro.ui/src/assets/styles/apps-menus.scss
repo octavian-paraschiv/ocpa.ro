@@ -8,6 +8,15 @@
     "ml . aml";
 }
 
+.btn-crud {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+}
+
 .menus-list {
     display: block;
     grid-area: ml;
@@ -69,7 +78,6 @@
 .extra-space-above {
     margin-top: 2rem;
 }
-
 
 .filter-input {
     width: 100%;

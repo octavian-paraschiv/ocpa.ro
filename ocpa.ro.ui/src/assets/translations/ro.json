@@ -103,7 +103,7 @@
         "login-failed-2": "Utilizatorul <b>{{username}}</b> nu se poate conecta [2]",
         "login-failed-3": "Utilizatorul <b>{{username}}</b> nu e asociat cu nicio aplicație",
         "session-expired": "Sesiunea dvs. a expirat.<br>Apăsați Da pt. a rămâne conectat, și Nu pt a vă deconecta.",
-        "logout-desc": "Apăsați butonul Deconectare dacă asta intenționați. Pentru a rămâne conectat, pur și simplu selectați alt meniu."
+        "logout-desc": "Sunteți sigur că doriți să vă deconectați?<br>Apăsați Nu pt. a rămâne conectat, și Da pt, a vă deconecta."
     },
     
     "meteo": {

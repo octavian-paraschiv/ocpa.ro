@@ -1,6 +1,7 @@
 import { Component, OnInit, NgZone, inject, HostListener, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { BehaviorSubject } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
@@ -21,6 +22,7 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
   
   private dialogTimeout: any = undefined;
   private dialogRef: MatDialogRef<MessageBoxComponent> = undefined;
+  private dialogRefBS: BsModalRef<MessageBoxComponent> = undefined;
 
   private readonly ngZone = inject(NgZone);
   private readonly utility = inject(UtilityService);
@@ -65,37 +67,39 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
         console.debug('refreshAuthTimer -> setInterval');
         
         if (this.authService.isSessionExpirationPending() && 
-            !this.dialogRef && 
+            !this.dialogRefBS && 
             !this.refreshTokenPending$.getValue()) {
             console.debug('onAfterViewInit -> setInterval -> session expired');
-            this.dialogRef = this.dialog?.open(MessageBoxComponent, { 
-                data: {
-                    isSessionTimeoutMessage: true,
-                    noTimeout: 15000,
-                    title: this.translate.instant('title.confirm'),
-                    message: this.translate.instant('auth.session-expired'),
-                    
-                } as MessageBoxOptions,
-                panelClass: 'session-expired-message'
+
+            this.dialogRefBS = this.dialogBS?.show(MessageBoxComponent, { 
+              initialState: {
+                options: {
+                  isSessionTimeoutMessage: true,
+                  noTimeout: 15000,
+                  title: this.translate.instant('title.confirm'),
+                  message: this.translate.instant('auth.session-expired'),
+                } as MessageBoxOptions
+              },
+              class: 'session-expired-message'
             });
 
-            this.dialogRef.afterClosed()
-                .pipe(untilDestroyed(this), map(result => result as boolean))
-                .subscribe(res => {
-                    this.dialogRef = undefined;
-                    if (res) {
-                        this.refreshTokenPending$.next(true);
-                        this.authService.refreshAuthentication()
-                            .pipe(first(), untilDestroyed(this))
-                            .subscribe({
-                                next: msg => (msg?.length > 0) ? this.doLogout() : {},
-                                error: () => this.doLogout(),
-                                complete: () => this.refreshTokenPending$.next(false)
-                            });
-                    } else {
-                        this.doLogout();
-                    }
-                });
+            this.dialogRefBS.content.$result
+              .pipe(untilDestroyed(this), map(result => result as boolean))
+              .subscribe(res => {
+                  this.dialogRefBS = undefined;
+                  if (res) {
+                      this.refreshTokenPending$.next(true);
+                      this.authService.refreshAuthentication()
+                          .pipe(first(), untilDestroyed(this))
+                          .subscribe({
+                              next: msg => (msg?.length > 0) ? this.doLogout() : {},
+                              error: () => this.doLogout(),
+                              complete: () => this.refreshTokenPending$.next(false)
+                          });
+                  } else {
+                      this.doLogout();
+                  }
+              });
         }
 
     }, 3000);

@@ -9,6 +9,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
+import { BootstrapModule } from 'src/app/modules/bootstrap.module';
 import { routes } from 'src/app/modules/deps/app.routes';
 import { MaterialModule } from 'src/app/modules/material.module';
 import { translationConfig } from 'src/app/services/translation-init.service';
@@ -24,8 +25,10 @@ export const modules = [
     NoopAnimationsModule,
     FontAwesomeModule,
     NgSelectModule,
-    MaterialModule,
     NgChartsModule,
     MarkdownModule.forRoot(),
-    GoogleMapsModule
+    GoogleMapsModule,
+
+    MaterialModule,
+    BootstrapModule
 ];

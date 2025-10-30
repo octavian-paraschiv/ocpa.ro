@@ -16,10 +16,40 @@
 @import './geography.scss';
 @import './overlay.scss';
 @import './wiki-browser.scss';
+@import './custom-checkbox.scss';
 
 html {
     --mat-table-header-container-height: 0.8rem !important;
     --mat-table-row-item-container-height: auto !important;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    vertical-align: middle;
+  }
+
+  th, td {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: none;
+    border-right: none;
+    padding: 8px;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  thead tr:first-child th {
+    border-top: none;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+.app-colors {
+    color: $forecolor !important;
+    background-color: $backcolor !important;
 }
 
 .mat-mdc-header-row {
@@ -47,6 +77,12 @@ app-root {
     max-height: 99.5vh;
     padding: 0 !important;
     overflow: hidden;
+    font-size: 13px;
+}
+
+app-nav-menu {
+    margin: 0;
+    padding: 0;
 }
 
 #app-nav-menu {
@@ -55,6 +91,7 @@ app-root {
     color: $nav-forecolor;
     background-color: $nav-backcolor;
     margin-bottom: 5px;
+    padding: 0;
 }
 #app-nav-menu[single-menu-app="true"] {
     display: none;
@@ -95,17 +132,22 @@ input::-ms-clear {
     visibility: hidden;
 }
 
+.mat-column {
+    margin: 0;
+}
+
 .mat-column-crud {
+    @extend .mat-column;
     width: 16px;
     min-width: 16px;
     max-width: 16px;
-    margin: 0;
 }
 
 .mat-mdc-header-cell {
     background-color: $forecolor !important;
     color: $backcolor !important;
-    height: 3rem !important;
+    height: auto !important;
+    vertical-align: middle;
 }
 
 .session-expired-message .mat-dialog-container {
@@ -179,6 +221,14 @@ input::-ms-clear {
     display: grid;
     grid-auto-flow: row;
 }
+
+.bs-modal {
+    width: auto;
+}
+.card-subtitle {
+    font-weight: bold;
+}
+
 
 .modal-popup-image {
     text-decoration: none;

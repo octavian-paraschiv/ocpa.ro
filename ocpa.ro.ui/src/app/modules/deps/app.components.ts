@@ -7,7 +7,6 @@ import { NodeNameDialogComponent } from 'src/app/components/auth/content-browser
 import { CityDialogComponent } from 'src/app/components/auth/geography/city-dialog/city-dialog.component';
 import { GeographyComponent } from 'src/app/components/auth/geography/geography.component';
 import { LoginComponent } from 'src/app/components/auth/login/login.component';
-import { LogoutComponent } from 'src/app/components/auth/logout/logout.component';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 import { MeteoDatabaseComponent } from 'src/app/components/auth/meteo-database/meteo-database.component';
 import { OtpComponent } from 'src/app/components/auth/otp/otp.component';
@@ -20,6 +19,7 @@ import { MeteoComponent } from 'src/app/components/non-auth/meteo/meteo.componen
 import { ProTONEComponent } from 'src/app/components/non-auth/protone/protone.component';
 import { UnavailablePageComponent } from 'src/app/components/non-auth/unavailable-page/unavailable-page.component';
 import { ContentTreeComponent } from 'src/app/components/shared/content-tree/content-tree.component';
+import { CustomCheckboxComponent } from 'src/app/components/shared/custom-checkbox/custom-checkbox.component';
 import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
 import { NavMenuComponent } from 'src/app/components/shared/nav-menu/nav-menu.component';
 import { OverlayComponent } from 'src/app/components/shared/overlay/overlay.component';
@@ -36,13 +36,13 @@ export const components = [
     // Shared components
     MessageBoxComponent,
     UnavailablePageComponent,
+    CustomCheckboxComponent,
 
     // Protone player
     ProTONEComponent,
 
     // Authentication
     LoginComponent,
-    LogoutComponent,
     OtpComponent,
 
     // Apps / menus
