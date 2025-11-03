@@ -1,13 +1,20 @@
-app-login, app-logout, app-otp {
+app-login, app-otp {
     // width: 30vw;
     // min-width: 350px;
     display: inline-block;
-    text-align: center;
+    text-align: justify;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     box-shadow: inset;
+}
+
+.otp-card-subtitle {
+    @extend .card-subtitle;
+    max-width: 460px;
+    word-wrap: normal;
+    text-align: left;
 }
 
 .mat-card-login {
@@ -32,4 +39,11 @@ app-login, app-logout, app-otp {
     position: absolute;
     right: 10px;
     top: 40px;
+}
+
+.login-button {
+    @extend .login-form-control;
+    width: 100px;
+    margin-top: 1rem;
+    margin-right: 1rem;
 }

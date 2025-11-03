@@ -1,89 +1,103 @@
-<mat-card class="mat-user-card">
-    <mat-card-header style="padding: 0; padding-left: 0.1rem; padding-top: 0.1rem; padding-bottom: 0.1rem;">
-        <mat-card-subtitle [innerHtml]="title | translate: {loginId: user?.loginId}"></mat-card-subtitle>
-    </mat-card-header>
-    <mat-divider style="margin: 0;"></mat-divider>
-    <mat-card-content class="mat-user-card-content" style="padding: 0;">
-        <form mat-dialog-content class="user-dialog-form" [formGroup]="userForm" (ngSubmit)="onOk()" style="padding: 1rem;">
-            <div style="display: grid;">
-                <mat-form-field appearance="outline" class="user-form-control">
-                    <mat-label>{{'auth.username' | translate}}</mat-label>
-                    <input formControlName="u1" matInput>
-                    <mat-error *ngIf="f?.u1?.errors?.required">{{'auth.username-required' | translate}}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="user-form-control">
-                    <mat-label>{{'users.email' | translate}}</mat-label>
-                    <input formControlName="email" matInput>
-                    <mat-error *ngIf="f?.email?.errors">{{'user-dialog.email-required' | translate}}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="user-form-control" >
-                    <mat-label>{{'user-dialog.user-type' | translate}}</mat-label>
-                    <mat-select formControlName="t1">
-                        <mat-option *ngFor="let userType of userTypes;" [value]="userType.id">
-                          {{userType.description}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <label class="mat-small domHide" [attr.domHide]="!editMode">
-                    {{'user-dialog.password-hint' | translate}}
-                </label>
-                <mat-form-field appearance="outline" class="user-form-control">
-                    <mat-label>{{'auth.password' | translate}}</mat-label>
-                    <input formControlName="p1" matInput [type]="hide ? 'password' : 'text'">
-                    <div class="password-hide-icon"
-                        matSuffix
-                        tabindex="-1"
-                        (click)="hide = !hide"
-                        [attr.aria-label]="'Hide password'"
-                        [attr.aria-pressed]="hide">
-                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                    </div>
-                    <mat-error *ngIf="f?.p1?.errors?.required">{{'auth.password-required' | translate}}</mat-error>
-                    <mat-error *ngIf="f?.p1?.errors?.minlength">{{'user-dialog.password-length-hint' | translate}}</mat-error>
-                </mat-form-field>    
-                <mat-form-field appearance="outline" class="user-form-control" >
-                    <mat-label>{{'auth.repeat-password' | translate}}</mat-label>
-                    <input formControlName="p2" matInput [type]="hide ? 'password' : 'text'">
-                    <div class="password-hide-icon"
-                        matSuffix
-                        tabindex="-1"
-                        (click)="hide = !hide"
-                        [attr.aria-label]="'Hide password'"
-                        [attr.aria-pressed]="hide">
-                            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                    </div>
-                    <mat-error *ngIf="f?.p2?.errors?.required">{{'auth.password-required' | translate}}</mat-error>
-                    <mat-error *ngIf="f?.p2?.errors?.minlength">{{'user-dialog.password-length-hint' | translate}}</mat-error>
-                    <mat-error *ngIf="f?.p2?.errors?.unmatched">{{'user-dialog.password-match-hint' | translate}}</mat-error>
-                </mat-form-field>
-                <div class="user-form-control">
-                    <mat-label>{{'auth.disabled-account' | translate}}</mat-label>
-                    <mat-checkbox [color]="'primary'" [checked]="!(user.enabled)" (change)="user.enabled = !($event.checked)">
-                    </mat-checkbox>
-                </div>
-                <div class="user-form-control">
-                    <mat-label>{{'users.otp' | translate}}</mat-label>
-                    <mat-checkbox [color]="'primary'" [checked]="user.useOtp" (change)="user.useOtp = ($event.checked)">
-                    </mat-checkbox>
-                </div>
-                <div class="user-form-control" *ngIf="isApplicationUser">
-                    <mat-label>{{'auth.user-apps' | translate}}</mat-label>
-                    <mat-chip-listbox multiple>
-                        <mat-chip-option *ngFor="let app of apps" [value]="app" [selected]="app.selected"
-                            (selectionChange)="app.selected = $event.selected">
-                            {{app.name}}
-                        </mat-chip-option>  
-                    </mat-chip-listbox>   
-                </div>
-                <div mat-dialog-actions class="user-form-control">
-                    <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onOk()"cdkFocusInitial>
-                        {{'OK' | translate}}
-                    </button>
-                    <button style="margin: 0; padding: 0; " mat-raised-button (click)="onCancel()">
-                        {{'Cancel' | translate}}
-                    </button>
+<div class="card mat-app-card">
+    <div class="card-header py-1 px-2">
+        <label class="card-subtitle mb-0" [innerHtml]="title | translate: {loginId: user?.loginId}"></label>
+    </div>
+    <hr class="my-0" />
+    <div class="card-body mat-app-card-content p-0">
+        <form [formGroup]="userForm" (ngSubmit)="onOk()" class="p-3">
+            <div class="form-group mb-3">
+                <label>{{'auth.username' | translate}}</label>
+                <input formControlName="u1" class="form-control">
+                <div *ngIf="f?.u1?.errors?.required" class="text-danger">
+                    {{'auth.username-required' | translate}}
                 </div>
             </div>
+
+            <div class="form-group mb-3">
+                <label>{{'users.email' | translate}}</label>
+                <input formControlName="email" class="form-control">
+                <div *ngIf="f?.email?.errors" class="text-danger">
+                    {{'user-dialog.email-required' | translate}}
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>{{'user-dialog.user-type' | translate}}</label>
+                <select formControlName="t1" class="form-select">
+                    <option *ngFor="let userType of userTypes" [value]="userType.id">
+                        {{userType.description}}
+                    </option>
+                </select>
+            </div>
+
+            <label class="small domHide mb-3" [attr.domHide]="!editMode"
+                [innerHtml]="'user-dialog.password-hint' | translate"></label>
+
+            <div class="form-group mb-3">
+                <label>{{'auth.password' | translate}}</label>
+                <div class="input-group">
+                    <input formControlName="p1" [type]="hide ? 'password' : 'text'" class="form-control">
+                    <div class="user-password-hide-icon" tabindex="-1" (click)="hide = !hide"
+                        [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                        <fa-icon [icon]="hide ? faEye : faEyeSlash" [transform]="size"></fa-icon>
+                    </div>
+                </div>
+                <div *ngIf="f?.p1?.errors?.required" class="text-danger">
+                    {{'auth.password-required' | translate}}
+                </div>
+                <div *ngIf="f?.p1?.errors?.minlength" class="text-danger">
+                    {{'user-dialog.password-length-hint' | translate}}
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>{{'auth.repeat-password' | translate}}</label>
+                <div class="input-group">
+                    <input formControlName="p2" [type]="hide2 ? 'password' : 'text'" class="form-control">
+                    <div class="user-password-hide-icon" tabindex="-1" (click)="hide2 = !hide2"
+                        [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                        <fa-icon [icon]="hide2 ? faEye : faEyeSlash" [transform]="size"></fa-icon>
+                    </div>
+                </div>
+                <div *ngIf="f?.p2?.errors?.required" class="text-danger">
+                    {{'auth.password-required' | translate}}
+                </div>
+                <div *ngIf="f?.p2?.errors?.minlength" class="text-danger">
+                    {{'user-dialog.password-length-hint' | translate}}
+                </div>
+                <div *ngIf="f?.p2?.errors?.unmatched" class="text-danger">
+                    {{'user-dialog.password-match-hint' | translate}}
+                </div>
+            </div>
+
+            <div class="form-check user-form-control mb-2">
+                <app-custom-checkbox [label]="'auth.disabled-account' | translate"
+                    [checked]="!user.enabled"
+                    (checkedChange)="user.enabled = !$event"
+                ></app-custom-checkbox>
+            </div>
+
+            <div class="form-check user-form-control mb-2">
+                <app-custom-checkbox [label]="'users.otp' | translate"
+                    [checked]="user.useOtp"
+                    (checkedChange)="user.useOtp = $event"
+                ></app-custom-checkbox>
+            </div>
+
+            <div *ngIf="isApplicationUser" class="mb-3">
+                <label>{{'auth.user-apps' | translate}}</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <span *ngFor="let app of apps" class="badge bg-primary" [class.bg-secondary]="!app.selected"
+                        (click)="app.selected = !app.selected" style="cursor: pointer;">
+                        {{app.name}}
+                    </span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="submit" class="btn btn-primary" (click)="onOk()">{{'OK' | translate}}</button>
+                <button type="button" class="btn btn-secondary" (click)="onCancel()">{{'Cancel' | translate}}</button>
+            </div>
         </form>
-    </mat-card-content>
-</mat-card>
+    </div>
+</div>

@@ -5,7 +5,6 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CustomCheckboxComponent } from 'src/app/components/shared/custom-checkbox/custom-checkbox.component';
-import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 import { Application } from 'src/app/models/models-swagger';
 
 @UntilDestroy()

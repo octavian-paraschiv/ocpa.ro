@@ -71,7 +71,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     saveUser(user: User = undefined) {
-        UserDialogComponent.showDialog(this.dialog, user).pipe(
+        UserDialogComponent.showDialog(this.dialogBS, user).pipe(
             first(),
             untilDestroyed(this),
             switchMap(ui => ui?.id === -1 ? of(ui) : this._saveUser(ui))

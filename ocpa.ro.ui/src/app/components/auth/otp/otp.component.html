@@ -1,35 +1,40 @@
-﻿<mat-card class="mat-card-login">
-    <mat-card-header>
-        <mat-card-subtitle>{{'auth.enter-otp' | translate: { email: anonymizedEmail } }}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-divider style="margin-bottom: 20px;"></mat-divider>
-    <mat-card-content>
-        <form class="login-form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">            
-            <mat-form-field appearance="outline" class="login-form-control">
-                <mat-label>{{'auth.otp-challenge' | translate}}</mat-label>
-                <input matInput formControlName="otp" inputMaskFormat maxlength="9" placeholder="AAAA-AAAA" autofocus>
-                <mat-error *ngIf="f?.otp?.errors?.required">{{'auth.otp-required' | translate}}</mat-error>
-            </mat-form-field>
-            <button mat-raised-button 
-                type="button" 
-                class="login-form-control"
-                style="margin-bottom: 10px; margin-right: 10px;" 
-                [disabled]="loading || waiting"
-                (click)="onGenerateOtp()" >
-                {{'title.regenerate-otp' | translate}}
-            </button>
-            <button mat-raised-button 
-                color="primary"
-                type="submit" 
-                class="login-form-control" 
-                style="margin-bottom: 10px;"
-                [disabled]="loading || !otpGenerated">
-                {{'title.continue-login' | translate}}
-            </button>
-          </form>
-    </mat-card-content>
-    <mat-card-footer>
-        <mat-progress-bar *ngIf="loading" mode="buffer"></mat-progress-bar>
-        <mat-error *ngIf="error" [innerHtml]="error" class="login-form-control"></mat-error>        
-    </mat-card-footer>
-</mat-card>
+﻿<div class="card mat-card-login">
+    <div class="card-header py-1 px-2">
+        <label class="otp-card-subtitle mb-0"
+            [innerHtml]="'auth.enter-otp' | translate: { email: anonymizedEmail }"></label>
+    </div>
+    <hr class="my-0" />
+    <div class="card-body p-0">
+        <form class="login-form p-3" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+            <div class="login-form-control">
+                <input type="text" #otp id="otp" class="form-control" formControlName="otp"
+                    [class.is-invalid]="f.otp.invalid && f.otp.touched" inputMaskFormat maxlength="9"
+                    placeholder="AAAA-AAAA" autofocus (input)="error = undefined" />
+                <div *ngIf="f?.username?.errors?.required" class="invalid-feedback d-block">
+                    {{ 'auth.otp-required' | translate }}
+                </div>
+            </div>
+
+            <div>
+                <button type="button" class="btn btn-secondary login-button" 
+                    (click)="onGenerateOtp()"
+                    [disabled]="waiting">
+                    {{ 'title.regenerate-otp' | translate }}
+                </button>
+                <button type="submit" class="btn btn-primary login-button"
+                    (click)="onSubmit()"
+                    [disabled]="loading || !otpGenerated">
+                    {{ 'title.continue-login' | translate }}
+                </button>
+            </div>
+
+            <div class="card-footer" *ngIf="loading || error">
+                <div *ngIf="loading" class="progress mb-2">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                </div>
+                <div *ngIf="error" class="text-danger login-form-control" [innerHtml]="error"></div>
+            </div>
+
+        </form>
+    </div>
+</div>

@@ -244,7 +244,7 @@
 
     "user-dialog": {
         "user-type": "User Type",
-        "password-hint": "To keep the password as-is,<br>leave both password fields empty.",
+        "password-hint": "<b>To keep the password as-is, leave both password fields empty.</b>",
         "password-length-hint": "The password must have at least 8 characters",
         "password-match-hint": "The two passwords must match.",
         "email-required": "The email address must include '@', e.g 'user.address@email.server'",

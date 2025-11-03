@@ -78,3 +78,12 @@ app-users {
 .user-header-row {
     height: 2.5rem !important;
 }
+
+.user-password-hide-icon {
+    @extend .btn-crud;
+    margin: 0;
+    margin-right: 5px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}

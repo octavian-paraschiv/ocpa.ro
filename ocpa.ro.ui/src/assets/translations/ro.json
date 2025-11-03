@@ -244,7 +244,7 @@
 
     "user-dialog": {
         "user-type": "Tip utilizator",
-        "password-hint": "Pentru a păstra parola existentă,<br>lăsați ambele câmpuri Parola goale.",
+        "password-hint": "<b>Pentru a păstra parola existentă, lăsați ambele câmpuri Parola goale.</b>",
         "password-length-hint": "Parola trebuie să aibă cel puțin 8 caractere",
         "password-match-hint": "Cele două parole trebuie să fie identice",
         "email-required": "Adresa email trebuie să includă '@' - de ex. 'user.address@email.server'",

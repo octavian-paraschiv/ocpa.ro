@@ -1,4 +1,4 @@
-﻿import { Component, inject } from '@angular/core';
+﻿import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -13,7 +13,6 @@ import { SessionInformationService } from 'src/app/services/session-information.
     templateUrl: './otp.component.html'
 })
 export class OtpComponent extends BaseFormComponent {
-    loginForm: UntypedFormGroup;
     loading = false;
     waiting = false;
     error = '';
@@ -24,6 +23,8 @@ export class OtpComponent extends BaseFormComponent {
     private readonly sessionInfo = inject(SessionInformationService);
     private readonly route = inject(ActivatedRoute);
 
+    @ViewChild('otp') otpInputRef!: ElementRef<HTMLInputElement>;
+
     ngOnInit() {
         this.route.queryParams.subscribe(params => {
             this.redirectUrl = params['url'];
@@ -31,6 +32,8 @@ export class OtpComponent extends BaseFormComponent {
             if (this.authService.isUserLoggedIn())
                 this.performRedirect(this.redirectUrl);
         });
+
+        this.otpInputRef?.nativeElement.focus();
     }
 
     protected createForm(): UntypedFormGroup {
@@ -47,6 +50,9 @@ export class OtpComponent extends BaseFormComponent {
 
     onGenerateOtp() {
         this.waiting = true;
+        this.f?.otp?.setValue(undefined);
+        this.otpInputRef?.nativeElement.focus();        
+
         this.authService.generateOtp()
             .pipe(untilDestroyed(this))
             .subscribe(res => {
@@ -55,7 +61,9 @@ export class OtpComponent extends BaseFormComponent {
             });
     }
 
-    onValidFormSubmitted() {
+    onSubmit() {
+        if (this.formGroup.invalid) return;
+
         this.loading = true;
         this.authService.validateOtp(this.f.otp.value)
             .pipe(first(), untilDestroyed(this))
