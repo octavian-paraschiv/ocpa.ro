@@ -5,9 +5,10 @@
       <tr class="mat-mdc-header-cell">
         <th *ngFor="let col of citiesColumns, index as idx" class="{{ 'mat-column-' + col }}">
           <ng-container *ngIf="idx === 0">
-            <button class="btn-crud mat-column-city-add" (click)="saveCity()">
+            <a class="btn-crud mat-column-city-add" (click)="saveCity()"
+              title="{{ 'geography.add-city' | translate }}">
               <fa-icon [icon]="faAdd" [transform]="size" style="background-color: white; font-weight: bold;"></fa-icon>
-            </button>
+            </a>
           </ng-container>
           <ng-container *ngIf="idx > 2">
             {{ 'geography.' + col.replace('city-', '') | translate }}
@@ -20,18 +21,18 @@
         <td></td>
         <td>
           <ng-container>
-            <button class="btn-crud mat-column-city-edit" (click)="saveCity(city)" 
-              tooltip="{{ 'geography.edit-city' | translate: { name: city.name } }}">
+            <a class="btn-crud mat-column-city-edit" (click)="saveCity(city)" 
+              title="{{ 'geography.edit-city' | translate: { name: city.name } }}">
               <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
-            </button>
+            </a>
           </ng-container>
         </td>
         <td>
           <ng-container *ngIf="!city.isDefault">
-            <button class="btn-crud mat-column-city-delete" (click)="onDelete(city)"
-              tooltip="{{ 'geography.del-city' | translate: { name: city.name } }}">
+            <a class="btn-crud mat-column-city-delete" (click)="onDelete(city)"
+              title="{{ 'geography.del-city' | translate: { name: city.name } }}">
               <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
-            </button>
+          </a>
           </ng-container>
         </td>
         <td>{{ city.name }}</td>

@@ -1,5 +1,4 @@
 import { Component, OnInit, NgZone, inject, HostListener, ViewChild, AfterViewInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { BehaviorSubject } from 'rxjs';
@@ -21,7 +20,6 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
   @ViewChild(OverlayComponent) overlayComponent: OverlayComponent;
   
   private dialogTimeout: any = undefined;
-  private dialogRef: MatDialogRef<MessageBoxComponent> = undefined;
   private dialogRefBS: BsModalRef<MessageBoxComponent> = undefined;
 
   private readonly ngZone = inject(NgZone);
@@ -61,7 +59,7 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
 
   private startRefreshAuthTimer() {
     clearInterval(this.dialogTimeout);
-    this.dialogRef = undefined;
+    this.dialogRefBS = undefined;
     
     this.dialogTimeout = setInterval(() => {
         console.debug('refreshAuthTimer -> setInterval');
@@ -71,7 +69,7 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
             !this.refreshTokenPending$.getValue()) {
             console.debug('onAfterViewInit -> setInterval -> session expired');
 
-            this.dialogRefBS = this.dialogBS?.show(MessageBoxComponent, { 
+            this.dialogRefBS = this.dialog?.show(MessageBoxComponent, { 
               initialState: {
                 options: {
                   isSessionTimeoutMessage: true,

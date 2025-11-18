@@ -213,7 +213,9 @@ export class ContentBrowserComponent extends BaseComponent {
       switchMap(path => path?.length > 0 ? this._rename(path) : of(undefined as ContentUnit))
     ).subscribe({
       next: cu => {
-        if (cu?.path?.length > 0) {
+        if (cu?.name?.length > 0) {
+          if (!(cu.path?.length > 0))
+            cu.path = '.';
           this.tree.reloadAndSelect(`${cu.path}/${cu.name}`);
           this.popup.showSuccess('content-browser.rename-success', { name: cu.name });
         }
@@ -258,7 +260,7 @@ export class ContentBrowserComponent extends BaseComponent {
     if (!this.isActionAllowed('delete'))
       return;
 
-    MessageBoxComponent.show(this.dialogBS, {
+    MessageBoxComponent.show(this.dialog, {
       title: this.translate.instant('title.confirm'),
       message: this.translate.instant('content-browser.delete-node', { name: this.currentNode?.name })
     } as MessageBoxOptions)

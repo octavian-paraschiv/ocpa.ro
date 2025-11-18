@@ -7,9 +7,9 @@ import { Ext } from 'src/environments/environment.ext';
 export const environment = {
   production: false,
   //apiUrl: 'http://localhost:39207',
-  translationUrl: './assets/translations/',
-
   apiUrl: 'https://ocpa.ro/api',
+
+  translationUrl: './assets/translations/',
   //translationUrl: 'https://ocpa.ro/api/content/render/translations/',
 
   ext: new Ext(),

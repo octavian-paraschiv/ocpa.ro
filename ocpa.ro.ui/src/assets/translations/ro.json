@@ -199,6 +199,7 @@
         "logged-in": "[CONECTAT]",
         "type": "Tip",
         "otp": "Autentificare în 2 pași",
+        "disabled": "Cont dezactivat",
         "device-list": "Lista dispozitive înregistrate:",
         "view-device": "Afișează informații dispozitiv '{{deviceId}}'",
         "del-device": "Șterge dispozitivul '{{deviceId}}'",

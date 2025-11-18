@@ -52,7 +52,7 @@ export class NavMenuComponent extends BaseComponent implements OnInit {
     }
 
   logout() {
-    MessageBoxComponent.show(this.dialogBS, {
+    MessageBoxComponent.show(this.dialog, {
       title: this.translate.instant('title.confirm'),
       message: this.translate.instant('auth.logout-desc'),
 

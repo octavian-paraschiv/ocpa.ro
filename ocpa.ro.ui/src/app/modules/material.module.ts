@@ -79,7 +79,6 @@ const MaterialModules = [
   MatProgressBarModule,
   MatRippleModule,
   MatBottomSheetModule,
-  MatDialogModule,
   MatSnackBarModule,
   MatTooltipModule,
   MatPaginatorModule,

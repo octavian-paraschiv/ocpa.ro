@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,10 +15,7 @@ import { OverlayService } from 'src/app/services/overlay.service';
 @Component({ selector: 'base-component', template: '' })
 export abstract class BaseComponent {
     protected readonly translate = inject(TranslateService);
-    
-    protected readonly dialog = inject(MatDialog);
-    protected readonly dialogBS = inject(BsModalService);
-
+    protected readonly dialog = inject(BsModalService);
     protected readonly authService = inject(AuthenticationService);
     protected readonly router = inject(Router);   
     protected readonly popup = inject(MessagePopupService);

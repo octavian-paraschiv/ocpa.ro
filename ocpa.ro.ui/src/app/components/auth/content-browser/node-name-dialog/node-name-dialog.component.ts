@@ -1,9 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Observable, Subject } from 'rxjs';
 import { ContentUnit, ContentUnitType } from 'src/app/models/models-swagger';
 
 export interface NodeNameDialogData {
@@ -18,10 +17,12 @@ export interface NodeNameDialogData {
 })
 export class NodeNameDialogComponent implements OnInit {
     form: UntypedFormGroup;
+    @Input() data: NodeNameDialogData;
+    result$: Subject<string> = new Subject<string>();
+
     constructor(
         private formBuilder: UntypedFormBuilder,
-        public dialogRef: MatDialogRef<NodeNameDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: NodeNameDialogData
+        public bsModalRef: BsModalRef
     ) {
     }
 
@@ -58,7 +59,9 @@ export class NodeNameDialogComponent implements OnInit {
     }
 
     onCancel(): void {
-        this.dialogRef.close(undefined);
+        this.bsModalRef.hide();
+        this.result$.next(undefined);
+        this.result$.complete();
     }
 
     onOk(): void {
@@ -67,14 +70,22 @@ export class NodeNameDialogComponent implements OnInit {
             return;
         }
 
+        this.bsModalRef.hide();
+
         if (this.editMode)
-            this.dialogRef.close(`${this.data.node.path}/${this.f.name.value}`);
+            this.result$.next(`${this.data.node.path}/${this.f.name.value}`);
         else
-            this.dialogRef.close(`${this.data.parent.path}/${this.data.parent.name}/${this.f.name.value}`);
+            this.result$.next(`${this.data.parent.path}/${this.data.parent.name}/${this.f.name.value}`);
+
+        this.result$.complete();
     }
 
-    static showDialog(dialog: MatDialog, data: NodeNameDialogData): Observable<string> {
-        const dialogRef = dialog?.open(NodeNameDialogComponent, { data });
-        return dialogRef.afterClosed().pipe(map(result => result as string));
+    static showDialog(modalService: BsModalService, data: NodeNameDialogData): Observable<string> {
+        const bsModalRef: BsModalRef<NodeNameDialogComponent> = modalService.show(NodeNameDialogComponent, {
+                initialState: { data },
+                class: 'bs-modal'      
+              });
+          
+        return bsModalRef.content.result$;
     }
 }

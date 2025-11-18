@@ -1,9 +1,9 @@
-<mat-card class="mat-user-card">
-    <mat-card-header style="padding: 0; padding-left: 0.1rem; padding-top: 0.1rem; padding-bottom: 0.1rem;">
-        <mat-card-subtitle [innerHtml]="'devices-dialog.info' | translate: { device: device?.deviceId} "></mat-card-subtitle>
-    </mat-card-header>
-    <mat-divider style="margin: 0;"></mat-divider>
-    <mat-card-content class="mat-user-card-content" style="padding: 0;">
+<div class="card mat-user-card">
+    <div class="card-header py-1 px-2">
+        <label class="card-subtitle mb-0" [innerHtml]="'devices-dialog.info' | translate: { device: device?.deviceId}"></label>
+    </div>
+    <hr class="my-0" />
+    <div class="card-body mat-user-card-content p-3">
         <div style="display: grid;">
             <ul class="no-bullets">
                 <li *ngFor="let item of deviceInfo | keyvalue">
@@ -12,11 +12,11 @@
                     </span>
                 </li>
             </ul>
-            <div mat-dialog-actions class="user-form-control">
-                <button style="margin: 0; padding: 0; margin-right: 15px;" mat-raised-button color="primary" (click)="onClose()"cdkFocusInitial>
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-primary" (click)="onClose()" autofocus>
                     {{'Close' | translate}}
                 </button>
             </div>
         </div>
-    </mat-card-content>
-</mat-card>
+    </div>
+</div>

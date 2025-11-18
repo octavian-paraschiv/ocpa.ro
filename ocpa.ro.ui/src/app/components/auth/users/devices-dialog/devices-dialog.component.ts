@@ -1,8 +1,8 @@
 import { formatDate } from '@angular/common';
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { Component, Input, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Observable } from 'rxjs';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Observable, Subject } from 'rxjs';
 import { RegisteredDevice } from 'src/app/models/models-swagger';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 
@@ -12,11 +12,13 @@ import { AuthenticationService } from 'src/app/services/api/authentication.servi
     templateUrl: './devices-dialog.component.html'
 })
 export class DevicesDialogComponent implements OnInit {
+    @Input() device: RegisteredDevice;
     deviceInfo: any = undefined;
+    result$: Subject<any> = new Subject<any>();
+
     constructor(
         private authService: AuthenticationService,
-        public dialogRef: MatDialogRef<DevicesDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public device: RegisteredDevice
+        public bsModalRef: BsModalRef<DevicesDialogComponent>
     ) {
     }
 
@@ -46,11 +48,16 @@ export class DevicesDialogComponent implements OnInit {
     }
 
     onClose() {
-        this.dialogRef.close();
+        this.bsModalRef.hide();
+        this.result$.complete();
     }
 
-    static showDialog(dialog: MatDialog, device: RegisteredDevice = undefined): Observable<any> {
-        const dialogRef = dialog?.open(DevicesDialogComponent, { data: device });
-        return dialogRef.afterClosed();
+    static showDialog(modalService: BsModalService, device: RegisteredDevice = undefined): Observable<any> {
+        const bsModalRef: BsModalRef<DevicesDialogComponent> = modalService.show(DevicesDialogComponent, {
+            initialState: { device },
+            class: 'bs-modal'      
+        });
+
+        return bsModalRef.content.result$;
     }
 }

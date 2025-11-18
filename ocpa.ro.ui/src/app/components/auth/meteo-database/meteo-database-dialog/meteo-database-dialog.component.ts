@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Observable } from 'rxjs';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Observable, Subject } from 'rxjs';
 import { MeteoDataBrowserComponent } from 'src/app/components/non-auth/meteo/meteo-data-browser/meteo-data-browser.component';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 
@@ -12,11 +12,12 @@ import { AuthenticationService } from 'src/app/services/api/authentication.servi
 })
 export class MeteoDatabaseDialogComponent implements OnInit {
     @ViewChild('meteoDataBrowser', { static: true }) dataBrowser: MeteoDataBrowserComponent;
+    @Input() dbi: number | undefined;
+    result$: Subject<any> = new Subject<any>();
 
     constructor(
         private authService: AuthenticationService,
-        public dialogRef: MatDialogRef<MeteoDatabaseDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public dbi: number | undefined
+        public bsModalRef: BsModalRef
     ) {
     }
 
@@ -32,20 +33,16 @@ export class MeteoDatabaseDialogComponent implements OnInit {
     }
 
     onClose(): void {
-        this.dialogRef.close();
+        this.bsModalRef.hide();
+        this.result$.complete();
     }
 
-    static showDialog(dialog: MatDialog, dbi: number | undefined): Observable<any> {
-        const dialogRef = dialog?.open(MeteoDatabaseDialogComponent, 
-            { 
-                data: dbi,
-                width: '99vw',
-                minWidth: '99vw',
-                maxWidth: '99vw',
-                height: '99vh',
-                minHeight: '99vh',
-                maxHeight: '99vh',
+    static showDialog(modalService: BsModalService, dbi: number | undefined): Observable<any> {
+        const bsModalRef: BsModalRef<MeteoDatabaseDialogComponent> = modalService.show(MeteoDatabaseDialogComponent, { 
+                initialState: { dbi },
+                class: 'meteo-db-modal'  
             });
-        return dialogRef.afterClosed();
+        
+        return bsModalRef.content.result$;
     }
 }

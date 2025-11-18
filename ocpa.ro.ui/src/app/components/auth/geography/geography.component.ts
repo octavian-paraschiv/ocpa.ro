@@ -64,7 +64,7 @@ export class GeographyComponent extends BaseAuthComponent implements OnInit {
   }
 
   saveCity(city: CityDetail = undefined): void {
-    CityDialogComponent.showDialog(this.dialogBS, city).pipe(
+    CityDialogComponent.showDialog(this.dialog, city).pipe(
       first(),
       untilDestroyed(this),
       switchMap(cd => cd?.id === -1 ? of(cd) : this._saveCity(cd))
@@ -94,7 +94,7 @@ export class GeographyComponent extends BaseAuthComponent implements OnInit {
   }
 
   onDelete(city: CityDetail): void {
-    MessageBoxComponent.show(this.dialogBS, {
+    MessageBoxComponent.show(this.dialog, {
       title: this.translate.instant('title.confirm'),
       message: this.translate.instant('geography.delete-city', { name: city.name })
     } as MessageBoxOptions)

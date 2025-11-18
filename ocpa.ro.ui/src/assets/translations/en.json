@@ -199,6 +199,7 @@
         "logged-in": "[CONNECTED]",
         "type": "Type",
         "otp": "Two steps Authentication",
+        "disabled": "Disabled account",
         "device-list": "Registered devices:",
         "view-device": "View device '{{deviceId}}'",
         "del-device": "Delete '{{deviceId}}'",

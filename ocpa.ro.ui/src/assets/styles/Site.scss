@@ -138,6 +138,8 @@ input::-ms-clear {
 
 .mat-column-crud {
     @extend .mat-column;
+    margin-left: 0.3rem !important;
+    margin-right: 0.3rem !important;
     width: 16px;
     min-width: 16px;
     max-width: 16px;

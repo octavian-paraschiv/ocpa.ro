@@ -123,7 +123,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
   }
 
   deleteMenu(menu: Menu) {
-    MessageBoxComponent.show(this.dialogBS, {
+    MessageBoxComponent.show(this.dialog, {
       title: this.translate.instant('title.confirm'),
       message: this.translate.instant('apps-menus.delete-menu', { name: menu.name })
     } as MessageBoxOptions)
@@ -147,7 +147,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
   }
 
   deleteApp(app: Application) {
-    MessageBoxComponent.show(this.dialogBS, {
+    MessageBoxComponent.show(this.dialog, {
       title: this.translate.instant('title.confirm'),
       message: this.translate.instant('apps-menus.delete-app', { name: app.name })
     } as MessageBoxOptions)
@@ -171,7 +171,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
   }
 
   saveMenu(menu: Menu = undefined) {
-    MenuDialogComponent.showDialog(this.dialogBS, menu)
+    MenuDialogComponent.showDialog(this.dialog, menu)
       .pipe(
         untilDestroyed(this),
         switchMap(menu => menu?.id === -1 ? of(menu) : this._saveMenu(menu))
@@ -202,7 +202,7 @@ export class AppsMenusComponent extends BaseAuthComponent implements OnInit {
   }
 
   saveApp(app: Application = undefined) {
-    AppDialogComponent.showDialog(this.dialogBS, app)
+    AppDialogComponent.showDialog(this.dialog, app)
       .pipe(
         untilDestroyed(this),
         switchMap(app => app?.id === -1 ? of(app) : this._saveApp(app))

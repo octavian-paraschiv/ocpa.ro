@@ -25,13 +25,20 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     faEdit = faSquarePen;
     faRemove = faSquareMinus;
     faCheck = faCheck;
-    size = "grow-6";
+    size = "grow-8";
 
     users: User[] = [];
-    usersColumns: string[] = ['user-add', 'user-edit', 'user-delete', 'user-loginId', 'user-email', 'user-type', 'user-otp', 'user-attempts', 'user-disabled', 'filler'];
+    usersColumns: string[] = [
+        'user-add', 'user-edit', 'user-delete', 'login-id', 
+        'email', 'type', 'otp', 'attempts', 
+        'disabled'
+    ];
 
     devices: RegisteredDevice[] = [];
-    devicesColumns: string[] = ['device-view', 'device-delete', 'device-deviceId', 'device-loginId', 'device-timestamp', 'device-ipaddress', 'filler'];
+    devicesColumns: string[] = [
+        'device-view', 'device-delete', 'device-id', 'device-login-id', 
+        'device-login-time', 'device-login-ipaddr'
+    ];
 
     private readonly appMenuService = inject(AppMenuManagementService);
     private readonly userService = inject(UserService);
@@ -49,7 +56,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     onDelete(loginId: string) {
-        MessageBoxComponent.show(this.dialogBS, {
+        MessageBoxComponent.show(this.dialog, {
             title: this.translate.instant('title.confirm'),
             message: this.translate.instant('users.delete-user', { loginId })
         } as MessageBoxOptions)
@@ -71,7 +78,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     saveUser(user: User = undefined) {
-        UserDialogComponent.showDialog(this.dialogBS, user).pipe(
+        UserDialogComponent.showDialog(this.dialog, user).pipe(
             first(),
             untilDestroyed(this),
             switchMap(ui => ui?.id === -1 ? of(ui) : this._saveUser(ui))
@@ -123,7 +130,7 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     }
 
     onDeleteDevice(deviceId: string) {
-        MessageBoxComponent.show(this.dialogBS, {
+        MessageBoxComponent.show(this.dialog, {
             title: this.translate.instant('title.confirm'),
             message: this.translate.instant('users.delete-device', { deviceId: deviceId })
         } as MessageBoxOptions)

@@ -87,3 +87,12 @@ app-users {
     right: 10px;
     top: 10px;
 }
+
+.mat-column-device-view {
+    @extend .mat-column-crud;
+    color: navy;
+}
+.mat-column-device-delete {
+    @extend .mat-column-crud;
+    color: red;
+}
