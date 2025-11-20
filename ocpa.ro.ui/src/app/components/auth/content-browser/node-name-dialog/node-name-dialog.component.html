@@ -1,10 +1,10 @@
-<div class="card mat-user-card">
+<div class="card card-user">
     <div class="card-header py-1 px-2">
         <label class="card-subtitle mb-0" [innerHtml]="title | translate: { name: titleName }"></label>
     </div>
     <hr class="my-0" />
-    <div class="card-body mat-user-card-content p-0">
-        <form mat-dialog-content class="node-name-dialog-form" [formGroup]="form" (ngSubmit)="onOk()"
+    <div class="card-body card-user-content p-0">
+        <form class="node-name-dialog-form" [formGroup]="form" (ngSubmit)="onOk()"
             style="padding: 1rem;">
             <div style="display: grid;">
                 <div class="form-group node-name-form-control">

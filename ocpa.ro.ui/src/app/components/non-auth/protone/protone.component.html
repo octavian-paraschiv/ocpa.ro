@@ -1,10 +1,10 @@
 <div style="text-align: start;">
     <br>
-    <label class="mat-body">{{'protone.desc' | translate}}</label>
+    <label class="normal-font-label">{{'protone.desc' | translate}}</label>
     <br><br>
     <ng-container *ngIf="latestBuild">
         <ul class="no-bullets">
-            <li><label class="mat-body-strong">{{'protone.latest-release' | translate}}</label></li>
+            <li><label class="strong-font-label">{{'protone.latest-release' | translate}}</label></li>
             <li>
                 <span>
                     <label>&nbsp;*&nbsp;</label>
@@ -17,7 +17,7 @@
     <br>
     <ng-container *ngIf="legacyBuilds?.length> 0">
         <ul class="no-bullets">
-            <li><label class="mat-body-strong">{{'protone.earlier-releases' | translate}}</label></li>
+            <li><label class="strong-font-label">{{'protone.earlier-releases' | translate}}</label></li>
             <li *ngFor="let bi of legacyBuilds">
                 <span>
                     <label>&nbsp;*&nbsp;</label>
@@ -30,7 +30,7 @@
     <br>
     <ng-container *ngIf="developmentBuilds?.length> 0">
         <ul class="no-bullets">
-            <li><label class="mat-body-strong">{{'protone.dev-builds' | translate}}</label></li>
+            <li><label class="strong-font-label">{{'protone.dev-builds' | translate}}</label></li>
             <li *ngFor="let bi of developmentBuilds">
                 <span>
                     <label>&nbsp;*&nbsp;</label>
@@ -42,7 +42,7 @@
     </ng-container>
     <br>
     <ul class="no-bullets">
-        <li><label class="mat-body-strong">{{'protone.other-info' | translate}}</label></li>
+        <li><label class="strong-font-label">{{'protone.other-info' | translate}}</label></li>
         <li [innerHtml]="'protone.link-report-bugs' | translate"></li>
         <li [innerHtml]="'protone.link-source-code' | translate"></li>
         <li [innerHtml]="'protone.dev-requirements' | translate"></li>

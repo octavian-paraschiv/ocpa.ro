@@ -2,10 +2,10 @@
   <label class="card-subtitle cities-list-name">{{ 'geography.city-list' | translate }}</label>
   <table class="table table-bordered table-hover table-sm app-colors cities-list">
     <thead>
-      <tr class="mat-mdc-header-cell">
-        <th *ngFor="let col of citiesColumns, index as idx" class="{{ 'mat-column-' + col }}">
+      <tr class="grid-header-cell">
+        <th *ngFor="let col of citiesColumns, index as idx" class="{{ 'grid-column-' + col }}">
           <ng-container *ngIf="idx === 0">
-            <a class="btn-crud mat-column-city-add" (click)="saveCity()"
+            <a class="btn-crud grid-column-city-add" (click)="saveCity()"
               title="{{ 'geography.add-city' | translate }}">
               <fa-icon [icon]="faAdd" [transform]="size" style="background-color: white; font-weight: bold;"></fa-icon>
             </a>
@@ -21,7 +21,7 @@
         <td></td>
         <td>
           <ng-container>
-            <a class="btn-crud mat-column-city-edit" (click)="saveCity(city)" 
+            <a class="btn-crud grid-column-city-edit" (click)="saveCity(city)" 
               title="{{ 'geography.edit-city' | translate: { name: city.name } }}">
               <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
             </a>
@@ -29,7 +29,7 @@
         </td>
         <td>
           <ng-container *ngIf="!city.isDefault">
-            <a class="btn-crud mat-column-city-delete" (click)="onDelete(city)"
+            <a class="btn-crud grid-column-city-delete" (click)="onDelete(city)"
               title="{{ 'geography.del-city' | translate: { name: city.name } }}">
               <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
           </a>

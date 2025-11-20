@@ -1,3 +1,4 @@
+import { TreeModule } from '@ali-hm/angular-tree-component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { GoogleMapsModule } from '@angular/google-maps';
@@ -30,5 +31,6 @@ export const modules = [
     GoogleMapsModule,
 
     MaterialModule,
-    BootstrapModule
+    BootstrapModule,
+    TreeModule
 ];

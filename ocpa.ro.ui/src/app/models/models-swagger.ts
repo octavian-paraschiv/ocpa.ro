@@ -90,6 +90,7 @@ export interface ContentUnit {
     size?: number;
     children?: ContentUnit[] | undefined;
     selected?: boolean;
+    expanded?: boolean;
 }
 
 export enum ContentUnitType {
@@ -150,6 +151,7 @@ export interface Menu {
     menuIcon?: string | undefined;
     builtin?: boolean;
 }
+
 export interface Menus {
     publicMenus?: VMenu[] | undefined;
     appMenus?: AppMenu[] | undefined;

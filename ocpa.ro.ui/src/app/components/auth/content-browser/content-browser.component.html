@@ -17,7 +17,7 @@
         </a>
     </div>
     <app-content-tree #tree id="content-tree" (nodeSelected)="onNodeSelected($event)"></app-content-tree>
-    <label mat-small id="mde-path">{{contentPath}}</label>
+    <label id="mde-path">{{contentPath}}</label>
     <textarea id="mde-edit" [(ngModel)]="content" (keydown)="onKeyDown()" [disabled]="!editable" ></textarea>
     <app-wiki-viewer id="mde-preview" #viewer [ngStyle]="previewStyle"></app-wiki-viewer>
     <img *ngIf="image" id="mde-preview-image" src="{{image}}" />

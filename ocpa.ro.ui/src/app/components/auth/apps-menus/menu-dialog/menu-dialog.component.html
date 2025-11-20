@@ -1,9 +1,9 @@
-<div class="card mat-menu-card">
+<div class="card card-menu">
   <div class="card-header py-1 px-2">
     <label class="card-subtitle mb-0" [innerHtml]="title | translate: {name: menu?.name}"></label>
   </div>
   <hr class="my-0" />
-  <div class="card-body mat-menu-card-content p-0">
+  <div class="card-body card-menu-content p-0">
     <form [formGroup]="menuForm" (ngSubmit)="onOk()" class="menu-dialog-form p-3">
       <div class="d-grid gap-2">
         <div class="form-group menu-form-control">

@@ -2,10 +2,10 @@
     <label class="card-subtitle users-list-name">{{ 'users.list' | translate }}</label>
     <table class="table table-bordered table-hover table-sm app-colors">
         <thead>
-            <tr class="mat-mdc-header-cell">
-                <th *ngFor="let col of usersColumns, index as idx" class="{{ 'mat-column-' + col }}">
+            <tr class="grid-header-cell">
+                <th *ngFor="let col of usersColumns, index as idx" class="{{ 'grid-column-' + col }}">
                     <ng-container *ngIf="idx === 0">
-                        <a class="btn-crud mat-column-user-add" (click)="saveUser()" 
+                        <a class="btn-crud grid-column-user-add" (click)="saveUser()" 
                             title="{{'users.add-user' | translate}}">
                             <fa-icon [icon]="faAdd" [transform]="size" style="background-color: white; font-weight: bold;"></fa-icon>
                         </a>
@@ -25,7 +25,7 @@
                 <!-- Edit Column -->
                 <td>
                     <ng-container>
-                        <a class="btn-crud mat-column-user-edit" (click)="saveUser(user)"
+                        <a class="btn-crud grid-column-user-edit" (click)="saveUser(user)"
                             title="{{ 'users.edit-user' | translate: { loginId: user.loginId } }}">
                             <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
                         </a>
@@ -34,7 +34,7 @@
                 <!-- Delete Column -->
                 <td>
                     <ng-container *ngIf="user.loginId !== currentLoginId">
-                        <a class="btn-crud mat-column-user-delete" (click)="onDelete(user.loginId)"
+                        <a class="btn-crud grid-column-user-delete" (click)="onDelete(user.loginId)"
                         title="{{'users.del-user' | translate: { loginId: user.loginId } }}">
                             <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
                         </a>
@@ -72,8 +72,8 @@
     <label class="card-subtitle devices-list-name">{{ 'users.device-list' | translate }}</label>
     <table class="table table-bordered table-hover table-sm app-colors">
         <thead>
-            <tr class="mat-mdc-header-cell">
-                <th *ngFor="let col of devicesColumns, index as idx" class="{{ 'mat-column-' + col }}">
+            <tr class="grid-header-cell">
+                <th *ngFor="let col of devicesColumns, index as idx" class="{{ 'grid-column-' + col }}">
                     <ng-container *ngIf="idx === 0 || idx === 1">
                     </ng-container>
                     <ng-container *ngIf="idx >= 2">
@@ -86,7 +86,7 @@
             <tr *ngFor="let device of devices">
                 <td>
                     <ng-container>
-                        <a class="btn-crud mat-column-device-view" (click)="onViewDevice(device)"
+                        <a class="btn-crud grid-column-device-view" (click)="onViewDevice(device)"
                             title="{{ 'users.view-device' | translate: { deviceId: device.deviceId } }}">
                             <fa-icon [icon]="faEye" [transform]="size"></fa-icon>
                         </a>
@@ -94,7 +94,7 @@
                 </td>
                 <td>
                     <ng-container>
-                        <a class="btn-crud mat-column-device-delete" (click)="onDeleteDevice(device.deviceId)"
+                        <a class="btn-crud grid-column-device-delete" (click)="onDeleteDevice(device.deviceId)"
                             title="{{ 'users.del-device' | translate: { deviceId: device.deviceId } }}">
                             <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
                         </a>

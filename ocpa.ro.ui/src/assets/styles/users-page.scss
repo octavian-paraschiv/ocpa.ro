@@ -16,16 +16,16 @@ app-users {
     grid-area: dl;
 }
 
-.mat-user-card {
+.card-user {
     margin: 0;
 }
 
-.mat-user-card-content {
+.card-user-content {
     margin: 0;
     padding: 0;
 }
 
-.mat-user-card-header {
+.card-user-header {
     display: block;
     margin: 0;
     padding: 0;
@@ -41,27 +41,27 @@ app-users {
     height: 50%;
 }
 
-.mat-column-user-add {
-    @extend .mat-column-crud;
+.grid-column-user-add {
+    @extend .grid-column-crud;
     color: green;
 }
 
-.mat-column-user-edit {
-    @extend .mat-column-crud;
+.grid-column-user-edit {
+    @extend .grid-column-crud;
     color: navy;
 }
 
-.mat-column-user-delete {
-    @extend .mat-column-crud;
+.grid-column-user-delete {
+    @extend .grid-column-crud;
     color: red;
 }
 
-.mat-column-user-loginId {
+.grid-column-user-loginId {
     width: auto;
     max-width: 200px;
 }
 
-.mat-column-user-type {
+.grid-column-user-type {
     width: auto;
     max-width: 200px;
 }
@@ -88,11 +88,11 @@ app-users {
     top: 10px;
 }
 
-.mat-column-device-view {
-    @extend .mat-column-crud;
+.grid-column-device-view {
+    @extend .grid-column-crud;
     color: navy;
 }
-.mat-column-device-delete {
-    @extend .mat-column-crud;
+.grid-column-device-delete {
+    @extend .grid-column-crud;
     color: red;
 }

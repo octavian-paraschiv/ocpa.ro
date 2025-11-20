@@ -1,7 +1,4 @@
-﻿@use '@angular/material' as mat;
-@use 'custom-theme.scss';
-
-@import './variables.scss';
+﻿@import './variables.scss';
 @import './navbar.scss';
 @import './homepage.scss';
 @import './smart-city-search.scss';
@@ -17,11 +14,6 @@
 @import './overlay.scss';
 @import './wiki-browser.scss';
 @import './custom-checkbox.scss';
-
-html {
-    --mat-table-header-container-height: 0.8rem !important;
-    --mat-table-row-item-container-height: auto !important;
-}
 
 table {
     border-collapse: collapse;
@@ -47,17 +39,22 @@ table {
     border-bottom: none;
   }
 
+.small-font-label {
+    font-size: 0.75rem;
+}
+.normal-font-label {
+    font-size: 0.8rem;
+}
+.strong-font-label {
+    font-size: 1rem;
+}
+
 .app-colors {
     color: $forecolor !important;
     background-color: $backcolor !important;
 }
 
-.mat-mdc-header-row {
-    height: 0.8rem !important;
-}
-
-body,
-:root {
+body, :root {
     color: $forecolor;
     background-color: $backcolor;
     font-family: $font-family;
@@ -132,12 +129,12 @@ input::-ms-clear {
     visibility: hidden;
 }
 
-.mat-column {
+.grid-column {
     margin: 0;
 }
 
-.mat-column-crud {
-    @extend .mat-column;
+.grid-column-crud {
+    @extend .grid-column;
     margin-left: 0.3rem !important;
     margin-right: 0.3rem !important;
     width: 16px;
@@ -145,14 +142,13 @@ input::-ms-clear {
     max-width: 16px;
 }
 
-.mat-mdc-header-cell {
+.grid-header-cell {
     background-color: $forecolor !important;
     color: $backcolor !important;
     height: auto !important;
     vertical-align: middle;
 }
-
-.session-expired-message .mat-dialog-container {
+.session-expired-message {
     z-index: 2000;
 }
 
@@ -211,10 +207,6 @@ input::-ms-clear {
     .mdc-snackbar__surface {
         background-color: maroon !important;
     }
-}
-
-.mat-mdc-dialog-content {
-    max-height: unset !important;
 }
 
 .unavailable-page {

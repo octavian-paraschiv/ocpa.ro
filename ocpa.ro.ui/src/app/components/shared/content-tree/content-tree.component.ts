@@ -1,8 +1,7 @@
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatTreeNestedDataSource } from '@angular/material/tree';
-import { faFileText } from '@fortawesome/free-regular-svg-icons';
-import { faFolderOpen, faFolderClosed, faFileImage, faFile, faQuestion, faFileCircleXmark, faFileContract, faBook, faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { ITreeOptions, TreeComponent, TreeModel, TreeNode } from '@ali-hm/angular-tree-component';
+import { TREE_ACTIONS, TreeOptions } from '@ali-hm/angular-tree-component/lib/models/tree-options.model';
+import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { faFileText, faFolderOpen, faFolderClosed, faFileImage, faFile, faQuestion, faBook, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ContentUnit, ContentUnitType } from 'src/app/models/models-swagger';
 import { ContentApiService } from 'src/app/services/api/content-api.service';
@@ -14,121 +13,105 @@ import { ContentApiService } from 'src/app/services/api/content-api.service';
 })
 export class ContentTreeComponent implements OnInit {
   @Input() path: string = '.';
-  @Input() filter: string = undefined;
+  @Input() filter?: string;
   @Input() level: number = 0;
-  @Input() markdownView: boolean = false;
-
+  @Input() markdownView = false;
   @Input() initialLoad = true;
   @Output() nodeSelected = new EventEmitter<ContentUnit>();
 
+  @ViewChild('treeView', { static: true }) treeView: TreeComponent;
+
+  nodes: ContentUnit[] = [];
+  
+  options: ITreeOptions = {
+    useCheckbox: false,
+    displayField: 'name',
+    idField: 'path',
+    isExpandedField: 'expanded',
+    hasChildrenField: 'children',
+    useVirtualScroll: false,
+
+    actionMapping: {
+      mouse: {
+        click: (tree : TreeModel, node: TreeNode, event: Event) => {
+          this.selectNode(node.data);
+    		}
+      }
+    }
+
+  };
+
   folder = faFolderClosed;
   folderExpanded = faFolderOpen;
-
   markdownIndexFolder = faBook;
   markdownIndexFolderExpanded = faBookOpen;
-
   imageFile = faFileImage;
   textFile = faFileText;
   otherFile = faFile;
   unknown = faQuestion;
 
-  size = "grow-2";
-
-  treeControl = new NestedTreeControl<ContentUnit>(node => node.children);
-  dataSource = new MatTreeNestedDataSource<ContentUnit>();
-
-  constructor(private contentService: ContentApiService,
-    private cdr: ChangeDetectorRef
-  ) {
-  }
+  constructor(private contentService: ContentApiService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    if (!!this.initialLoad) {
+    if (this.initialLoad) {
       this.reloadAndSelect(undefined);
     }
   }
 
   reloadAndSelect(path: string) {
+    let id = 1;
     this.contentService.listContent(this.path, this.level, this.filter, this.markdownView)
       .pipe(untilDestroyed(this))
       .subscribe(res => {
-        this.dataSource.data = res.children;
-        const nodes = this.flattenTree(res.children);
-        const node = nodes.find(node => `${node.path}/${node.name}` === path) ?? nodes[0];
-        this.selectAndExpandNode(node);
+        this.nodes = res.children;
+        this.treeView.treeModel.collapseAll();
+        const flatNodes = this.flattenTree(this.nodes);
+        flatNodes.forEach(node => {
+          node.selected = false;
+          node.expanded = false;
+        });
+        const node = flatNodes.find(n => `${n.path}/${n.name}` === path) ?? flatNodes[0];
+        this.selectNode(node);
       });
   }
 
-  select(node: ContentUnit) {
-    this.flattenTree(this.dataSource.data).forEach(n => n.selected = false);
+  selectNode(node: ContentUnit) {
+    this.flattenTree(this.nodes).forEach(n => {
+      n.selected = false;
+      n.expanded = false;
+    });
+
     if (node) {
       node.selected = true;
+      this.nodeSelected.emit(node);
     }
-    this.nodeSelected.emit(node);
-  }
-  
-  flattenTree(nodes: ContentUnit[]): ContentUnit[] {
-    let flatArray: ContentUnit[] = [];
-  
-    function traverse(node: ContentUnit) {
-      flatArray.push(node);
-      if (node.children) {
-        node.children.forEach(child => traverse(child));
-      }
-    }
-  
-    nodes.forEach(node => traverse(node));
-    return flatArray.sort((n1, n2) => n1?.path?.localeCompare(n2?.path));
-  }  
-  
-  selectAndExpandNode(node: ContentUnit) {
-    this.flattenTree(this.dataSource.data).forEach(node => node.selected = false);
-    if (node) {
-      const path = this.findNode(this.dataSource.data, node);
-      if (path) {
-        path.forEach(n => this.treeControl.expand(n));
-        node.selected = true;
-        this.nodeSelected.emit(node);
-        this.cdr.detectChanges(); // Ensure change detection picks up the changes
-      }
-    }
-  }
-  
-  findNode(nodes: ContentUnit[], targetNode: ContentUnit, path: ContentUnit[] = []): ContentUnit[] | null {
-    for (let node of nodes) {
-      const currentPath = [...path, node];
-      if (node === targetNode) {
-        return currentPath;
-      }
-      if (node.children) {
-        const found = this.findNode(node.children, targetNode, currentPath);
-        if (found) {
-          return found;
-        }
-      }
-    }
-    return null;
   }
 
-  hasChild = (_: number, node: ContentUnit) => node?.children?.length > 0;
+  flattenTree(nodes: ContentUnit[]): ContentUnit[] {
+    const flatArray: ContentUnit[] = [];
+    const traverse = (node: ContentUnit) => {
+      flatArray.push(node);
+      if (node.children) node.children.forEach(traverse);
+    };
+    nodes.forEach(traverse);
+    return flatArray.sort((a, b) => a?.path?.localeCompare(b?.path));
+  }
+
+  nodeClass(node: ContentUnit) {
+    if (node?.type?.length > 0)
+      return `node-${node.type}`;
+    return 'node-None';
+  }
 
   icon(node: ContentUnit) {
-    switch(node?.type) {
+    switch (node?.type) {
       case ContentUnitType.Folder:
-        return this.treeControl.isExpanded(node) ? this.folderExpanded : this.folder;
-
+        return node.expanded ? this.folderExpanded : this.folder;
       case ContentUnitType.MarkdownIndexFolder:
-        return this.treeControl.isExpanded(node) ? this.markdownIndexFolderExpanded : this.markdownIndexFolder;
-
+        return node.expanded ? this.markdownIndexFolderExpanded : this.markdownIndexFolder;
       case ContentUnitType.File:
-        return node?.name?.toLocaleLowerCase()?.endsWith('.md') ? this.textFile :
-          (node?.name?.toLocaleLowerCase()?.endsWith('.png') || 
-          node?.name?.toLocaleLowerCase()?.endsWith('.bmp') || 
-          node?.name?.toLocaleLowerCase()?.endsWith('.jpg') || 
-          node?.name?.toLocaleLowerCase()?.endsWith('.jpeg') || 
-          node?.name?.toLocaleLowerCase()?.endsWith('.gif')) ? this.imageFile : 
-            this.otherFile;
-
+        return node.name.toLowerCase().endsWith('.md') ? this.textFile :
+          /\.(png|bmp|jpg|jpeg|gif)$/i.test(node.name) ? this.imageFile : this.otherFile;
       default:
         return this.unknown;
     }

@@ -32,46 +32,29 @@
     grid-area: aml;
 }
 
-.menu-row,
-.app-row,
-.app-menu-row {
-    height: 2rem !important;
-}
-
-.menu-header-row,
-.app-header-row,
-.app-menu-header-row {
-    height: 2.5rem !important;
-}
-
-.mat-column-menu-add,
-.mat-column-app-add {
-    @extend .mat-column-crud;
+.grid-column-menu-add,
+.grid-column-app-add {
+    @extend .grid-column-crud;
     color: green;
 }
 
-.mat-column-menu-edit,
-.mat-column-app-edit {
-    @extend .mat-column-crud;
+.grid-column-menu-edit,
+.grid-column-app-edit {
+    @extend .grid-column-crud;
     color: navy;
 }
 
-.mat-column-menu-delete,
-.mat-column-app-delete {
-    @extend .mat-column-crud;
+.grid-column-menu-delete,
+.grid-column-app-delete {
+    @extend .grid-column-crud;
     color: red;
 }
 
-.mat-column-app-name
-.mat-column-menu-name, 
-.mat-column-menu-display-mode {
+.grid-column-app-name
+.grid-column-menu-name, 
+.grid-column-menu-display-mode {
     width: auto;
     max-width: 200px;
-    text-wrap-mode: nowrap;
-}
-
-.mat-column-menu-url {
-    width: auto;
     text-wrap-mode: nowrap;
 }
 

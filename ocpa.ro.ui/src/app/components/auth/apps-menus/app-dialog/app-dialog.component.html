@@ -1,9 +1,9 @@
-<div class="card mat-app-card">
+<div class="card card-app">
   <div class="card-header py-1 px-2">
     <label class="card-subtitle mb-0" [innerHtml]="title | translate: {name: app?.name}"></label>
   </div>
   <hr class="my-0" />
-  <div class="card-body mat-app-card-content p-0">
+  <div class="card-body card-app-content p-0">
     <form class="app-dialog-form p-3" [formGroup]="appForm" (ngSubmit)="onOk()">
       <div class="d-grid gap-2">
         <div class="form-group app-form-control">

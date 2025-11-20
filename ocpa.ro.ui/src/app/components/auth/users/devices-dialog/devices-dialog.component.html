@@ -1,9 +1,9 @@
-<div class="card mat-user-card">
+<div class="card card-user">
     <div class="card-header py-1 px-2">
         <label class="card-subtitle mb-0" [innerHtml]="'devices-dialog.info' | translate: { device: device?.deviceId}"></label>
     </div>
     <hr class="my-0" />
-    <div class="card-body mat-user-card-content p-3">
+    <div class="card-body card-user-content p-3">
         <div style="display: grid;">
             <ul class="no-bullets">
                 <li *ngFor="let item of deviceInfo | keyvalue">

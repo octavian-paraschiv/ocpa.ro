@@ -1,9 +1,9 @@
-<div class="card mat-user-card">
+<div class="card card-user">
     <div class="card-header py-1 px-2">
         <label class="card-subtitle mb-0" [innerHtml]="title | translate: {name: city?.name}"></label>
     </div>
     <hr class="my-0" />
-    <div class="card-body p-0 mat-user-card-content">
+    <div class="card-body p-0 card-user-content">
         <form [formGroup]="cityForm" (ngSubmit)="onOk()" class="user-dialog-form p-3">
             <div class="form d-flex">
                 <div class="left flex-grow-1 me-3">

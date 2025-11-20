@@ -16,7 +16,7 @@ import { services } from 'src/app/modules/deps/app.services';
   ],
 
   imports: [ 
-    modules
+    modules,
   ],
 
   providers: [

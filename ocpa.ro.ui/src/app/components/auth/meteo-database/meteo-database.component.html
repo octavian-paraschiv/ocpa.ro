@@ -1,5 +1,5 @@
 <div style="text-align: justify;">
-    <label mat-small *ngIf="studioDownloadUrl?.length > 0" 
+    <label *ngIf="studioDownloadUrl?.length > 0" 
         [innerHtml]="'meteo-db.download-studio-link' | translate: { url: studioDownloadUrl }">
     </label>
 </div>
@@ -8,8 +8,8 @@
     <label class="card-subtitle databases-list-name">{{ 'meteo-db.db-list' | translate }}</label>
     <table class="table table-bordered table-hover table-sm app-colors databases-list">
         <thead>
-            <tr class="mat-mdc-header-cell">
-                <th *ngFor="let col of displayedColumns, index as idx" class="{{ 'mat-column-' + col }}">
+            <tr class="grid-header-cell">
+                <th *ngFor="let col of displayedColumns, index as idx" class="{{ 'grid-column-' + col }}">
                 <ng-container *ngIf="idx === 0 || idx === 1 || idx === 2 || idx === 3">
                 </ng-container>
                 <ng-container *ngIf="idx > 3">
@@ -23,7 +23,7 @@
                 <!-- View Column -->
                 <td>
                     <ng-container *ngIf="db.status !== MeteoDbStatus.Absent && db.dataCount > 0">
-                        <a class="btn-crud mat-column-db-view" (click)="view(db)" 
+                        <a class="btn-crud grid-column-db-view" (click)="view(db)" 
                             title="{{'meteo-db.db-view' | translate}}">
                             <fa-icon [icon]="faEye" [transform]="size"></fa-icon>
                         </a>
@@ -32,7 +32,7 @@
                 <!-- Upload Column -->
                 <td>
                     <ng-container *ngIf="db.status !== MeteoDbStatus.Online">
-                        <a class="btn-crud mat-column-db-upload" (click)="upload(db)" 
+                        <a class="btn-crud grid-column-db-upload" (click)="upload(db)" 
                             title="{{'meteo-db.db-upload' | translate}}">
                             <fa-icon [icon]="faUpload" [transform]="size"></fa-icon>
                         </a>
@@ -41,7 +41,7 @@
                 <!-- Delete Column -->
                 <td>
                     <ng-container *ngIf="db.status === MeteoDbStatus.Offline">
-                         <a class="btn-crud mat-column-db-delete" (click)="delete(db)" 
+                         <a class="btn-crud grid-column-db-delete" (click)="delete(db)" 
                             title="{{'meteo-db.db-delete' | translate}}">
                             <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
                         </a>
@@ -50,7 +50,7 @@
                 <!-- Promote Column -->
                 <td>
                     <ng-container *ngIf="db.status === MeteoDbStatus.Offline && db.dataCount > 0">
-                        <a class="btn-crud mat-column-db-promote" (click)="promote(db)" 
+                        <a class="btn-crud grid-column-db-promote" (click)="promote(db)" 
                             title="{{'meteo-db.db-promote' | translate}}">
                             <fa-icon [icon]="faPromote" [transform]="size"></fa-icon>
                         </a>

@@ -5,10 +5,10 @@
         <label class="card-subtitle">{{ 'apps-menus.app-list' | translate }}</label>
         <table class="table table-bordered table-hover table-sm app-colors">
             <thead>
-                <tr class="mat-mdc-header-cell">
-                    <th *ngFor="let col of appsColumns, index as idx" class="{{ 'mat-column-' + col }}">
+                <tr class="grid-header-cell">
+                    <th *ngFor="let col of appsColumns, index as idx" class="{{ 'grid-column-' + col }}">
                         <ng-container *ngIf="idx === 0">
-                            <a class="btn-crud mat-column-menu-add" (click)="saveApp()"
+                            <a class="btn-crud grid-column-menu-add" (click)="saveApp()"
                                 title="{{ 'apps-menus.add-app' | translate }}">
                                 <fa-icon [icon]="faAdd" [transform]="size"
                                     style="background-color: white; font-weight: bold;"></fa-icon>
@@ -35,11 +35,11 @@
                             <ng-container *ngSwitchCase="'app-builtin'">
                                 <fa-icon [icon]="faCheck" [transform]="size" *ngIf="app.builtin"></fa-icon>
                             </ng-container>
-                            <ng-container *ngSwitchCase="'app-add'" class="mat-column-crud">
+                            <ng-container *ngSwitchCase="'app-add'" class="grid-column-crud">
                             </ng-container>
                             <ng-container *ngSwitchCase="'app-edit'">
                                 <ng-container *ngIf="!app.builtin">
-                                    <a class="btn-crud {{ 'mat-column-' + col }}" (click)="saveApp(app)"
+                                    <a class="btn-crud {{ 'grid-column-' + col }}" (click)="saveApp(app)"
                                         title="{{ 'apps-menus.edit-app' | translate: { desc: app.name } }}">
                                         <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
                                     </a>
@@ -47,7 +47,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'app-delete'">
                                 <ng-container *ngIf="!app.builtin">
-                                    <a class="btn-crud {{ 'mat-column-' + col }}" (click)="deleteApp(app)"
+                                    <a class="btn-crud {{ 'grid-column-' + col }}" (click)="deleteApp(app)"
                                         title="{{ 'apps-menus.del-app' | translate: { desc: app.name } }}">
                                         <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
                                     </a>
@@ -65,10 +65,10 @@
         <label class="card-subtitle">{{ 'apps-menus.menu-list' | translate }}</label>
         <table class="table table-bordered table-hover table-sm app-colors">
             <thead>
-                <tr class="mat-mdc-header-cell">
-                    <th *ngFor="let col of menusColumns, index as idx" class="{{ 'mat-column-' + col }}">
+                <tr class="grid-header-cell">
+                    <th *ngFor="let col of menusColumns, index as idx" class="{{ 'grid-column-' + col }}">
                         <ng-container *ngIf="idx === 0">
-                            <a class="btn-crud mat-column-menu-add" (click)="saveMenu()"
+                            <a class="btn-crud grid-column-menu-add" (click)="saveMenu()"
                                 title="{{ 'apps-menus.add-menu' | translate }}">
                                 <fa-icon [icon]="faAdd" [transform]="size"
                                     style="background-color: white; font-weight: bold;"></fa-icon>
@@ -94,11 +94,11 @@
                             <ng-container *ngSwitchCase="'menu-builtin'">
                                 <fa-icon [icon]="faCheck" [transform]="size" *ngIf="menu.builtin"></fa-icon>
                             </ng-container>
-                            <ng-container *ngSwitchCase="'menu-add'" class="mat-column-crud">
+                            <ng-container *ngSwitchCase="'menu-add'" class="grid-column-crud">
                             </ng-container>
                             <ng-container *ngSwitchCase="'menu-edit'">
                                 <ng-container *ngIf="!menu.builtin">
-                                    <a class="btn-crud {{ 'mat-column-' + col }}" (click)="saveMenu(menu)"
+                                    <a class="btn-crud {{ 'grid-column-' + col }}" (click)="saveMenu(menu)"
                                         title="{{ 'apps-menus.edit-menu' | translate: { desc: menu.name } }}">
                                         <fa-icon [icon]="faEdit" [transform]="size"></fa-icon>
                                     </a>
@@ -106,7 +106,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'menu-delete'">
                                 <ng-container *ngIf="!menu.builtin">
-                                    <a class="btn-crud {{ 'mat-column-' + col }}" (click)="deleteMenu(menu)"
+                                    <a class="btn-crud {{ 'grid-column-' + col }}" (click)="deleteMenu(menu)"
                                         title="{{ 'apps-menus.del-menu' | translate: { desc: menu.name } }}">
                                         <fa-icon [icon]="faRemove" [transform]="size"></fa-icon>
                                     </a>
@@ -124,7 +124,7 @@
         <label class="card-subtitle">{{ 'apps-menus.app-menu-list' | translate }}</label>
         <table class="table table-bordered table-hover table-sm app-colors">
             <thead>
-                <tr class="mat-mdc-header-cell">
+                <tr class="grid-header-cell">
                     <th class="two-fields-zone">
                         <div class="two-fields-zone-left"
                             [innerHtml]="'apps-menus.apps-menus-header-menus' | translate"></div>
