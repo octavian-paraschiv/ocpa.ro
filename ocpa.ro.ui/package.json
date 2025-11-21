@@ -6,7 +6,8 @@
     "start": "ng serve --port 4200",
     "build": "ng build",
     "lint": "ng lint",
-    "build:prod": "ng build --base-href / --configuration production"
+    "build:prod": "ng build --base-href / --configuration production",
+    "build:beta": "ng build --base-href /beta/ --configuration production"
   },
   "private": true,
   "dependencies": {

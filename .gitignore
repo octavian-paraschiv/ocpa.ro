@@ -13,3 +13,4 @@ content/Meteo/
 content/auth.db
 content/wiki/
 *.user
+ocpa.ro.api/api/
