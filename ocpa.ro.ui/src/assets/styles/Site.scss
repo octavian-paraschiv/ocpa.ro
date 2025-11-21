@@ -22,15 +22,34 @@ html {
     --mat-table-row-item-container-height: auto !important;
 }
 
+.loading {
+    margin: 10px;
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: 
+    "img txt"
+}
+.loading-img {
+    grid-area: img;
+    width: 30px;
+}
+.loading-txt {
+    grid-area: txt;
+    margin: 0;
+    margin-left: 7px;
+    margin-top: 4px;
+}
+
 .mat-mdc-header-row {
     height: 0.8rem !important;
 }
 
-body,
-:root {
+body, :root {
     color: $forecolor;
     background-color: $backcolor;
     font-family: $font-family;
+    font-size: 14px;
 }
 
 app-root {
