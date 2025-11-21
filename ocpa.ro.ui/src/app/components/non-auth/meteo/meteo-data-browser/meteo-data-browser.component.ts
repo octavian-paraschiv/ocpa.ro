@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import annotationPlugin, { AnnotationOptions } from 'chartjs-plugin-annotation';
-import { BaseChartDirective } from 'ng2-charts';
+import { GoogleChart } from 'angular-google-charts';
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { Helper } from 'src/app/helpers/helper';
@@ -24,7 +24,7 @@ Chart.register(annotationPlugin);
   templateUrl: './meteo-data-browser.component.html'
 })
 export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  {
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  @ViewChild('meteoDataGraph') chart: GoogleChart | undefined;
 
   private readonly geoApi = inject(GeographyApiService);
   private readonly meteoApi = inject(MeteoApiService);
@@ -416,6 +416,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
         delta = Math.max(Math.floor(height / 120) - 1, 3);
 
       else if (chartInstance) {
+        /*
         const line2 = chartInstance.options.plugins.annotation.annotations['line2'] as AnnotationOptions<'line'>;
         if (line2) {
           line2.xMin = this.selectedDate ?? '';
@@ -424,6 +425,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
           line2.label.content = this.selectedDate;
           chartInstance.update();
         }
+          */
       }
       
       let start = Helper.isoDate(Helper.addDays(this.selectedDate, -delta));
