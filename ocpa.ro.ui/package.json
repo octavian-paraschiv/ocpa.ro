@@ -7,7 +7,7 @@
     "build": "ng build",
     "lint": "ng lint",
     "build:prod": "ng build --base-href / --configuration production",
-    "build:beta": "ng build --base-href /beta/ --configuration production"
+    "build:beta": "ng build --base-href /beta/ --configuration beta"
   },
   "private": true,
   "dependencies": {
