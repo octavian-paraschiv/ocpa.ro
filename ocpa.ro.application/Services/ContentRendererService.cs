@@ -25,6 +25,8 @@ public class ContentRendererService : BaseService, IContentRendererService
             .ToList();
     }
 
+    public string ContentPath => _hostingEnvironment.ContentPath;
+
     public async Task<(byte[], bool)> RenderContent(string resourcePath, string reqRoot, string language, bool asHtml)
     {
         byte[] data = null;

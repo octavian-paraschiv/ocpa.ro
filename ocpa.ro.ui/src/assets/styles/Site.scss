@@ -71,14 +71,13 @@ h6 { font-size: 0.8rem; }
 }
 .loading-txt {
     grid-area: txt;
-    margin: 0;
-    margin-left: 7px;
-    margin-top: 4px;
+    margin: 0 !important;
+    margin-left: 5px !important;
+    margin-top: 3px !important;
 }
 
-.app-colors {
-    color: $forecolor !important;
-    background-color: $backcolor !important;
+.mat-mdc-header-row {
+    height: 0.8rem !important;
 }
 
 body, :root {

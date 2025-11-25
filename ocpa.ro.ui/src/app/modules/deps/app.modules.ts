@@ -12,8 +12,8 @@ import { MarkdownModule } from 'ngx-markdown';
 import { BootstrapModule } from 'src/app/modules/bootstrap.module';
 import { routes } from 'src/app/modules/deps/app.routes';
 import { translationConfig } from 'src/app/services/translation-init.service';
-import { ToasterModule } from 'ngx-toaster/src/lib';
 import { GoogleChartsModule } from 'angular-google-charts';
+import { ToastrModule } from 'ngx-toastr';
 
 export const modules = [
     // Modules
@@ -31,5 +31,7 @@ export const modules = [
     GoogleMapsModule,
     BootstrapModule,
     TreeModule,
-    ToasterModule
+
+    ToastrModule.forRoot()
+    //ToastNoAnimationModule.forRoot(),
 ];
