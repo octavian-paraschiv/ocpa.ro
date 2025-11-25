@@ -59,15 +59,15 @@
                                     </div>
                                 </td>
                                 <!-- Weather Symbol Column -->
-                                <td class="{{centerCellClass(md)}}">
+                                <td class="grid-column-symbol {{centerCellClass(md)}}">
                                     <img class="small-font-label img-day-summary-forecast"
                                         src="assets/images/meteo/precip_{{md.forecast}}.png" />
                                 </td>
                                 <!-- Weather Summary Column -->
-                                <td [innerHtml]="summary(md)" class="{{centerCellClass(md)}}">
+                                <td [innerHtml]="summary(md)" class="grid-column-summary {{centerCellClass(md)}}">
                                 </td>
                                 <!-- Temperatures Column -->
-                                 <td class="{{centerCellClass(md)}}">
+                                 <td class="grid-column-temp {{centerCellClass(md)}}">
                                     <div class="temp-high-cell">
                                         <fa-icon class="temp-symbol" [icon]="icons['faTemperatureThreeQuarters']"
                                             transform="grow-10"></fa-icon>
@@ -82,7 +82,7 @@
                                     </div>
                                 </td>
                                 <!-- Precip / Wind / Pres Column -->
-                                <td class="{{centerCellClass(md)}}">
+                                <td class="grid-column-precip {{centerCellClass(md)}}">
                                     <div class="detail-info">
                                         <div *ngIf="md?.wind > 0" class="detail-wind">
                                             <fa-icon [icon]="icons['faWind']"></fa-icon>
@@ -114,7 +114,7 @@
                                     </div>
                                 </td>
                                 <!-- Risks Column -->
-                                <td class="{{rightCellClass(md)}}">
+                                <td class="grid-column-risks {{rightCellClass(md)}}">
                                     <app-day-risks *ngIf="md?.hazards?.length > 0" [risks]="md.hazards">
                                     </app-day-risks>
                                 </td>
@@ -124,10 +124,16 @@
 
                 </div>
                 <div class="meteo-data-other" [ngStyle]="dataGridStyle">
-                    <canvas baseChart #meteoDataGraph id="meteoDataGraph" [type]="'line'" [data]="lineChartData"
+                    <google-chart #meteoDataGraph id="meteoDataGraph" [type]="LineChart" 
+                        [data]="lineChartData" [options]="lineChartOptions">
+                    </google-chart>
+
+                    <!--
+                    <canvas google-chart #meteoDataGraph id="meteoDataGraph" [data]="lineChartData"
                         [options]="lineChartOptions" [legend]="true" [plugins]="plugins"
                         (chartClick)="chartClicked($event)">
                     </canvas>
+                    -->
                 </div>
             </div>
 
