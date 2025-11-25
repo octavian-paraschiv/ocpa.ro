@@ -9,17 +9,14 @@
 </head>
   <body class="mat-typography" display-mode="m4" mobile="false">
     <app-root id="appRoot"></app-root>
-      <div class="loading">
-        <img src="assets/images/loading.gif" class="loading-img">
-        <h4 id="loadingText" class="loading-txt"></h4>
-      </span>
     </app-root>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         var userLang = navigator.language || navigator.userLanguage;
-        var loadingText = document.getElementById('loadingText');
-        loadingText.innerText = userLang.startsWith('ro') ? 
-          'Pagina se încarcă, vă rugăm așteptați ...' : 'The page is loading, please wait...';
+        var loadingText = document.getElementById('appRoot');
+        loadingText.innerHTML = userLang.startsWith('ro') ? 
+          '<div class="loading"><img src="assets/images/loading.gif" class="loading-img"><h4 class="loading-txt">Pagina se încarcă, vă rugăm așteptați ...</h4></div>' :
+          '<div class="loading"><img src="assets/images/loading.gif" class="loading-img"><h4 class="loading-txt">The page is loading, please wait...</h4></div>';
       });
     </script>
     <script>
