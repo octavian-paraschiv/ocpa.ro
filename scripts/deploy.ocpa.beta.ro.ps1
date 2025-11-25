@@ -1,4 +1,4 @@
-﻿﻿# Exec params:
+# Exec params:
 # Command: powershell.exe
 # with arguments: -ExecutionPolicy Bypass -File D:\vhosts\ocpa.ro\Scripts\deploy.ocpa.ro.ps1 > D:\vhosts\ocpa.ro\logs\deploy.log 2>&1
 
@@ -8,6 +8,7 @@ $deployPath = "$hostPath\deploy\beta"
 $appZipFile = "$deployPath\app.zip"
 $apiZipFile = "$deployPath\api.zip"
 $websitePath = "$hostPath\httpdocs\beta"
+$mainWebsitePath = "$hostPath\httpdocs\app"
 $extractPath = "$deployPath\extracted"
 
 # Function to check if the APP zip archive exists
@@ -34,7 +35,6 @@ function Check-ApiZipExists {
 function Extract-AppZip {
     try {
         Expand-Archive -Path $appZipFile -DestinationPath $extractPath -Force
-        Remove-Item -Path "$extractPath\web.config" -Force
     } catch {
         Write-Output "[BETA] Failed to extract the APP ZIP archive."
         exit 1
@@ -76,7 +76,19 @@ function Clean-Up {
 # Function to delete the website folder contents
 function Clear-WebsiteFolder {
     try {
+        # This will cause the web site to stop so no need to do it explicitely
+		Copy-Item -Path "$mainWebsitePath\web.config" -Destination $deployPath -Force
+        Remove-Item -Path "$mainWebsitePath\web.config" -Force
+		
+        # Just wait for a little to be sure it stopped
+        Start-Sleep -Seconds 10
+		
+        # Then proceed with initial cleanup
         Remove-Item -Path "$websitePath\*" -Recurse -Force
+		
+		# Restore web.config
+		Copy-Item -Path "$deployPath\web.config" -Destination $mainWebsitePath -Force
+		
     } catch {
         Write-Output "[BETA] Failed to clear the website folder."
         exit 1
@@ -84,10 +96,10 @@ function Clear-WebsiteFolder {
 }
 
 # Main script execution
-#Check-ApiZipExists
+Check-ApiZipExists
 Check-AppZipExists
 Clear-WebsiteFolder
-#Extract-ApiZip
+Extract-ApiZip
 Extract-AppZip
 Copy-Content
 Clean-Up
