@@ -34,11 +34,11 @@ app-login, app-otp {
 
 .password-hide-icon {
     @extend .btn-crud;
-    margin: 0;
-    margin-right: 5px;
+    //margin: 0;
+    //margin-right: 5px;
     position: absolute;
     right: 10px;
-    top: 40px;
+    top: 35px;
 }
 
 .login-button {

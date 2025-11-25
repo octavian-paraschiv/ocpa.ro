@@ -12,8 +12,8 @@ import { MarkdownModule } from 'ngx-markdown';
 import { BootstrapModule } from 'src/app/modules/bootstrap.module';
 import { routes } from 'src/app/modules/deps/app.routes';
 import { translationConfig } from 'src/app/services/translation-init.service';
-import { GoogleChartsModule } from 'angular-google-charts';
 import { ToastrModule } from 'ngx-toastr';
+import { NgChartsModule } from 'ng2-charts';
 
 export const modules = [
     // Modules
@@ -26,7 +26,7 @@ export const modules = [
     NoopAnimationsModule,
     FontAwesomeModule,
     NgSelectModule,
-    GoogleChartsModule,
+    NgChartsModule,
     MarkdownModule.forRoot(),
     GoogleMapsModule,
     BootstrapModule,
