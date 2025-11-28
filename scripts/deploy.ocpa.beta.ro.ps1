@@ -77,18 +77,18 @@ function Clean-Up {
 function Clear-WebsiteFolder {
     try {
         # This will cause the web site to stop so no need to do it explicitely
-		Copy-Item -Path "$mainWebsitePath\web.config" -Destination $deployPath -Force
+        Copy-Item -Path "$mainWebsitePath\web.config" -Destination $deployPath -Force
         Remove-Item -Path "$mainWebsitePath\web.config" -Force
-		
+        
         # Just wait for a little to be sure it stopped
         Start-Sleep -Seconds 10
-		
+        
         # Then proceed with initial cleanup
         Remove-Item -Path "$websitePath\*" -Recurse -Force
-		
-		# Restore web.config
-		Copy-Item -Path "$deployPath\web.config" -Destination $mainWebsitePath -Force
-		
+        
+        # Restore web.config
+        Copy-Item -Path "$deployPath\web.config" -Destination $mainWebsitePath -Force
+        
     } catch {
         Write-Output "[BETA] Failed to clear the website folder."
         exit 1

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using ocpa.ro.api.Policies;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Constants;
 using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Extensions;
 using ocpa.ro.domain.Models.Authentication;
@@ -71,7 +72,7 @@ namespace ocpa.ro.api.Controllers
 
             var rsp = _accessTokenService.GenerateAccessToken(user);
             if (string.IsNullOrEmpty(rsp?.Token))
-                return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
+                return Unauthorized(new FailedAuthenticationResponse(AuthenticationErrors.NoToken, user.LoginAttemptsRemaining));
 
             return Ok(rsp);
         }
@@ -110,15 +111,15 @@ namespace ocpa.ro.api.Controllers
                 jwtToken.ValidFrom >= now ||
                 jwtToken.ValidTo <= now ||
                 claimedID != loginId)
-                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
+                return Unauthorized(new FailedAuthenticationResponse(AuthenticationErrors.BadCredentials));
 
             var user = _accessService.GetUser(loginId);
             if (user == null)
-                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS"));
+                return Unauthorized(new FailedAuthenticationResponse(AuthenticationErrors.BadCredentials));
 
             var rsp = _accessTokenService.GenerateAccessToken(user);
             if (string.IsNullOrEmpty(rsp?.Token))
-                return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
+                return Unauthorized(new FailedAuthenticationResponse(AuthenticationErrors.NoToken, user.LoginAttemptsRemaining));
 
             return Ok(rsp);
         }
@@ -147,16 +148,16 @@ namespace ocpa.ro.api.Controllers
                 await _cacheService.Save(key, retryInfo, opt);
 
                 if (retryInfo.LoginAttemptsRemaining > 0)
-                    return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS", retryInfo.LoginAttemptsRemaining));
+                    return Unauthorized(new FailedAuthenticationResponse(AuthenticationErrors.BadCredentials, retryInfo.LoginAttemptsRemaining));
 
-                return Unauthorized(new FailedAuthenticationResponse("ERR_ACCOUNT_DISABLED"));
+                return Unauthorized(new FailedAuthenticationResponse(AuthenticationErrors.AccountDisabled));
             }
 
             if (!user.Enabled)
-                return Unauthorized(new FailedAuthenticationResponse("ERR_ACCOUNT_DISABLED"));
+                return Unauthorized(new FailedAuthenticationResponse(AuthenticationErrors.AccountDisabled));
 
             if (user.LoginAttemptsRemaining < _config.MaxLoginRetries)
-                return Unauthorized(new FailedAuthenticationResponse("ERR_BAD_CREDENTIALS", user.LoginAttemptsRemaining));
+                return Unauthorized(new FailedAuthenticationResponse(AuthenticationErrors.BadCredentials, user.LoginAttemptsRemaining));
 
             AuthenticationResponse rsp = null;
 
@@ -177,7 +178,7 @@ namespace ocpa.ro.api.Controllers
                 rsp.SendOTP = false;
 
                 if (string.IsNullOrEmpty(rsp?.Token))
-                    return Unauthorized(new FailedAuthenticationResponse("ERR_NO_TOKEN", user.LoginAttemptsRemaining));
+                    return Unauthorized(new FailedAuthenticationResponse(AuthenticationErrors.NoToken, user.LoginAttemptsRemaining));
             }
 
             try

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
-using ocpa.ro.domain;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Constants;
 using ocpa.ro.domain.Exceptions;
 using System;
 using System.IO;
@@ -45,7 +45,7 @@ public class MultipartRequestService : IMultipartRequestService
                 if (memoryStream.Length == 0)
                     throw new ExtendedException($"The request couldn't be processed ({name} section has no data)");
 
-                if (memoryStream.Length > Constants.MaxMultipartRequestSize)
+                if (memoryStream.Length > AppConstants.MaxMultipartRequestSize)
                     throw new ExtendedException($"The request couldn't be processed ({name} section has too many data)");
 
                 switch (name.ToLowerInvariant())

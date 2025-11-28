@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Constants;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ public class DatabaseManagementService : BackgroundService
             using (var scope = _serviceProvider.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
-                var query = $"DELETE FROM OneTimePassword WHERE Expiration <= '{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}'";
+                var query = $"DELETE FROM OneTimePassword WHERE Expiration <= '{DateTime.UtcNow.ToString(AppConstants.DateTimeFormat)}'";
                 dbContext.ExecuteSqlRaw(query);
             }
 

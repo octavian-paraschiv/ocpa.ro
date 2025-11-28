@@ -2,6 +2,7 @@
 using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Gateways;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Constants;
 using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Exceptions;
 using ocpa.ro.domain.Models.Meteo;
@@ -244,7 +245,7 @@ public class GeographyService : BaseService, IGeographyService
                 return StatusCodes.Status404NotFound;
 
             if (dbu.IsDefault)
-                throw new ExtendedException("ERR_DELETE_DEFAULT_CITY");
+                throw new ExtendedException(GeographyServiceErrors.CannotDeleteDefaultCity);
 
             if (_dbContext.Delete(dbu) > 0)
                 return StatusCodes.Status200OK;

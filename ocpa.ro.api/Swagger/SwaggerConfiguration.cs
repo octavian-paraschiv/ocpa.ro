@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using ocpa.ro.api.Policies;
-using ocpa.ro.domain;
+using ocpa.ro.domain.Constants;
 using System;
 using System.Linq;
 
@@ -49,7 +49,7 @@ public static class SwaggerConfiguration
                 option.SwaggerDoc(apiGroup, new OpenApiInfo
                 {
                     Title = apiGroup,
-                    Version = Constants.ApiVersion
+                    Version = AppConstants.ApiVersion
                 });
             });
         });

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ocpa.ro.domain.Constants;
+using System;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -23,11 +24,11 @@ namespace ocpa.ro.domain.Models.Meteo
         }
         public override void Write(Utf8JsonWriter writer, DateTime date, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(date.ToString(Constants.DateFormat));
+            writer.WriteStringValue(date.ToString(AppConstants.DateFormat));
         }
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return DateTime.ParseExact(reader.GetString(), Constants.DateFormat, CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(reader.GetString(), AppConstants.DateFormat, CultureInfo.InvariantCulture);
         }
     }
 }

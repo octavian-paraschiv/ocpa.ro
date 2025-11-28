@@ -2,6 +2,7 @@
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Constants;
 using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Exceptions;
 using Serilog;
@@ -52,7 +53,7 @@ namespace ocpa.ro.application.Services.Access
 
                 dbu = _dbContext.Applications.FirstOrDefault(a => id == a.Id);
                 if (dbu?.Builtin ?? false)
-                    throw new ExtendedException("ERR_EDIT_BUILT_IN_APP");
+                    throw new ExtendedException(AccessManagementServiceErrors.CannotEditBuiltinApp);
 
                 bool newEntry = dbu == null;
 
@@ -99,13 +100,13 @@ namespace ocpa.ro.application.Services.Access
                     return StatusCodes.Status404NotFound;
 
                 if (dbu.Builtin)
-                    throw new ExtendedException("ERR_DELETE_BUILTIN_APP");
+                    throw new ExtendedException(AccessManagementServiceErrors.CannotDeleteBuiltinApp);
 
                 if (_dbContext.ApplicationMenus.Any(am => am.ApplicationId == appId))
-                    throw new ExtendedException("ERR_DELETE_APP_MENU_ASSOCIATIONS");
+                    throw new ExtendedException(AccessManagementServiceErrors.CannotDeleteAppMenuAssoc);
 
                 if (_dbContext.ApplicationUsers.Any(am => am.ApplicationId == appId))
-                    throw new ExtendedException("ERR_DELETE_APP_USER_ASSOCIATIONS");
+                    throw new ExtendedException(AccessManagementServiceErrors.CannotDeleteAppUserAssoc);
 
                 if (_dbContext.Delete(dbu) > 0)
                     return StatusCodes.Status200OK;
@@ -149,7 +150,7 @@ namespace ocpa.ro.application.Services.Access
 
                 dbu = _dbContext.Menus.FirstOrDefault(a => id == a.Id);
                 if (dbu?.Builtin ?? false)
-                    throw new ExtendedException("ERR_EDIT_BUILTIN_MENU");
+                    throw new ExtendedException(AccessManagementServiceErrors.CannotEditBuiltinMenu);
 
                 bool newEntry = dbu == null;
 
@@ -197,10 +198,10 @@ namespace ocpa.ro.application.Services.Access
                     return StatusCodes.Status404NotFound;
 
                 if (dbu.Builtin)
-                    throw new ExtendedException("ERR_DELETE_BUILTIN_MENU");
+                    throw new ExtendedException(AccessManagementServiceErrors.CannotDeleteBultinMenu);
 
                 if (_dbContext.ApplicationMenus.Any(am => am.MenuId == menuId))
-                    throw new ExtendedException("ERR_DELETE_MENU_APP_ASSOCIATIONS");
+                    throw new ExtendedException(AccessManagementServiceErrors.CannotDeleteMenuAppAssoc);
 
                 if (_dbContext.Delete(dbu) > 0)
                     return StatusCodes.Status200OK;
@@ -319,7 +320,7 @@ namespace ocpa.ro.application.Services.Access
                 {
                     au.UserId = userId; // should already be set like this, but anyways
                     if (_dbContext.Insert(au) <= 0)
-                        throw new ExtendedException("ERR_FAIL_SAVE_APPS_FOR_USER");
+                        throw new ExtendedException(AccessManagementServiceErrors.FailSaveAppsUser);
                 }
             }
         }
@@ -333,7 +334,10 @@ namespace ocpa.ro.application.Services.Access
             }
             catch
             {
-                var msg = saveContext ? "ERR_FAIL_DELETE_APPS_FOR_USER" : "ERR_FAIL_CLEAR_APPS_FOR_USER";
+                var msg = saveContext ?
+                    AccessManagementServiceErrors.FailDeleteAppsUser :
+                    AccessManagementServiceErrors.FailClearAppsUser;
+
                 throw new ExtendedException(msg);
             }
         }
@@ -346,7 +350,7 @@ namespace ocpa.ro.application.Services.Access
             {
                 var app = _dbContext.Applications.FirstOrDefault(a => a.Id == appId);
                 if (app == null)
-                    throw new ExtendedException("ERR_APP_NOT_FOUND");
+                    throw new ExtendedException(AccessManagementServiceErrors.AppNotFound);
             }
             catch (Exception ex)
             {
@@ -361,7 +365,7 @@ namespace ocpa.ro.application.Services.Access
             {
                 var menu = _dbContext.Menus.FirstOrDefault(a => a.Id == menuId);
                 if (menu == null)
-                    throw new ExtendedException("ERR_MENU_NOT_FOUND");
+                    throw new ExtendedException(AccessManagementServiceErrors.MenuNotFound);
             }
             catch (Exception ex)
             {
@@ -376,7 +380,7 @@ namespace ocpa.ro.application.Services.Access
             {
                 var user = _dbContext.Users.FirstOrDefault(a => a.Id == userId);
                 if (user == null)
-                    throw new ExtendedException("ERR_USER_NOT_FOUND");
+                    throw new ExtendedException(AccessManagementServiceErrors.UserNotFound);
             }
             catch (Exception ex)
             {
