@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { RegisteredDevice } from 'src/app/models/models-swagger';
+import { RegisteredDevice } from 'src/app/models/swagger/access-management';
 
 @Injectable({ providedIn: 'root' })
 export class RegisteredDeviceService {

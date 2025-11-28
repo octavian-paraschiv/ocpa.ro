@@ -3,8 +3,8 @@ import { UntypedFormGroup, UntypedFormBuilder, Validators, ValidatorFn, Abstract
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { of, Observable, Subject } from 'rxjs';
 import { first, map, tap } from 'rxjs/operators';
-import { ApplicationInfo, UserInfo } from 'src/app/models/models-local';
-import { UserType, ApplicationUser, User } from 'src/app/models/models-swagger';
+import { ApplicationInfo, UserInfo } from 'src/app/models/local/access-management';
+import { UserType, ApplicationUser, User } from 'src/app/models/swagger/access-management';
 import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { UserTypeService } from 'src/app/services/api/user-type.service';

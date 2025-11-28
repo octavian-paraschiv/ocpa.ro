@@ -5,9 +5,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { take } from 'rxjs/operators';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 import { BaseAuthComponent } from 'src/app/components/base/BaseComponent';
-import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
-import { MessageBoxOptions } from 'src/app/models/models-local';
-import { MeteoDbInfo, MeteoDbStatus } from 'src/app/models/models-swagger';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
+import { MeteoDbInfo, MeteoDbStatus } from 'src/app/models/swagger/core-services';
 import { MeteoApiService } from 'src/app/services/api/meteo-api.service';
 
 @UntilDestroy()

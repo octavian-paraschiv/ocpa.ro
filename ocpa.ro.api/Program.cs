@@ -23,6 +23,7 @@ if (!isDevelopment)
 Environment.SetEnvironmentVariable("LOGDIR", logDir);
 
 #region Services
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy => policy
@@ -50,7 +51,6 @@ builder.Services
 
 builder.Services.AddOpenApiDesc();
 
-
 #endregion
 
 #region App
@@ -76,9 +76,7 @@ else
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.UseOpenApiDesc();
 
 await app.RunAsync();

@@ -3,7 +3,7 @@ import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subject } from 'rxjs';
-import { ContentUnit, ContentUnitType } from 'src/app/models/models-swagger';
+import { ContentUnit, ContentUnitType } from 'src/app/models/swagger/content-management';
 
 export interface NodeNameDialogData {
     parent?: ContentUnit;

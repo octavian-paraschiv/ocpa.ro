@@ -1,9 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
-import { MessageBoxOptions } from 'src/app/models/models-local';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+
+export interface MessageBoxOptions {
+    message: string;
+    title: string;
+    icon: string;
+    yesButtonText?: string;
+    noButtonText?: string;
+    noTimeout?: number;
+    yesTimeout?: number;
+    isSessionTimeoutMessage?: boolean;
+    panelClass?: string;
+}
 
 @UntilDestroy()
 @Component({

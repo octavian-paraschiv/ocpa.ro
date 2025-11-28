@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { CityDetail, GridCoordinates, RegionDetail } from 'src/app/models/models-swagger';
+import { CityDetail, GridCoordinates, RegionDetail } from 'src/app/models/swagger/core-services';
 import { environment } from 'src/environments/environment';
 
 @UntilDestroy()

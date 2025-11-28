@@ -3,7 +3,7 @@ import { TREE_ACTIONS, TreeOptions } from '@ali-hm/angular-tree-component/lib/mo
 import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { faFileText, faFolderOpen, faFolderClosed, faFileImage, faFile, faQuestion, faBook, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ContentUnit, ContentUnitType } from 'src/app/models/models-swagger';
+import { ContentUnit, ContentUnitType } from 'src/app/models/swagger/content-management';
 import { ContentApiService } from 'src/app/services/api/content-api.service';
 
 @UntilDestroy()

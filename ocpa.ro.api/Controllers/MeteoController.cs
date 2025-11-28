@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Constants;
 using ocpa.ro.domain.Models.Meteo;
@@ -18,7 +19,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiExplorerSettings(GroupName = "Meteo")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.CoreServices)]
     public class MeteoController : ApiControllerBase
     {
         #region Private members

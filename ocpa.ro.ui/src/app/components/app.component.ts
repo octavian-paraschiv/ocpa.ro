@@ -4,10 +4,9 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { BehaviorSubject } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
-import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { OverlayComponent } from 'src/app/components/shared/overlay/overlay.component';
 import { Helper } from 'src/app/helpers/helper';
-import { MessageBoxOptions } from 'src/app/models/models-local';
 import { UtilityService } from 'src/app/services/api/utility.service';
 import { OverlayService } from 'src/app/services/overlay.service';
 

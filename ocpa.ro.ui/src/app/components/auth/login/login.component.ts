@@ -6,7 +6,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { BaseFormComponent } from 'src/app/components/base/BaseComponent';
-import { FailedAuthenticationResponse } from 'src/app/models/models-swagger';
+import { FailedAuthenticationResponse } from 'src/app/models/swagger/access-management';
 
 @UntilDestroy()
 @Component({

@@ -5,7 +5,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CustomCheckboxComponent } from 'src/app/components/shared/custom-checkbox/custom-checkbox.component';
-import { Application } from 'src/app/models/models-swagger';
+import { Application } from 'src/app/models/swagger/access-management';
 
 @UntilDestroy()
 @Component({

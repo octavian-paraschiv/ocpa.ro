@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { take } from 'rxjs/operators';
-import { BuildInfo } from 'src/app/models/models-swagger';
+import { BuildInfo } from 'src/app/models/swagger/core-services';
 import { ProtoneApiService } from 'src/app/services/api/protone-api.service'
 
 @UntilDestroy()

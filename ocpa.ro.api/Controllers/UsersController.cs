@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using ocpa.ro.api.Policies;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Constants;
@@ -28,7 +29,7 @@ namespace ocpa.ro.api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(Roles = "ADM")]
-    [ApiExplorerSettings(GroupName = "Users")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.AccessManagement)]
     public class UsersController : ApiControllerBase
     {
         class LoginRetryInfo { public int LoginAttemptsRemaining { get; set; } }

@@ -10,27 +10,19 @@ namespace ocpa.ro.api.Swagger;
 
 public static class SwaggerConfiguration
 {
-    public const string Applications = "Applications";
-    public const string Content = "Content";
-    public const string Geography = "Geography";
-    public const string Menus = "Menus";
-    public const string Meteo = "Meteo";
+    public const string AccessManagement = "AccessManagement";
+    public const string ContentManagement = "ContentManagement";
+    public const string CoreServices = "CoreServices";
+    public const string Utilities = "Utilities";
     public const string Experimental = "Experimental";
-    public const string ProTONE = "ProTONE";
-    public const string Users = "Users";
-    public const string Utility = "Utility";
 
     public static readonly string[] ApiGroups =
     [
-        Applications,
-        Content,
-        Geography,
-        Menus,
-        Meteo,
+        AccessManagement,
+        ContentManagement,
+        CoreServices,
+        Utilities,
         Experimental,
-        ProTONE,
-        Users,
-        Utility
     ];
 
     public static void AddOpenApiDesc(this IServiceCollection appBuilder)

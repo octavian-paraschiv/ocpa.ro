@@ -5,9 +5,8 @@ import { of } from 'rxjs';
 import { filter, first, switchMap } from 'rxjs/operators';
 import { CityDialogComponent } from 'src/app/components/auth/geography/city-dialog/city-dialog.component';
 import { BaseAuthComponent } from 'src/app/components/base/BaseComponent';
-import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
-import { MessageBoxOptions } from 'src/app/models/models-local';
-import { CityDetail } from 'src/app/models/models-swagger';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
+import { CityDetail } from 'src/app/models/swagger/core-services';
 import { GeographyApiService } from 'src/app/services/api/geography-api.service';
 
 @UntilDestroy()

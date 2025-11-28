@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { UserType } from 'src/app/models/models-swagger';
+import { UserType } from 'src/app/models/swagger/access-management';
 import { environment } from 'src/environments/environment';
 
 @UntilDestroy()

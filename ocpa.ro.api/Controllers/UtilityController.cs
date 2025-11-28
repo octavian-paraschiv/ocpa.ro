@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Extensions;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
@@ -13,7 +14,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiExplorerSettings(GroupName = "Utility")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.Utilities)]
     public class UtilityController : ApiControllerBase
     {
         public UtilityController(ILogger logger)

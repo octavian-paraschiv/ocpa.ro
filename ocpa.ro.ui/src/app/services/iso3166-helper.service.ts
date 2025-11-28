@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IsoCountry } from 'src/app/models/models-local';
+import { IsoCountry } from 'src/app/models/local/core-services';
 
 @Injectable()
 @UntilDestroy()

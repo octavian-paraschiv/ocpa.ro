@@ -4,10 +4,9 @@ import { fas, faEarth } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
-import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { Helper } from 'src/app/helpers/helper';
-import { MessageBoxOptions } from 'src/app/models/models-local';
-import { Menu } from 'src/app/models/models-swagger';
+import { Menu } from 'src/app/models/swagger/access-management';
 import { MenuService } from 'src/app/services/api/menu.service';
 
 @UntilDestroy()

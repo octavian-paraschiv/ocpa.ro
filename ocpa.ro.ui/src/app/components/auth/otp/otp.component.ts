@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { first } from 'rxjs/operators';
 import { BaseFormComponent } from 'src/app/components/base/BaseComponent';
-import { FailedAuthenticationResponse } from 'src/app/models/models-swagger';
+import { FailedAuthenticationResponse } from 'src/app/models/swagger/access-management';
 import { SessionInformationService } from 'src/app/services/session-information.service';
 
 @UntilDestroy()

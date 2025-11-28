@@ -7,10 +7,10 @@ import { first, tap, switchMap } from 'rxjs/operators';
 import { AppDialogComponent } from './app-dialog/app-dialog.component';
 import { MenuDialogComponent } from './menu-dialog/menu-dialog.component';
 import { BaseAuthComponent } from '../../base/BaseComponent';
-import { MessageBoxComponent } from '../../shared/message-box/message-box.component';
+import { MessageBoxComponent, MessageBoxOptions } from '../../shared/message-box/message-box.component';
 
-import { AppMenuData, AppData, MessageBoxOptions } from 'src/app/models/models-local';
-import { Menu, Application, ApplicationMenu, EMenuDisplayMode } from 'src/app/models/models-swagger';
+import { AppMenuData, AppData } from 'src/app/models/local/access-management';
+import { Menu, Application, ApplicationMenu, EMenuDisplayMode } from 'src/app/models/swagger/access-management';
 import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
 
 @UntilDestroy()

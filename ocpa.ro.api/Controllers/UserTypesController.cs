@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Entities.Application;
 using Serilog;
@@ -14,7 +15,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiExplorerSettings(GroupName = "Users")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.AccessManagement)]
     public class UserTypesController : ApiControllerBase
     {
         private readonly IAccessManagementService _accessManagementService;

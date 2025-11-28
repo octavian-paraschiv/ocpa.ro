@@ -5,7 +5,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EMenuDisplayMode, Menu } from 'src/app/models/models-swagger';
+import { EMenuDisplayMode, Menu } from 'src/app/models/swagger/access-management';
 
 @UntilDestroy()
 @Component({

@@ -3,7 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthenticationService } from '../services/api/authentication.services';
-import { FailedAuthenticationResponse } from 'src/app/models/models-swagger';
+import { FailedAuthenticationResponse } from 'src/app/models/swagger/access-management';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {

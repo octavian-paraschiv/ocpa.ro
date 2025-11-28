@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Policies;
-using ocpa.ro.api.Services;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Constants;
@@ -27,7 +27,7 @@ namespace ocpa.ro.api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(Roles = "ADM")]
-    [ApiExplorerSettings(GroupName = "Content")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.ContentManagement)]
     public class ContentController : ApiControllerBase
     {
         #region Private members

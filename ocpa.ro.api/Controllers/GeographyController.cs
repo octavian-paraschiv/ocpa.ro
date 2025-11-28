@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Models.Meteo;
 using Serilog;
@@ -18,7 +19,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiExplorerSettings(GroupName = "Geography")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.CoreServices)]
     public class GeographyController : ApiControllerBase
     {
         #region Private members

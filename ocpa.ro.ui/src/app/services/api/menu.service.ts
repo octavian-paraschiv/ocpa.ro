@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Menu, EMenuDisplayMode, Menus, VMenu } from 'src/app/models/models-swagger';
+import { Menu, EMenuDisplayMode, Menus, VMenu } from 'src/app/models/swagger/access-management';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map } from 'rxjs/operators';
 import { Helper } from 'src/app/helpers/helper';

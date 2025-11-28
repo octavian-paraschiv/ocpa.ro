@@ -3,7 +3,7 @@ import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CityDetail, RegionDetail } from 'src/app/models/models-swagger';
+import { CityDetail, RegionDetail } from 'src/app/models/swagger/core-services';
 import { GeographyApiService } from 'src/app/services/api/geography-api.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 

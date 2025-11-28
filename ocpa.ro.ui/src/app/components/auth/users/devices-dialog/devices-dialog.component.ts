@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Observable, Subject } from 'rxjs';
-import { RegisteredDevice } from 'src/app/models/models-swagger';
+import { RegisteredDevice } from 'src/app/models/swagger/access-management';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
 
 @UntilDestroy()
