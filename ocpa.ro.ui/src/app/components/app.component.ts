@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, inject, HostListener, ViewChild, AfterViewInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
@@ -19,7 +19,7 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
   @ViewChild(OverlayComponent) overlayComponent: OverlayComponent;
   
   private dialogTimeout: any = undefined;
-  private dialogRefBS: BsModalRef<MessageBoxComponent> = undefined;
+  private confirmTokenRefresh$: Subject<boolean> = undefined;
 
   private readonly ngZone = inject(NgZone);
   private readonly utility = inject(UtilityService);
@@ -58,32 +58,27 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
 
   private startRefreshAuthTimer() {
     clearInterval(this.dialogTimeout);
-    this.dialogRefBS = undefined;
+    this.confirmTokenRefresh$ = undefined;
     
     this.dialogTimeout = setInterval(() => {
         console.debug('refreshAuthTimer -> setInterval');
         
         if (this.authService.isSessionExpirationPending() && 
-            !this.dialogRefBS && 
+            !this.confirmTokenRefresh$ && 
             !this.refreshTokenPending$.getValue()) {
             console.debug('onAfterViewInit -> setInterval -> session expired');
-
-            this.dialogRefBS = this.dialog?.show(MessageBoxComponent, { 
-              initialState: {
-                options: {
+            
+            this.confirmTokenRefresh$ = MessageBoxComponent.show(this.dialog, {
                   isSessionTimeoutMessage: true,
                   noTimeout: 15000,
                   title: this.translate.instant('title.confirm'),
                   message: this.translate.instant('auth.session-expired'),
-                } as MessageBoxOptions
-              },
-              class: 'session-expired-message'
-            });
+                } as MessageBoxOptions);
 
-            this.dialogRefBS.content.$result
-              .pipe(untilDestroyed(this), map(result => result as boolean))
+            this.confirmTokenRefresh$
+              .pipe(untilDestroyed(this), first(), map(result => result as boolean))
               .subscribe(res => {
-                  this.dialogRefBS = undefined;
+                  this.confirmTokenRefresh$ = undefined;
                   if (res) {
                       this.refreshTokenPending$.next(true);
                       this.authService.refreshAuthentication()
