@@ -102,8 +102,8 @@
             "buildTarget": "ocpa.ro.ui:build"
           },
           "configurations": {
-            "production": {
-              "buildTarget": "ocpa.ro.ui:build:production"
+            "beta": {
+              "buildTarget": "ocpa.ro.ui:build:beta"
             }
           }
         },

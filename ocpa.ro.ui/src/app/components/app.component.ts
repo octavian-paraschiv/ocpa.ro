@@ -93,7 +93,6 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
                   }
               });
         }
-
     }, 3000);
   }
 
