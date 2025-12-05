@@ -14,13 +14,14 @@ var isDevelopment = builder.Environment.IsDevelopment();
 
 string logDir = "Logs";
 
+string appRootPath = Path.GetDirectoryName(builder.Environment.ContentRootPath);
+string appName = Path.GetFileName(builder.Environment.ContentRootPath);
+
 if (!isDevelopment)
-{
-    string rootPath = Path.GetDirectoryName(builder.Environment.ContentRootPath);
-    logDir = Path.Combine(rootPath, "Content/Logs").NormalizePath();
-}
+    logDir = Path.Combine(appRootPath, "content/logs").NormalizePath();
 
 Environment.SetEnvironmentVariable("LOGDIR", logDir);
+Environment.SetEnvironmentVariable("APPNAME", appName);
 
 #region Services
 
