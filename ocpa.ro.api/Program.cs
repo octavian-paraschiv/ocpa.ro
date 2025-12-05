@@ -14,15 +14,17 @@ var isDevelopment = builder.Environment.IsDevelopment();
 
 string logDir = "Logs";
 
+string appRootPath = Path.GetDirectoryName(builder.Environment.ContentRootPath);
+string appName = Path.GetFileName(builder.Environment.ContentRootPath);
+
 if (!isDevelopment)
-{
-    var dllDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-    logDir = Path.Combine(dllDir, "../../../Logs").NormalizePath();
-}
+    logDir = Path.Combine(appRootPath, "content/logs").NormalizePath();
 
 Environment.SetEnvironmentVariable("LOGDIR", logDir);
+Environment.SetEnvironmentVariable("APPNAME", appName);
 
 #region Services
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy => policy
@@ -50,7 +52,6 @@ builder.Services
 
 builder.Services.AddOpenApiDesc();
 
-
 #endregion
 
 #region App
@@ -76,9 +77,7 @@ else
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.UseOpenApiDesc();
 
 await app.RunAsync();
