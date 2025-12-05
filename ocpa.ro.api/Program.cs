@@ -16,8 +16,8 @@ string logDir = "Logs";
 
 if (!isDevelopment)
 {
-    var dllDir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-    logDir = Path.Combine(dllDir, "../../../Logs").NormalizePath();
+    string rootPath = Path.GetDirectoryName(builder.Environment.ContentRootPath);
+    logDir = Path.Combine(rootPath, "Content/Logs").NormalizePath();
 }
 
 Environment.SetEnvironmentVariable("LOGDIR", logDir);
