@@ -60,13 +60,6 @@ namespace ocpa.ro.api.Controllers
         #endregion
 
         #region Public controller methods
-        [HttpGet("path")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [SwaggerOperation(OperationId = "ContentPath")]
-        public IActionResult ContentPath()
-        {
-            return Ok(_contentRendererService.ContentPath);
-        }
 
         [HttpGet("{*contentPath}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]

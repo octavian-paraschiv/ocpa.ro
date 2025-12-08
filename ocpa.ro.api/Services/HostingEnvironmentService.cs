@@ -16,6 +16,8 @@ public class HostingEnvironmentService : IHostingEnvironmentService
 
     }
 
+    public string ContentRootPath => _hostingEnvironment.ContentRootPath;
+
     public string ContentPath
     {
         get
