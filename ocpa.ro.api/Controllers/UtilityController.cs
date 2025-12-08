@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
 using ocpa.ro.api.Swagger;
@@ -48,6 +49,7 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("config")]
+        [Authorize(Roles = "ADM")]
         [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status200OK)]
         [SwaggerOperation(OperationId = "GetConfig")]
         public IActionResult GetConfig()

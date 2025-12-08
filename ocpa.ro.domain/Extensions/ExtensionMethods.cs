@@ -11,8 +11,20 @@ namespace ocpa.ro.domain.Extensions;
 
 public static class ExtensionMethods
 {
+    public static string GetFullPath(this string path, bool normalize)
+    {
+        if (path?.Length > 0)
+        {
+            path = Path.GetFullPath(path);
+            if (normalize)
+                path = NormalizePath(path);
+        }
+
+        return path;
+    }
+
     public static string NormalizePath(this string path)
-        => path.Replace("\\", "/");
+        => path?.Replace("\\", "/");
 
     public static string ToBase64(this string str)
         => str?.Length > 0 ? Convert.ToBase64String(Encoding.UTF8.GetBytes(str)) : null;
