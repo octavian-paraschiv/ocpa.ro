@@ -2,5 +2,7 @@
 
 public interface IHostingEnvironmentService
 {
+    string ContentRootPath { get; }
+
     string ContentPath { get; }
 }

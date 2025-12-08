@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Policies;
-using ocpa.ro.api.Services;
 using ocpa.ro.domain;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Services;
@@ -60,13 +59,6 @@ namespace ocpa.ro.api.Controllers
         #endregion
 
         #region Public controller methods
-        [HttpGet("path")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [SwaggerOperation(OperationId = "ContentPath")]
-        public IActionResult ContentPath()
-        {
-            return Ok(_contentRendererService.ContentPath);
-        }
 
         [HttpGet("{*contentPath}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
