@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Extensions;
 using System;
 using System.IO;
 
@@ -16,7 +17,7 @@ public class HostingEnvironmentService : IHostingEnvironmentService
 
     }
 
-    public string ContentRootPath => _hostingEnvironment.ContentRootPath;
+    public string ContentRootPath => _hostingEnvironment.ContentRootPath.NormalizePath();
 
     public string ContentPath
     {
@@ -28,9 +29,9 @@ public class HostingEnvironmentService : IHostingEnvironmentService
             string rootPath = Path.GetDirectoryName(_hostingEnvironment.ContentRootPath);
 
             if (_hostingEnvironment.IsDevelopment())
-                return Path.Combine(rootPath, "Content");
+                return Path.Combine(rootPath, "Content").NormalizePath();
 
-            return Path.Combine(rootPath, "../Content");
+            return Path.Combine(rootPath, "../Content").NormalizePath();
         }
     }
 }

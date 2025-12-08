@@ -12,13 +12,17 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
 
-string logDir = "Logs";
-
-string appRootPath = Path.GetDirectoryName(builder.Environment.ContentRootPath);
-string appName = Path.GetFileName(builder.Environment.ContentRootPath);
+string logDir = "logs";
+string appName = "app";
 
 if (!isDevelopment)
-    logDir = Path.Combine(appRootPath, "content/logs").NormalizePath();
+{
+    var contentRootPath = builder.Environment.ContentRootPath; // ie. "D:\\vhosts\\ocpa.ro\\httpdocs\\app\\api"
+    var appRootPath = Path.Combine(contentRootPath, "..").NormalizePath(); // ie. "D:\\vhosts\\ocpa.ro\\httpdocs\\app"
+
+    appName = Path.GetFileName(builder.Environment.ContentRootPath); // ie. "app"
+    logDir = Path.Combine(appRootPath, "../content/logs").NormalizePath(); // ie. "D:\\vhosts\\ocpa.ro\\httpdocs\\content\\logs"
+}
 
 Environment.SetEnvironmentVariable("LOGDIR", logDir);
 Environment.SetEnvironmentVariable("APPNAME", appName);
