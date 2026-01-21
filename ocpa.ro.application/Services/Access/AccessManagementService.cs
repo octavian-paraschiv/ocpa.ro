@@ -325,7 +325,7 @@ namespace ocpa.ro.application.Services.Access
             }
         }
 
-        public void DeleteAppsForUser(int userId, bool saveContext)
+        public void DeleteAppsForUser(int userId, bool isSaving)
         {
             try
             {
@@ -334,9 +334,9 @@ namespace ocpa.ro.application.Services.Access
             }
             catch
             {
-                var msg = saveContext ?
-                    AccessManagementServiceErrors.FailDeleteAppsUser :
-                    AccessManagementServiceErrors.FailClearAppsUser;
+                var msg = isSaving ?
+                    AccessManagementServiceErrors.FailClearAppsUser : // "failed to clear old applications ..."
+                    AccessManagementServiceErrors.FailDeleteAppsUser; // "failed to delete applications ..."
 
                 throw new ExtendedException(msg);
             }

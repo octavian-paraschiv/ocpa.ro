@@ -73,7 +73,7 @@ public abstract class BaseDbContext : DbContext, IBaseDbContext
     protected DbSet<T> GetDbContext<T>() where T : class, IDbEntity
     {
         var dbSetType = typeof(DbSet<T>);
-        var pi = GetType().GetProperties().Where(p => p.PropertyType == dbSetType).FirstOrDefault();
+        var pi = GetType().GetProperties().FirstOrDefault(p => p.PropertyType == dbSetType);
         return pi?.GetValue(this) as DbSet<T>;
     }
 

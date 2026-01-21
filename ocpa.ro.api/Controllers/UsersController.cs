@@ -105,7 +105,8 @@ namespace ocpa.ro.api.Controllers
         {
             var bearerToken = (Request?.Headers?.Authorization ?? "").ToString().Replace("Bearer", "").Trim();
             var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(bearerToken);
-            var claimedID = jwtToken?.Claims?.Where(c => c.Type == "id")?.Select(c => c.Value)?.FirstOrDefault();
+            var claimedID = jwtToken?.Claims?.FirstOrDefault(c => c.Type == "id")?.Value;
+
             var now = DateTime.UtcNow;
 
             if (jwtToken == null ||

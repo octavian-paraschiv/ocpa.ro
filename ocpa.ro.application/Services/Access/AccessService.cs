@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using ocpa.ro.application.Extensions;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Services;
@@ -219,18 +220,12 @@ public class AccessService : BaseService, IAccessService
         {
             if (identity is ClaimsIdentity claimsIdentity)
             {
-                var uid = claimsIdentity.Claims
-                    .AsEnumerable()
-                   .Where(c => c.Type == "uid")
-                   .Select(c => int.TryParse(c.Value, out int v) ? v : 0)
-                   .FirstOrDefault();
+                var uid = claimsIdentity.GetClaimsUid();
 
                 var user = _dbContext.Users.FirstOrDefault(u => u.Id == uid);
                 if (user != null)
                 {
-
                     var userType = _dbContext.UserTypes.FirstOrDefault(ut => ut.Id == user.Type);
-
                     if (userType != null)
                     {
                         return [.._dbContext.AppMenus
@@ -345,10 +340,7 @@ public class AccessService : BaseService, IAccessService
         {
             if (identity is ClaimsIdentity claimsIdentity && claimsIdentity.IsAuthenticated)
             {
-                var uid = claimsIdentity.Claims
-                   .Where(c => c.Type == "uid")
-                   .Select(c => int.TryParse(c.Value, out int v) ? v : 0)
-                   .FirstOrDefault();
+                var uid = claimsIdentity.GetClaimsUid();
 
                 var user = _dbContext.Users.First(u => u.Id == uid);
                 var userType = _dbContext.UserTypes.First(ut => ut.Id == user.Type);
