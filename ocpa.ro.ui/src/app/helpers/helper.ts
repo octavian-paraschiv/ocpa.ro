@@ -47,13 +47,13 @@ export class Helper {
             // Decode the Base64 string
             const decodedBytes = window.atob(base64);
             if (decodedBytes?.length > 0 && decodedBytes.length < 1024 * 1024) {
+                
                 // Convert the decoded bytes to a string
-                const decodedString = new TextDecoder().decode(new Uint8Array(decodedBytes.split('').map(char => char.charCodeAt(0))));
+                const decodedString = new TextDecoder("utf-8", { fatal: true })
+                    .decode(new Uint8Array(decodedBytes.split('')
+                    .map(char => char.charCodeAt(0))));
 
-                // Check if the string contains valid UTF-8 characters
-                if (/^[\x09-\x0D\x20-\x7F\x80-\u07FF]*$/.test(decodedString)) {
-                    return decodedString;
-                }
+                return decodedString;
             }
         } catch {
             // If decoding fails, base64 was likely not a valid base-64 string
