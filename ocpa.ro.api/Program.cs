@@ -18,10 +18,10 @@ string appName = "app";
 if (!isDevelopment)
 {
     var contentRootPath = builder.Environment.ContentRootPath; // ie. "D:\\vhosts\\ocpa.ro\\httpdocs\\app\\api"
-    var appRootPath = Path.Combine(contentRootPath, "..").NormalizePath(); // ie. "D:\\vhosts\\ocpa.ro\\httpdocs\\app"
+    var appRootPath = Path.Combine(contentRootPath, "..").GetFullPath(false); // ie. "D:\\vhosts\\ocpa.ro\\httpdocs\\app"
 
-    appName = Path.GetFileName(builder.Environment.ContentRootPath); // ie. "app"
-    logDir = Path.Combine(appRootPath, "../content/logs").NormalizePath(); // ie. "D:\\vhosts\\ocpa.ro\\httpdocs\\content\\logs"
+    appName = Path.GetFileName(appRootPath); // ie. "app"
+    logDir = Path.Combine(appRootPath, "../content/logs").GetFullPath(false); // ie. "D:\\vhosts\\ocpa.ro\\httpdocs\\content\\logs"
 }
 
 Environment.SetEnvironmentVariable("LOGDIR", logDir);

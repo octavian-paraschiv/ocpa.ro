@@ -17,7 +17,7 @@ public class HostingEnvironmentService : IHostingEnvironmentService
 
     }
 
-    public string ContentRootPath => _hostingEnvironment.ContentRootPath.NormalizePath();
+    public string ContentRootPath => _hostingEnvironment.ContentRootPath.GetFullPath(true);
 
     public string ContentPath
     {
@@ -29,9 +29,9 @@ public class HostingEnvironmentService : IHostingEnvironmentService
             string rootPath = Path.GetDirectoryName(_hostingEnvironment.ContentRootPath);
 
             if (_hostingEnvironment.IsDevelopment())
-                return Path.Combine(rootPath, "Content").NormalizePath();
+                return Path.Combine(rootPath, "Content").GetFullPath(true);
 
-            return Path.Combine(rootPath, "../Content").NormalizePath();
+            return Path.Combine(rootPath, "../Content").GetFullPath(true);
         }
     }
 }

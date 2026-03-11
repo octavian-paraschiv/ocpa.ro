@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Abstractions.Services;
 using ocpa.ro.domain.Extensions;
 using Serilog;
@@ -18,7 +19,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiExplorerSettings(GroupName = "Utility")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.Utilities)]
     public class UtilityController : ApiControllerBase
     {
         private readonly IHostingEnvironmentService _hostingEnvironment;

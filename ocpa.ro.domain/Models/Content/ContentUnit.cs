@@ -32,6 +32,8 @@ namespace ocpa.ro.domain.Models.Content
         public List<ContentUnit> Children { get; set; }
 
         public bool Selected { get; set; }
+
+        public bool Expanded { get; set; }
     }
 
     public class UpdatedContentUnit : ContentUnit
