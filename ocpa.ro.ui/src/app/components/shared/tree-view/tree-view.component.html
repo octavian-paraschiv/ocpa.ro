@@ -1,0 +1,24 @@
+<ul class="list-unstyled">
+  <li *ngFor="let node of nodes">
+    <div class="d-flex align-items-center node-sel-{{ node.selected ? 'on' : 'off' }}">
+      <span
+        class="tree-toggle"
+        (click)="toggle(node)"
+        *ngIf="node.children?.length"
+      >
+        
+      </span>
+
+      <span (click)="toggle(node)">
+        <fa-icon [icon]="icon(node)" [transform]="size" class="node-{{node.type}}"></fa-icon>
+        {{ node.name }}
+      </span>
+    </div>
+
+    <app-tree-view class="inner-tree-view"
+      *ngIf="node.children && node.expanded"
+      [nodes]="node.children"
+      (nodeSelected)="onTreeNodeSelected($event)"
+    ></app-tree-view>
+  </li>
+</ul>

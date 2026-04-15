@@ -7,11 +7,12 @@ import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
+import { BootstrapModule } from 'src/app/modules/bootstrap.module';
 import { routes } from 'src/app/modules/deps/app.routes';
-import { MaterialModule } from 'src/app/modules/material.module';
 import { translationConfig } from 'src/app/services/translation-init.service';
+import { ToastrModule } from 'ngx-toastr';
+import { NgChartsModule } from 'ng2-charts';
 
 export const modules = [
     // Modules
@@ -24,8 +25,11 @@ export const modules = [
     NoopAnimationsModule,
     FontAwesomeModule,
     NgSelectModule,
-    MaterialModule,
     NgChartsModule,
     MarkdownModule.forRoot(),
-    GoogleMapsModule
+    GoogleMapsModule,
+    BootstrapModule,
+
+    ToastrModule.forRoot()
+    //ToastNoAnimationModule.forRoot(),
 ];

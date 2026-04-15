@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
 import { UntilDestroy } from "@ngneat/until-destroy";
-import { Application, ApplicationMenu, ApplicationUser, Menu } from 'src/app/models/models-swagger';
+import { Application, ApplicationMenu, ApplicationUser, Menu } from 'src/app/models/swagger/access-management';
 
 @UntilDestroy()
 @Injectable()

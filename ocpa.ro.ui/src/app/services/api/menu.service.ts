@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Menu, EMenuDisplayMode, Menus, VMenu } from 'src/app/models/models-swagger';
+import { Menu, EMenuDisplayMode, Menus, VMenu } from 'src/app/models/swagger/access-management';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { map } from 'rxjs/operators';
 import { Helper } from 'src/app/helpers/helper';
@@ -51,8 +51,7 @@ export class MenuService {
                 if (fingerprint === menus?.deviceId) {
                     publicMenus = publicMenus.concat({
                         url: '/login',
-                        name: 'Login',
-                        code: 'LIN',
+                        name: 'login',
                         menuIcon: 'faRightToBracket',
                         displayMode: EMenuDisplayMode.AlwaysShow
                     } as Menu);
@@ -62,8 +61,7 @@ export class MenuService {
                 this._menus.appMenus = (menus?.appMenus ?? [])
                 .concat({
                     url: '/logout',
-                    name: 'Logout',
-                    code: 'LOUT',
+                    name: 'logout',
                     menuIcon: 'faRightFromBracket',
                     displayMode: EMenuDisplayMode.AlwaysShow
                 } as Menu)
@@ -102,6 +100,16 @@ export class MenuService {
                 return Helper.isMobile();
             case EMenuDisplayMode.AlwaysHide:
             default:
+                return false;
+        }
+    }
+
+    public static isAuthMenu(m: Menu): boolean {
+        switch(m?.url?.toLowerCase()) {
+            case '/login':
+            case '/logout':
+                return true;
+            default: 
                 return false;
         }
     }

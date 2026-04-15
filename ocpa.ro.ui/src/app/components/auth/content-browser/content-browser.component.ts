@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, inject } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { faFileEdit, faFileText, faFolder, faTrash, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Observable, of } from 'rxjs';
@@ -6,11 +6,10 @@ import { first, switchMap } from 'rxjs/operators';
 import { NodeNameDialogComponent } from 'src/app/components/auth/content-browser/node-name-dialog/node-name-dialog.component';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
 import { ContentTreeComponent } from 'src/app/components/shared/content-tree/content-tree.component';
-import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 import { Helper } from 'src/app/helpers/helper';
-import { MessageBoxOptions } from 'src/app/models/models-local';
-import { ContentUnit, ContentUnitType } from 'src/app/models/models-swagger';
+import { ContentUnit, ContentUnitType } from 'src/app/models/swagger/content-management';
 import { ContentApiService } from 'src/app/services/api/content-api.service';
 
 @UntilDestroy()
@@ -213,7 +212,9 @@ export class ContentBrowserComponent extends BaseComponent {
       switchMap(path => path?.length > 0 ? this._rename(path) : of(undefined as ContentUnit))
     ).subscribe({
       next: cu => {
-        if (cu?.path?.length > 0) {
+        if (cu?.name?.length > 0) {
+          if (!(cu.path?.length > 0))
+            cu.path = '.';
           this.tree.reloadAndSelect(`${cu.path}/${cu.name}`);
           this.popup.showSuccess('content-browser.rename-success', { name: cu.name });
         }

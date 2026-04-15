@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import * as SecureLS from 'secure-ls';
-import { UserSessionInformation } from 'src/app/models/models-local';
+import { UserSessionInformation } from 'src/app/models/local/access-management';
 
 @UntilDestroy()
 @Injectable()

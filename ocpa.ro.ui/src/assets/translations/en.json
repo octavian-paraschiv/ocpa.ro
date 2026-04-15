@@ -103,7 +103,7 @@
         "login-failed-2": "User <b>{{username}}</b> cannot log in [2]",
         "login-failed-3": "User <b>{{username}}</b> is not associated with any application",
         "session-expired": "Your session has expired.<br>Press Yes if you want to stay logged in, and No to log out.",
-        "logout-desc": "Press Logout if this is your intention. If you want to stay logged in, simply select other menu."
+        "logout-desc": "Are you sure you want to log out?<br>Press No if you want to stay logged in, and Yes to log out."
     },
     
     "meteo": {
@@ -199,6 +199,7 @@
         "logged-in": "[CONNECTED]",
         "type": "Type",
         "otp": "Two steps Authentication",
+        "disabled": "Disabled account",
         "device-list": "Registered devices:",
         "view-device": "View device '{{deviceId}}'",
         "del-device": "Delete '{{deviceId}}'",
@@ -244,7 +245,7 @@
 
     "user-dialog": {
         "user-type": "User Type",
-        "password-hint": "To keep the password as-is,<br>leave both password fields empty.",
+        "password-hint": "<b>To keep the password as-is, leave both password fields empty.</b>",
         "password-length-hint": "The password must have at least 8 characters",
         "password-match-hint": "The two passwords must match.",
         "email-required": "The email address must include '@', e.g 'user.address@email.server'",

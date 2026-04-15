@@ -1,13 +1,12 @@
 import { Component, OnInit, NgZone, inject, HostListener, ViewChild, AfterViewInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { BehaviorSubject } from 'rxjs';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
-import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { OverlayComponent } from 'src/app/components/shared/overlay/overlay.component';
 import { Helper } from 'src/app/helpers/helper';
-import { MessageBoxOptions } from 'src/app/models/models-local';
 import { UtilityService } from 'src/app/services/api/utility.service';
 import { OverlayService } from 'src/app/services/overlay.service';
 
@@ -20,7 +19,7 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
   @ViewChild(OverlayComponent) overlayComponent: OverlayComponent;
   
   private dialogTimeout: any = undefined;
-  private dialogRef: MatDialogRef<MessageBoxComponent> = undefined;
+  private confirmTokenRefresh$: Subject<boolean> = undefined;
 
   private readonly ngZone = inject(NgZone);
   private readonly utility = inject(UtilityService);
@@ -59,45 +58,41 @@ export class AppComponent extends BaseComponent implements OnInit, AfterViewInit
 
   private startRefreshAuthTimer() {
     clearInterval(this.dialogTimeout);
-    this.dialogRef = undefined;
+    this.confirmTokenRefresh$ = undefined;
     
     this.dialogTimeout = setInterval(() => {
         console.debug('refreshAuthTimer -> setInterval');
         
         if (this.authService.isSessionExpirationPending() && 
-            !this.dialogRef && 
+            !this.confirmTokenRefresh$ && 
             !this.refreshTokenPending$.getValue()) {
             console.debug('onAfterViewInit -> setInterval -> session expired');
-            this.dialogRef = this.dialog?.open(MessageBoxComponent, { 
-                data: {
-                    isSessionTimeoutMessage: true,
-                    noTimeout: 15000,
-                    title: this.translate.instant('title.confirm'),
-                    message: this.translate.instant('auth.session-expired'),
-                    
-                } as MessageBoxOptions,
-                panelClass: 'session-expired-message'
-            });
+            
+            this.confirmTokenRefresh$ = MessageBoxComponent.show(this.dialog, {
+                  isSessionTimeoutMessage: true,
+                  noTimeout: 15000,
+                  title: this.translate.instant('title.confirm'),
+                  message: this.translate.instant('auth.session-expired'),
+                } as MessageBoxOptions);
 
-            this.dialogRef.afterClosed()
-                .pipe(untilDestroyed(this), map(result => result as boolean))
-                .subscribe(res => {
-                    this.dialogRef = undefined;
-                    if (res) {
-                        this.refreshTokenPending$.next(true);
-                        this.authService.refreshAuthentication()
-                            .pipe(first(), untilDestroyed(this))
-                            .subscribe({
-                                next: msg => (msg?.length > 0) ? this.doLogout() : {},
-                                error: () => this.doLogout(),
-                                complete: () => this.refreshTokenPending$.next(false)
-                            });
-                    } else {
-                        this.doLogout();
-                    }
-                });
+            this.confirmTokenRefresh$
+              .pipe(untilDestroyed(this), first(), map(result => result as boolean))
+              .subscribe(res => {
+                  this.confirmTokenRefresh$ = undefined;
+                  if (res) {
+                      this.refreshTokenPending$.next(true);
+                      this.authService.refreshAuthentication()
+                          .pipe(first(), untilDestroyed(this))
+                          .subscribe({
+                              next: msg => (msg?.length > 0) ? this.doLogout() : {},
+                              error: () => this.doLogout(),
+                              complete: () => this.refreshTokenPending$.next(false)
+                          });
+                  } else {
+                      this.doLogout();
+                  }
+              });
         }
-
     }, 3000);
   }
 

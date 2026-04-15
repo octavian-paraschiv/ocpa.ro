@@ -1,8 +1,8 @@
-app-login, app-logout, app-otp {
-    width: 30vw;
-    min-width: 350px;
+app-login, app-otp {
+    // width: 30vw;
+    // min-width: 350px;
     display: inline-block;
-    text-align: center;
+    text-align: justify;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -10,9 +10,17 @@ app-login, app-logout, app-otp {
     box-shadow: inset;
 }
 
-.mat-card-login {
-    width: auto;
+.otp-card-subtitle {
+    @extend .card-subtitle;
+    max-width: 460px;
+    word-wrap: normal;
+    text-align: left;
+}
+
+.card-login {
     box-shadow: 1px 3px 2px -2px $shadow-color, 1px 2px 2px 1px $shadow-color, 1px 2px 4px 1px $shadow-color !important;
+    align-items: start;
+    display: grid;
 }
   
 .login-form {
@@ -25,6 +33,17 @@ app-login, app-logout, app-otp {
 }
 
 .password-hide-icon {
-    margin: 0;
-    margin-right: 5px;
+    @extend .btn-crud;
+    //margin: 0;
+    //margin-right: 5px;
+    position: absolute;
+    right: 10px;
+    top: 35px;
+}
+
+.login-button {
+    @extend .login-form-control;
+    width: 100px;
+    margin-top: 1rem;
+    margin-right: 1rem;
 }

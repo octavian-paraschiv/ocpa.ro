@@ -1,0 +1,25 @@
+.tree-toggle {
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.tree-label {
+  cursor: pointer;
+  user-select: none;
+}
+
+.tree-label:hover {
+  text-decoration: underline;
+}
+
+.node-sel-on {
+  background-color: lightblue;
+}
+.node-sel-off {
+  background-color: $backcolor;
+}
+
+.list-unstyled {
+  padding-left: 0.6rem;
+}

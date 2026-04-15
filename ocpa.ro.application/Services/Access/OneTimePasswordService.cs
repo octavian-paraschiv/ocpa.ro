@@ -1,6 +1,7 @@
 ﻿using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Constants;
 using ocpa.ro.domain.Entities.Application;
 using ocpa.ro.domain.Models.Authentication;
 using ocpa.ro.domain.Models.Configuration;
@@ -42,36 +43,36 @@ public class OneTimePasswordService : BaseService, IOneTimePasswordService
             if (user != null)
             {
                 if (!user.Enabled)
-                    return ("ERR_ACCOUNT_DISABLED", user);
+                    return (AuthenticationErrors.AccountDisabled, user);
 
                 var otp = _dbContext.OneTimePasswords.FirstOrDefault(o => o.UserId == user.Id);
                 if (otp == null)
-                    return ("ERR_BAD_OTP", user);
+                    return (AuthenticationErrors.BadOtp, user);
 
-                if (otp.Expiration.CompareTo(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")) < 0)
+                if (otp.Expiration.CompareTo(DateTime.UtcNow.ToString(AppConstants.DateTimeFormat)) < 0)
                 {
                     _dbContext.Delete(otp); // Delete if expired
-                    return ("ERR_BAD_OTP", user);
+                    return (AuthenticationErrors.BadOtp, user);
                 }
 
                 var seed = Auth.getSeed(req.Password);
                 var calc = Auth.calcHash(otp.Hash, seed);
 
                 if (calc != req.Password)
-                    return ("ERR_BAD_OTP", user);
+                    return (AuthenticationErrors.BadOtp, user);
 
                 _dbContext.Delete(otp); // Delete when succesfully used
                 return (null, user);
             }
 
-            return ("ERR_BAD_CREDENTIALS", user);
+            return (AuthenticationErrors.BadCredentials, user);
         }
         catch (Exception ex)
         {
             LogException(ex);
         }
 
-        return ("ERR_BAD_OTP", null);
+        return (AuthenticationErrors.BadOtp, null);
     }
 
     public async Task<bool> GenerateOneTimePassword(string loginId, string language)
@@ -96,7 +97,7 @@ public class OneTimePasswordService : BaseService, IOneTimePasswordService
                 {
                     UserId = user.Id,
                     Hash = Auth.hash(loginId, otp),
-                    Expiration = DateTime.UtcNow.AddMinutes(_config.OTPDuration).ToString("yyyy-MM-dd HH:mm:ss"),
+                    Expiration = DateTime.UtcNow.AddMinutes(_config.OTPDuration).ToString(AppConstants.DateTimeFormat),
                 };
 
                 success = _dbContext.Insert(dbOtp) > 0;

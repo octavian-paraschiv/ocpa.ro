@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Models.Sensors;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
@@ -12,7 +13,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiExplorerSettings(GroupName = "Experimental")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.Experimental)]
     public class SensorsController : ApiControllerBase
     {
         private const int count = 5;

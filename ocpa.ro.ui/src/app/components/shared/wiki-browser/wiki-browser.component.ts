@@ -4,7 +4,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
 import { ContentTreeComponent } from 'src/app/components/shared/content-tree/content-tree.component';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
-import { ContentUnit, ContentUnitType } from 'src/app/models/models-swagger';
+import { ContentUnit, ContentUnitType } from 'src/app/models/swagger/content-management';
 
 @UntilDestroy()
 @Component({

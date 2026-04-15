@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { Unit } from 'src/app/models/models-local';
-import { CityDetail, MeteoDailyData } from 'src/app/models/models-swagger';
+import { Unit } from 'src/app/models/local/core-services';
+import { CityDetail, MeteoDailyData } from 'src/app/models/swagger/core-services';
 import { Iso3166HelperService } from "./iso3166-helper.service";    
 
 @Pipe({ name: 'temp' })

@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { TranslateService } from '@ngx-translate/core';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { UnavailablePageKind } from 'src/app/components/non-auth/unavailable-page/unavailable-page.component';
 import { Helper } from 'src/app/helpers/helper';
 import { AuthenticationService } from 'src/app/services/api/authentication.services';
@@ -15,7 +15,7 @@ import { OverlayService } from 'src/app/services/overlay.service';
 @Component({ selector: 'base-component', template: '' })
 export abstract class BaseComponent {
     protected readonly translate = inject(TranslateService);
-    protected readonly dialog = inject(MatDialog);
+    protected readonly dialog = inject(BsModalService);
     protected readonly authService = inject(AuthenticationService);
     protected readonly router = inject(Router);   
     protected readonly popup = inject(MessagePopupService);

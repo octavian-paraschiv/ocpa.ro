@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using ocpa.ro.api.Extensions;
 using ocpa.ro.api.Policies;
-using ocpa.ro.domain;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Abstractions.Access;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Constants;
 using ocpa.ro.domain.Models.Configuration;
 using ocpa.ro.domain.Models.Content;
 using Serilog;
@@ -26,7 +27,7 @@ namespace ocpa.ro.api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(Roles = "ADM")]
-    [ApiExplorerSettings(GroupName = "Content")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.ContentManagement)]
     public class ContentController : ApiControllerBase
     {
         #region Private members
@@ -145,7 +146,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         [DisableFormValueModelBinding]
-        [RequestSizeLimit(Constants.MaxMultipartRequestSize)]
+        [RequestSizeLimit(AppConstants.MaxMultipartRequestSize)]
         [Consumes("multipart/form-data")]
         [SwaggerOperation(OperationId = "UploadMultipartContent")]
         public async Task<IActionResult> UploadMultipartContent([FromRoute] string contentPath)

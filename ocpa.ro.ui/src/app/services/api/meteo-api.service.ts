@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
-import { MeteoDbInfo, MeteoData } from 'src/app/models/models-swagger';
+import { MeteoDbInfo, MeteoData } from 'src/app/models/swagger/core-services';
 import { environment } from 'src/environments/environment';
 import * as pako from 'pako';
 import * as CryptoJS from 'crypto-js';

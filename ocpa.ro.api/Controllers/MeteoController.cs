@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ocpa.ro.api.Policies;
-using ocpa.ro.domain;
+using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Abstractions.Services;
+using ocpa.ro.domain.Constants;
 using ocpa.ro.domain.Models.Meteo;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,7 +19,7 @@ namespace ocpa.ro.api.Controllers
     [ProducesErrorResponseType(typeof(void))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiExplorerSettings(GroupName = "Meteo")]
+    [ApiExplorerSettings(GroupName = SwaggerConfiguration.CoreServices)]
     public class MeteoController : ApiControllerBase
     {
         #region Private members
@@ -107,7 +108,7 @@ namespace ocpa.ro.api.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [IgnoreWhenNotInDev]
         [DisableFormValueModelBinding]
-        [RequestSizeLimit(Constants.MaxMultipartRequestSize)]
+        [RequestSizeLimit(AppConstants.MaxMultipartRequestSize)]
         [Consumes("multipart/form-data")]
         [SwaggerOperation(OperationId = "UploadPreviewDatabaseByIndex", Description = "Upload a Preview Database (by index)")]
         public async Task<IActionResult> UploadPreviewDatabaseByDbi([FromRoute] int dbi)

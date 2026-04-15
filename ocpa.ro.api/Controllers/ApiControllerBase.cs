@@ -26,6 +26,7 @@ public abstract class ApiControllerBase : ControllerBase
             }
             catch
             {
+                // don't care of the exception, just need a fail safe
             }
 
             return null;

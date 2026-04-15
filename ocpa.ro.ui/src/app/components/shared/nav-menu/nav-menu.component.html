@@ -1,31 +1,51 @@
-
-  <nav id="navbar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
-    <div id="navbarContainer" class="container">
-      <a class="navbar-brand">
-        <div class="navbar-image">
-          <fa-layers>
-            <fa-icon [icon]="faEarth" transform="shrink-8 left-5 up-2" size="3x" ></fa-icon>
-            <fa-layers-text content="ocpa.ro" size="sm" style="font-weight: bold" transform="shrink-4 down-15 right-5"></fa-layers-text>
-          </fa-layers>
-        </div>
-        <label class="navbar-title">{{ title }}</label>
-      </a>
-      <div id="navbarMenu">
-        <ul class="navbar-nav flex-grow">
-          <li *ngFor="let menu of menus" class="nav-item"
-            [routerLinkActive]="['link-active']"
-            [routerLinkActiveOptions]="{ exact: true }">
-            <a class="nav-link" [routerLink]="[menu.url]">
-              <div class="nav-link-div">
-                <fa-icon class="nav-link-img" [icon]="icons[menu.menuIcon]" transform="grow-10" title="{{menu.name}}"></fa-icon>
-                <ng-container>
-                  <label class="nav-link-txt">{{menu.name}}</label>
-                </ng-container>
-              </div>
-            </a>
-          </li>
-        </ul>
+<nav id="navbar" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow">
+  <div id="navbarContainer">
+    <div class="navbarBrand">
+      <div class="navbar-image">
+        <fa-layers>
+          <fa-icon [icon]="faEarth" transform="shrink-8 left-5 up-2" size="3x"></fa-icon>
+          <fa-layers-text content="ocpa.ro" size="sm" style="font-weight: bold"
+            transform="shrink-4 down-15 right-5"></fa-layers-text>
+        </fa-layers>
       </div>
+      <label class="navbar-title">{{ title }}</label>
     </div>
-  </nav>
-
+    <div class="navbarMenu">
+      <ul class="navbar-nav">
+        <li *ngFor="let menu of menus" class="nav-item" 
+          [routerLinkActive]="['link-active']"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <a class="nav-link" [routerLink]="[menu.url]">
+            <div class="nav-link-div">
+              <fa-icon class="nav-link-img" [icon]="icons[menu.menuIcon]" transform="grow-10"
+                title="{{menu.name}}"></fa-icon>
+              <ng-container>
+                <label class="nav-link-txt">{{menu.name}}</label>
+              </ng-container>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="navbarAuthMenu">
+      <ul class="navbar-nav">
+        <li *ngFor="let menu of authMenus" class="nav-auth-item">
+          <a *ngIf="menu.url === '/login'" class="nav-link" [routerLink]="[menu.url]">
+            <div class="nav-link-div-auth">
+              <label class="nav-link-txt">{{menu.name}}</label>
+              <fa-icon class="nav-link-img-auth" [icon]="icons[menu.menuIcon]" transform="grow-10"
+                title="{{menu.name}}"></fa-icon>
+            </div>
+          </a>
+          <a *ngIf="menu.url === '/logout'" class="nav-link" (click)="logout()">
+            <div class="nav-link-div-auth">
+              <label class="nav-link-txt">{{menu.name}}</label>
+              <fa-icon class="nav-link-img-auth" [icon]="icons[menu.menuIcon]" transform="grow-10"
+                title="{{menu.name}}"></fa-icon>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

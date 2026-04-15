@@ -5,9 +5,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { take } from 'rxjs/operators';
 import { MeteoDatabaseDialogComponent } from 'src/app/components/auth/meteo-database/meteo-database-dialog/meteo-database-dialog.component';
 import { BaseAuthComponent } from 'src/app/components/base/BaseComponent';
-import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
-import { MessageBoxOptions } from 'src/app/models/models-local';
-import { MeteoDbInfo, MeteoDbStatus } from 'src/app/models/models-swagger';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
+import { MeteoDbInfo, MeteoDbStatus } from 'src/app/models/swagger/core-services';
 import { MeteoApiService } from 'src/app/services/api/meteo-api.service';
 
 @UntilDestroy()
@@ -30,8 +29,8 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
     databases: MeteoDbInfo[] = [];
     displayedColumns: string[] = [ 
         'db-view', 'db-upload',  'db-delete', 'db-promote',
-        'db-name', 'db-status', 'db-range', 'db-length', 
-        'db-filler' ];
+        'db-name', 'db-status', 'db-range', 'db-count'
+    ];
 
     studioDownloadUrl: string = undefined;
 
@@ -102,7 +101,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
         MeteoDatabaseDialogComponent.showDialog(this.dialog, db.dbi)
             .pipe(untilDestroyed(this))
             .subscribe();
-}
+    }
 
     promote(db: MeteoDbInfo) {
         MessageBoxComponent.show(this.dialog, {

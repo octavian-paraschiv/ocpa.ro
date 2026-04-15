@@ -6,9 +6,9 @@ import { first, switchMap, tap } from 'rxjs/operators';
 import { DevicesDialogComponent } from 'src/app/components/auth/users/devices-dialog/devices-dialog.component';
 import { UserDialogComponent } from 'src/app/components/auth/users/user-dialog/user-dialog.component';
 import { BaseAuthComponent } from 'src/app/components/base/BaseComponent';
-import { MessageBoxComponent } from 'src/app/components/shared/message-box/message-box.component';
-import { MessageBoxOptions, UserInfo } from 'src/app/models/models-local';
-import { User, RegisteredDevice } from 'src/app/models/models-swagger';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
+import { UserInfo } from 'src/app/models/local/access-management';
+import { User, RegisteredDevice } from 'src/app/models/swagger/access-management';
 import { AppMenuManagementService } from 'src/app/services/api/app-menu-management.service';
 import { RegisteredDeviceService } from 'src/app/services/api/registered-device.service';
 import { UserTypeService } from 'src/app/services/api/user-type.service';
@@ -25,13 +25,20 @@ export class UsersComponent extends BaseAuthComponent implements OnInit {
     faEdit = faSquarePen;
     faRemove = faSquareMinus;
     faCheck = faCheck;
-    size = "grow-6";
+    size = "grow-8";
 
     users: User[] = [];
-    usersColumns: string[] = ['user-add', 'user-edit', 'user-delete', 'user-loginId', 'user-email', 'user-type', 'user-otp', 'user-attempts', 'user-disabled', 'filler'];
+    usersColumns: string[] = [
+        'user-add', 'user-edit', 'user-delete', 'login-id', 
+        'email', 'type', 'otp', 'attempts', 
+        'disabled'
+    ];
 
     devices: RegisteredDevice[] = [];
-    devicesColumns: string[] = ['device-view', 'device-delete', 'device-deviceId', 'device-loginId', 'device-timestamp', 'device-ipaddress', 'filler'];
+    devicesColumns: string[] = [
+        'device-view', 'device-delete', 'device-id', 'device-login-id', 
+        'device-login-time', 'device-login-ipaddr'
+    ];
 
     private readonly appMenuService = inject(AppMenuManagementService);
     private readonly userService = inject(UserService);

@@ -103,7 +103,7 @@
         "login-failed-2": "Utilizatorul <b>{{username}}</b> nu se poate conecta [2]",
         "login-failed-3": "Utilizatorul <b>{{username}}</b> nu e asociat cu nicio aplicație",
         "session-expired": "Sesiunea dvs. a expirat.<br>Apăsați Da pt. a rămâne conectat, și Nu pt a vă deconecta.",
-        "logout-desc": "Apăsați butonul Deconectare dacă asta intenționați. Pentru a rămâne conectat, pur și simplu selectați alt meniu."
+        "logout-desc": "Sunteți sigur că doriți să vă deconectați?<br>Apăsați Nu pt. a rămâne conectat, și Da pt, a vă deconecta."
     },
     
     "meteo": {
@@ -199,6 +199,7 @@
         "logged-in": "[CONECTAT]",
         "type": "Tip",
         "otp": "Autentificare în 2 pași",
+        "disabled": "Cont dezactivat",
         "device-list": "Lista dispozitive înregistrate:",
         "view-device": "Afișează informații dispozitiv '{{deviceId}}'",
         "del-device": "Șterge dispozitivul '{{deviceId}}'",
@@ -244,7 +245,7 @@
 
     "user-dialog": {
         "user-type": "Tip utilizator",
-        "password-hint": "Pentru a păstra parola existentă,<br>lăsați ambele câmpuri Parola goale.",
+        "password-hint": "<b>Pentru a păstra parola existentă, lăsați ambele câmpuri Parola goale.</b>",
         "password-length-hint": "Parola trebuie să aibă cel puțin 8 caractere",
         "password-match-hint": "Cele două parole trebuie să fie identice",
         "email-required": "Adresa email trebuie să includă '@' - de ex. 'user.address@email.server'",

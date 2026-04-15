@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { Observable } from 'rxjs';
-import { ContentUnit } from 'src/app/models/models-swagger';
+import { ContentUnit } from 'src/app/models/swagger/content-management';
 import { environment } from 'src/environments/environment';
 import * as CryptoJS from 'crypto-js';
 

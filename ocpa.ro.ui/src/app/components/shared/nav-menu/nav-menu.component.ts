@@ -4,8 +4,10 @@ import { fas, faEarth } from '@fortawesome/free-solid-svg-icons';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
+import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { Helper } from 'src/app/helpers/helper';
-import { Menu } from 'src/app/models/models-swagger';
+import { Menu } from 'src/app/models/swagger/access-management';
+import { MenuService } from 'src/app/services/api/menu.service';
 
 @UntilDestroy()
 @Component({
@@ -17,6 +19,7 @@ export class NavMenuComponent extends BaseComponent implements OnInit {
     faEarth = faEarth;
     title = 'OcPa\'s Web Site';
     menus: Menu[] = [];
+    authMenus: Menu[] = [];
 
     ngOnInit(): void {
         this.router.events
@@ -42,12 +45,26 @@ export class NavMenuComponent extends BaseComponent implements OnInit {
             }
           }
 
-          this.menus = menus;
+          this.authMenus = menus.filter(m => MenuService.isAuthMenu(m));
+          this.menus = menus.filter(m => this.authMenus.indexOf(m) < 0);
         });
     }
 
   logout() {
-    this.authService.logout(true);
+    MessageBoxComponent.show(this.dialog, {
+      title: this.translate.instant('title.confirm'),
+      message: this.translate.instant('auth.logout-desc'),
+
+    } as MessageBoxOptions)
+    .pipe(untilDestroyed(this))
+    .subscribe(res => {
+      if (res) {
+        this.authService.logout(true);
+      }
+    });
   }
 
+  isAuthMenu(m: Menu) {
+    return MenuService.isAuthMenu(m);
+  }
 }
