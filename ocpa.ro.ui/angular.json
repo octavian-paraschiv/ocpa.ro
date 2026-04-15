@@ -28,7 +28,6 @@
             ],
             "styles": [
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
-              "node_modules/@ali-hm/angular-tree-component/css/angular-tree-component.css",
               "src/assets/styles/Site.scss",
               "node_modules/prismjs/themes/prism-okaidia.css",
               "node_modules/katex/dist/katex.min.css",

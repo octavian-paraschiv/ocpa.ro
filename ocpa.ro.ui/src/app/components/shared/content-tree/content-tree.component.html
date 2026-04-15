@@ -1,4 +1,6 @@
-<tree-root #treeView
-  [nodes]="nodes" 
-  [options]="options">
-</tree-root>
+<app-tree-view #treeView 
+    [nodes]="nodes"
+    (nodeSelected)="onTreeNodeSelected($event)"
+    class="appTreeView"
+>
+</app-tree-view>
