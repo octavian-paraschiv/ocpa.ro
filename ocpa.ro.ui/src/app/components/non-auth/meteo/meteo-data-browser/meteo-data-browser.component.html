@@ -82,7 +82,7 @@
                                     </div>
                                 </td>
                                 <!-- Precip / Wind / Pres Column -->
-                                <td class="{{centerCellClass(md)}}">
+                                <td class="grid-column-precip {{centerCellClass(md)}}">
                                     <div class="detail-info">
                                         <div *ngIf="md?.wind > 0" class="detail-wind">
                                             <fa-icon [icon]="icons['faWind']"></fa-icon>
@@ -114,7 +114,7 @@
                                     </div>
                                 </td>
                                 <!-- Risks Column -->
-                                <td class="{{rightCellClass(md)}}">
+                                <td class="grid-column-risks {{rightCellClass(md)}}">
                                     <app-day-risks *ngIf="md?.hazards?.length > 0" [risks]="md.hazards">
                                     </app-day-risks>
                                 </td>
