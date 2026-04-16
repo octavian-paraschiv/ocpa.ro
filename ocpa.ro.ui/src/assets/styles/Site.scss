@@ -343,4 +343,9 @@ img[loading="lazy"]:not([src=""]) {
     .img-modal-close {
         display: none;
     }
+
+    th, td {
+        padding-top: unset;
+        padding-bottom: unset;
+    }
 }

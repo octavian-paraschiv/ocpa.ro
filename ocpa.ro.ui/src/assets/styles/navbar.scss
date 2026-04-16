@@ -142,12 +142,9 @@
 
 /* MOBILE
 ----------------------------------------------------------*/
-/*:root[mobile="true"] {
-    .navbar-nav {
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        display: table;
-        table-layout: fixed;
+:root[display-mode="m1"] {
+    .nav-link-txt {
+        font-size: 0.75rem;
+        font-weight: bold;
     }
-}*/
+}

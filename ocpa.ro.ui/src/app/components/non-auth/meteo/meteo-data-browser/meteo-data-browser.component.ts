@@ -485,7 +485,7 @@ export class MeteoDataBrowserComponent extends BaseComponent implements OnInit  
       document.getElementById('meteo-calendar').style.width = `${w}px`;
     }
     document.getElementById('dSmartControls').style.width = `${w}px`;
-    document.getElementById('dHint').style.width = `${w}px`;
+    document.getElementById('dHint').style.width = `${w + 50}px`;
 }
 
   private getAbsoluteHeight(el: HTMLElement) {
