@@ -107,14 +107,19 @@ namespace ocpa.ro.api.Controllers
         }
 
         [HttpGet("cities/all")]
-        [ProducesResponseType(typeof(List<CityDetail>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<CityDetail>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [SwaggerOperation(OperationId = "GetAllCities")]
-        public IActionResult GetAllCities()
+        public IActionResult GetAllCities([FromQuery(Name = "reload")] string reloadCacheStr)
         {
             try
             {
-                return Ok(_geographyService.GetAllCities());
+                bool reloadCache = string.Equals(reloadCacheStr, "TRUE", StringComparison.OrdinalIgnoreCase);
+
+
+                return Ok(reloadCache ?
+                    null :
+                    _geographyService.GetAllCities(reloadCache));
             }
             catch (Exception ex)
             {

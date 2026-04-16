@@ -13,7 +13,7 @@ public interface IGeographyService
     IEnumerable<string> GetRegionNames();
     IEnumerable<string> GetSubregionNames(string regionName);
     IEnumerable<string> GetCityNames(string regionName, string subregionName);
-    IEnumerable<CityDetail> GetAllCities();
+    IEnumerable<CityDetail> GetAllCities(bool reloadCache);
     Region GetRegionByName(string regionName);
     Region GetRegionByCode(string regionCode);
     void ValidateSubregion(string regionName, string subregionName);

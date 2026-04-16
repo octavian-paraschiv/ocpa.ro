@@ -25,6 +25,9 @@ public class DatabaseManagementService : BackgroundService
         using (var scope = _serviceProvider.CreateScope())
         {
             scope.ServiceProvider.GetRequiredService<ISystemSettingsService>().SeedSettings();
+
+            var geographyService = scope.ServiceProvider.GetRequiredService<IGeographyService>();
+            geographyService.GetAllCities(true);
         }
 
         while (!stoppingToken.IsCancellationRequested)

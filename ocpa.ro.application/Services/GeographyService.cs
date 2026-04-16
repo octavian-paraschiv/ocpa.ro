@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
 using ocpa.ro.domain.Abstractions.Database;
 using ocpa.ro.domain.Abstractions.Gateways;
 using ocpa.ro.domain.Abstractions.Services;
@@ -20,6 +21,7 @@ public class GeographyService : BaseService, IGeographyService
     #region Private members
     private readonly IApplicationDbContext _dbContext;
     private readonly IGeoLocationGateway _geoLocationGateway;
+    private readonly ICacheService _cacheService;
 
     #endregion
 
@@ -27,12 +29,13 @@ public class GeographyService : BaseService, IGeographyService
     public GeographyService(IHostingEnvironmentService hostingEnvironment,
         ILogger logger,
         IGeoLocationGateway geoLocationGateway,
-        IApplicationDbContext dbContext)
+        IApplicationDbContext dbContext,
+        ICacheService cacheService)
        : base(hostingEnvironment, logger)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _geoLocationGateway = geoLocationGateway ?? throw new ArgumentNullException(nameof(geoLocationGateway));
-
+        _cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
     }
     #endregion
 
@@ -88,15 +91,7 @@ public class GeographyService : BaseService, IGeographyService
             .Select(c => c.Name)];
     }
 
-    public IEnumerable<CityDetail> GetAllCities()
-    {
-        var cities = _dbContext.Cities
-            .OrderBy(c => c.Name)
-            .ToList();
-
-        return cities.Select(GetCityDetail).ToList();
-
-    }
+    public IEnumerable<CityDetail> GetAllCities(bool reloadCache) => GetCachedCities(reloadCache).GetAwaiter().GetResult();
 
     public CityDetail GetCity(string regionName, string subregionName, string cityName)
     {
@@ -231,6 +226,10 @@ public class GeographyService : BaseService, IGeographyService
             LogException(ex);
             dbu = null;
         }
+        finally
+        {
+            Task.Run(async () => await GetCachedCities(true));
+        }
 
         return GetCityDetail(dbu);
     }
@@ -258,6 +257,10 @@ public class GeographyService : BaseService, IGeographyService
         {
             LogException(ex);
         }
+        finally
+        {
+            Task.Run(async () => await GetCachedCities(true));
+        }
 
         return StatusCodes.Status400BadRequest;
     }
@@ -279,6 +282,22 @@ public class GeographyService : BaseService, IGeographyService
             Subregion = c.Subregion,
             RegionId = c.RegionId,
         };
+    }
+
+    public async Task<IEnumerable<CityDetail>> GetCachedCities(bool invalidateCache)
+    {
+        if (invalidateCache)
+            await _cacheService.Clear("cities");
+
+        var opt = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1) };
+
+        return await _cacheService.ReadCachedData("cities",
+            () =>
+            {
+                var cities = _dbContext.Cities.OrderBy(c => c.Name).ToList();
+                return Task.FromResult(cities.Select(GetCityDetail).ToList());
+            },
+            opt);
     }
 
     Task<GeoLocation> IGeographyService.GetGeoLocation(string ipAddress)

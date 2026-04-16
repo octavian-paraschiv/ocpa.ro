@@ -52,4 +52,6 @@ public class CacheService : ICacheService
             });
         }
     }
+
+    Task ICacheService.Clear(string key) => _cache.RemoveAsync(key);
 }

@@ -12,4 +12,6 @@ public interface ICacheService
 
     Task Save<T>(string key, T data) where T : class;
     Task Save<T>(string key, T data, DistributedCacheEntryOptions options) where T : class;
+
+    Task Clear(string key);
 }
