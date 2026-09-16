@@ -9,11 +9,9 @@ using Serilog;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Auth = OPMFileUploader.Authentication;
+using Auth = FileUploader.Authentication;
 
 namespace ocpa.ro.application.Services.Access;
-
-
 
 public class OneTimePasswordService : BaseService, IOneTimePasswordService
 {
@@ -55,8 +53,8 @@ public class OneTimePasswordService : BaseService, IOneTimePasswordService
                     return (AuthenticationErrors.BadOtp, user);
                 }
 
-                var seed = Auth.getSeed(req.Password);
-                var calc = Auth.calcHash(otp.Hash, seed);
+                var seed = Auth.GetSeed(req.Password);
+                var calc = Auth.CalcHash(otp.Hash, seed);
 
                 if (calc != req.Password)
                     return (AuthenticationErrors.BadOtp, user);
@@ -96,7 +94,7 @@ public class OneTimePasswordService : BaseService, IOneTimePasswordService
                 dbOtp = new OneTimePassword
                 {
                     UserId = user.Id,
-                    Hash = Auth.hash(loginId, otp),
+                    Hash = Auth.Hash(loginId, otp),
                     Expiration = DateTime.UtcNow.AddMinutes(_config.OTPDuration).ToString(AppConstants.DateTimeFormat),
                 };
 

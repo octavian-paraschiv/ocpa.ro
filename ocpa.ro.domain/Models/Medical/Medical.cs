@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 using ThorusCommon.IO.Converters;
-using ThorusCommon.SQLite;
+using ThorusCommon.IO.SQLite;
 
 namespace ocpa.ro.domain.Models.Medical
 {
@@ -28,7 +28,6 @@ namespace ocpa.ro.domain.Models.Medical
         public string Description { get; set; }
 
         public string Comment { get; set; }
-
     }
 
     public class Person : IMedicalDbTable
@@ -48,7 +47,6 @@ namespace ocpa.ro.domain.Models.Medical
 
         [JsonIgnore]
         public string LoginId { get; set; }
-
     }
 
     public class Test : IMedicalDbTable
@@ -82,7 +80,6 @@ namespace ocpa.ro.domain.Models.Medical
         public string Description { get; set; }
 
         public string Comment { get; set; }
-
     }
 
     public class TestCategory : IMedicalDbTable
@@ -99,7 +96,6 @@ namespace ocpa.ro.domain.Models.Medical
         public string Description { get; set; }
 
         public string Comment { get; set; }
-
     }
 
     public class TestType : IMedicalDbTable
@@ -127,7 +123,6 @@ namespace ocpa.ro.domain.Models.Medical
         public string Description { get; set; }
 
         public string Comment { get; set; }
-
     }
 
     public class TestDetail : IMedicalDbView
@@ -184,7 +179,6 @@ namespace ocpa.ro.domain.Models.Medical
         public double? MinRefOverride { get; set; }
 
         public double? MaxRefOverride { get; set; }
-
     }
 
     public class TestTypeDetail : IMedicalDbView
@@ -212,6 +206,5 @@ namespace ocpa.ro.domain.Models.Medical
 
         [NotNull]
         public double MaxRef { get; set; }
-
     }
 }

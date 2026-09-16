@@ -10,7 +10,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ThorusCommon.SQLite;
+using ThorusCommon.IO.SQLite;
 
 namespace ocpa.ro.api.Controllers
 {

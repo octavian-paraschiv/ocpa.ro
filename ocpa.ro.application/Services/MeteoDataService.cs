@@ -10,17 +10,17 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ThorusCommon.SQLite;
+using ThorusCommon.IO.SQLite;
 
 namespace ocpa.ro.application.Services
 {
-
-
     public class MeteoDataService : BaseService, IMeteoDataService
     {
         #region Constants
+
         public const int DbCount = 10;
-        #endregion
+
+        #endregion Constants
 
         #region Private members
 
@@ -31,7 +31,7 @@ namespace ocpa.ro.application.Services
         private readonly IGeographyService _geographyService;
         private readonly IWeatherTypeService _weatherTypeService;
 
-        #endregion
+        #endregion Private members
 
         #region Constructor (DI)
 
@@ -55,9 +55,10 @@ namespace ocpa.ro.application.Services
             }
         }
 
-        #endregion
+        #endregion Constructor (DI)
 
         #region IMeteoDataHelper implementation
+
         public async Task DropPreviewDatabase(int dbi)
         {
             int idx = DbiToIdx(dbi, false);
@@ -165,7 +166,7 @@ namespace ocpa.ro.application.Services
             return dbInfos;
         }
 
-        #endregion
+        #endregion IMeteoDataHelper implementation
 
         #region Private methods
 
@@ -293,6 +294,6 @@ namespace ocpa.ro.application.Services
             return database.GetData(rgn.Code.ToUpper(), gc, skip, take);
         }
 
-        #endregion
+        #endregion Private methods
     }
 }

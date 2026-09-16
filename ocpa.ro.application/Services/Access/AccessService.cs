@@ -15,11 +15,9 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Auth = OPMFileUploader.Authentication;
+using Auth = FileUploader.Authentication;
 
 namespace ocpa.ro.application.Services.Access;
-
-
 
 public class AccessService : BaseService, IAccessService
 {
@@ -49,8 +47,8 @@ public class AccessService : BaseService, IAccessService
             var user = GetUser(req.LoginId);
             if (user?.PasswordHash?.Length > 0 && req.Password?.Length > 0)
             {
-                var seed = Auth.getSeed(req.Password);
-                var calc = Auth.calcHash(user.PasswordHash, seed);
+                var seed = Auth.GetSeed(req.Password);
+                var calc = Auth.CalcHash(user.PasswordHash, seed);
 
                 if (calc == req.Password)
                 {
@@ -137,7 +135,6 @@ public class AccessService : BaseService, IAccessService
         }
 
         return dbu;
-
     }
 
     public int DeleteUser(string loginId)
@@ -179,7 +176,6 @@ public class AccessService : BaseService, IAccessService
 
             PasswordHash = null,
             Enabled = u.Enabled && u.LoginAttemptsRemaining > 0,
-
         })];
     }
 
@@ -243,7 +239,6 @@ public class AccessService : BaseService, IAccessService
 
         return [];
     }
-
 
     public async Task RegisterDevice(string deviceId, string ipAddress, string loginId)
     {
@@ -387,4 +382,3 @@ public class AccessService : BaseService, IAccessService
             .TrimEnd('.');
     }
 }
-

@@ -3,7 +3,7 @@ using ocpa.ro.domain.Models.Meteo;
 using System;
 using System.Collections.Generic;
 using ThorusCommon.IO;
-using ThorusCommon.SQLite;
+using ThorusCommon.IO.SQLite;
 
 namespace ocpa.ro.application.Services;
 

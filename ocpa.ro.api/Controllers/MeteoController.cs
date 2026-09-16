@@ -10,7 +10,7 @@ using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading.Tasks;
-using ThorusCommon.SQLite;
+using ThorusCommon.IO.SQLite;
 
 namespace ocpa.ro.api.Controllers
 {
@@ -23,13 +23,16 @@ namespace ocpa.ro.api.Controllers
     public class MeteoController : ApiControllerBase
     {
         #region Private members
+
         private readonly IContentService _contentService = null;
         private readonly IMeteoDataService _meteoDataService = null;
         private readonly IGeographyService _geographyService = null;
         private readonly IMultipartRequestService _multipartRequestService = null;
-        #endregion
+
+        #endregion Private members
 
         #region Constructor (DI)
+
         public MeteoController(IMeteoDataService meteoDataService,
             IGeographyService geographyHelper,
             IMultipartRequestService multipartRequestService,
@@ -42,9 +45,11 @@ namespace ocpa.ro.api.Controllers
             _multipartRequestService = multipartRequestService ?? throw new ArgumentNullException(nameof(multipartRequestService));
             _contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
         }
-        #endregion
+
+        #endregion Constructor (DI)
 
         #region Public controller methods
+
         [HttpGet("studio-download-url")]
         [Authorize(Roles = "ADM")]
         [IgnoreWhenNotInDev]
@@ -76,7 +81,6 @@ namespace ocpa.ro.api.Controllers
             [FromQuery] int skip = 0, [FromQuery] int take = 10)
 
             => GetMeteoData(-1, region, subregion, city, skip, take);
-
 
         [HttpGet("data/preview/{dbi}")]
         [Authorize(Roles = "ADM")]
@@ -185,6 +189,7 @@ namespace ocpa.ro.api.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        #endregion
+
+        #endregion Public controller methods
     }
 }

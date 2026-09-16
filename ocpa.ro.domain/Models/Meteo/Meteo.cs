@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ThorusCommon.SQLite;
+using ThorusCommon.IO.SQLite;
 
 namespace ocpa.ro.domain.Models.Meteo;
 

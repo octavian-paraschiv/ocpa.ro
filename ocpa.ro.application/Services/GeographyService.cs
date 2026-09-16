@@ -12,20 +12,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TCS = ThorusCommon.SQLite;
+using TCS = ThorusCommon.IO.SQLite;
 
 namespace ocpa.ro.application.Services;
 
 public class GeographyService : BaseService, IGeographyService
 {
     #region Private members
+
     private readonly IApplicationDbContext _dbContext;
     private readonly IGeoLocationGateway _geoLocationGateway;
     private readonly ICacheService _cacheService;
 
-    #endregion
+    #endregion Private members
 
     #region Constructor (DI)
+
     public GeographyService(IHostingEnvironmentService hostingEnvironment,
         ILogger logger,
         IGeoLocationGateway geoLocationGateway,
@@ -37,9 +39,11 @@ public class GeographyService : BaseService, IGeographyService
         _geoLocationGateway = geoLocationGateway ?? throw new ArgumentNullException(nameof(geoLocationGateway));
         _cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
     }
-    #endregion
+
+    #endregion Constructor (DI)
 
     #region IGeographyHelper implementation
+
     public Region FirstRegion => _dbContext.Regions.FirstOrDefault();
 
     public IEnumerable<RegionDetail> GetAllRegions()
@@ -54,7 +58,6 @@ public class GeographyService : BaseService, IGeographyService
             MinLat = r.MinLat,
             MinLon = r.MinLon,
             Name = r.Name,
-
         }).ToList();
 
         regions.ForEach(r => r.Subregions = GetSubregionNames(r.Name));
@@ -152,8 +155,6 @@ public class GeographyService : BaseService, IGeographyService
             throw new ExtendedException($"Could not find any subregion named '{subregionName}' in region '{regionName}'");
     }
 
-
-
     public CityDetail SaveCity(CityDetail city, out bool inserted)
     {
         City dbu = null;
@@ -236,7 +237,6 @@ public class GeographyService : BaseService, IGeographyService
 
     public int DeleteCity(int cityId)
     {
-
         try
         {
             var dbu = _dbContext.Cities.FirstOrDefault(c => c.Id == cityId);
@@ -265,7 +265,7 @@ public class GeographyService : BaseService, IGeographyService
         return StatusCodes.Status400BadRequest;
     }
 
-    #endregion
+    #endregion IGeographyHelper implementation
 
     private CityDetail GetCityDetail(City c)
     {

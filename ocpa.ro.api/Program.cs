@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ocpa.ro.api.Extensions;
@@ -7,6 +8,7 @@ using ocpa.ro.api.Swagger;
 using ocpa.ro.domain.Extensions;
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,13 +40,11 @@ builder.Services.AddCors(options =>
         .AllowCredentials());
 });
 
-
 builder.Services.InjectDependencies(builder.Configuration);
 
 builder.Services.AddHttpClients();
 
 builder.Services.AddDistributedMemoryCache();
-
 
 builder.Services
     .AddControllers()
@@ -56,15 +56,35 @@ builder.Services
 
 builder.Services.AddOpenApiDesc();
 
-#endregion
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+});
+
+builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+{
+    options.Level = CompressionLevel.Fastest;
+});
+
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+{
+    options.Level = CompressionLevel.Fastest;
+});
+
+#endregion Services
 
 #region App
+
 var app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionHandler>();
 
 if (isDevelopment)
     app.UseDeveloperExceptionPage();
+
+app.UseResponseCompression();
 
 app.UseRouting();
 
@@ -85,4 +105,5 @@ app.MapControllers();
 app.UseOpenApiDesc();
 
 await app.RunAsync();
-#endregion
+
+#endregion App
