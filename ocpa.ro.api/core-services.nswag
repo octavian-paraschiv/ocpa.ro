@@ -1,5 +1,5 @@
 {
-  "runtime": "Net80",
+  "runtime": "Net100",
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
@@ -41,6 +41,8 @@
       "useTransformResultMethod": false,
       "generateDtoTypes": true,
       "operationGenerationMode": "MultipleClientsFromOperationId",
+      "includedOperationIds": [],
+      "excludedOperationIds": [],
       "markOptionalProperties": true,
       "generateCloneMethod": false,
       "typeStyle": "Interface",
