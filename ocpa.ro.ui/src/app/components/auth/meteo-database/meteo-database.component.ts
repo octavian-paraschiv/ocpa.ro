@@ -146,7 +146,7 @@ export class MeteoDatabaseComponent extends BaseAuthComponent implements OnInit 
         return this.translate.instant(`meteo-db.${db.status}`.toLocaleLowerCase());
     }
 
-    private fileOpen(callback: (ArrayBuffer) => void) {
+    private fileOpen(callback: (arg0: ArrayBuffer) => void) {
         var input = document.createElement('input');
         input.type = 'file';
         input.accept = ".db3";

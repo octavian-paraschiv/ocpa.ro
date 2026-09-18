@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ContentUnit, ContentUnitType } from 'src/app/models/swagger/content-management';
+import { NodeSelectedEvent } from '../content-tree/content-tree.component';
 import { faFileText, faFolderOpen, faFolderClosed, faFileImage, faFile, faQuestion, faBook, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -18,11 +19,11 @@ export class TreeViewComponent {
   size = 'grow-2';
 
   @Input({ required: true }) nodes: ContentUnit[];
-  @Output() nodeSelected = new EventEmitter<ContentUnit>();
+  @Output() nodeSelected = new EventEmitter<NodeSelectedEvent>();
 
 
-  onTreeNodeSelected(node: ContentUnit) {
-    this.selectNode(node);
+  onTreeNodeSelected(event: NodeSelectedEvent) {
+    this.selectNode(event);
   }
 
   toggle(node: ContentUnit) {
@@ -32,7 +33,9 @@ export class TreeViewComponent {
         node.expanded = !node.expanded;
       }
     } 
-    this.selectNode(node);
+
+    console.debug(`toggle calling selectNode: ${node?.path}\\${node?.name}`);
+    this.selectNode({ node, isRefresh: false });
   }
 
   nodeClass(node: ContentUnit) {
@@ -55,16 +58,41 @@ export class TreeViewComponent {
     }
   }
 
-  selectNode(node: ContentUnit) {
+  selectNode(event: NodeSelectedEvent) {
+
+    console.debug(`called selectNode: `);
+
     this.clearSelection();
     
-    if (node) 
-      node.selected = true;
+    if (event?.node) {
+      
+      this.flattenTree(this.nodes).forEach(n => {
+        const eventNodePath = this.normalizePath(`${event?.node?.path}/${event?.node?.name}`);
+        const thisNodePath = this.normalizePath(`${n.path}/${n.name}`) ?? '';
+        const isFolder = n.type === ContentUnitType.Folder || n.type === ContentUnitType.MarkdownIndexFolder;
 
-    this.nodeSelected.emit(node);  
+        const isAncestor = isFolder && eventNodePath.startsWith(thisNodePath);
+
+        if (isAncestor) {
+          console.debug(` ${thisNodePath} is ancestor for ${eventNodePath}`);
+          n.expanded = true;
+        } 
+      });
+      
+      event.node.selected = true;
+      event.node.expanded = true;
+    }      
+
+    this.nodeSelected.emit(event);  
   }
 
+  normalizePath = (path: string): string =>
+  path
+    .replace(/^[./\\]+(?=[^/\\])/, '') // remove leading "./" or ".\"
+    .replace(/\\/g, '/');              // convert backslashes to slashes
+
   clearSelection() {
+    console.debug(`called clearSelection`);
     this.flattenTree(this.nodes).forEach(n => {
       n.selected = false;
       //n.expanded = false;

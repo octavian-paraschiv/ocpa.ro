@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
 import { NodeNameDialogComponent } from 'src/app/components/auth/content-browser/node-name-dialog/node-name-dialog.component';
 import { BaseComponent } from 'src/app/components/base/BaseComponent';
-import { ContentTreeComponent } from 'src/app/components/shared/content-tree/content-tree.component';
+import { ContentTreeComponent, NodeSelectedEvent } from 'src/app/components/shared/content-tree/content-tree.component';
 import { MessageBoxComponent, MessageBoxOptions } from 'src/app/components/shared/message-box/message-box.component';
 import { WikiViewerComponent } from 'src/app/components/shared/wiki-viewer/wiki-viewer.component';
 import { Helper } from 'src/app/helpers/helper';
@@ -18,15 +18,15 @@ import { ContentApiService } from 'src/app/services/api/content-api.service';
   templateUrl: 'content-browser.component.html'
 })
 export class ContentBrowserComponent extends BaseComponent {
-  oldContent = undefined;
-  content = undefined;
-  image = undefined;
-  binary = undefined;
+  oldContent: any = undefined;
+  content: string = undefined;
+  image: string = undefined;
+  binary: string = undefined;
 
   contentPath = '';
   currentNode: ContentUnit = undefined;
 
-  keyDownTimeout = undefined;
+  keyDownTimeout: number = undefined;
   saveError = false;
   editable = true;
 
@@ -42,11 +42,26 @@ export class ContentBrowserComponent extends BaseComponent {
 
   private readonly contentService = inject(ContentApiService);
 
-  onNodeSelected(node: ContentUnit) {
-    this.currentNode = node;
-    if (node?.path?.length > 0 && node?.name?.length > 0) {
-      this.contentPath = `${node.path}/${node.name}`;
-      if (node?.type === ContentUnitType.File) {
+  get currentPath(): string {
+    switch(this.currentNode?.type) {
+      case ContentUnitType.Folder:
+      case ContentUnitType.MarkdownIndexFolder:
+        return `${this.currentNode.path}/${this.currentNode.name}`;
+
+      default: 
+        return this.currentNode?.path ?? '.';
+    }
+  }
+
+  onNodeSelected(event: NodeSelectedEvent) {
+    this.currentNode = event?.node;
+    const isRefresh = event?.isRefresh;
+
+    console.debug(`onNodeSelected => currentPath = ${this.currentPath} isRefresh=${isRefresh}`);
+
+    if (this.currentNode?.path?.length > 0 && this.currentNode?.name?.length > 0) {
+      this.contentPath = `${this.currentNode?.path}/${this.currentNode?.name}`;
+      if (event?.node?.type === ContentUnitType.File) {
         this.overlay.show();
         this.contentService
           .getContent(this.contentPath)
@@ -239,13 +254,17 @@ export class ContentBrowserComponent extends BaseComponent {
     if (!this.isActionAllowed('upload'))
       return;
 
+    const pathToReselect = this.currentPath;
+    console.debug(`before upload => pathToReselect = ${pathToReselect}`);
+
     this.overlay.show();
     this.fileOpen(fileData => {
       this.contentService.uploadContent(fileData.path, fileData.content, fileData.type)
         .pipe(untilDestroyed(this))
         .subscribe({
           next: () => {
-            this.tree.reloadAndSelect(this.currentNode.path);
+            console.debug(`after upload => reloadAndSelect ${pathToReselect}`);
+            this.tree.reloadAndSelect(pathToReselect);
             this.popup.showSuccess('content-browser.upload-success', { name: this.currentNode?.name });
           },
           error: err => {
@@ -259,6 +278,9 @@ export class ContentBrowserComponent extends BaseComponent {
     if (!this.isActionAllowed('delete'))
       return;
 
+    const pathToReselect = this.currentPath;
+    console.debug(`before upload => pathToReselect = ${pathToReselect}`);
+
     MessageBoxComponent.show(this.dialog, {
       title: this.translate.instant('title.confirm'),
       message: this.translate.instant('content-browser.delete-node', { name: this.currentNode?.name })
@@ -271,7 +293,7 @@ export class ContentBrowserComponent extends BaseComponent {
             .pipe(untilDestroyed(this))
             .subscribe({
               next: () => {
-                this.tree.reloadAndSelect(this.currentNode.path);
+                this.tree.reloadAndSelect(pathToReselect);
                 this.popup.showSuccess('content-browser.delete-success', { name: this.currentNode?.name });
               },
               error: err => {
