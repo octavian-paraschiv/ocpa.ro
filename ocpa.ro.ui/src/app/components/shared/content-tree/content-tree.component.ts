@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectorRef, ViewChild, AfterViewInit } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ContentUnit, ContentUnitType } from 'src/app/models/swagger/content-management';
+import { ContentUnit } from 'src/app/models/swagger/content-management';
 import { ContentApiService } from 'src/app/services/api/content-api.service';
 import { TreeViewComponent } from '../tree-view/tree-view.component';
 
@@ -29,11 +29,14 @@ export class ContentTreeComponent implements OnInit {
     }
   }
   
-  onTreeNodeSelected(node: ContentUnit) {
-    this.nodeSelected.emit(node);
+  onTreeNodeSelected(event: ContentUnit) {
+    this.nodeSelected.emit(event);
   }
 
   reloadAndSelect(path: string | undefined) {
+
+    console.debug(`reloadAndSelect: ${path}`);
+
     let id = 1;
     this.contentService.listContent(this.path, this.level, this.filter, this.markdownView)
       .pipe(untilDestroyed(this))
@@ -41,7 +44,15 @@ export class ContentTreeComponent implements OnInit {
         this.treeView.nodes = res.children;
 
         const flatNodes = this.flattenTree(this.treeView.nodes);
-        const node = flatNodes.find(n => `${n.path}/${n.name}` === path) ?? flatNodes[0];
+
+        const parentPath = path?.substring(0, path.lastIndexOf('/'));
+
+        let node = flatNodes.find(n => `${n.path}/${n.name}` === path) ??
+          flatNodes.find(n => `${n.path}/${n.name}` === parentPath) ??
+          flatNodes[0];
+
+        console.debug(`reloadAndSelect calling treeView.selectNode: ${node.path}/${node.name}`);
+
         this.treeView.selectNode(node);
       });
   }
