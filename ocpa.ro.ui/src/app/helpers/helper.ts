@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { ContentUnit, ContentUnitType } from '../models/swagger/content-management';
 
 export class Helper {
     public static translateTitle(route: ActivatedRouteSnapshot, translate: TranslateService): string {
@@ -102,5 +103,46 @@ export class Helper {
         }
 
         return undefined;
+    }
+
+    public static isPreviewable(node: ContentUnit): boolean {
+        if (node?.type === ContentUnitType.Folder || node?.type === ContentUnitType.MarkdownIndexFolder) {
+            return false;
+        }
+
+        const filetype = node?.name?.split('.').pop();
+        switch (filetype?.toLowerCase() ?? '') {
+            case 'jpg':
+            case 'jpeg':
+            case 'png':
+            case 'gif':
+            case 'bmp':
+            case 'md':
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    public static isEditable(node: ContentUnit): boolean {
+        if (node?.type === ContentUnitType.Folder || node?.type === ContentUnitType.MarkdownIndexFolder) {
+            return false;
+        }
+
+        const filetype = node?.name?.split('.').pop();
+        switch (filetype?.toLowerCase() ?? '') {
+            case 'jpg':
+            case 'jpeg':
+            case 'png':
+            case 'gif':
+            case 'bmp':
+            case 'db3':
+            case 'db':
+                return false;
+
+            default:
+                return true;
+        }
     }
 }

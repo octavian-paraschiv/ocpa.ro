@@ -7,11 +7,12 @@
   margin-right: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: 30vw 1fr 1fr;
-  grid-template-rows: 25px 1fr;
+  grid-template-columns: auto auto auto 1fr;
+  grid-template-rows: 25px 1fr auto;
   grid-template-areas: 
-    "buttons mde-path mde-path"
-    "tv mde-edit mde-preview"
+    "buttons mde-path mde-path mde-path"
+    "tv mde-edit mde-preview ."
+    "hint hint hint hint"
 }
 .content-browser-buttons {
   display: flex;
@@ -51,32 +52,41 @@
   color: lightgray;
 }
 
+#content-hint {
+  grid-area: hint;
+  margin: 0;
+  padding: 2px;
+  padding-left: 4px;
+  color: $forecolor;
+  background-color: $backcolor;
+}
+
 #content-tree {
   grid-area: tv;
   border: 2px solid $forecolor;
   color: $forecolor;
-  min-width: calc(30vw - 0.5rem);
-  max-width: calc(30vw - 0.5rem);
   min-height: 85vh;  
   max-height: 85vh;
   margin: 0;
   overflow-y: auto;
   overflow-x: auto;
   padding-top: 0.3rem;
+  margin: 0;
+  margin-right: 2px;
 }
 
 #mde-edit {
   grid-area: mde-edit;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   border: 2px solid $forecolor;
   margin: 0;
-  //margin-left: 3px;
-  //min-width: calc(33vw - 0.5rem);
-  //max-width: calc(33vw - 0.5rem);
+  margin-right: 2px;
   min-height: 85vh;  
   max-height: 85vh;
   overflow-y: auto;
   overflow-x: auto;
+  padding: 3px;
+  font-family: courier, monospace;
 }
 #mde-path {
   grid-area: mde-path;
@@ -86,25 +96,25 @@
   background-color: lightgray;
   font-weight: bold;
 }
+
 #mde-preview {
   grid-area: mde-preview;
   border: 2px solid $forecolor;
   margin: 0;
-  margin-left: 3px;
-  min-width: calc(33vw - 0.5rem);
-  max-width: calc(33vw - 0.5rem);
   min-height: 85vh;  
   max-height: 85vh;
   overflow-y: auto;
   overflow-x: auto;
+  padding: 2px;
 }
-#mde-preview-image {
+
+#mde-preview-image, #mde-preview-binary {
   grid-area: mde-preview;
-  border: 1px solid lightgray;
+  border: 2px solid $forecolor;
   margin: 0;
-  margin-left: 3px;
-  min-width: calc(33vw - 0.5rem);
-  max-width: calc(33vw - 0.5rem);
+  padding: 2px;
+  min-height: 85vh;  
+  max-height: 85vh;
 }
 
 .content-tree-invisible {

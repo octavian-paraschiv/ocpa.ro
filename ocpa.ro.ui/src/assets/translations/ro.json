@@ -358,7 +358,8 @@
         "upload-error": "Nu s-a putut încărca fișierul sub '{{name}}'",
         "delete-node": "Sunteți sigur că doriți să ștergeți '{{name}}'?<br><br>Dacă continuați, acesta nu va putea fi recuperat.",
         "delete-success": "'{{name}}' a fost șters cu succes.",
-        "delete-error": "Nu s-a putut șterge '{{name}}'"
+        "delete-error": "Nu s-a putut șterge '{{name}}'",
+        "wiki-hint": "Placeholdere Wiki: <b>%root%</b>: reprezintă folderul principal de conținut (părintele folderului 'wiki'); <b>%wiki%</b>: reprezintă folderul de conținut 'wiki'; <b>%page%</b>: reprezintă locația fișierului 'index.md' sau 'index.<language>.md' al paginii wiki editate"
     },
 
     "node-name-dialog": {

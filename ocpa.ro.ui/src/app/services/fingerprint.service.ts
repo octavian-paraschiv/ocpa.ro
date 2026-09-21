@@ -17,7 +17,6 @@ export class FingerprintService {
     }
 
     public init(): Observable<boolean> {
-        console.debug('Calling FingerprintService.init...');
         return from(FingerprintJS.load()).pipe(
             untilDestroyed(this),
             switchMap(res => from(res.get())),

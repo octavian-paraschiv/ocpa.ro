@@ -33,7 +33,6 @@ export class TreeViewComponent {
       }
     } 
 
-    console.debug(`toggle calling selectNode: ${node?.path}\\${node?.name}`);
     this.selectNode(node);
   }
 
@@ -58,24 +57,16 @@ export class TreeViewComponent {
   }
 
   selectNode(event: ContentUnit) {
-
-    console.debug(`called selectNode: `);
-
     this.clearSelection();
     
     if (event) {
-      
       this.flattenTree(this.nodes).forEach(n => {
         const eventNodePath = this.normalizePath(`${event?.path}/${event?.name}`);
         const thisNodePath = this.normalizePath(`${n.path}/${n.name}`) ?? '';
         const isFolder = n.type === ContentUnitType.Folder || n.type === ContentUnitType.MarkdownIndexFolder;
 
-        const isAncestor = isFolder && eventNodePath.startsWith(thisNodePath);
-
-        if (isAncestor) {
-          console.debug(` ${thisNodePath} is ancestor for ${eventNodePath}`);
-          n.expanded = true;
-        } 
+        // Expand node if it is an ancestor of the node to be selected
+        n.expanded = isFolder && eventNodePath.startsWith(thisNodePath);
       });
       
       event.selected = true;
@@ -91,11 +82,7 @@ export class TreeViewComponent {
     .replace(/\\/g, '/');              // convert backslashes to slashes
 
   clearSelection() {
-    console.debug(`called clearSelection`);
-    this.flattenTree(this.nodes).forEach(n => {
-      n.selected = false;
-      //n.expanded = false;
-    });
+    this.flattenTree(this.nodes).forEach(n => n.selected = false);
   }
 
   flattenTree(nodes: ContentUnit[]): ContentUnit[] {

@@ -16,7 +16,6 @@ export class UserTypeService {
     }
 
     public init(): Observable<boolean> {
-        console.debug('Calling UserTypeService.init...');
         return this.getUserTypes().pipe(
             map(userTypes => {
                 this._userTypes = userTypes;

@@ -16,7 +16,6 @@ export class GeographyApiService {
     }
 
     public init(): Observable<boolean> {
-        console.debug('Calling GeographyApiService.init...');
         return this.getAllCities()
             .pipe(
                 untilDestroyed(this),

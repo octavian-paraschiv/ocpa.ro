@@ -34,10 +34,6 @@ export class ContentTreeComponent implements OnInit {
   }
 
   reloadAndSelect(path: string | undefined) {
-
-    console.debug(`reloadAndSelect: ${path}`);
-
-    let id = 1;
     this.contentService.listContent(this.path, this.level, this.filter, this.markdownView)
       .pipe(untilDestroyed(this))
       .subscribe(res => {
@@ -50,8 +46,6 @@ export class ContentTreeComponent implements OnInit {
         let node = flatNodes.find(n => `${n.path}/${n.name}` === path) ??
           flatNodes.find(n => `${n.path}/${n.name}` === parentPath) ??
           flatNodes[0];
-
-        console.debug(`reloadAndSelect calling treeView.selectNode: ${node.path}/${node.name}`);
 
         this.treeView.selectNode(node);
       });

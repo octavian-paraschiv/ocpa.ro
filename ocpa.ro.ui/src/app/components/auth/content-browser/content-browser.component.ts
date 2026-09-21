@@ -12,6 +12,11 @@ import { Helper } from 'src/app/helpers/helper';
 import { ContentUnit, ContentUnitType } from 'src/app/models/swagger/content-management';
 import { ContentApiService } from 'src/app/services/api/content-api.service';
 
+export interface ParseResult {
+  isEditable: boolean;
+  isPreviewable: boolean;
+}
+
 @UntilDestroy()
 @Component({
   selector: 'app-content-browser',
@@ -28,7 +33,8 @@ export class ContentBrowserComponent extends BaseComponent {
 
   keyDownTimeout: number = undefined;
   saveError = false;
-  editable = true;
+  
+  parseResult: ParseResult = { isEditable: false, isPreviewable: false };
 
   folder = faFolder;
   file = faFileText;
@@ -41,6 +47,22 @@ export class ContentBrowserComponent extends BaseComponent {
   @ViewChild('tree', { static: true }) tree: ContentTreeComponent;
 
   private readonly contentService = inject(ContentApiService);
+
+  get showEditor(): boolean {
+    return this.parseResult.isEditable;
+  }
+
+  get showViewer(): boolean {
+    return !this.parseResult.isEditable && this.parseResult.isPreviewable && !!this.content;
+  }
+
+  get showImage(): boolean {
+    return !this.parseResult.isEditable && this.parseResult.isPreviewable && !!this.image;
+  }
+
+  get showBinary(): boolean {
+    return !this.parseResult.isEditable && this.parseResult.isPreviewable && !!this.binary;
+  }
 
   get currentPath(): string {
     switch(this.currentNode?.type) {
@@ -57,8 +79,6 @@ export class ContentBrowserComponent extends BaseComponent {
     this.currentNode = event;
     const isRefresh = false;
 
-    console.debug(`onNodeSelected => currentPath = ${this.currentPath} isRefresh=${isRefresh}`);
-
     if (this.currentNode?.path?.length > 0 && this.currentNode?.name?.length > 0) {
       this.contentPath = `${this.currentNode?.path}/${this.currentNode?.name}`;
       if (this.currentNode?.type === ContentUnitType.File) {
@@ -69,17 +89,25 @@ export class ContentBrowserComponent extends BaseComponent {
           .subscribe({
             next: res => {
               this.overlay.hide();
-              this.editable = this.parseContent(res);
-              if (this.editable)
+              this.parseResult = this.parseContent(res, this.currentNode);
+              if (this.parseResult.isEditable && this.parseResult.isPreviewable)
                 this.wikiViewer?.displayLocation(this.contentPath, false);
+              this.updateLayout();
             },
-            error: () => this.overlay.hide()
+            error: () => {
+              this.overlay.hide();
+              this.parseResult = { isEditable: false, isPreviewable: false };
+              this.wikiViewer?.reset();
+              this.updateLayout();
+            }
           });
       } else {
         this.content = undefined;
         this.image = undefined;
         this.binary = undefined;
+        this.parseResult = { isEditable: false, isPreviewable: false };
         this.wikiViewer?.reset();
+        this.updateLayout();
       }
     }
   }
@@ -116,35 +144,90 @@ export class ContentBrowserComponent extends BaseComponent {
       });
   }
 
-  parseContent(base64: string): boolean {
+  updateLayout() {
+    setTimeout(() => {
+      const textPreviewer = document.getElementById('mde-preview');
+      const imagePreviewer = document.getElementById('mde-preview-image');
+      const binaryPreviewer = document.getElementById('mde-preview-binary');
+
+      textPreviewer ? textPreviewer.style.width = '0' : null;
+      textPreviewer ? textPreviewer.style.padding = '0' : null;
+      textPreviewer ? textPreviewer.style.border = 'unset' : null;
+
+      imagePreviewer ? imagePreviewer.style.width = '0' : null;
+      binaryPreviewer ? binaryPreviewer.style.width = '0' : null;
+
+      const previewer = 
+        this.content ? document.getElementById('mde-preview') :
+        this.image ? document.getElementById('mde-preview-image') : 
+        this.binary ? document.getElementById('mde-preview-binary') :
+        null;
+
+      previewer ? previewer.style.border = '2px solid black' : null;
+      previewer ? previewer.style.padding = '2px' : null;
+
+      const editor = document.getElementById('mde-edit');
+      const browser = document.getElementById('content-browser'); 
+      const tree = document.getElementById('content-tree'); 
+
+      const w = (browser?.style?.width ? parseInt(browser.style.width, 10) : window.innerWidth) - 25;
+
+      tree ? tree.style.width = `${w/3}px` : null;
+
+      if (this.parseResult?.isEditable && this.parseResult?.isPreviewable) {
+        editor ? editor.style.width = `${w/3}px` : null;
+        previewer ? previewer.style.width = `${w/3}px` : null;
+        
+      } else if (this.parseResult?.isPreviewable) {
+        editor ? editor.style.width = '0' : null;
+        previewer ? previewer.style.width = `${(2*w)/3}px` : null;
+        
+      } else if (this.parseResult?.isEditable) {
+        editor ? editor.style.width = `${(2*w)/3}px` : null;
+        previewer ? previewer.style.width = '0' : null;
+        
+      } else {
+        editor ? editor.style.width = '0' : null;
+        previewer ? previewer.style.width = '0' : null;
+        
+      }
+    }, 100); // Ensure layout updates after DOM changes
+  }
+
+  parseContent(base64: string, node: ContentUnit): ParseResult {
     this.content = undefined;
     this.image = undefined;
     this.binary = undefined;
 
-    const decodedText = Helper.tryDecodeAsText(base64);
-    if (decodedText?.length > 0) {
-      this.content = decodedText;
-      return true;
+    let parseResult: ParseResult = { 
+      isEditable: Helper.isEditable(node), 
+      isPreviewable: Helper.isPreviewable(node) 
+    };
+
+    if (parseResult.isPreviewable || parseResult.isEditable) {
+      const decodedText = Helper.tryDecodeAsText(base64);
+      if (decodedText?.length > 0) {
+        this.content = decodedText;
+      }
     }
 
-    this.content = '[Non-Readable Binary Data]';
-
-    const decodedImage = Helper.tryDecodeAsImage(base64);
-    if (decodedImage?.length > 0) {
-      this.image = decodedImage;
-      return false;
+    if (parseResult.isPreviewable) {
+      const decodedImage = Helper.tryDecodeAsImage(base64);
+      if (decodedImage?.length > 0) {
+        this.image = decodedImage;
+      } else if (!this.content) {
+        this.binary = base64;
+      }
     }
 
-    this.binary = base64;
-    return false;
+    return parseResult;
   }
 
   get previewStyle() {
     return {
-      'background-color': this.saveError ? 'coral' : 'white',
-      'display': this.editable ? 'block' : 'none'
+      'background-color': this.saveError ? 'coral' : 'white'
     };
-  }
+  } 
 
   isActionAllowed(action: string) {
     switch (action) {
@@ -255,7 +338,6 @@ export class ContentBrowserComponent extends BaseComponent {
       return;
 
     const pathToReselect = this.currentPath;
-    console.debug(`before upload => pathToReselect = ${pathToReselect}`);
 
     this.overlay.show();
     this.fileOpen(fileData => {
@@ -263,7 +345,6 @@ export class ContentBrowserComponent extends BaseComponent {
         .pipe(untilDestroyed(this))
         .subscribe({
           next: () => {
-            console.debug(`after upload => reloadAndSelect ${pathToReselect}`);
             this.tree.reloadAndSelect(pathToReselect);
             this.popup.showSuccess('content-browser.upload-success', { name: this.currentNode?.name });
           },
@@ -279,7 +360,6 @@ export class ContentBrowserComponent extends BaseComponent {
       return;
 
     const pathToReselect = this.currentPath;
-    console.debug(`before upload => pathToReselect = ${pathToReselect}`);
 
     MessageBoxComponent.show(this.dialog, {
       title: this.translate.instant('title.confirm'),

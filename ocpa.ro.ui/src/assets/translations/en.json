@@ -357,7 +357,8 @@
         "upload-error": "Could not upload file under '{{name}}'",
         "delete-node": "Are you sure you want to delete '{{name}}'?<br><br>If you proceed, you will not be able to recover it.",
         "delete-success": "Succesfully deleted '{{name}}'",
-        "delete-error": "Could not delete '{{name}}'"
+        "delete-error": "Could not delete '{{name}}'",
+        "wiki-hint": "Wiki placeholders: <b>%root%</b>: represents the main content folder (parent of the 'wiki' folder); <b>%wiki%</b>: represents the 'wiki' content folder; <b>%page%</b>: represents the location of the 'index.md' or 'index.<language>.md' file of the edited wiki page"
     },
 
     "node-name-dialog": {

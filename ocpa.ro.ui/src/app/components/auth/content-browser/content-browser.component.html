@@ -1,4 +1,4 @@
-<div class="content-browser">
+<div id ="content-browser" class="content-browser">
     <div class="content-browser-buttons">
         <a class="{{getTreeButtonClass('folder')}}" *ngIf="isActionAllowed('folder')" (click)="onNewFolder()">
             <fa-icon [icon]="folder" [transform]="size"></fa-icon>
@@ -18,8 +18,9 @@
     </div>
     <app-content-tree #tree id="content-tree" (nodeSelected)="onNodeSelected($event)"></app-content-tree>
     <label id="mde-path">{{contentPath}}</label>
-    <textarea id="mde-edit" [(ngModel)]="content" (keydown)="onKeyDown()" [disabled]="!editable" ></textarea>
-    <app-wiki-viewer id="mde-preview" #viewer [ngStyle]="previewStyle"></app-wiki-viewer>
-    <img *ngIf="image" id="mde-preview-image" src="{{image}}" />
-    <textarea *ngIf="!editable && !image" id="mde-preview" [(ngModel)]="binary" disabled="true"></textarea>
+    <textarea id="mde-edit" *ngIf="showEditor" [(ngModel)]="content" (keydown)="onKeyDown()"></textarea>
+    <app-wiki-viewer #viewer id="mde-preview" [ngStyle]="previewStyle"></app-wiki-viewer>
+    <img id="mde-preview-image" *ngIf="showImage" src="{{image}}" />
+    <textarea *ngIf="showBinary" id="mde-preview-binary" [(ngModel)]="binary" disabled="true"></textarea>
+    <label id="content-hint" innerHTML="{{ 'content-browser.wiki-hint' | translate }}"></label>
 </div>
