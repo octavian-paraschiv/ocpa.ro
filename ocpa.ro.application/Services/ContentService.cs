@@ -48,7 +48,12 @@ public class ContentService : BaseService, IContentService
             var fullContentPath = Path.Combine(_hostingEnvironment.ContentPath, contentPath);
 
             if (File.Exists(fullContentPath))
-                data = await File.ReadAllBytesAsync(fullContentPath);
+            {
+                await using var stream = new FileStream(fullContentPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using var ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+                data = ms.ToArray();
+            }
         }
         catch (Exception ex)
         {
